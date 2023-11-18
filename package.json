@@ -1,0 +1,42 @@
+{
+  "name": "altcha",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "https://github.com/altcha-org/altchajs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/altcha-org/altchajs"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/altcha.umd.cjs",
+  "module": "./dist/altcha.js",
+  "exports": {
+    ".": {
+      "import": "./dist/altcha.js",
+      "require": "./dist/altcha.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "rimraf dist && vite build && echo \"declare module 'altcha';\" > dist/altcha.d.ts",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tsconfig/svelte": "^5.0.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.6",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vitest": "^0.34.6"
+  }
+}

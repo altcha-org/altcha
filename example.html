@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      main {
+        padding: 1rem;
+      }
+      .buttons {
+        margin-top: 1rem;
+      }
+    </style>
+
+    <script async defer src="./dist/altcha.js" type="module"></script>
+
+    <script>
+      window.addEventListener('load', () => {
+        document.querySelector('#altcha').addEventListener('statechange', (ev) => {
+          console.log('State change:', ev.detail);
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <main>
+
+      <form action="/submit" method="post">
+
+        <altcha-box
+          id="altcha"
+          challengeurl=""
+          debug
+          test
+        ></altcha-box>
+        
+        <div class="buttons">
+          <button type="submit">Submit</button>
+          <button type="reset">Reset</button>
+        </div>
+      </form>
+
+    </main>
+  </body>
+</html>

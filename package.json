@@ -8,6 +8,17 @@
     "url": "https://github.com/altcha-org/altchajs"
   },
   "type": "module",
+  "keywords": [
+    "altcha",
+    "altcaptcha",
+    "captcha",
+    "recaptcha",
+    "hcaptcha",
+    "antispam",
+    "spam",
+    "protection",
+    "svelte"
+  ],
   "files": [
     "dist"
   ],

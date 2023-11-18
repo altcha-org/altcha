@@ -15,13 +15,13 @@ export default defineConfig({
     target: "modules",
     lib: {
       entry: "src/entry.ts",
-      name: "<<name>>",
-      formats: ["es", "umd"],
+      name: "altcha",
+      formats: ["iife", "es", "umd"],
     },
-    minify: true,
+    minify: "esbuild",
     rollupOptions: {},
   },
   test: {
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ["./tests/setup.ts"],
   },
 });

@@ -18,6 +18,8 @@ ALTCHA widget is distributed as a "Web Component" and [supports all modern brows
 <script async defer src="/altcha.js" type="module"></script>
 ```
 
+CDN: https://cdn.jsdelivr.net/gh/altcha-org/altcha@main/dist/altcha.min.js
+
 ### 2. Use `<altcha-box>` tag in your forms
 
 ```html

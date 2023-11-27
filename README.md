@@ -2,6 +2,8 @@
 
 ALTCHA uses a proof-of-work mechanism to protect your website, APIs, and online services from spam and abuse. Unlike other solutions, ALTCHA is self-hosted, does not use cookies nor fingerprinting, does not track users, and is fully compliant with GDPR.
 
+https://altcha.org
+
 ## Benefits
 
 - __Friction-less__ - Using PoW instead of visual puzzles.
@@ -38,29 +40,29 @@ See [server documentation](https://altcha.org/docs/server-integration) for more 
 
 ## Configuration
 
-Main options:
+Required options (at least one is required):
 
-- __challengeurl__ - The URL of your server, where to fetch the challenge from. See [server integration](/docs/server-integration).
-- __challengejson__ - The JSON-encoded challenge. If you don't want to make an HTTP request to `challengeurl`, provide the data here instead.
+- __challengeurl__ - URL of your server to fetch the challenge from. Refer to [server integration](/docs/server-integration).
+- __challengejson__ - JSON-encoded challenge data. If avoiding an HTTP request to `challengeurl`, provide the data here.
 
-Customization options:
+Additional options:
 
 - __hidefooter__ - Hide the footer (ALTCHA link).
 - __hidelogo__ - Hide the ALTCHA logo.
-- __maxnumber__ - Max. number to iterate to (defaults to 10,000,000).
-- __name__ - The name of the hidden field containing payload (defaults to "altcha").
-- __strings__ - JSON-encoded translation strings. See [customization](/docs/widget-customization).
+- __maxnumber__ - The max. number to iterate to (defaults to 10,000,000).
+- __name__ - The name of the hidden field containing the payload (defaults to "altcha").
+- __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
 
 Development / testing options:
 
-- __debug__ - Print log messages into the console.
+- __debug__ - Print log messages in the console.
 - __mockerror__ - Causes the verification to always fail with a "mock" error.
-- __test__ - This option will make the widget generate its own "mock" challenge, thus __not__ making the request to the `challengeurl`.
+- __test__ - Generates a "mock" challenge within the widget, bypassing the request to `challengeurl`.
 
 Events:
 
-- __statechange__ - triggers whenever an internal `state` changes.
-- __verified__ - triggers when the challenge is verified.
+- __statechange__ - Triggers whenever an internal `state` changes.
+- __verified__ - Triggers when the challenge is verified.
 
 Using events:
 

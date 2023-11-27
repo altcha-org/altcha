@@ -10,7 +10,8 @@ export function ab2hex(ab: ArrayBuffer) {
 
 export async function createTestChallenge(max: number = 1e5, algorithm: string = 'SHA-256') {
   const salt = Date.now().toString(16);
-  const challenge = await hashChallenge(salt, Math.round(Math.random() * max), algorithm); 
+  const num = Math.round(Math.random() * max);
+  const challenge = await hashChallenge(salt, num, algorithm); 
   return {
     algorithm,
     challenge,

@@ -1,9 +1,9 @@
 {
   "name": "altcha",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "author": {
-    "name": "Daniel Regeci; BAU Software s.r.o."
+    "name": "Daniel Regeci"
   },
   "homepage": "https://github.com/altcha-org/altchajs",
   "repository": {

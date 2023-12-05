@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'altcha-box',
+  tag: 'altcha-widget',
   shadow: 'none',
 }} />
 
@@ -42,7 +42,7 @@
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
   };
-  $: dispatch('statechange', { state });
+  $: dispatch('statechange', { payload, state });
 
   onDestroy(() => {
     if (elForm) {

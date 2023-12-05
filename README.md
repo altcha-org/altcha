@@ -22,19 +22,19 @@ ALTCHA widget is distributed as a "Web Component" and [supports all modern brows
 
 CDN: https://cdn.jsdelivr.net/gh/altcha-org/altcha@main/dist/altcha.min.js
 
-### 2. Use `<altcha-box>` tag in your forms
+### 2. Use `<altcha-widget>` tag in your forms
 
 ```html
 <form>
-  <altcha-box
+  <altcha-widget
     challengeurl="https://..."
-  ></altcha-box>  
+  ></altcha-widget>  
 </form>
 ```
 
 See the [configuration](#configuration) below or visit the [website integration documentation](https://altcha.org/docs/website-integration).
 
-### 3. Integrate ALCTHA with your server
+### 3. Integrate ALTCHA with your server
 
 See [server documentation](https://altcha.org/docs/server-integration) for more details.
 

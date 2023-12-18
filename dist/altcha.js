@@ -57,7 +57,7 @@ function A(t) {
 function p(t) {
   return document.createElement(t);
 }
-function O(t) {
+function F(t) {
   return document.createElementNS("http://www.w3.org/2000/svg", t);
 }
 function Me(t) {
@@ -78,10 +78,10 @@ function Ve(t) {
 function le(t, e, n) {
   t.classList.toggle(e, !!n);
 }
-function Oe(t, e, { bubbles: n = !1, cancelable: l = !1 } = {}) {
+function Fe(t, e, { bubbles: n = !1, cancelable: l = !1 } = {}) {
   return new CustomEvent(t, { detail: e, bubbles: n, cancelable: l });
 }
-function Fe(t) {
+function Oe(t) {
   const e = {};
   return t.childNodes.forEach(
     /** @param {Element} node */
@@ -110,7 +110,7 @@ function Ge() {
   return (e, n, { cancelable: l = !1 } = {}) => {
     const i = t.$$.callbacks[e];
     if (i) {
-      const r = Oe(
+      const r = Fe(
         /** @type {string} */
         e,
         n,
@@ -289,7 +289,7 @@ typeof HTMLElement == "function" && (de = class extends HTMLElement {
       };
       if (await Promise.resolve(), !this.$$cn)
         return;
-      const n = {}, l = Fe(this);
+      const n = {}, l = Oe(this);
       for (const r of this.$$s)
         r in l && (n[r] = [e(r)]);
       for (const r of this.attributes) {
@@ -502,7 +502,7 @@ function oe(t) {
   let e, n, l;
   return {
     c() {
-      e = O("svg"), n = O("path"), l = O("path"), o(n, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), o(n, "fill", "currentColor"), o(n, "opacity", ".25"), o(l, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), o(l, "fill", "currentColor"), o(l, "class", "altcha-spinner svelte-mjm2j6"), o(e, "width", "24"), o(e, "height", "24"), o(e, "viewBox", "0 0 24 24"), o(e, "xmlns", "http://www.w3.org/2000/svg");
+      e = F("svg"), n = F("path"), l = F("path"), o(n, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), o(n, "fill", "currentColor"), o(n, "opacity", ".25"), o(l, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), o(l, "fill", "currentColor"), o(l, "class", "altcha-spinner svelte-mjm2j6"), o(e, "width", "24"), o(e, "height", "24"), o(e, "viewBox", "0 0 24 24"), o(e, "xmlns", "http://www.w3.org/2000/svg");
     },
     m(i, r) {
       M(i, e, r), m(e, n), m(e, l);
@@ -602,7 +602,7 @@ function ce(t) {
   );
   return {
     c() {
-      e = p("div"), n = O("svg"), l = O("path"), i = S(), r = p("div"), o(l, "stroke-linecap", "round"), o(l, "stroke-linejoin", "round"), o(l, "d", "M6 18L18 6M6 6l12 12"), o(n, "width", "14"), o(n, "height", "14"), o(n, "xmlns", "http://www.w3.org/2000/svg"), o(n, "fill", "none"), o(n, "viewBox", "0 0 24 24"), o(n, "stroke-width", "1.5"), o(n, "stroke", "currentColor"), o(
+      e = p("div"), n = F("svg"), l = F("path"), i = S(), r = p("div"), o(l, "stroke-linecap", "round"), o(l, "stroke-linejoin", "round"), o(l, "d", "M6 18L18 6M6 6l12 12"), o(n, "width", "14"), o(n, "height", "14"), o(n, "xmlns", "http://www.w3.org/2000/svg"), o(n, "fill", "none"), o(n, "viewBox", "0 0 24 24"), o(n, "stroke-width", "1.5"), o(n, "stroke", "currentColor"), o(
         r,
         "title",
         /*error*/
@@ -651,7 +651,7 @@ function ae(t) {
   };
 }
 function at(t) {
-  let e, n, l, i, r, c, a, u, f, x, g, $, k, y, H, B, R, F, I, _ = (
+  let e, n, l, i, r, c, a, u, f, x, g, $, k, y, H, B, R, O, I, _ = (
     /*state*/
     t[3] === j.VERIFYING && oe()
   );
@@ -674,7 +674,7 @@ function at(t) {
   );
   return {
     c() {
-      e = p("div"), n = p("div"), _ && _.c(), l = S(), i = p("div"), r = p("input"), a = S(), u = p("div"), d.c(), f = S(), x = p("div"), g = p("a"), $ = O("svg"), k = O("path"), y = O("path"), H = O("path"), B = S(), v && v.c(), R = S(), w && w.c(), o(r, "type", "checkbox"), o(r, "id", c = /*name*/
+      e = p("div"), n = p("div"), _ && _.c(), l = S(), i = p("div"), r = p("input"), a = S(), u = p("div"), d.c(), f = S(), x = p("div"), g = p("a"), $ = F("svg"), k = F("path"), y = F("path"), H = F("path"), B = S(), v && v.c(), R = S(), w && w.c(), o(r, "type", "checkbox"), o(r, "id", c = /*name*/
       t[1] + "_checkbox"), r.required = !0, o(r, "class", "svelte-mjm2j6"), o(i, "class", "altcha-checkbox svelte-mjm2j6"), le(
         i,
         "altcha-hidden",
@@ -689,7 +689,7 @@ function at(t) {
     },
     m(h, C) {
       M(h, e, C), m(e, n), _ && _.m(n, null), m(n, l), m(n, i), m(i, r), r.checked = /*checked*/
-      t[4], m(n, a), m(n, u), d.m(u, null), m(n, f), m(n, x), m(x, g), m(g, $), m($, k), m($, y), m($, H), m(e, B), v && v.m(e, null), m(e, R), w && w.m(e, null), t[20](e), F || (I = [
+      t[4], m(n, a), m(n, u), d.m(u, null), m(n, f), m(n, x), m(x, g), m(g, $), m($, k), m($, y), m($, H), m(e, B), v && v.m(e, null), m(e, R), w && w.m(e, null), t[20](e), O || (I = [
         z(
           r,
           "change",
@@ -708,7 +708,7 @@ function at(t) {
           /*onInvalid*/
           t[9]
         )
-      ], F = !0);
+      ], O = !0);
     },
     p(h, C) {
       /*state*/
@@ -736,7 +736,7 @@ function at(t) {
     i: Z,
     o: Z,
     d(h) {
-      h && A(e), _ && _.d(), d.d(), v && v.d(), w && w.d(), t[20](null), F = !1, K(I);
+      h && A(e), _ && _.d(), d.d(), v && v.d(), w && w.d(), t[20](null), O = !1, K(I);
     }
   };
 }
@@ -747,17 +747,19 @@ function ue(t) {
 function ut(t, e, n) {
   let l, i, r, { challengeurl: c = void 0 } = e, { challengejson: a = void 0 } = e, { debug: u = !1 } = e, { hidefooter: f = !1 } = e, { name: x = "altcha" } = e, { maxnumber: g = void 0 } = e, { mockerror: $ = !1 } = e, { strings: k = void 0 } = e, { test: y = !1 } = e;
   const H = Ge(), B = ["SHA-256", "SHA-384", "SHA-512"];
-  let R = !1, F, I = null, _ = null, V = null, E = j.UNVERIFIED;
+  let R = !1, O, I = null, _ = null, V = null, E = j.UNVERIFIED;
   Se(() => {
     I && (I.removeEventListener("submit", v), I.removeEventListener("reset", w), I = null);
   }), He(() => {
-    d("mounted"), y && d("using test mode"), I = F.closest("form"), I && (I.addEventListener("submit", v), I.addEventListener("reset", w));
+    d("mounted"), y && d("using test mode"), I = O.closest("form"), I && (I.addEventListener("submit", v), I.addEventListener("reset", w));
   });
   function d(...s) {
     (u || s.some((b) => b instanceof Error)) && console[s[0] instanceof Error ? "error" : "log"]("ALTCHA", ...s);
   }
   function v() {
-    P();
+    requestAnimationFrame(() => {
+      P();
+    });
   }
   function w() {
     P();
@@ -845,7 +847,7 @@ function ut(t, e, n) {
   }
   function ye(s) {
     Q[s ? "unshift" : "push"](() => {
-      F = s, n(5, F);
+      O = s, n(5, O);
     });
   }
   return t.$$set = (s) => {
@@ -870,7 +872,7 @@ function ut(t, e, n) {
     V,
     E,
     R,
-    F,
+    O,
     _,
     r,
     we,

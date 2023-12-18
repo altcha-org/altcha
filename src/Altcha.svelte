@@ -71,7 +71,9 @@
   }
 
   function onFormSubmit() {
-    reset();
+    requestAnimationFrame(() => {
+      reset();
+    });
   }
 
   function onFormReset() {

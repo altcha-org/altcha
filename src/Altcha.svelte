@@ -97,7 +97,13 @@
   }
 
   function validateChallenge(data: Challenge) {
-    if (!data.algorithm || !allowedAlgs.includes(data.algorithm)) {
+    if (!data.algorithm) {
+      throw new Error(`Invalid challenge. Property algorithm is missing.`);
+    }
+    if (data.signature === undefined) {
+      throw new Error('Invalid challenge. Property signature is missing.');
+    }
+    if (!allowedAlgs.includes(data.algorithm.toUpperCase())) {
       throw new Error(`Unknown algorithm value. Allowed values: ${allowedAlgs.join(', ')}`);
     }
     if (!data.challenge || data.challenge.length < 40) {
@@ -105,9 +111,6 @@
     }
     if (!data.salt || data.salt.length < 10) {
       throw new Error('Salt is too short. Min. 10 chars.');
-    }
-    if (data.signature === undefined) {
-      throw new Error('Signature is missing.');
     }
   }
 
@@ -291,7 +294,7 @@
 
 <style global>
   .altcha {
-    background: var(--altcha-color-base, #ffffff);
+    background: var(--altcha-color-base, transparent);
     border: 1px solid var(--altcha-color-border, #a0a0a0);
     border-radius: 3px;
     color: var(--altcha-color-text, currentColor);
@@ -300,6 +303,7 @@
     max-width: 260px;
     overflow: hidden;
     position: relative;
+    text-align: left;
   }
 
   .altcha:focus-within {
@@ -340,11 +344,16 @@
 
   .altcha-footer {
     align-items: center;
-    background-color: var(--altcha-color-footer-bg, #f4f4f4);
+    background-color: var(--altcha-color-footer-bg, transparent);
     display: flex;
     font-size: 0.75rem;
+    opacity: 0.4;
     padding: 0.2rem 0.7rem;
     text-align: right;
+  }
+
+  .altcha-footer:hover {
+    opacity: 1;
   }
 
   .altcha-footer > *:first-child {

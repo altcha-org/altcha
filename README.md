@@ -73,6 +73,8 @@ document.querySelector('#altcha').addEventListener('statechange', (ev) => {
 });
 ```
 
+## Contributing
+See [Contributing Guide](https://github.com/altcha-org/altcha/blob/main/CONTRIBUTING.md) and please follow our [Code of Conduct](https://github.com/altcha-org/altcha/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 

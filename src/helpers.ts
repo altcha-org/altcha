@@ -21,7 +21,7 @@ export async function createTestChallenge(max: number = 1e5, algorithm: string =
 }
 
 export async function hashChallenge(salt: string, num: number, algorithm: string) {
-  return ab2hex(await crypto.subtle.digest(algorithm, encoder.encode(salt + num))); 
+  return ab2hex(await crypto.subtle.digest(algorithm.toUpperCase(), encoder.encode(salt + num))); 
 }
 
 export async function solveChallenge(challenge: string, salt: string, algorithm: string = 'SHA-256', max: number = MAX): Promise<Solution | null> {

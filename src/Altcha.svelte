@@ -10,6 +10,7 @@
   import { State } from './types';
   import type { Payload, Challenge, Solution } from './types';
 
+  export let auto: 'onload' | 'onsubmit' | undefined = undefined; 
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
@@ -53,14 +54,20 @@
   });
 
   onMount(() => {
-    log('mounted');
+    log('mounted', ALTCHA_VERSION);
     if (test) {
       log('using test mode');
+    }
+    if (auto !== undefined) {
+      log('auto', auto);
     }
     elForm = el.closest('form');
     if (elForm) {
       elForm.addEventListener('submit', onFormSubmit);
       elForm.addEventListener('reset', onFormReset);
+    }
+    if (auto === 'onload') {
+      verify();
     }
   });
 
@@ -70,10 +77,18 @@
     }
   }
 
-  function onFormSubmit() {
-    requestAnimationFrame(() => {
-      reset();
-    });
+  function onFormSubmit(ev: SubmitEvent) {
+    if (elForm && auto === 'onsubmit' && state === State.UNVERIFIED) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      verify().then(() => {
+        elForm?.submit();
+      });
+    } else {
+      requestAnimationFrame(() => {
+        reset();
+      });
+    }
   }
 
   function onFormReset() {
@@ -178,32 +193,7 @@
 
   function onCheckedChange() {
     if ([State.UNVERIFIED, State.ERROR].includes(state)) {
-      reset(State.VERIFYING);
-      fetchChallenge()
-        .then((data) => {
-          validateChallenge(data);
-          log('challenge', data);
-          return run(data);
-        })
-        .then(({ data, solution }) => {
-          log('solution', solution);
-          if (solution?.number !== undefined) {
-            log('verified');
-            state = State.VERIFIED;
-            checked = true;
-            payload = createAltchaPayload(data, solution);
-            dispatch('verified', { payload });
-            log('payload', payload);
-          } else {
-            throw new Error('Unexpected result returned.');
-          }
-        })
-        .catch((err) => {
-          log(err);
-          state = State.ERROR;
-          checked = false;
-          error = err;
-        });
+      verify();
     } else {
       checked = true;
     }
@@ -220,6 +210,35 @@
     error = null;
     payload = null;
     state = newState;
+  }
+
+  export async function verify() {
+    reset(State.VERIFYING);
+    return fetchChallenge()
+      .then((data) => {
+        validateChallenge(data);
+        log('challenge', data);
+        return run(data);
+      })
+      .then(({ data, solution }) => {
+        log('solution', solution);
+        if (solution?.number !== undefined) {
+          log('verified');
+          state = State.VERIFIED;
+          checked = true;
+          payload = createAltchaPayload(data, solution);
+          dispatch('verified', { payload });
+          log('payload', payload);
+        } else {
+          throw new Error('Unexpected result returned.');
+        }
+      })
+      .catch((err) => {
+        log(err);
+        state = State.ERROR;
+        checked = false;
+        error = err;
+      });
   }
 </script>
 
@@ -247,7 +266,7 @@
       <input
         type="checkbox"
         id="{name}_checkbox"
-        required
+        required={auto !== 'onsubmit'}
         bind:checked={checked}
         on:change={onCheckedChange}
         on:invalid={onInvalid}

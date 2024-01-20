@@ -14,7 +14,19 @@ https://altcha.org
 
 ALTCHA widget is distributed as a "Web Component" and [supports all modern browsers](https://developer.mozilla.org/en-US/docs/Web/API/Web_components#browser_compatibility).
 
-### 1. Add `<script>` tag to your website
+### 1. Install ALTCHA
+
+```sh
+npm install altcha
+```
+
+import `altcha` in your main file:
+
+```js
+import 'altcha';
+```
+
+or insert `<script>` tag to your website:
 
 ```html
 <script async defer src="/altcha.js" type="module"></script>
@@ -47,6 +59,7 @@ Required options (at least one is required):
 
 Additional options:
 
+- __auto__ - Automatically verify without user interaction (possible values: `onload`, `onsubmit`).
 - __hidefooter__ - Hide the footer (ALTCHA link).
 - __hidelogo__ - Hide the ALTCHA logo.
 - __maxnumber__ - The max. number to iterate to (defaults to 10,000,000).

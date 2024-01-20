@@ -34,5 +34,5 @@ export enum State {
   ERROR = 'error',
   VERIFIED = 'verified',
   VERIFYING = 'verifying',
-  UNVERIFIED = 'unverfied',
+  UNVERIFIED = 'unverified',
 };

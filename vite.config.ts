@@ -21,6 +21,9 @@ export default defineConfig({
     minify: "esbuild",
     rollupOptions: {},
   },
+  define: {
+    ALTCHA_VERSION: JSON.stringify(process.env.npm_package_version),
+  },
   test: {
     setupFiles: ["./tests/setup.ts"],
   },

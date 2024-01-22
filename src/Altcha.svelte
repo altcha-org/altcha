@@ -4,7 +4,7 @@
 }} />
 
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+  import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
   import InlineWorker from './worker?worker&inline';
   import { solveChallenge, createTestChallenge } from './helpers';
   import { State } from './types';
@@ -82,11 +82,7 @@
       ev.preventDefault();
       ev.stopPropagation();
       verify().then(() => {
-        elForm?.submit();
-      });
-    } else {
-      requestAnimationFrame(() => {
-        reset();
+        elForm?.requestSubmit();
       });
     }
   }
@@ -227,8 +223,10 @@
           state = State.VERIFIED;
           checked = true;
           payload = createAltchaPayload(data, solution);
-          dispatch('verified', { payload });
           log('payload', payload);
+          tick().then(() => {
+            dispatch('verified', { payload });
+          });
         } else {
           throw new Error('Unexpected result returned.');
         }

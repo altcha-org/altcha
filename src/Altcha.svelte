@@ -15,6 +15,7 @@
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
   export let hidefooter: boolean = false;
+  export let hidelogo: boolean = false;
   export let name: string = 'altcha';
   export let maxnumber: number | undefined = undefined;
   export let mockerror: boolean = false;
@@ -282,6 +283,7 @@
       {/if}
     </div>
 
+    {#if hidelogo !== true}
     <div>
       <a href={website} target="_blank" class="altcha-logo">
         <svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -291,6 +293,7 @@
         </svg>
       </a>
     </div>
+    {/if}
   </div>
 
   {#if error}

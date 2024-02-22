@@ -24,3 +24,7 @@ dist-ssr
 
 # app
 .TODO
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

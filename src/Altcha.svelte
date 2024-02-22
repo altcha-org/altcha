@@ -315,12 +315,12 @@
 <style global>
   .altcha {
     background: var(--altcha-color-base, transparent);
-    border: 1px solid var(--altcha-color-border, #a0a0a0);
-    border-radius: 3px;
+    border: var(--altcha-border-width, 3px) solid var(--altcha-color-border, #a0a0a0);
+    border-radius: var(--altcha-border-radius, 3px);
     color: var(--altcha-color-text, currentColor);
     display: flex;
     flex-direction: column;
-    max-width: 260px;
+    max-width: var(--altcha-max-width, 260px);
     overflow: hidden;
     position: relative;
     text-align: left;

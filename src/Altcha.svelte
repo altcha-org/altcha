@@ -315,7 +315,7 @@
 <style global>
   .altcha {
     background: var(--altcha-color-base, transparent);
-    border: var(--altcha-border-width, 3px) solid var(--altcha-color-border, #a0a0a0);
+    border: var(--altcha-border-width, 1px) solid var(--altcha-color-border, #a0a0a0);
     border-radius: var(--altcha-border-radius, 3px);
     color: var(--altcha-color-text, currentColor);
     display: flex;

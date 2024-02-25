@@ -33,6 +33,23 @@
         ></altcha-widget>
       </div>
 
+      <div id="test-configure">
+        <altcha-widget
+          id="test-configure-altcha"
+        ></altcha-widget>
+
+        <script>
+          window.addEventListener('load', () => {
+            document.querySelector('#test-configure-altcha').configure({
+              hidelogo: true,
+              strings: {
+                label: 'configured label',
+              },
+            });
+          });
+        </script>
+      </div>
+
     </main>
   </body>
 </html>

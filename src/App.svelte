@@ -11,8 +11,25 @@
   let test: boolean = !challengeurl && params.get('test') !== '0';
   let mockerror: boolean = false;
 
+  let altcha: Altcha;
+
   onMount(() => {
     location.hash = '';
+
+    if (altcha) {
+      altcha?.configure({
+        challenge: {
+          algorithm: 'SHA-256',
+          challenge: 'xx',
+          salt:'dd',
+          signature: '',
+        },
+        strings: {
+          label:'xx'
+        },
+      })
+    }
+
   });
 </script>
 
@@ -63,6 +80,7 @@
     </div>
 
     <Altcha
+    bind:this={altcha}
       debug
       {challengeurl}
       {mockerror}

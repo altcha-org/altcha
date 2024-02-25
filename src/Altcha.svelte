@@ -8,7 +8,7 @@
   import InlineWorker from './worker?worker&inline';
   import { solveChallenge, createTestChallenge } from './helpers';
   import { State } from './types';
-  import type { Payload, Challenge, Solution } from './types';
+  import type { Configure, Payload, Challenge, Solution } from './types';
 
   export let auto: 'onload' | 'onsubmit' | undefined = undefined; 
   export let challengeurl: string | undefined = undefined;
@@ -199,6 +199,43 @@
   function onInvalid() {
     if (state === State.VERIFYING) {
       alert(_strings.waitAlert);
+    }
+  }
+  
+  export function configure(options: Configure) {
+    if (options.auto !== void 0) {
+      auto = options.auto;
+      if (auto === 'onload') {
+        verify();
+      }
+    }
+    if (options.challenge) {
+      validateChallenge(options.challenge);
+      parsedChallenge = options.challenge;
+    }
+    if (options.debug !== void 0) {
+      debug = !!options.debug;
+    }
+    if (options.hidefooter !== void 0) {
+      hidefooter = !!options.hidefooter;
+    }
+    if (options.hidelogo !== void 0) {
+      hidelogo = !!options.hidelogo;
+    }
+    if (options.maxnumber !== void 0) {
+      maxnumber = +options.maxnumber;
+    }
+    if (options.mockerror !== void 0) {
+      mockerror = !!options.mockerror;
+    }
+    if (options.name !== void 0) {
+      name = options.name;
+    }
+    if (options.test !== void 0) {
+      test = !!options.test;
+    }
+    if (options.strings) {
+      parsedStrings = options.strings;
     }
   }
 

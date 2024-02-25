@@ -72,7 +72,54 @@ Development / testing options:
 - __mockerror__ - Causes the verification to always fail with a "mock" error.
 - __test__ - Generates a "mock" challenge within the widget, bypassing the request to `challengeurl`.
 
-Events:
+## Programmatic Configuration
+
+To configure the widget programmatically, use the `configure()` method:
+
+```ts
+document.querySelector('#altcha').configure({
+  challenge: {
+    algorithm: 'SHA-256',
+    challenge: '...',
+    salt: '...',
+    signature: '...',
+  },
+  strings: {
+    label: 'Verify',
+  },
+});
+```
+
+Available configuration options: 
+
+```ts
+export interface Configure {
+  auto?: 'onload' | 'onsubmit'; 
+  challenge?: {
+    algorithm: string;
+    challenge: string;
+    salt: string;
+    signature: string;
+  };
+  debug?: boolean;
+  hidefooter?: boolean;
+  hidelogo?: boolean;
+  maxnumber?: number;
+  mockerror?: boolean;
+  name?: string;
+  strings?: {
+    error?: string;
+    footer?: string;
+    label?: string;
+    verified?: string;
+    verifying?: string;
+    waitAlert?: string;
+  };
+  test?: boolean;
+}
+```
+
+## Events
 
 - __statechange__ - Triggers whenever an internal `state` changes.
 - __verified__ - Triggers when the challenge is verified.
@@ -87,7 +134,7 @@ document.querySelector('#altcha').addEventListener('statechange', (ev) => {
 ```
 
 > [!IMPORTANT]  
-> Ensure that you attach event listeners after the ALTCHA script loads, such as within window.addEventListener('load', ...), to ensure the events trigger correctly.
+> Both programmatic configuration and event listeners have to called/attached after the ALTCHA script loads, such as within window.addEventListener('load', ...).
 
 ## Contributing
 See [Contributing Guide](https://github.com/altcha-org/altcha/blob/main/CONTRIBUTING.md) and please follow our [Code of Conduct](https://github.com/altcha-org/altcha/blob/main/CODE_OF_CONDUCT.md).

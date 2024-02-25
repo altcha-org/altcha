@@ -7,6 +7,19 @@ export interface Strings {
   waitAlert: string;
 }
 
+export interface Configure {
+  auto?: 'onload' | 'onsubmit'; 
+  challenge?: Challenge;
+  debug?: boolean;
+  hidefooter?: boolean;
+  hidelogo?: boolean;
+  maxnumber?: number;
+  mockerror?: boolean;
+  name?: string;
+  strings?: Partial<Strings>;
+  test?: boolean;
+}
+
 export interface Solution {
   number: number;
   took: number;

@@ -22,5 +22,12 @@ test('should be without the footer', async ({ page }) => {
   expect(await page.locator('#test-hidefooter .altcha-footer').first().count()).toBe(0);
 });
 
+test('should set options via configure()', async ({ page }) => {
+  await page.goto('./e2e/index.html');
+  const cmp = page.locator('#test-configure .altcha').first();
+  await expect(cmp).toContainText(/configured label/);
+  expect(await page.locator('#test-configure .altcha-logo').first().count()).toBe(0);
+});
+
 
 

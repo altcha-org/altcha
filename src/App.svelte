@@ -15,21 +15,6 @@
 
   onMount(() => {
     location.hash = '';
-
-    if (altcha) {
-      altcha?.configure({
-        challenge: {
-          algorithm: 'SHA-256',
-          challenge: 'xx',
-          salt:'dd',
-          signature: '',
-        },
-        strings: {
-          label:'xx'
-        },
-      })
-    }
-
   });
 </script>
 

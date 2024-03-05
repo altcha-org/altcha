@@ -1,37 +1,37 @@
-var Ge = Object.defineProperty;
-var Se = (t, e, n) => e in t ? Ge(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n;
-var L = (t, e, n) => (Se(t, typeof e != "symbol" ? e + "" : e, n), n);
-function Z() {
+var Ue = Object.defineProperty;
+var Me = (t, e, n) => e in t ? Ue(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n;
+var I = (t, e, n) => (Me(t, typeof e != "symbol" ? e + "" : e, n), n);
+function H() {
 }
-function ge(t) {
+function ve(t) {
   return t();
 }
-function ie() {
+function ce() {
   return /* @__PURE__ */ Object.create(null);
 }
-function P(t) {
-  t.forEach(ge);
+function T(t) {
+  t.forEach(ve);
 }
-function be(t) {
+function _e(t) {
   return typeof t == "function";
 }
-function Ue(t, e) {
+function Fe(t, e) {
   return t != t ? e == e : t !== e || t && typeof t == "object" || typeof t == "function";
 }
-function Ve(t) {
+function Oe(t) {
   return Object.keys(t).length === 0;
 }
 function b(t, e) {
   t.appendChild(e);
 }
-function Me(t, e, n) {
-  const o = Fe(t);
-  if (!o.getElementById(e)) {
+function Ye(t, e, n) {
+  const i = Ze(t);
+  if (!i.getElementById(e)) {
     const l = $("style");
-    l.id = e, l.textContent = n, Oe(o, l);
+    l.id = e, l.textContent = n, Be(i, l);
   }
 }
-function Fe(t) {
+function Ze(t) {
   if (!t)
     return document;
   const e = t.getRootNode ? t.getRootNode() : t.ownerDocument;
@@ -41,7 +41,7 @@ function Fe(t) {
     e
   ) : t.ownerDocument;
 }
-function Oe(t, e) {
+function Be(t, e) {
   return b(
     /** @type {Document} */
     t.head || t,
@@ -51,37 +51,37 @@ function Oe(t, e) {
 function N(t, e, n) {
   t.insertBefore(e, n || null);
 }
-function I(t) {
+function L(t) {
   t.parentNode && t.parentNode.removeChild(t);
 }
 function $(t) {
   return document.createElement(t);
 }
-function S(t) {
+function V(t) {
   return document.createElementNS("http://www.w3.org/2000/svg", t);
 }
-function Ye(t) {
+function He(t) {
   return document.createTextNode(t);
 }
 function M() {
-  return Ye(" ");
+  return He(" ");
 }
-function K(t, e, n, o) {
-  return t.addEventListener(e, n, o), () => t.removeEventListener(e, n, o);
+function z(t, e, n, i) {
+  return t.addEventListener(e, n, i), () => t.removeEventListener(e, n, i);
 }
 function c(t, e, n) {
   n == null ? t.removeAttribute(e) : t.getAttribute(e) !== n && t.setAttribute(e, n);
 }
-function Ze(t) {
+function We(t) {
   return Array.from(t.childNodes);
 }
-function le(t, e, n) {
+function ue(t, e, n) {
   t.classList.toggle(e, !!n);
 }
-function Be(t, e, { bubbles: n = !1, cancelable: o = !1 } = {}) {
-  return new CustomEvent(t, { detail: e, bubbles: n, cancelable: o });
+function De(t, e, { bubbles: n = !1, cancelable: i = !1 } = {}) {
+  return new CustomEvent(t, { detail: e, bubbles: n, cancelable: i });
 }
-function He(t) {
+function Pe(t) {
   const e = {};
   return t.childNodes.forEach(
     /** @param {Element} node */
@@ -90,31 +90,31 @@ function He(t) {
     }
   ), e;
 }
-let W;
-function H(t) {
-  W = t;
+let P;
+function D(t) {
+  P = t;
 }
-function ee() {
-  if (!W)
+function te() {
+  if (!P)
     throw new Error("Function called outside component initialization");
-  return W;
+  return P;
 }
-function We(t) {
-  ee().$$.on_mount.push(t);
+function Te(t) {
+  te().$$.on_mount.push(t);
 }
-function Pe(t) {
-  ee().$$.on_destroy.push(t);
+function Xe(t) {
+  te().$$.on_destroy.push(t);
 }
-function Te() {
-  const t = ee();
-  return (e, n, { cancelable: o = !1 } = {}) => {
+function Ke() {
+  const t = te();
+  return (e, n, { cancelable: i = !1 } = {}) => {
     const l = t.$$.callbacks[e];
     if (l) {
-      const r = Be(
+      const r = De(
         /** @type {string} */
         e,
         n,
-        { cancelable: o }
+        { cancelable: i }
       );
       return l.slice().forEach((s) => {
         s.call(t, r);
@@ -123,147 +123,147 @@ function Te() {
     return !0;
   };
 }
-const O = [], J = [];
-let Y = [];
-const se = [], me = /* @__PURE__ */ Promise.resolve();
-let Q = !1;
-function ve() {
-  Q || (Q = !0, me.then(C));
+const Z = [], Q = [];
+let B = [];
+const ae = [], we = /* @__PURE__ */ Promise.resolve();
+let q = !1;
+function $e() {
+  q || (q = !0, we.then(x));
 }
-function Xe() {
-  return ve(), me;
+function ze() {
+  return $e(), we;
 }
-function q(t) {
-  Y.push(t);
+function ee(t) {
+  B.push(t);
 }
-const z = /* @__PURE__ */ new Set();
-let F = 0;
-function C() {
-  if (F !== 0)
+const J = /* @__PURE__ */ new Set();
+let Y = 0;
+function x() {
+  if (Y !== 0)
     return;
-  const t = W;
+  const t = P;
   do {
     try {
-      for (; F < O.length; ) {
-        const e = O[F];
-        F++, H(e), De(e.$$);
+      for (; Y < Z.length; ) {
+        const e = Z[Y];
+        Y++, D(e), Je(e.$$);
       }
     } catch (e) {
-      throw O.length = 0, F = 0, e;
+      throw Z.length = 0, Y = 0, e;
     }
-    for (H(null), O.length = 0, F = 0; J.length; )
-      J.pop()();
-    for (let e = 0; e < Y.length; e += 1) {
-      const n = Y[e];
-      z.has(n) || (z.add(n), n());
+    for (D(null), Z.length = 0, Y = 0; Q.length; )
+      Q.pop()();
+    for (let e = 0; e < B.length; e += 1) {
+      const n = B[e];
+      J.has(n) || (J.add(n), n());
     }
-    Y.length = 0;
-  } while (O.length);
-  for (; se.length; )
-    se.pop()();
-  Q = !1, z.clear(), H(t);
+    B.length = 0;
+  } while (Z.length);
+  for (; ae.length; )
+    ae.pop()();
+  q = !1, J.clear(), D(t);
 }
-function De(t) {
+function Je(t) {
   if (t.fragment !== null) {
-    t.update(), P(t.before_update);
+    t.update(), T(t.before_update);
     const e = t.dirty;
-    t.dirty = [-1], t.fragment && t.fragment.p(t.ctx, e), t.after_update.forEach(q);
+    t.dirty = [-1], t.fragment && t.fragment.p(t.ctx, e), t.after_update.forEach(ee);
   }
 }
-function Ke(t) {
+function Qe(t) {
   const e = [], n = [];
-  Y.forEach((o) => t.indexOf(o) === -1 ? e.push(o) : n.push(o)), n.forEach((o) => o()), Y = e;
+  B.forEach((i) => t.indexOf(i) === -1 ? e.push(i) : n.push(i)), n.forEach((i) => i()), B = e;
 }
-const ze = /* @__PURE__ */ new Set();
-function Je(t, e) {
-  t && t.i && (ze.delete(t), t.i(e));
-}
-function Qe(t, e, n) {
-  const { fragment: o, after_update: l } = t.$$;
-  o && o.m(e, n), q(() => {
-    const r = t.$$.on_mount.map(ge).filter(be);
-    t.$$.on_destroy ? t.$$.on_destroy.push(...r) : P(r), t.$$.on_mount = [];
-  }), l.forEach(q);
-}
-function qe(t, e) {
-  const n = t.$$;
-  n.fragment !== null && (Ke(n.after_update), P(n.on_destroy), n.fragment && n.fragment.d(e), n.on_destroy = n.fragment = null, n.ctx = []);
-}
+const qe = /* @__PURE__ */ new Set();
 function et(t, e) {
-  t.$$.dirty[0] === -1 && (O.push(t), ve(), t.$$.dirty.fill(0)), t.$$.dirty[e / 31 | 0] |= 1 << e % 31;
+  t && t.i && (qe.delete(t), t.i(e));
 }
-function tt(t, e, n, o, l, r, s = null, u = [-1]) {
-  const f = W;
-  H(t);
-  const a = t.$$ = {
+function tt(t, e, n) {
+  const { fragment: i, after_update: l } = t.$$;
+  i && i.m(e, n), ee(() => {
+    const r = t.$$.on_mount.map(ve).filter(_e);
+    t.$$.on_destroy ? t.$$.on_destroy.push(...r) : T(r), t.$$.on_mount = [];
+  }), l.forEach(ee);
+}
+function nt(t, e) {
+  const n = t.$$;
+  n.fragment !== null && (Qe(n.after_update), T(n.on_destroy), n.fragment && n.fragment.d(e), n.on_destroy = n.fragment = null, n.ctx = []);
+}
+function rt(t, e) {
+  t.$$.dirty[0] === -1 && (Z.push(t), $e(), t.$$.dirty.fill(0)), t.$$.dirty[e / 31 | 0] |= 1 << e % 31;
+}
+function it(t, e, n, i, l, r, s = null, a = [-1]) {
+  const h = P;
+  D(t);
+  const f = t.$$ = {
     fragment: null,
     ctx: [],
     // state
     props: r,
-    update: Z,
+    update: H,
     not_equal: l,
-    bound: ie(),
+    bound: ce(),
     // lifecycle
     on_mount: [],
     on_destroy: [],
     on_disconnect: [],
     before_update: [],
     after_update: [],
-    context: new Map(e.context || (f ? f.$$.context : [])),
+    context: new Map(e.context || (h ? h.$$.context : [])),
     // everything else
-    callbacks: ie(),
-    dirty: u,
+    callbacks: ce(),
+    dirty: a,
     skip_bound: !1,
-    root: e.target || f.$$.root
+    root: e.target || h.$$.root
   };
-  s && s(a.root);
+  s && s(f.root);
   let R = !1;
-  if (a.ctx = n ? n(t, e.props || {}, (p, j, ...x) => {
-    const A = x.length ? x[0] : j;
-    return a.ctx && l(a.ctx[p], a.ctx[p] = A) && (!a.skip_bound && a.bound[p] && a.bound[p](A), R && et(t, p)), j;
-  }) : [], a.update(), R = !0, P(a.before_update), a.fragment = o ? o(a.ctx) : !1, e.target) {
+  if (f.ctx = n ? n(t, e.props || {}, (p, j, ...C) => {
+    const A = C.length ? C[0] : j;
+    return f.ctx && l(f.ctx[p], f.ctx[p] = A) && (!f.skip_bound && f.bound[p] && f.bound[p](A), R && rt(t, p)), j;
+  }) : [], f.update(), R = !0, T(f.before_update), f.fragment = i ? i(f.ctx) : !1, e.target) {
     if (e.hydrate) {
-      const p = Ze(e.target);
-      a.fragment && a.fragment.l(p), p.forEach(I);
+      const p = We(e.target);
+      f.fragment && f.fragment.l(p), p.forEach(L);
     } else
-      a.fragment && a.fragment.c();
-    e.intro && Je(t.$$.fragment), Qe(t, e.target, e.anchor), C();
+      f.fragment && f.fragment.c();
+    e.intro && et(t.$$.fragment), tt(t, e.target, e.anchor), x();
   }
-  H(f);
+  D(h);
 }
-let _e;
-typeof HTMLElement == "function" && (_e = class extends HTMLElement {
-  constructor(e, n, o) {
+let ye;
+typeof HTMLElement == "function" && (ye = class extends HTMLElement {
+  constructor(e, n, i) {
     super();
     /** The Svelte component constructor */
-    L(this, "$$ctor");
+    I(this, "$$ctor");
     /** Slots */
-    L(this, "$$s");
+    I(this, "$$s");
     /** The Svelte component instance */
-    L(this, "$$c");
+    I(this, "$$c");
     /** Whether or not the custom element is connected */
-    L(this, "$$cn", !1);
+    I(this, "$$cn", !1);
     /** Component props data */
-    L(this, "$$d", {});
+    I(this, "$$d", {});
     /** `true` if currently in the process of reflecting component props back to attributes */
-    L(this, "$$r", !1);
+    I(this, "$$r", !1);
     /** @type {Record<string, CustomElementPropDefinition>} Props definition (name, reflected, type etc) */
-    L(this, "$$p_d", {});
+    I(this, "$$p_d", {});
     /** @type {Record<string, Function[]>} Event listeners */
-    L(this, "$$l", {});
+    I(this, "$$l", {});
     /** @type {Map<Function, Function>} Event listener unsubscribe functions */
-    L(this, "$$l_u", /* @__PURE__ */ new Map());
-    this.$$ctor = e, this.$$s = n, o && this.attachShadow({ mode: "open" });
+    I(this, "$$l_u", /* @__PURE__ */ new Map());
+    this.$$ctor = e, this.$$s = n, i && this.attachShadow({ mode: "open" });
   }
-  addEventListener(e, n, o) {
+  addEventListener(e, n, i) {
     if (this.$$l[e] = this.$$l[e] || [], this.$$l[e].push(n), this.$$c) {
       const l = this.$$c.$on(e, n);
       this.$$l_u.set(n, l);
     }
-    super.addEventListener(e, n, o);
+    super.addEventListener(e, n, i);
   }
-  removeEventListener(e, n, o) {
-    if (super.removeEventListener(e, n, o), this.$$c) {
+  removeEventListener(e, n, i) {
+    if (super.removeEventListener(e, n, i), this.$$c) {
       const l = this.$$l_u.get(n);
       l && (l(), this.$$l_u.delete(n));
     }
@@ -281,23 +281,23 @@ typeof HTMLElement == "function" && (_e = class extends HTMLElement {
              * @param {HTMLElement} target
              * @param {HTMLElement} [anchor]
              */
-            m: function(a, R) {
-              N(a, s, R);
+            m: function(f, R) {
+              N(f, s, R);
             },
-            d: function(a) {
-              a && I(s);
+            d: function(f) {
+              f && L(s);
             }
           };
         };
       };
       if (await Promise.resolve(), !this.$$cn || this.$$c)
         return;
-      const n = {}, o = He(this);
+      const n = {}, i = Pe(this);
       for (const r of this.$$s)
-        r in o && (n[r] = [e(r)]);
+        r in i && (n[r] = [e(r)]);
       for (const r of this.attributes) {
         const s = this.$$g_p(r.name);
-        s in this.$$d || (this.$$d[s] = T(s, r.value, this.$$p_d, "toProp"));
+        s in this.$$d || (this.$$d[s] = K(s, r.value, this.$$p_d, "toProp"));
       }
       for (const r in this.$$p_d)
         !(r in this.$$d) && this[r] !== void 0 && (this.$$d[r] = this[r], delete this[r]);
@@ -315,7 +315,7 @@ typeof HTMLElement == "function" && (_e = class extends HTMLElement {
         this.$$r = !0;
         for (const r in this.$$p_d)
           if (this.$$d[r] = this.$$c.$$.ctx[this.$$c.$$.props[r]], this.$$p_d[r].reflect) {
-            const s = T(
+            const s = K(
               r,
               this.$$d[r],
               this.$$p_d,
@@ -328,17 +328,17 @@ typeof HTMLElement == "function" && (_e = class extends HTMLElement {
       this.$$c.$$.after_update.push(l), l();
       for (const r in this.$$l)
         for (const s of this.$$l[r]) {
-          const u = this.$$c.$on(r, s);
-          this.$$l_u.set(s, u);
+          const a = this.$$c.$on(r, s);
+          this.$$l_u.set(s, a);
         }
       this.$$l = {};
     }
   }
   // We don't need this when working within Svelte code, but for compatibility of people using this outside of Svelte
   // and setting attributes through setAttribute etc, this is helpful
-  attributeChangedCallback(e, n, o) {
+  attributeChangedCallback(e, n, i) {
     var l;
-    this.$$r || (e = this.$$g_p(e), this.$$d[e] = T(e, o, this.$$p_d, "toProp"), (l = this.$$c) == null || l.$set({ [e]: this.$$d[e] }));
+    this.$$r || (e = this.$$g_p(e), this.$$d[e] = K(e, i, this.$$p_d, "toProp"), (l = this.$$c) == null || l.$set({ [e]: this.$$d[e] }));
   }
   disconnectedCallback() {
     this.$$cn = !1, Promise.resolve().then(() => {
@@ -351,12 +351,12 @@ typeof HTMLElement == "function" && (_e = class extends HTMLElement {
     ) || e;
   }
 });
-function T(t, e, n, o) {
+function K(t, e, n, i) {
   var r;
   const l = (r = n[t]) == null ? void 0 : r.type;
-  if (e = l === "Boolean" && typeof e != "boolean" ? e != null : e, !o || !n[t])
+  if (e = l === "Boolean" && typeof e != "boolean" ? e != null : e, !i || !n[t])
     return e;
-  if (o === "toAttribute")
+  if (i === "toAttribute")
     switch (l) {
       case "Object":
       case "Array":
@@ -381,38 +381,38 @@ function T(t, e, n, o) {
         return e;
     }
 }
-function nt(t, e, n, o, l, r) {
-  let s = class extends _e {
+function ot(t, e, n, i, l, r) {
+  let s = class extends ye {
     constructor() {
       super(t, n, l), this.$$p_d = e;
     }
     static get observedAttributes() {
       return Object.keys(e).map(
-        (u) => (e[u].attribute || u).toLowerCase()
+        (a) => (e[a].attribute || a).toLowerCase()
       );
     }
   };
-  return Object.keys(e).forEach((u) => {
-    Object.defineProperty(s.prototype, u, {
+  return Object.keys(e).forEach((a) => {
+    Object.defineProperty(s.prototype, a, {
       get() {
-        return this.$$c && u in this.$$c ? this.$$c[u] : this.$$d[u];
+        return this.$$c && a in this.$$c ? this.$$c[a] : this.$$d[a];
       },
-      set(f) {
-        var a;
-        f = T(u, f, e), this.$$d[u] = f, (a = this.$$c) == null || a.$set({ [u]: f });
+      set(h) {
+        var f;
+        h = K(a, h, e), this.$$d[a] = h, (f = this.$$c) == null || f.$set({ [a]: h });
       }
     });
-  }), o.forEach((u) => {
-    Object.defineProperty(s.prototype, u, {
+  }), i.forEach((a) => {
+    Object.defineProperty(s.prototype, a, {
       get() {
-        var f;
-        return (f = this.$$c) == null ? void 0 : f[u];
+        var h;
+        return (h = this.$$c) == null ? void 0 : h[a];
       }
     });
   }), r && (s = r(s)), t.element = /** @type {any} */
   s, s;
 }
-class rt {
+class lt {
   constructor() {
     /**
      * ### PRIVATE API
@@ -421,7 +421,7 @@ class rt {
      *
      * @type {any}
      */
-    L(this, "$$");
+    I(this, "$$");
     /**
      * ### PRIVATE API
      *
@@ -429,11 +429,11 @@ class rt {
      *
      * @type {any}
      */
-    L(this, "$$set");
+    I(this, "$$set");
   }
   /** @returns {void} */
   $destroy() {
-    qe(this, 1), this.$destroy = Z;
+    nt(this, 1), this.$destroy = H;
   }
   /**
    * @template {Extract<keyof Events, string>} K
@@ -442,12 +442,12 @@ class rt {
    * @returns {() => void}
    */
   $on(e, n) {
-    if (!be(n))
-      return Z;
-    const o = this.$$.callbacks[e] || (this.$$.callbacks[e] = []);
-    return o.push(n), () => {
-      const l = o.indexOf(n);
-      l !== -1 && o.splice(l, 1);
+    if (!_e(n))
+      return H;
+    const i = this.$$.callbacks[e] || (this.$$.callbacks[e] = []);
+    return i.push(n), () => {
+      const l = i.indexOf(n);
+      l !== -1 && i.splice(l, 1);
     };
   }
   /**
@@ -455,16 +455,16 @@ class rt {
    * @returns {void}
    */
   $set(e) {
-    this.$$set && !Ve(e) && (this.$$.skip_bound = !0, this.$$set(e), this.$$.skip_bound = !1);
+    this.$$set && !Oe(e) && (this.$$.skip_bound = !0, this.$$set(e), this.$$.skip_bound = !1);
   }
 }
-const ot = "4";
-typeof window < "u" && (window.__svelte || (window.__svelte = { v: /* @__PURE__ */ new Set() })).v.add(ot);
-const we = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IHI9bmV3IFRleHRFbmNvZGVyO2Z1bmN0aW9uIGMoZSl7cmV0dXJuWy4uLm5ldyBVaW50OEFycmF5KGUpXS5tYXAobj0+bi50b1N0cmluZygxNikucGFkU3RhcnQoMiwiMCIpKS5qb2luKCIiKX1hc3luYyBmdW5jdGlvbiBsKGUsbixhKXtyZXR1cm4gYyhhd2FpdCBjcnlwdG8uc3VidGxlLmRpZ2VzdChhLnRvVXBwZXJDYXNlKCksci5lbmNvZGUoZStuKSkpfWFzeW5jIGZ1bmN0aW9uIGkoZSxuLGE9IlNIQS0yNTYiLG89MWU3KXtjb25zdCBzPURhdGUubm93KCk7Zm9yKGxldCB0PTA7dDw9bzt0KyspaWYoYXdhaXQgbChuLHQsYSk9PT1lKXJldHVybntudW1iZXI6dCx0b29rOkRhdGUubm93KCktc307cmV0dXJuIG51bGx9b25tZXNzYWdlPWFzeW5jIGU9Pntjb25zdHthbGc6bixjaGFsbGVuZ2U6YSxtYXg6byxzYWx0OnN9PWUuZGF0YXx8e307aWYoYSYmcyl7Y29uc3QgdD1hd2FpdCBpKGEscyxuLG8pO3NlbGYucG9zdE1lc3NhZ2UodCYmey4uLnQsd29ya2VyOiEwfSl9ZWxzZSBzZWxmLnBvc3RNZXNzYWdlKG51bGwpfX0pKCk7Cg==", it = (t) => Uint8Array.from(atob(t), (e) => e.charCodeAt(0)), ce = typeof window < "u" && window.Blob && new Blob([it(we)], { type: "text/javascript;charset=utf-8" });
-function lt(t) {
+const st = "4";
+typeof window < "u" && (window.__svelte || (window.__svelte = { v: /* @__PURE__ */ new Set() })).v.add(st);
+const pe = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IHI9bmV3IFRleHRFbmNvZGVyO2Z1bmN0aW9uIGMoZSl7cmV0dXJuWy4uLm5ldyBVaW50OEFycmF5KGUpXS5tYXAobj0+bi50b1N0cmluZygxNikucGFkU3RhcnQoMiwiMCIpKS5qb2luKCIiKX1hc3luYyBmdW5jdGlvbiBsKGUsbixhKXtyZXR1cm4gYyhhd2FpdCBjcnlwdG8uc3VidGxlLmRpZ2VzdChhLnRvVXBwZXJDYXNlKCksci5lbmNvZGUoZStuKSkpfWFzeW5jIGZ1bmN0aW9uIGkoZSxuLGE9IlNIQS0yNTYiLG89MWU3KXtjb25zdCBzPURhdGUubm93KCk7Zm9yKGxldCB0PTA7dDw9bzt0KyspaWYoYXdhaXQgbChuLHQsYSk9PT1lKXJldHVybntudW1iZXI6dCx0b29rOkRhdGUubm93KCktc307cmV0dXJuIG51bGx9b25tZXNzYWdlPWFzeW5jIGU9Pntjb25zdHthbGc6bixjaGFsbGVuZ2U6YSxtYXg6byxzYWx0OnN9PWUuZGF0YXx8e307aWYoYSYmcyl7Y29uc3QgdD1hd2FpdCBpKGEscyxuLG8pO3NlbGYucG9zdE1lc3NhZ2UodCYmey4uLnQsd29ya2VyOiEwfSl9ZWxzZSBzZWxmLnBvc3RNZXNzYWdlKG51bGwpfX0pKCk7Cg==", ct = (t) => Uint8Array.from(atob(t), (e) => e.charCodeAt(0)), fe = typeof window < "u" && window.Blob && new Blob([ct(pe)], { type: "text/javascript;charset=utf-8" });
+function ut(t) {
   let e;
   try {
-    if (e = ce && (window.URL || window.webkitURL).createObjectURL(ce), !e)
+    if (e = fe && (window.URL || window.webkitURL).createObjectURL(fe), !e)
       throw "";
     const n = new Worker(e, {
       name: t == null ? void 0 : t.name
@@ -474,7 +474,7 @@ function lt(t) {
     }), n;
   } catch {
     return new Worker(
-      "data:text/javascript;base64," + we,
+      "data:text/javascript;base64," + pe,
       {
         name: t == null ? void 0 : t.name
       }
@@ -483,12 +483,12 @@ function lt(t) {
     e && (window.URL || window.webkitURL).revokeObjectURL(e);
   }
 }
-const st = 1e7, ct = new TextEncoder();
-function ut(t) {
+const at = 1e7, ft = new TextEncoder();
+function ht(t) {
   return [...new Uint8Array(t)].map((e) => e.toString(16).padStart(2, "0")).join("");
 }
-async function at(t = 1e5, e = "SHA-256") {
-  const n = Date.now().toString(16), o = Math.round(Math.random() * t), l = await $e(n, o, e);
+async function dt(t = 1e5, e = "SHA-256") {
+  const n = Date.now().toString(16), i = Math.round(Math.random() * t), l = await ke(n, i, e);
   return {
     algorithm: e,
     challenge: l,
@@ -496,45 +496,45 @@ async function at(t = 1e5, e = "SHA-256") {
     signature: ""
   };
 }
-async function $e(t, e, n) {
-  return ut(await crypto.subtle.digest(n.toUpperCase(), ct.encode(t + e)));
+async function ke(t, e, n) {
+  return ht(await crypto.subtle.digest(n.toUpperCase(), ft.encode(t + e)));
 }
-async function ft(t, e, n = "SHA-256", o = st) {
+async function gt(t, e, n = "SHA-256", i = at) {
   const l = Date.now();
-  for (let r = 0; r <= o; r++)
-    if (await $e(e, r, n) === t)
+  for (let r = 0; r <= i; r++)
+    if (await ke(e, r, n) === t)
       return {
         number: r,
         took: Date.now() - l
       };
   return null;
 }
-var y = /* @__PURE__ */ ((t) => (t.ERROR = "error", t.VERIFIED = "verified", t.VERIFYING = "verifying", t.UNVERIFIED = "unverified", t))(y || {});
-function ht(t) {
-  Me(t, "svelte-vuofbg", ".altcha.svelte-vuofbg.svelte-vuofbg{background:var(--altcha-color-base, transparent);border:var(--altcha-border-width, 1px) solid var(--altcha-color-border, #a0a0a0);border-radius:var(--altcha-border-radius, 3px);color:var(--altcha-color-text, currentColor);display:flex;flex-direction:column;max-width:var(--altcha-max-width, 260px);overflow:hidden;position:relative;text-align:left}.altcha.svelte-vuofbg.svelte-vuofbg:focus-within{border-color:var(--altcha-color-border-focus, currentColor)}.altcha-main.svelte-vuofbg.svelte-vuofbg{align-items:center;display:flex;gap:0.4rem;padding:0.7rem}.altcha-label.svelte-vuofbg.svelte-vuofbg{flex-grow:1}.altcha-label.svelte-vuofbg label.svelte-vuofbg{cursor:pointer}.altcha-logo.svelte-vuofbg.svelte-vuofbg{color:currentColor;opacity:0.3}.altcha-logo.svelte-vuofbg.svelte-vuofbg:hover{opacity:1}.altcha-error.svelte-vuofbg.svelte-vuofbg{color:var(--altcha-color-error-text, #f23939);display:flex;font-size:0.85rem;gap:0.3rem;padding:0 0.7rem 0.7rem}.altcha-footer.svelte-vuofbg.svelte-vuofbg{align-items:center;background-color:var(--altcha-color-footer-bg, transparent);display:flex;font-size:0.75rem;opacity:0.4;padding:0.2rem 0.7rem;text-align:right}.altcha-footer.svelte-vuofbg.svelte-vuofbg:hover{opacity:1}.altcha-footer.svelte-vuofbg>.svelte-vuofbg:first-child{flex-grow:1}.altcha-footer.svelte-vuofbg a{color:currentColor}.altcha-checkbox.svelte-vuofbg.svelte-vuofbg{display:flex;align-items:center;height:24px;width:24px}.altcha-checkbox.svelte-vuofbg input.svelte-vuofbg{width:18px;height:18px;margin:0}.altcha-hidden.svelte-vuofbg.svelte-vuofbg{display:none}.altcha-spinner.svelte-vuofbg.svelte-vuofbg{animation:svelte-vuofbg-altcha-spinner 0.75s infinite linear;transform-origin:center}@keyframes svelte-vuofbg-altcha-spinner{100%{transform:rotate(360deg)}}");
+var w = /* @__PURE__ */ ((t) => (t.ERROR = "error", t.VERIFIED = "verified", t.VERIFYING = "verifying", t.UNVERIFIED = "unverified", t.EXPIRED = "expired", t))(w || {});
+function bt(t) {
+  Ye(t, "svelte-vuofbg", ".altcha.svelte-vuofbg.svelte-vuofbg{background:var(--altcha-color-base, transparent);border:var(--altcha-border-width, 1px) solid var(--altcha-color-border, #a0a0a0);border-radius:var(--altcha-border-radius, 3px);color:var(--altcha-color-text, currentColor);display:flex;flex-direction:column;max-width:var(--altcha-max-width, 260px);overflow:hidden;position:relative;text-align:left}.altcha.svelte-vuofbg.svelte-vuofbg:focus-within{border-color:var(--altcha-color-border-focus, currentColor)}.altcha-main.svelte-vuofbg.svelte-vuofbg{align-items:center;display:flex;gap:0.4rem;padding:0.7rem}.altcha-label.svelte-vuofbg.svelte-vuofbg{flex-grow:1}.altcha-label.svelte-vuofbg label.svelte-vuofbg{cursor:pointer}.altcha-logo.svelte-vuofbg.svelte-vuofbg{color:currentColor;opacity:0.3}.altcha-logo.svelte-vuofbg.svelte-vuofbg:hover{opacity:1}.altcha-error.svelte-vuofbg.svelte-vuofbg{color:var(--altcha-color-error-text, #f23939);display:flex;font-size:0.85rem;gap:0.3rem;padding:0 0.7rem 0.7rem}.altcha-footer.svelte-vuofbg.svelte-vuofbg{align-items:center;background-color:var(--altcha-color-footer-bg, transparent);display:flex;font-size:0.75rem;opacity:0.4;padding:0.2rem 0.7rem;text-align:right}.altcha-footer.svelte-vuofbg.svelte-vuofbg:hover{opacity:1}.altcha-footer.svelte-vuofbg>.svelte-vuofbg:first-child{flex-grow:1}.altcha-footer.svelte-vuofbg a{color:currentColor}.altcha-checkbox.svelte-vuofbg.svelte-vuofbg{display:flex;align-items:center;height:24px;width:24px}.altcha-checkbox.svelte-vuofbg input.svelte-vuofbg{width:18px;height:18px;margin:0}.altcha-hidden.svelte-vuofbg.svelte-vuofbg{display:none}.altcha-spinner.svelte-vuofbg.svelte-vuofbg{animation:svelte-vuofbg-altcha-spinner 0.75s infinite linear;transform-origin:center}@keyframes svelte-vuofbg-altcha-spinner{100%{transform:rotate(360deg)}}");
 }
-function ue(t) {
-  let e, n, o;
+function he(t) {
+  let e, n, i;
   return {
     c() {
-      e = S("svg"), n = S("path"), o = S("path"), c(n, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), c(n, "fill", "currentColor"), c(n, "opacity", ".25"), c(o, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), c(o, "fill", "currentColor"), c(o, "class", "altcha-spinner svelte-vuofbg"), c(e, "width", "24"), c(e, "height", "24"), c(e, "viewBox", "0 0 24 24"), c(e, "xmlns", "http://www.w3.org/2000/svg");
+      e = V("svg"), n = V("path"), i = V("path"), c(n, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), c(n, "fill", "currentColor"), c(n, "opacity", ".25"), c(i, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), c(i, "fill", "currentColor"), c(i, "class", "altcha-spinner svelte-vuofbg"), c(e, "width", "24"), c(e, "height", "24"), c(e, "viewBox", "0 0 24 24"), c(e, "xmlns", "http://www.w3.org/2000/svg");
     },
     m(l, r) {
-      N(l, e, r), b(e, n), b(e, o);
+      N(l, e, r), b(e, n), b(e, i);
     },
     d(l) {
-      l && I(e);
+      l && L(e);
     }
   };
 }
-function dt(t) {
+function mt(t) {
   let e, n = (
     /*_strings*/
     t[9].label + ""
-  ), o;
+  ), i;
   return {
     c() {
-      e = $("label"), c(e, "for", o = /*name*/
+      e = $("label"), c(e, "for", i = /*name*/
       t[3] + "_checkbox"), c(e, "class", "svelte-vuofbg");
     },
     m(l, r) {
@@ -544,15 +544,15 @@ function dt(t) {
       r[0] & /*_strings*/
       512 && n !== (n = /*_strings*/
       l[9].label + "") && (e.innerHTML = n), r[0] & /*name*/
-      8 && o !== (o = /*name*/
-      l[3] + "_checkbox") && c(e, "for", o);
+      8 && i !== (i = /*name*/
+      l[3] + "_checkbox") && c(e, "for", i);
     },
     d(l) {
-      l && I(e);
+      l && L(e);
     }
   };
 }
-function gt(t) {
+function vt(t) {
   let e, n = (
     /*_strings*/
     t[9].verifying + ""
@@ -561,27 +561,27 @@ function gt(t) {
     c() {
       e = $("span");
     },
-    m(o, l) {
-      N(o, e, l), e.innerHTML = n;
+    m(i, l) {
+      N(i, e, l), e.innerHTML = n;
     },
-    p(o, l) {
+    p(i, l) {
       l[0] & /*_strings*/
       512 && n !== (n = /*_strings*/
-      o[9].verifying + "") && (e.innerHTML = n);
+      i[9].verifying + "") && (e.innerHTML = n);
     },
-    d(o) {
-      o && I(e);
+    d(i) {
+      i && L(e);
     }
   };
 }
-function bt(t) {
+function _t(t) {
   let e, n = (
     /*_strings*/
     t[9].verified + ""
-  ), o, l;
+  ), i, l;
   return {
     c() {
-      e = $("span"), o = M(), l = $("input"), c(l, "type", "hidden"), c(
+      e = $("span"), i = M(), l = $("input"), c(l, "type", "hidden"), c(
         l,
         "name",
         /*name*/
@@ -590,7 +590,7 @@ function bt(t) {
       t[4];
     },
     m(r, s) {
-      N(r, e, s), e.innerHTML = n, N(r, o, s), N(r, l, s);
+      N(r, e, s), e.innerHTML = n, N(r, i, s), N(r, l, s);
     },
     p(r, s) {
       s[0] & /*_strings*/
@@ -606,60 +606,47 @@ function bt(t) {
       r[4]);
     },
     d(r) {
-      r && (I(e), I(o), I(l));
+      r && (L(e), L(i), L(l));
     }
   };
 }
-function ae(t) {
-  let e, n, o, l, r, s;
+function de(t) {
+  let e, n, i, l, r, s;
   return {
     c() {
-      e = $("div"), n = $("a"), o = S("svg"), l = S("path"), r = S("path"), s = S("path"), c(l, "d", "M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z"), c(l, "fill", "currentColor"), c(r, "d", "M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z"), c(r, "fill", "currentColor"), c(s, "d", "M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z"), c(s, "fill", "currentColor"), c(o, "width", "22"), c(o, "height", "22"), c(o, "viewBox", "0 0 20 20"), c(o, "fill", "none"), c(o, "xmlns", "http://www.w3.org/2000/svg"), c(n, "href", ye), c(n, "target", "_blank"), c(n, "class", "altcha-logo svelte-vuofbg");
+      e = $("div"), n = $("a"), i = V("svg"), l = V("path"), r = V("path"), s = V("path"), c(l, "d", "M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z"), c(l, "fill", "currentColor"), c(r, "d", "M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z"), c(r, "fill", "currentColor"), c(s, "d", "M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z"), c(s, "fill", "currentColor"), c(i, "width", "22"), c(i, "height", "22"), c(i, "viewBox", "0 0 20 20"), c(i, "fill", "none"), c(i, "xmlns", "http://www.w3.org/2000/svg"), c(n, "href", Ee), c(n, "target", "_blank"), c(n, "class", "altcha-logo svelte-vuofbg");
     },
-    m(u, f) {
-      N(u, e, f), b(e, n), b(n, o), b(o, l), b(o, r), b(o, s);
+    m(a, h) {
+      N(a, e, h), b(e, n), b(n, i), b(i, l), b(i, r), b(i, s);
     },
-    p: Z,
-    d(u) {
-      u && I(e);
+    p: H,
+    d(a) {
+      a && L(e);
     }
   };
 }
-function fe(t) {
-  let e, n, o, l, r, s = (
-    /*_strings*/
-    t[9].error + ""
-  );
+function ge(t) {
+  let e, n, i, l, r;
   return {
     c() {
-      e = $("div"), n = S("svg"), o = S("path"), l = M(), r = $("div"), c(o, "stroke-linecap", "round"), c(o, "stroke-linejoin", "round"), c(o, "d", "M6 18L18 6M6 6l12 12"), c(n, "width", "14"), c(n, "height", "14"), c(n, "xmlns", "http://www.w3.org/2000/svg"), c(n, "fill", "none"), c(n, "viewBox", "0 0 24 24"), c(n, "stroke-width", "1.5"), c(n, "stroke", "currentColor"), c(
-        r,
-        "title",
-        /*error*/
-        t[8]
-      ), c(e, "class", "altcha-error svelte-vuofbg");
+      e = $("div"), n = V("svg"), i = V("path"), l = M(), r = $("div"), c(i, "stroke-linecap", "round"), c(i, "stroke-linejoin", "round"), c(i, "d", "M6 18L18 6M6 6l12 12"), c(n, "width", "14"), c(n, "height", "14"), c(n, "xmlns", "http://www.w3.org/2000/svg"), c(n, "fill", "none"), c(n, "viewBox", "0 0 24 24"), c(n, "stroke-width", "1.5"), c(n, "stroke", "currentColor"), c(e, "class", "altcha-error svelte-vuofbg");
     },
-    m(u, f) {
-      N(u, e, f), b(e, n), b(n, o), b(e, l), b(e, r), r.innerHTML = s;
+    m(s, a) {
+      N(s, e, a), b(e, n), b(n, i), b(e, l), b(e, r), r.innerHTML = /*error*/
+      t[8];
     },
-    p(u, f) {
-      f[0] & /*_strings*/
-      512 && s !== (s = /*_strings*/
-      u[9].error + "") && (r.innerHTML = s), f[0] & /*error*/
-      256 && c(
-        r,
-        "title",
-        /*error*/
-        u[8]
-      );
+    p(s, a) {
+      a[0] & /*error*/
+      256 && (r.innerHTML = /*error*/
+      s[8]);
     },
-    d(u) {
-      u && I(e);
+    d(s) {
+      s && L(e);
     }
   };
 }
-function he(t) {
-  let e, n, o = (
+function be(t) {
+  let e, n, i = (
     /*_strings*/
     t[9].footer + ""
   );
@@ -668,287 +655,296 @@ function he(t) {
       e = $("div"), n = $("div"), c(n, "class", "svelte-vuofbg"), c(e, "class", "altcha-footer svelte-vuofbg");
     },
     m(l, r) {
-      N(l, e, r), b(e, n), n.innerHTML = o;
+      N(l, e, r), b(e, n), n.innerHTML = i;
     },
     p(l, r) {
       r[0] & /*_strings*/
-      512 && o !== (o = /*_strings*/
-      l[9].footer + "") && (n.innerHTML = o);
+      512 && i !== (i = /*_strings*/
+      l[9].footer + "") && (n.innerHTML = i);
     },
     d(l) {
-      l && I(e);
+      l && L(e);
     }
   };
 }
-function mt(t) {
-  let e, n, o, l, r, s, u, f, a, R, p, j, x, A, _ = (
+function wt(t) {
+  let e, n, i, l, r, s, a, h, f, R, p, j, C, A, v = (
     /*state*/
-    t[5] === y.VERIFYING && ue()
+    t[5] === w.VERIFYING && he()
   );
-  function G(h, v) {
+  function G(u, y) {
     return (
       /*state*/
-      h[5] === y.VERIFIED ? bt : (
+      u[5] === w.VERIFIED ? _t : (
         /*state*/
-        h[5] === y.VERIFYING ? gt : dt
+        u[5] === w.VERIFYING ? vt : mt
       )
     );
   }
-  let V = G(t), k = V(t), g = (
+  let U = G(t), k = U(t), _ = (
     /*hidelogo*/
-    t[2] !== !0 && ae()
-  ), m = (
+    t[2] !== !0 && de()
+  ), g = (
     /*error*/
-    t[8] && fe(t)
-  ), d = (
+    t[8] && ge(t)
+  ), m = (
     /*_strings*/
     t[9].footer && /*hidefooter*/
-    t[1] !== !0 && he(t)
+    t[1] !== !0 && be(t)
   );
   return {
     c() {
-      e = $("div"), n = $("div"), _ && _.c(), o = M(), l = $("div"), r = $("input"), f = M(), a = $("div"), k.c(), R = M(), g && g.c(), p = M(), m && m.c(), j = M(), d && d.c(), c(r, "type", "checkbox"), c(r, "id", s = /*name*/
-      t[3] + "_checkbox"), r.required = u = /*auto*/
-      t[0] !== "onsubmit", c(r, "class", "svelte-vuofbg"), c(l, "class", "altcha-checkbox svelte-vuofbg"), le(
+      e = $("div"), n = $("div"), v && v.c(), i = M(), l = $("div"), r = $("input"), h = M(), f = $("div"), k.c(), R = M(), _ && _.c(), p = M(), g && g.c(), j = M(), m && m.c(), c(r, "type", "checkbox"), c(r, "id", s = /*name*/
+      t[3] + "_checkbox"), r.required = a = /*auto*/
+      t[0] !== "onsubmit", c(r, "class", "svelte-vuofbg"), c(l, "class", "altcha-checkbox svelte-vuofbg"), ue(
         l,
         "altcha-hidden",
         /*state*/
-        t[5] === y.VERIFYING
-      ), c(a, "class", "altcha-label svelte-vuofbg"), c(n, "class", "altcha-main svelte-vuofbg"), c(e, "class", "altcha svelte-vuofbg"), c(
+        t[5] === w.VERIFYING
+      ), c(f, "class", "altcha-label svelte-vuofbg"), c(n, "class", "altcha-main svelte-vuofbg"), c(e, "class", "altcha svelte-vuofbg"), c(
         e,
         "data-state",
         /*state*/
         t[5]
       );
     },
-    m(h, v) {
-      N(h, e, v), b(e, n), _ && _.m(n, null), b(n, o), b(n, l), b(l, r), r.checked = /*checked*/
-      t[6], b(n, f), b(n, a), k.m(a, null), b(n, R), g && g.m(n, null), b(e, p), m && m.m(e, null), b(e, j), d && d.m(e, null), t[24](e), x || (A = [
-        K(
+    m(u, y) {
+      N(u, e, y), b(e, n), v && v.m(n, null), b(n, i), b(n, l), b(l, r), r.checked = /*checked*/
+      t[6], b(n, h), b(n, f), k.m(f, null), b(n, R), _ && _.m(n, null), b(e, p), g && g.m(e, null), b(e, j), m && m.m(e, null), t[24](e), C || (A = [
+        z(
           r,
           "change",
           /*input_change_handler*/
           t[23]
         ),
-        K(
+        z(
           r,
           "change",
           /*onCheckedChange*/
           t[10]
         ),
-        K(
+        z(
           r,
           "invalid",
           /*onInvalid*/
           t[11]
         )
-      ], x = !0);
+      ], C = !0);
     },
-    p(h, v) {
+    p(u, y) {
       /*state*/
-      h[5] === y.VERIFYING ? _ || (_ = ue(), _.c(), _.m(n, o)) : _ && (_.d(1), _ = null), v[0] & /*name*/
+      u[5] === w.VERIFYING ? v || (v = he(), v.c(), v.m(n, i)) : v && (v.d(1), v = null), y[0] & /*name*/
       8 && s !== (s = /*name*/
-      h[3] + "_checkbox") && c(r, "id", s), v[0] & /*auto*/
-      1 && u !== (u = /*auto*/
-      h[0] !== "onsubmit") && (r.required = u), v[0] & /*checked*/
+      u[3] + "_checkbox") && c(r, "id", s), y[0] & /*auto*/
+      1 && a !== (a = /*auto*/
+      u[0] !== "onsubmit") && (r.required = a), y[0] & /*checked*/
       64 && (r.checked = /*checked*/
-      h[6]), v[0] & /*state*/
-      32 && le(
+      u[6]), y[0] & /*state*/
+      32 && ue(
         l,
         "altcha-hidden",
         /*state*/
-        h[5] === y.VERIFYING
-      ), V === (V = G(h)) && k ? k.p(h, v) : (k.d(1), k = V(h), k && (k.c(), k.m(a, null))), /*hidelogo*/
-      h[2] !== !0 ? g ? g.p(h, v) : (g = ae(), g.c(), g.m(n, null)) : g && (g.d(1), g = null), /*error*/
-      h[8] ? m ? m.p(h, v) : (m = fe(h), m.c(), m.m(e, j)) : m && (m.d(1), m = null), /*_strings*/
-      h[9].footer && /*hidefooter*/
-      h[1] !== !0 ? d ? d.p(h, v) : (d = he(h), d.c(), d.m(e, null)) : d && (d.d(1), d = null), v[0] & /*state*/
+        u[5] === w.VERIFYING
+      ), U === (U = G(u)) && k ? k.p(u, y) : (k.d(1), k = U(u), k && (k.c(), k.m(f, null))), /*hidelogo*/
+      u[2] !== !0 ? _ ? _.p(u, y) : (_ = de(), _.c(), _.m(n, null)) : _ && (_.d(1), _ = null), /*error*/
+      u[8] ? g ? g.p(u, y) : (g = ge(u), g.c(), g.m(e, j)) : g && (g.d(1), g = null), /*_strings*/
+      u[9].footer && /*hidefooter*/
+      u[1] !== !0 ? m ? m.p(u, y) : (m = be(u), m.c(), m.m(e, null)) : m && (m.d(1), m = null), y[0] & /*state*/
       32 && c(
         e,
         "data-state",
         /*state*/
-        h[5]
+        u[5]
       );
     },
-    i: Z,
-    o: Z,
-    d(h) {
-      h && I(e), _ && _.d(), k.d(), g && g.d(), m && m.d(), d && d.d(), t[24](null), x = !1, P(A);
+    i: H,
+    o: H,
+    d(u) {
+      u && L(e), v && v.d(), k.d(), _ && _.d(), g && g.d(), m && m.d(), t[24](null), C = !1, T(A);
     }
   };
 }
-const ye = "https://altcha.org/";
-function de(t) {
+const Ee = "https://altcha.org/";
+function me(t) {
   return JSON.parse(t);
 }
-function vt(t, e, n) {
-  let o, l, r, { auto: s = void 0 } = e, { challengeurl: u = void 0 } = e, { challengejson: f = void 0 } = e, { debug: a = !1 } = e, { hidefooter: R = !1 } = e, { hidelogo: p = !1 } = e, { name: j = "altcha" } = e, { maxnumber: x = void 0 } = e, { mockerror: A = !1 } = e, { strings: _ = void 0 } = e, { test: G = !1 } = e;
-  const V = Te(), k = ["SHA-256", "SHA-384", "SHA-512"];
-  let g = !1, m, d = null, h = null, v = null, U = y.UNVERIFIED;
-  Pe(() => {
-    d && (d.removeEventListener("submit", te), d.removeEventListener("reset", ne), d = null);
-  }), We(() => {
-    E("mounted", "0.1.9"), G && E("using test mode"), s !== void 0 && E("auto", s), d = m.closest("form"), d && (d.addEventListener("submit", te), d.addEventListener("reset", ne)), s === "onload" && B();
+function $t(t, e, n) {
+  let i, l, r, { auto: s = void 0 } = e, { challengeurl: a = void 0 } = e, { challengejson: h = void 0 } = e, { debug: f = !1 } = e, { hidefooter: R = !1 } = e, { hidelogo: p = !1 } = e, { name: j = "altcha" } = e, { maxnumber: C = void 0 } = e, { mockerror: A = !1 } = e, { strings: v = void 0 } = e, { test: G = !1 } = e;
+  const U = Ke(), k = ["SHA-256", "SHA-384", "SHA-512"], _ = [];
+  let g = !1, m, u = null, y = null, F = null, S = w.UNVERIFIED, ne;
+  Xe(() => {
+    u && (u.removeEventListener("submit", re), u.removeEventListener("reset", ie), u = null);
+  }), Te(() => {
+    E("mounted", "0.1.9"), G && E("using test mode"), s !== void 0 && E("auto", s), u = m.closest("form"), u && (u.addEventListener("submit", re), u.addEventListener("reset", ie)), s === "onload" && W();
   });
-  function E(...i) {
-    (a || i.some((w) => w instanceof Error)) && console[i[0] instanceof Error ? "error" : "log"]("ALTCHA", ...i);
+  function E(...o) {
+    (f || o.some((d) => d instanceof Error)) && console[o[0] instanceof Error ? "error" : "log"]("ALTCHA", ...o);
   }
-  function te(i) {
-    d && s === "onsubmit" && U === y.UNVERIFIED && (i.preventDefault(), i.stopPropagation(), B().then(() => {
-      d == null || d.requestSubmit();
+  function re(o) {
+    u && s === "onsubmit" && S === w.UNVERIFIED && (o.preventDefault(), o.stopPropagation(), W().then(() => {
+      u == null || u.requestSubmit();
     }));
   }
-  function ne() {
+  function ie() {
     X();
   }
-  function pe(i, w) {
+  function xe(o, d) {
     return btoa(JSON.stringify({
-      algorithm: i.algorithm,
-      challenge: i.challenge,
-      number: w.number,
-      salt: i.salt,
-      signature: i.signature,
+      algorithm: o.algorithm,
+      challenge: o.challenge,
+      number: d.number,
+      salt: o.salt,
+      signature: o.signature,
       test: G ? !0 : void 0,
-      took: w.took
+      took: d.took
     }));
   }
-  function re(i) {
-    if (!i.algorithm)
+  function oe(o) {
+    if (!o.algorithm)
       throw new Error("Invalid challenge. Property algorithm is missing.");
-    if (i.signature === void 0)
+    if (o.signature === void 0)
       throw new Error("Invalid challenge. Property signature is missing.");
-    if (!k.includes(i.algorithm.toUpperCase()))
+    if (!k.includes(o.algorithm.toUpperCase()))
       throw new Error(`Unknown algorithm value. Allowed values: ${k.join(", ")}`);
-    if (!i.challenge || i.challenge.length < 40)
+    if (!o.challenge || o.challenge.length < 40)
       throw new Error("Challenge is too short. Min. 40 chars.");
-    if (!i.salt || i.salt.length < 10)
+    if (!o.salt || o.salt.length < 10)
       throw new Error("Salt is too short. Min. 10 chars.");
   }
-  async function ke() {
+  async function Ce() {
     if (A)
       throw E("mocking error"), new Error("Mocked error.");
-    if (o)
-      return E("using provided json data"), o;
+    if (i)
+      return E("using provided json data"), i;
     if (G)
-      return E("generating test challenge"), at();
+      return E("generating test challenge"), dt();
     {
-      if (!u)
+      if (!a)
         throw new Error("Attribute challengeurl not set.");
-      E("fetching challenge from", u);
-      const i = await fetch(u);
-      if (i.status !== 200)
-        throw new Error(`Server responded with ${i.status}.`);
-      return i.json();
+      E("fetching challenge from", a);
+      const o = await fetch(a);
+      if (o.status !== 200)
+        throw new Error(`Server responded with ${o.status}.`);
+      const d = o.headers.get("Expires");
+      if (d.length) {
+        const O = Date.parse(d) - Date.now();
+        O < 1 ? le() : ne = setTimeout(le, O);
+      }
+      return o.json();
     }
   }
-  async function Ee(i) {
-    let w = null;
+  function le() {
+    X(w.EXPIRED, r.expired);
+  }
+  async function Ie(o) {
+    let d = null;
     if ("Worker" in window) {
       try {
-        w = await Ce(i.challenge, i.salt, i.algorithm);
-      } catch (D) {
-        E(D);
+        d = await Le(o.challenge, o.salt, o.algorithm);
+      } catch (O) {
+        E(O);
       }
-      if ((w == null ? void 0 : w.number) !== void 0)
-        return { data: i, solution: w };
+      if ((d == null ? void 0 : d.number) !== void 0)
+        return { data: o, solution: d };
     }
     return {
-      data: i,
-      solution: await ft(i.challenge, i.salt, i.algorithm, x)
+      data: o,
+      solution: await gt(o.challenge, o.salt, o.algorithm, C)
     };
   }
-  async function Ce(i, w, D) {
-    const oe = new lt();
-    return new Promise((je) => {
-      oe.addEventListener("message", (Ae) => {
-        je(Ae.data);
-      }), oe.postMessage({ alg: D, challenge: i, max: x, salt: w });
-    });
-  }
-  function xe() {
-    [y.UNVERIFIED, y.ERROR].includes(U) ? B() : n(6, g = !0);
-  }
-  function Le() {
-    U === y.VERIFYING && alert(r.waitAlert);
-  }
-  function Ie(i) {
-    i.auto !== void 0 && (n(0, s = i.auto), s === "onload" && B()), i.challenge && (re(i.challenge), o = i.challenge), i.debug !== void 0 && n(12, a = !!i.debug), i.hidefooter !== void 0 && n(1, R = !!i.hidefooter), i.hidelogo !== void 0 && n(2, p = !!i.hidelogo), i.maxnumber !== void 0 && n(13, x = +i.maxnumber), i.mockerror !== void 0 && n(14, A = !!i.mockerror), i.name !== void 0 && n(3, j = i.name), i.test !== void 0 && n(15, G = !!i.test), i.strings && n(22, l = i.strings);
-  }
-  function X(i = y.UNVERIFIED) {
-    n(6, g = !1), n(8, h = null), n(4, v = null), n(5, U = i);
-  }
-  async function B() {
-    return X(y.VERIFYING), ke().then((i) => (re(i), E("challenge", i), Ee(i))).then(({ data: i, solution: w }) => {
-      if (E("solution", w), (w == null ? void 0 : w.number) !== void 0)
-        E("verified"), n(5, U = y.VERIFIED), n(6, g = !0), n(4, v = pe(i, w)), E("payload", v), Xe().then(() => {
-          V("verified", { payload: v });
-        });
-      else
-        throw new Error("Unexpected result returned.");
-    }).catch((i) => {
-      E(i), n(5, U = y.ERROR), n(6, g = !1), n(8, h = i);
+  async function Le(o, d, O) {
+    const se = _.push(new ut());
+    return new Promise((Ve) => {
+      _[se - 1].addEventListener("message", (Se) => {
+        Ve(Se.data);
+      }), _[se - 1].postMessage({ alg: O, challenge: o, max: C, salt: d });
     });
   }
   function Re() {
-    g = this.checked, n(6, g);
+    [w.UNVERIFIED, w.ERROR, w.EXPIRED].includes(S) ? W() : n(6, g = !0);
   }
-  function Ne(i) {
-    J[i ? "unshift" : "push"](() => {
-      m = i, n(7, m);
+  function Ne() {
+    S === w.VERIFYING && alert(r.waitAlert);
+  }
+  function je(o) {
+    o.auto !== void 0 && (n(0, s = o.auto), s === "onload" && W()), o.challenge && (oe(o.challenge), i = o.challenge), o.debug !== void 0 && n(12, f = !!o.debug), o.hidefooter !== void 0 && n(1, R = !!o.hidefooter), o.hidelogo !== void 0 && n(2, p = !!o.hidelogo), o.maxnumber !== void 0 && n(13, C = +o.maxnumber), o.mockerror !== void 0 && n(14, A = !!o.mockerror), o.name !== void 0 && n(3, j = o.name), o.test !== void 0 && n(15, G = !!o.test), o.strings && n(22, l = o.strings);
+  }
+  function X(o = w.UNVERIFIED, d = null) {
+    clearTimeout(ne), n(6, g = !1), n(8, y = d), n(4, F = null), n(5, S = o);
+  }
+  async function W() {
+    return X(w.VERIFYING), Ce().then((o) => (oe(o), E("challenge", o), Ie(o))).then(({ data: o, solution: d }) => {
+      if (E("solution", d), (d == null ? void 0 : d.number) !== void 0)
+        E("verified"), n(5, S = w.VERIFIED), n(6, g = !0), n(4, F = xe(o, d)), E("payload", F), ze().then(() => {
+          U("verified", { payload: F });
+        });
+      else
+        throw new Error("Unexpected result returned.");
+    }).catch((o) => {
+      E(o), n(5, S = w.ERROR), n(6, g = !1), n(8, y = o.message);
     });
   }
-  return t.$$set = (i) => {
-    "auto" in i && n(0, s = i.auto), "challengeurl" in i && n(16, u = i.challengeurl), "challengejson" in i && n(17, f = i.challengejson), "debug" in i && n(12, a = i.debug), "hidefooter" in i && n(1, R = i.hidefooter), "hidelogo" in i && n(2, p = i.hidelogo), "name" in i && n(3, j = i.name), "maxnumber" in i && n(13, x = i.maxnumber), "mockerror" in i && n(14, A = i.mockerror), "strings" in i && n(18, _ = i.strings), "test" in i && n(15, G = i.test);
+  function Ae() {
+    g = this.checked, n(6, g);
+  }
+  function Ge(o) {
+    Q[o ? "unshift" : "push"](() => {
+      m = o, n(7, m);
+    });
+  }
+  return t.$$set = (o) => {
+    "auto" in o && n(0, s = o.auto), "challengeurl" in o && n(16, a = o.challengeurl), "challengejson" in o && n(17, h = o.challengejson), "debug" in o && n(12, f = o.debug), "hidefooter" in o && n(1, R = o.hidefooter), "hidelogo" in o && n(2, p = o.hidelogo), "name" in o && n(3, j = o.name), "maxnumber" in o && n(13, C = o.maxnumber), "mockerror" in o && n(14, A = o.mockerror), "strings" in o && n(18, v = o.strings), "test" in o && n(15, G = o.test);
   }, t.$$.update = () => {
     t.$$.dirty[0] & /*challengejson*/
-    131072 && (o = f ? de(f) : void 0), t.$$.dirty[0] & /*strings*/
-    262144 && n(22, l = _ ? de(_) : {}), t.$$.dirty[0] & /*parsedStrings*/
+    131072 && (i = h ? me(h) : void 0), t.$$.dirty[0] & /*strings*/
+    262144 && n(22, l = v ? me(v) : {}), t.$$.dirty[0] & /*parsedStrings*/
     4194304 && n(9, r = {
       error: "Verification failed. Try again later.",
-      footer: `Protected by <a href="${ye}" target="_blank">ALTCHA</a>`,
+      expired: "Verification expired. Try again.",
+      footer: `Protected by <a href="${Ee}" target="_blank">ALTCHA</a>`,
       label: "I'm not a robot",
       verified: "Verified",
       verifying: "Verifying...",
       waitAlert: "Verifying... please wait.",
       ...l
     }), t.$$.dirty[0] & /*payload, state*/
-    48 && V("statechange", { payload: v, state: U });
+    48 && U("statechange", { payload: F, state: S });
   }, [
     s,
     R,
     p,
     j,
-    v,
-    U,
+    F,
+    S,
     g,
     m,
-    h,
+    y,
     r,
-    xe,
-    Le,
-    a,
-    x,
+    Re,
+    Ne,
+    f,
+    C,
     A,
     G,
-    u,
-    f,
-    _,
-    Ie,
+    a,
+    h,
+    v,
+    je,
     X,
-    B,
+    W,
     l,
-    Re,
-    Ne
+    Ae,
+    Ge
   ];
 }
-class _t extends rt {
+class yt extends lt {
   constructor(e) {
-    super(), tt(
+    super(), it(
       this,
       e,
-      vt,
-      mt,
-      Ue,
+      $t,
+      wt,
+      Fe,
       {
         auto: 0,
         challengeurl: 16,
@@ -965,7 +961,7 @@ class _t extends rt {
         reset: 20,
         verify: 21
       },
-      ht,
+      bt,
       [-1, -1]
     );
   }
@@ -973,67 +969,67 @@ class _t extends rt {
     return this.$$.ctx[0];
   }
   set auto(e) {
-    this.$$set({ auto: e }), C();
+    this.$$set({ auto: e }), x();
   }
   get challengeurl() {
     return this.$$.ctx[16];
   }
   set challengeurl(e) {
-    this.$$set({ challengeurl: e }), C();
+    this.$$set({ challengeurl: e }), x();
   }
   get challengejson() {
     return this.$$.ctx[17];
   }
   set challengejson(e) {
-    this.$$set({ challengejson: e }), C();
+    this.$$set({ challengejson: e }), x();
   }
   get debug() {
     return this.$$.ctx[12];
   }
   set debug(e) {
-    this.$$set({ debug: e }), C();
+    this.$$set({ debug: e }), x();
   }
   get hidefooter() {
     return this.$$.ctx[1];
   }
   set hidefooter(e) {
-    this.$$set({ hidefooter: e }), C();
+    this.$$set({ hidefooter: e }), x();
   }
   get hidelogo() {
     return this.$$.ctx[2];
   }
   set hidelogo(e) {
-    this.$$set({ hidelogo: e }), C();
+    this.$$set({ hidelogo: e }), x();
   }
   get name() {
     return this.$$.ctx[3];
   }
   set name(e) {
-    this.$$set({ name: e }), C();
+    this.$$set({ name: e }), x();
   }
   get maxnumber() {
     return this.$$.ctx[13];
   }
   set maxnumber(e) {
-    this.$$set({ maxnumber: e }), C();
+    this.$$set({ maxnumber: e }), x();
   }
   get mockerror() {
     return this.$$.ctx[14];
   }
   set mockerror(e) {
-    this.$$set({ mockerror: e }), C();
+    this.$$set({ mockerror: e }), x();
   }
   get strings() {
     return this.$$.ctx[18];
   }
   set strings(e) {
-    this.$$set({ strings: e }), C();
+    this.$$set({ strings: e }), x();
   }
   get test() {
     return this.$$.ctx[15];
   }
   set test(e) {
-    this.$$set({ test: e }), C();
+    this.$$set({ test: e }), x();
   }
   get configure() {
     return this.$$.ctx[19];
@@ -1045,7 +1041,7 @@ class _t extends rt {
     return this.$$.ctx[21];
   }
 }
-customElements.define("altcha-widget", nt(_t, { auto: {}, challengeurl: {}, challengejson: {}, debug: { type: "Boolean" }, hidefooter: { type: "Boolean" }, hidelogo: { type: "Boolean" }, name: {}, maxnumber: {}, mockerror: { type: "Boolean" }, strings: {}, test: { type: "Boolean" } }, [], ["configure", "reset", "verify"], !1));
+customElements.define("altcha-widget", ot(yt, { auto: {}, challengeurl: {}, challengejson: {}, debug: { type: "Boolean" }, hidefooter: { type: "Boolean" }, hidelogo: { type: "Boolean" }, name: {}, maxnumber: {}, mockerror: { type: "Boolean" }, strings: {}, test: { type: "Boolean" } }, [], ["configure", "reset", "verify"], !1));
 export {
-  _t as Altcha
+  yt as Altcha
 };

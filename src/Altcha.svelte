@@ -25,18 +25,21 @@
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const website = 'https://altcha.org/';
+  const workers = [];
 
   let checked: boolean = false;
   let el: HTMLElement;
   let elForm: HTMLFormElement | null = null;
-  let error: any = null;
+  let error: string | null = null;
   let payload: string | null = null;
   let state: State = State.UNVERIFIED;
+  let expiry: ReturnType<typeof setTimeout>;
 
   $: parsedChallenge = challengejson ? parseJsonAttribute(challengejson) : undefined;
   $: parsedStrings = strings ? parseJsonAttribute(strings) : {};
   $: _strings = {
     error: 'Verification failed. Try again later.',
+    expired: 'Verification expired. Try again.',
     footer: `Protected by <a href="${website}" target="_blank">ALTCHA</a>`,
     label: 'I\'m not a robot',
     verified: 'Verified',
@@ -148,8 +151,21 @@
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
       }
+      const expHeader = resp.headers.get('Expires');
+      if(expHeader.length) {
+        const diff = Date.parse(expHeader) - Date.now();
+        if(diff < 1) {
+          expire()
+        } else {
+          expiry = setTimeout(expire, diff);
+        }
+      }
       return resp.json();
     }
+  }
+
+  function expire() {
+    reset(State.EXPIRED, _strings.expired)
   }
 
   async function run(data: Challenge): Promise<{ data: Challenge, solution: Solution | null }> {
@@ -174,12 +190,12 @@
   }
 
   async function runWorker(challenge: string, salt: string, alg?: string): Promise<Solution> {
-    const worker = new InlineWorker();
+    const totalWorkers = workers.push(new InlineWorker());
     return new Promise((resolve) => {
-      worker.addEventListener('message', (message: MessageEvent) => {
+      workers[totalWorkers - 1].addEventListener('message', (message: MessageEvent) => {
         resolve(message.data);
       });
-      worker.postMessage({
+      workers[totalWorkers - 1].postMessage({
         alg,
         challenge,
         max: maxnumber,
@@ -189,7 +205,7 @@
   }
 
   function onCheckedChange() {
-    if ([State.UNVERIFIED, State.ERROR].includes(state)) {
+    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(state)) {
       verify();
     } else {
       checked = true;
@@ -239,9 +255,10 @@
     }
   }
 
-  export function reset(newState: State = State.UNVERIFIED) {
+  export function reset(newState: State = State.UNVERIFIED, err: string | null = null) {
+    clearTimeout(expiry);
     checked = false;
-    error = null;
+    error = err;
     payload = null;
     state = newState;
   }
@@ -273,7 +290,7 @@
         log(err);
         state = State.ERROR;
         checked = false;
-        error = err;
+        error = err.message;
       });
   }
 </script>
@@ -338,7 +355,7 @@
     <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
-    <div title={error}>{@html _strings.error}</div>
+    <div>{@html error}</div>
   </div>
   {/if}
 

@@ -12,6 +12,7 @@ export interface Configure {
   auto?: 'onload' | 'onsubmit'; 
   challenge?: Challenge;
   debug?: boolean;
+  expire?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;

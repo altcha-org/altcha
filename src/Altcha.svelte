@@ -14,6 +14,7 @@
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
+  export let expire: number | undefined = undefined;
   export let hidefooter: boolean = false;
   export let hidelogo: boolean = false;
   export let name: string = 'altcha';
@@ -25,7 +26,6 @@
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const website = 'https://altcha.org/';
-  const workers = [];
 
   let checked: boolean = false;
   let el: HTMLElement;
@@ -33,7 +33,7 @@
   let error: string | null = null;
   let payload: string | null = null;
   let state: State = State.UNVERIFIED;
-  let expiry: ReturnType<typeof setTimeout>;
+  let expireTimeout: ReturnType<typeof setTimeout>;
 
   $: parsedChallenge = challengejson ? parseJsonAttribute(challengejson) : undefined;
   $: parsedStrings = strings ? parseJsonAttribute(strings) : {};
@@ -61,6 +61,9 @@
     log('mounted', ALTCHA_VERSION);
     if (test) {
       log('using test mode');
+    }
+    if (expire) {
+      setExpire(expire);
     }
     if (auto !== undefined) {
       log('auto', auto);
@@ -152,20 +155,24 @@
         throw new Error(`Server responded with ${resp.status}.`);
       }
       const expHeader = resp.headers.get('Expires');
-      if(expHeader.length) {
-        const diff = Date.parse(expHeader) - Date.now();
-        if(diff < 1) {
-          expire()
-        } else {
-          expiry = setTimeout(expire, diff);
+      if(expHeader?.length) {
+        const parsed = Date.parse(expHeader);
+        if (!isNaN(parsed)) {
+          setExpire(parsed - Date.now());
         }
       }
       return resp.json();
     }
   }
 
-  function expire() {
-    reset(State.EXPIRED, _strings.expired)
+  function expireChallenge() {
+    if (false && challengeurl && state === State.VERIFIED) {
+      // re-fetch challenge and verify again
+      verify();
+
+    } else {
+      reset(State.EXPIRED, _strings.expired);
+    }
   }
 
   async function run(data: Challenge): Promise<{ data: Challenge, solution: Solution | null }> {
@@ -190,12 +197,12 @@
   }
 
   async function runWorker(challenge: string, salt: string, alg?: string): Promise<Solution> {
-    const totalWorkers = workers.push(new InlineWorker());
+    const worker = new InlineWorker();
     return new Promise((resolve) => {
-      workers[totalWorkers - 1].addEventListener('message', (message: MessageEvent) => {
+      worker.addEventListener('message', (message: MessageEvent) => {
         resolve(message.data);
       });
-      workers[totalWorkers - 1].postMessage({
+      worker.postMessage({
         alg,
         challenge,
         max: maxnumber,
@@ -217,6 +224,15 @@
       alert(_strings.waitAlert);
     }
   }
+
+  function setExpire(duration: number) {
+    clearTimeout(expireTimeout);
+    if(duration < 1) {
+      expireChallenge();
+    } else {
+      expireTimeout = setTimeout(expireChallenge, duration);
+    }
+  }
   
   export function configure(options: Configure) {
     if (options.auto !== void 0) {
@@ -224,6 +240,10 @@
       if (auto === 'onload') {
         verify();
       }
+    }
+    if (options.expire !== void 0) {
+      setExpire(options.expire);
+      expire = options.expire;
     }
     if (options.challenge) {
       validateChallenge(options.challenge);
@@ -256,7 +276,7 @@
   }
 
   export function reset(newState: State = State.UNVERIFIED, err: string | null = null) {
-    clearTimeout(expiry);
+    clearTimeout(expireTimeout);
     checked = false;
     error = err;
     payload = null;
@@ -350,12 +370,16 @@
     {/if}
   </div>
 
-  {#if error}
+  {#if error || state === State.EXPIRED}
   <div class="altcha-error">
     <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>
-    <div>{@html error}</div>
+    {#if state === State.EXPIRED}
+    <div title={error}>{@html _strings.expired}</div>
+    {:else}
+    <div title={error}>{@html _strings.error}</div>
+    {/if}
   </div>
   {/if}
 

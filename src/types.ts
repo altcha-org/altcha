@@ -1,5 +1,6 @@
 export interface Strings {
   error: string;
+  expired: string;
   footer: string;
   label: string;
   verified: string;
@@ -48,4 +49,5 @@ export enum State {
   VERIFIED = 'verified',
   VERIFYING = 'verifying',
   UNVERIFIED = 'unverified',
+  EXPIRED = 'expired',
 };

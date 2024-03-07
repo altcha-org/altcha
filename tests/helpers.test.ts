@@ -31,7 +31,7 @@ describe('createTestChallenge', () => {
 describe('solveChallenge', () => {
   test('should solve challenge and return number', async () => {
     const data = await createTestChallenge(10, alg);
-    const solution = await solveChallenge(data.challenge, data.salt, data.algorithm);
+    const solution = await solveChallenge(data.challenge, data.salt, data.algorithm).promise;
     expect(solution?.number).toBeDefined();
     expect(solution?.took).toBeDefined();
     const challenge = await hashChallenge(data.salt, solution!.number, alg);

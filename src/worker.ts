@@ -1,12 +1,19 @@
 import { solveChallenge } from './helpers';
 
+let controller: AbortController | undefined = undefined;
+
 onmessage = async (message) => {
-  const { alg, challenge, max, salt } = message.data || {};
-  if (challenge && salt) {
-    const solution = await solveChallenge(challenge, salt, alg, max);
-    self.postMessage(solution ? { ...solution, worker: true } : solution);
-  } else {
-    self.postMessage(null);
+  const { type, payload } = message.data
+  if (type === 'abort') {
+    controller?.abort();
+    controller = undefined;
+  } else if (type === 'work') {
+    const { alg, challenge, max, salt, start } = payload || {};
+    const result = solveChallenge(challenge, salt, alg, max, start);
+    controller = result.controller;
+    result.promise.then((solution) => {
+      self.postMessage(solution ? { ...solution, worker: true } : solution);
+    });
   }
 };
 

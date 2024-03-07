@@ -18,10 +18,11 @@
   export let hidefooter: boolean = false;
   export let hidelogo: boolean = false;
   export let name: string = 'altcha';
-  export let maxnumber: number | undefined = undefined;
+  export let maxnumber: number = 1e6;
   export let mockerror: boolean = false;
   export let strings: string | undefined = undefined;
   export let test: boolean = false;
+  export let workers: number = 8;
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
@@ -166,7 +167,7 @@
   }
 
   function expireChallenge() {
-    if (false && challengeurl && state === State.VERIFIED) {
+    if (challengeurl && state === State.VERIFIED) {
       // re-fetch challenge and verify again
       verify();
 
@@ -192,23 +193,51 @@
     }
     return {
       data,
-      solution: await solveChallenge(data.challenge, data.salt, data.algorithm, maxnumber),
+      solution: await solveChallenge(data.challenge, data.salt, data.algorithm, maxnumber).promise,
     }
   }
 
-  async function runWorker(challenge: string, salt: string, alg?: string): Promise<Solution> {
-    const worker = new InlineWorker();
-    return new Promise((resolve) => {
-      worker.addEventListener('message', (message: MessageEvent) => {
-        resolve(message.data);
-      });
-      worker.postMessage({
-        alg,
-        challenge,
-        max: maxnumber,
-        salt,
-      });
-    });
+  async function runWorker(challenge: string, salt: string, alg?: string, concurrency: number = Math.ceil(workers)): Promise<Solution | null> {
+    const workers: Worker[] = [];
+    if (concurrency < 1) {
+      throw new Error('Wrong number of workers configured.');
+    }
+    if (concurrency > 16) {
+      throw new Error('Too many workers. Max. 16 allowed workers.');
+    }
+    for (let i = 0; i < concurrency; i ++) {
+      workers.push(new InlineWorker());
+    }
+    const step = Math.ceil(maxnumber / concurrency);
+    const solutions = await Promise.all(workers.map((worker, i) => {
+      const start = i * step;
+      return new Promise((resolve) => {
+        worker.addEventListener('message', (message: MessageEvent) => {
+          if (message.data) {
+            for (const w of workers) {
+              if (w !== worker) {
+                w.postMessage({ type: 'abort' });
+              }
+            }
+          }
+          resolve(message.data);
+        });
+        worker.postMessage({
+          payload: {
+            alg,
+            challenge,
+            max: start + step,
+            salt,
+            start, 
+          },
+          type: 'work',
+        });
+      }) as Promise<Solution | null>;
+    }));
+    for (const worker of workers) {
+      worker.terminate();
+    }
+    return solutions.find((solution) => !!solution) || null;
   }
 
   function onCheckedChange() {

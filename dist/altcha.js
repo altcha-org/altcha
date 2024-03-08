@@ -856,7 +856,7 @@ function Nt(t, e, r) {
   nt(() => {
     d && (d.removeEventListener("submit", ce), d.removeEventListener("reset", ue), d = null);
   }), rt(() => {
-    x("mounted", "0.1.9"), x("workers", E), A && x("using test mode"), y && te(y), s !== void 0 && x("auto", s), d = h.closest("form"), d && (d.addEventListener("submit", ce), d.addEventListener("reset", ue)), s === "onload" && F();
+    x("mounted", "0.2.0"), x("workers", E), A && x("using test mode"), y && te(y), s !== void 0 && x("auto", s), d = h.closest("form"), d && (d.addEventListener("submit", ce), d.addEventListener("reset", ue)), s === "onload" && F();
   });
   function x(...i) {
     (a || i.some((g) => g instanceof Error)) && console[i[0] instanceof Error ? "error" : "log"]("ALTCHA", ...i);

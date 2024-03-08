@@ -29,7 +29,7 @@ export function solveChallenge(challenge: string, salt: string, algorithm: strin
   const promise = new Promise((resolve, reject) => {
     const startTime = Date.now();
     const next = (n: number) => {
-      if (controller.signal.aborted || n >= max) {
+      if (controller.signal.aborted || n > max) {
         resolve(null);
       } else {
         hashChallenge(salt, n, algorithm).then((t) => {

@@ -38,6 +38,12 @@ describe('solveChallenge', () => {
     expect(data.challenge).toBe(challenge);
   });
 
+  test('should solve challenge with max number', async () => {
+    const data = await createTestChallenge(10, alg);
+    const solution = await solveChallenge(data.challenge, data.salt, data.algorithm, 10, 0).promise;
+    expect(solution?.number).toEqual(10);
+  });
+
   test('should return null if start is greater than random number', async () => {
     const data = await createTestChallenge(10, alg);
     const solution = await solveChallenge(data.challenge, data.salt, data.algorithm, 100, 20).promise;

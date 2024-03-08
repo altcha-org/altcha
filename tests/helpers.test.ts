@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { ab2hex, hashChallenge, createTestChallenge, solveChallenge } from '../src/helpers';
 
 const alg = 'SHA-256';
@@ -36,5 +36,22 @@ describe('solveChallenge', () => {
     expect(solution?.took).toBeDefined();
     const challenge = await hashChallenge(data.salt, solution!.number, alg);
     expect(data.challenge).toBe(challenge);
+  });
+
+  test('should return null if start is greater than random number', async () => {
+    const data = await createTestChallenge(10, alg);
+    const solution = await solveChallenge(data.challenge, data.salt, data.algorithm, 100, 20).promise;
+    expect(solution).toEqual(null);
+  });
+
+  test('should abort and return null', async () => {
+    const data = await createTestChallenge(100, alg);
+    const { controller, promise } = solveChallenge(data.challenge, data.salt, data.algorithm);
+    process.nextTick(() => {
+      controller.abort();
+    });
+    const solution = await promise;
+    expect(controller.signal.aborted).toEqual(true)
+    expect(solution).toEqual(null);
   });
 });

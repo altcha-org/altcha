@@ -6,9 +6,11 @@ export function ab2hex(ab: ArrayBuffer) {
   return [...new Uint8Array(ab)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
-export async function createTestChallenge(max: number = 1e5, algorithm: string = 'SHA-256') {
+export async function createTestChallenge(num?: number, algorithm: string = 'SHA-256', max: number = 1e5) {
   const salt = Date.now().toString(16);
-  const num = Math.round(Math.random() * max);
+  if (!num) {
+    num = Math.round(Math.random() * max);
+  }
   const challenge = await hashChallenge(salt, num, algorithm); 
   return {
     algorithm,

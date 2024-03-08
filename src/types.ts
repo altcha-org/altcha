@@ -20,6 +20,7 @@ export interface Configure {
   name?: string;
   strings?: Partial<Strings>;
   test?: boolean;
+  workers?: number;
 }
 
 export interface Solution {

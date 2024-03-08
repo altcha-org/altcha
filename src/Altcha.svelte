@@ -22,7 +22,7 @@
   export let mockerror: boolean = false;
   export let strings: string | undefined = undefined;
   export let test: boolean = false;
-  export let workers: number = 8;
+  export let workers: number = navigator.hardwareConcurrency || 8;
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
@@ -60,6 +60,7 @@
 
   onMount(() => {
     log('mounted', ALTCHA_VERSION);
+    log('workers', workers);
     if (test) {
       log('using test mode');
     }
@@ -255,6 +256,8 @@
   }
 
   function setExpire(duration: number) {
+    console.log('>>>')
+    log('expire', duration)
     clearTimeout(expireTimeout);
     if(duration < 1) {
       expireChallenge();
@@ -301,6 +304,9 @@
     }
     if (options.strings) {
       parsedStrings = options.strings;
+    }
+    if (options.workers !== void 0) {
+      workers = +options.workers;
     }
   }
 

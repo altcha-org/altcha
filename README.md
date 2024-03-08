@@ -60,11 +60,13 @@ Required options (at least one is required):
 Additional options:
 
 - __auto__ - Automatically verify without user interaction (possible values: `onload`, `onsubmit`).
+- __expire__ - The challenge expiration (duration in milliseconds).
 - __hidefooter__ - Hide the footer (ALTCHA link).
 - __hidelogo__ - Hide the ALTCHA logo.
-- __maxnumber__ - The max. number to iterate to (defaults to 10,000,000).
+- __maxnumber__ - The max. number to iterate to (defaults to 1,000,000).
 - __name__ - The name of the hidden field containing the payload (defaults to "altcha").
 - __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
+- __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`).
 
 Development / testing options:
 
@@ -102,6 +104,7 @@ export interface Configure {
     signature: string;
   };
   debug?: boolean;
+  expire?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;
@@ -116,6 +119,7 @@ export interface Configure {
     waitAlert?: string;
   };
   test?: boolean;
+  workers?: number;
 }
 ```
 
@@ -124,11 +128,21 @@ export interface Configure {
 - __statechange__ - Triggers whenever an internal `state` changes.
 - __verified__ - Triggers when the challenge is verified.
 
+```ts
+enum State {
+  ERROR = 'error',
+  VERIFIED = 'verified',
+  VERIFYING = 'verifying',
+  UNVERIFIED = 'unverified',
+  EXPIRED = 'expired',
+};
+```
+
 Using events:
 
 ```js
 document.querySelector('#altcha').addEventListener('statechange', (ev) => {
-  // state can be: unverified, verifying, verified, error
+  // See enum State above
   console.log('state:', ev.detail.state);
 });
 ```

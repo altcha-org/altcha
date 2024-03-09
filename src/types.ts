@@ -13,6 +13,7 @@ export interface Configure {
   challenge?: Challenge;
   debug?: boolean;
   expire?: number;
+  autorenew?: boolean;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;

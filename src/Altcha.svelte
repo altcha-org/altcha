@@ -15,6 +15,7 @@
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
   export let expire: number | undefined = undefined;
+  export let autorenew: boolean = true;
   export let hidefooter: boolean = false;
   export let hidelogo: boolean = false;
   export let name: string = 'altcha';
@@ -168,7 +169,7 @@
   }
 
   function expireChallenge() {
-    if (challengeurl && state === State.VERIFIED) {
+    if (challengeurl && autorenew && state === State.VERIFIED) {
       // re-fetch challenge and verify again
       verify();
 

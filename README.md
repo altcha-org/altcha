@@ -66,6 +66,7 @@ Additional options:
 - __maxnumber__ - The max. number to iterate to (defaults to 1,000,000).
 - __name__ - The name of the hidden field containing the payload (defaults to "altcha").
 - __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
+- __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`).
 
 Development / testing options:
@@ -110,6 +111,7 @@ export interface Configure {
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
+  refetchonexpire?: boolean;
   strings?: {
     error?: string;
     footer?: string;

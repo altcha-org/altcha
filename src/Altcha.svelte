@@ -15,12 +15,12 @@
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
   export let expire: number | undefined = undefined;
-  export let autorenew: boolean = true;
   export let hidefooter: boolean = false;
   export let hidelogo: boolean = false;
   export let name: string = 'altcha';
   export let maxnumber: number = 1e6;
   export let mockerror: boolean = false;
+  export let refetchonexpire: boolean = true;
   export let strings: string | undefined = undefined;
   export let test: boolean = false;
   export let workers: number = navigator.hardwareConcurrency || 8;
@@ -169,7 +169,7 @@
   }
 
   function expireChallenge() {
-    if (challengeurl && autorenew && state === State.VERIFIED) {
+    if (challengeurl && refetchonexpire && state === State.VERIFIED) {
       // re-fetch challenge and verify again
       verify();
 
@@ -257,7 +257,6 @@
   }
 
   function setExpire(duration: number) {
-    console.log('>>>')
     log('expire', duration)
     clearTimeout(expireTimeout);
     if(duration < 1) {
@@ -300,11 +299,14 @@
     if (options.name !== void 0) {
       name = options.name;
     }
-    if (options.test !== void 0) {
-      test = !!options.test;
+    if (options.refetchonexpire !== void 0) {
+      refetchonexpire = !!options.refetchonexpire;
     }
     if (options.strings) {
       parsedStrings = options.strings;
+    }
+    if (options.test !== void 0) {
+      test = !!options.test;
     }
     if (options.workers !== void 0) {
       workers = +options.workers;

@@ -19,6 +19,7 @@ export interface Configure {
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
+  refetchonexpire?: boolean;
   strings?: Partial<Strings>;
   test?: boolean;
   workers?: number;

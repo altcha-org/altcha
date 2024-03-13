@@ -856,7 +856,7 @@ function Tt(t, e, r) {
   it(() => {
     N && (N.removeEventListener("submit", ue), N.removeEventListener("reset", fe), N = null);
   }), nt(() => {
-    C("mounted", "0.2.1"), C("workers", v), p && C("using test mode"), E && re(E), s !== void 0 && C("auto", s), N = $.closest("form"), N && (N.addEventListener("submit", ue), N.addEventListener("reset", fe)), s === "onload" && P();
+    C("mounted", "0.2.2"), C("workers", v), p && C("using test mode"), E && re(E), s !== void 0 && C("auto", s), N = $.closest("form"), N && (N.addEventListener("submit", ue), N.addEventListener("reset", fe)), s === "onload" && P();
   });
   function C(...i) {
     (f || i.some((d) => d instanceof Error)) && console[i[0] instanceof Error ? "error" : "log"]("ALTCHA", ...i);

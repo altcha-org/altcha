@@ -158,10 +158,13 @@
         throw new Error(`Server responded with ${resp.status}.`);
       }
       const expHeader = resp.headers.get('Expires');
-      if(expHeader?.length) {
+      if (!expire && expHeader?.length) {
         const parsed = Date.parse(expHeader);
-        if (!isNaN(parsed)) {
-          setExpire(parsed - Date.now());
+        if (parsed) {
+          const diff = parsed - Date.now();
+          if (diff > 0) {
+            setExpire(diff);
+          }
         }
       }
       return resp.json();
@@ -182,7 +185,7 @@
     let solution: Solution | null = null;
     if ('Worker' in window) {
       try {
-        solution = await runWorker(data.challenge, data.salt, data.algorithm);
+        solution = await runWorker(data.challenge, data.salt, data.algorithm, data.maxnumber);
       } catch (err) {
         log(err)
       }
@@ -195,11 +198,11 @@
     }
     return {
       data,
-      solution: await solveChallenge(data.challenge, data.salt, data.algorithm, maxnumber).promise,
+      solution: await solveChallenge(data.challenge, data.salt, data.algorithm, data.maxnumber || maxnumber).promise,
     }
   }
 
-  async function runWorker(challenge: string, salt: string, alg?: string, concurrency: number = Math.ceil(workers)): Promise<Solution | null> {
+  async function runWorker(challenge: string, salt: string, alg?: string, max: number = maxnumber, concurrency: number = Math.ceil(workers)): Promise<Solution | null> {
     const workers: Worker[] = [];
     if (concurrency < 1) {
       throw new Error('Wrong number of workers configured.');
@@ -210,7 +213,7 @@
     for (let i = 0; i < concurrency; i ++) {
       workers.push(new InlineWorker());
     }
-    const step = Math.ceil(maxnumber / concurrency);
+    const step = Math.ceil(max / concurrency);
     const solutions = await Promise.all(workers.map((worker, i) => {
       const start = i * step;
       return new Promise((resolve) => {
@@ -341,6 +344,7 @@
             dispatch('verified', { payload });
           });
         } else {
+          log('Unable to find a solution. Ensure that the \'maxnumber\' attribute is greater than the randomly generated number.');
           throw new Error('Unexpected result returned.');
         }
       })

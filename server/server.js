@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 
 const ALTCHA_ALG = 'SHA-256';
 const ALTCHA_ALG_NODE = ALTCHA_ALG.replace('-', ''); // node doesn't support alg with dashes
-const ALTCHA_NUM_RANGE = [10000, 100000]; // adjust complexity
+const ALTCHA_NUM_RANGE = [10000, 50000]; // adjust complexity
 const ALTCHA_HMAC_KEY = 'secret.hmac.key'; // !! change this key !!
 
 function createALTCHA(salt = randomBytes(12).toString('hex'), number = randomInt(...ALTCHA_NUM_RANGE)) {
@@ -13,6 +13,7 @@ function createALTCHA(salt = randomBytes(12).toString('hex'), number = randomInt
   return {
     algorithm: ALTCHA_ALG,
     challenge,
+    maxnumber: ALTCHA_NUM_RANGE[1],
     salt,
     signature: createHmac(ALTCHA_ALG_NODE, ALTCHA_HMAC_KEY).update(challenge).digest('hex'),
   };

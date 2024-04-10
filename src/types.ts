@@ -34,6 +34,7 @@ export interface Solution {
 export interface Challenge {
   algorithm: string;
   challenge: string;
+  maxnumber?: number;
   salt: string;
   signature: string;
 }

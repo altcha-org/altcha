@@ -170,7 +170,7 @@
       log('using provided json data');
       return parsedChallenge;
     } else if (test) {
-      log('generating test challenge');
+      log('generating test challenge', { test });
       return createTestChallenge(typeof test !== 'boolean' ? +test : undefined);
     } else {
       if (!challengeurl) {
@@ -472,7 +472,7 @@
       parsedStrings = options.strings;
     }
     if (options.test !== void 0) {
-      test = !!options.test;
+      test = typeof options.test === 'number' ? options.test : !!options.test;
     }
     if (options.verifyurl !== void 0) {
       verifyurl = options.verifyurl;

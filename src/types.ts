@@ -22,7 +22,7 @@ export interface Configure {
   refetchonexpire?: boolean;
   spamfilter?: boolean;
   strings?: Partial<Strings>;
-  test?: boolean;
+  test?: boolean | number;
   verifyurl?: string;
   workers?: number;
 }

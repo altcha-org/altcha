@@ -124,7 +124,7 @@ export interface Configure {
     verifying?: string;
     waitAlert?: string;
   };
-  test?: boolean;
+  test?: boolean | number;
   verifyurl?: string;
   workers?: number;
 }

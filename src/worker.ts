@@ -3,7 +3,7 @@ import { solveChallenge } from './helpers';
 let controller: AbortController | undefined = undefined;
 
 onmessage = async (message) => {
-  const { type, payload } = message.data
+  const { type, payload } = message.data;
   if (type === 'abort') {
     controller?.abort();
     controller = undefined;

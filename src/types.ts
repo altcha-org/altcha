@@ -9,7 +9,7 @@ export interface Strings {
 }
 
 export interface Configure {
-  auto?: 'onload' | 'onsubmit'; 
+  auto?: 'onfocus' | 'onload' | 'onsubmit';
   challenge?: Challenge;
   debug?: boolean;
   expire?: number;
@@ -20,9 +20,30 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   refetchonexpire?: boolean;
+  spamfilter?: boolean;
   strings?: Partial<Strings>;
   test?: boolean;
+  verifyurl?: string;
   workers?: number;
+}
+
+export interface SpamFilter {
+  email?: string | false;
+  expectedLanguages?: string[];
+  expectedCountries?: string[];
+  fields?: string[] | false;
+  ipAddress?: string | false;
+  timeZone?: string | false;
+}
+
+export interface ServerVerificationPayload {
+  email?: string;
+  expectedCountries?: string[];
+  expectedLanguages?: string[];
+  fields?: Record<string, string>;
+  ipAddress?: string;
+  payload: string;
+  timeZone?: string;
 }
 
 export interface Solution {
@@ -55,4 +76,4 @@ export enum State {
   VERIFYING = 'verifying',
   UNVERIFIED = 'unverified',
   EXPIRED = 'expired',
-};
+}

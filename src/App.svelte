@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Altcha from "./Altcha.svelte";
+  import { onMount } from 'svelte';
+  import Altcha from './Altcha.svelte';
 
   const success = location.hash.includes('success');
   const failure = location.hash.includes('failure');
@@ -22,13 +22,29 @@
   <h1>ALTCHA</h1>
 
   <div>
-    <label for="challengeUrl">Challenge URL <small>(to fetch the challenge from)</small>:</label>
-    <input type="url" id="challengeUrl" placeholder="http://..." disabled={test} bind:value={challengeurl} />
+    <label for="challengeUrl"
+      >Challenge URL <small>(to fetch the challenge from)</small>:</label
+    >
+    <input
+      type="url"
+      id="challengeUrl"
+      placeholder="http://..."
+      disabled={test}
+      bind:value={challengeurl}
+    />
   </div>
 
   <div>
-    <label for="submitUrl">Submit URL <small>(to submit the data to)</small>:</label>
-    <input type="url" id="submitUrl" placeholder="http://..." disabled={test} bind:value={submiturl} />
+    <label for="submitUrl"
+      >Submit URL <small>(to submit the data to)</small>:</label
+    >
+    <input
+      type="url"
+      id="submitUrl"
+      placeholder="http://..."
+      disabled={test}
+      bind:value={submiturl}
+    />
   </div>
 
   <div>
@@ -44,34 +60,36 @@
   <form
     action={submiturl}
     method="post"
-    on:submit={(ev) => test ? ev.preventDefault() : undefined}
+    on:submit={(ev) => (test ? ev.preventDefault() : undefined)}
   >
     <div>Test form</div>
 
     {#if success}
-    <div class="success">
-      Form successfully submitted.
-    </div>
+      <div class="success">Form successfully submitted.</div>
     {/if}
 
     {#if failure}
-    <div class="failure">
-      Failed to submit form.
-    </div>
+      <div class="failure">Failed to submit form.</div>
     {/if}
 
     <div>
-      <input type="text" name="test_field" placeholder="Test field..." />
+      <input
+        type="text"
+        name="test_field"
+        placeholder="Test field..."
+      />
     </div>
 
     <Altcha
-    bind:this={altcha}
+      bind:this={altcha}
       debug
       {challengeurl}
       {mockerror}
       {test}
       on:statechange={(ev) => console.log('Event: statechange:', ev.detail)}
       on:verified={(ev) => console.log('Event: verified:', ev.detail)}
+      on:serververification={(ev) =>
+        console.log('Event: serververification:', ev.detail)}
     />
 
     <div>
@@ -79,7 +97,6 @@
       <button type="reset">Reset</button>
     </div>
   </form>
-
 </main>
 
 <style lang="scss">
@@ -92,7 +109,7 @@
     max-width: 600px;
   }
 
-  input:not([type="checkbox"]) {
+  input:not([type='checkbox']) {
     box-sizing: border-box;
     font-family: inherit;
     font-size: inherit;

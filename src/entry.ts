@@ -1,5 +1,3 @@
 import Altcha from './Altcha.svelte';
 
-export {
-  Altcha,
-};
+export { Altcha };

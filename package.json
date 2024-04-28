@@ -40,6 +40,7 @@
     "build": "rimraf dist && vite build && echo \"declare module 'altcha';\" > dist/altcha.d.ts",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write ./src/**/*",
     "test": "vitest run tests/helpers.test.ts",
     "test:e2e": "playwright test",
     "prepare": "husky"
@@ -53,6 +54,8 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "husky": "^9.0.11",
+    "prettier": "3.2.5",
+    "prettier-plugin-svelte": "^3.2.3",
     "sass": "^1.71.1",
     "svelte": "^4.2.11",
     "svelte-check": "^3.4.6",

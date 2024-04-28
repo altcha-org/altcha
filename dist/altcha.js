@@ -869,7 +869,7 @@ function Ft(n, e, t) {
   mt(() => {
     b && (b.removeEventListener("submit", ye), b.removeEventListener("reset", ve), b.removeEventListener("focusin", pe), b = null);
   }), gt(() => {
-    $("mounted", "0.2.3"), $("workers", d), m && $("using test mode"), g && ce(g), s !== void 0 && $("auto", s), b = ee.closest("form"), b && (b.addEventListener("submit", ye), b.addEventListener("reset", ve), s === "onfocus" && b.addEventListener("focusin", pe)), s === "onload" && B();
+    $("mounted", "0.3.0"), $("workers", d), m && $("using test mode"), g && ce(g), s !== void 0 && $("auto", s), b = ee.closest("form"), b && (b.addEventListener("submit", ye), b.addEventListener("reset", ve), s === "onfocus" && b.addEventListener("focusin", pe)), s === "onload" && B();
   });
   function $(...r) {
     (R || r.some((h) => h instanceof Error)) && console[r[0] instanceof Error ? "error" : "log"]("ALTCHA", ...r);

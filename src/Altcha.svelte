@@ -371,7 +371,7 @@
     } catch {
       // noop
     }
-    return void 0;
+    return undefined;
   }
 
   async function requestServerVerification(verificationPayload: string) {
@@ -394,20 +394,20 @@
         typeof spamfilter === 'object'
           ? spamfilter
           : {
-              email: void 0,
-              expectedCountries: void 0,
-              expectedLanguages: void 0,
-              fields: void 0,
-              ipAddress: void 0,
-              timeZone: void 0,
+              email: undefined,
+              expectedCountries: undefined,
+              expectedLanguages: undefined,
+              fields: undefined,
+              ipAddress: undefined,
+              timeZone: undefined,
             };
-      body.ipAddress = ipAddress === false ? void 0 : ipAddress || 'auto';
-      body.email = email === false ? void 0 : getEmail(email);
-      body.fields = fields === false ? void 0 : getTextFields(fields);
-      body.timeZone = timeZone === false ? void 0 : timeZone || getTimeZone();
+      body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
+      body.email = email === false ? undefined : getEmail(email);
+      body.fields = fields === false ? undefined : getTextFields(fields);
+      body.timeZone = timeZone === false ? undefined : timeZone || getTimeZone();
       body.expectedCountries = expectedCountries;
       body.expectedLanguages =
-        expectedLanguages || (documentLocale ? [documentLocale] : void 0);
+        expectedLanguages || (documentLocale ? [documentLocale] : undefined);
     }
     const resp = await fetch(verifyurl, {
       body: JSON.stringify(body),
@@ -430,13 +430,13 @@
   }
 
   export function configure(options: Configure) {
-    if (options.auto !== void 0) {
+    if (options.auto !== undefined) {
       auto = options.auto;
       if (auto === 'onload') {
         verify();
       }
     }
-    if (options.expire !== void 0) {
+    if (options.expire !== undefined) {
       setExpire(options.expire);
       expire = options.expire;
     }
@@ -444,40 +444,43 @@
       validateChallenge(options.challenge);
       parsedChallenge = options.challenge;
     }
-    if (options.debug !== void 0) {
+    if (options.challengeurl !== undefined) {
+      challengeurl = options.challengeurl;
+    }
+    if (options.debug !== undefined) {
       debug = !!options.debug;
     }
-    if (options.hidefooter !== void 0) {
+    if (options.hidefooter !== undefined) {
       hidefooter = !!options.hidefooter;
     }
-    if (options.hidelogo !== void 0) {
+    if (options.hidelogo !== undefined) {
       hidelogo = !!options.hidelogo;
     }
-    if (options.maxnumber !== void 0) {
+    if (options.maxnumber !== undefined) {
       maxnumber = +options.maxnumber;
     }
-    if (options.mockerror !== void 0) {
+    if (options.mockerror !== undefined) {
       mockerror = !!options.mockerror;
     }
-    if (options.name !== void 0) {
+    if (options.name !== undefined) {
       name = options.name;
     }
-    if (options.refetchonexpire !== void 0) {
+    if (options.refetchonexpire !== undefined) {
       refetchonexpire = !!options.refetchonexpire;
     }
-    if (options.spamfilter !== void 0) {
-      spamfilter = options.spamfilter;
+    if (options.spamfilter !== undefined) {
+      spamfilter = typeof options.spamfilter === 'object' ? options.spamfilter : !!options.spamfilter;
     }
     if (options.strings) {
       parsedStrings = options.strings;
     }
-    if (options.test !== void 0) {
+    if (options.test !== undefined) {
       test = typeof options.test === 'number' ? options.test : !!options.test;
     }
-    if (options.verifyurl !== void 0) {
+    if (options.verifyurl !== undefined) {
       verifyurl = options.verifyurl;
     }
-    if (options.workers !== void 0) {
+    if (options.workers !== undefined) {
       workers = +options.workers;
     }
   }

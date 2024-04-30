@@ -11,6 +11,7 @@ export interface Strings {
 export interface Configure {
   auto?: 'onfocus' | 'onload' | 'onsubmit';
   challenge?: Challenge;
+  challengeurl?: string;
   debug?: boolean;
   expire?: number;
   autorenew?: boolean;

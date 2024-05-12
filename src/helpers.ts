@@ -47,30 +47,24 @@ export function solveChallenge(
   start: number = 0
 ): { promise: Promise<Solution | null>; controller: AbortController } {
   const controller = new AbortController();
-  const promise = new Promise((resolve, reject) => {
-    const startTime = Date.now();
-    const next = (n: number) => {
-      if (controller.signal.aborted || n > max) {
-        resolve(null);
-      } else {
-        hashChallenge(salt, n, algorithm)
-          .then((t) => {
-            if (t === challenge) {
-              resolve({
-                number: n,
-                took: Date.now() - startTime,
-              });
-            } else {
-              next(n + 1);
-            }
-          })
-          .catch(reject);
+  const startTime = Date.now();
+  const fn = async () => {
+    for (let n = start; n <= max; n += 1) {
+      if (controller.signal.aborted) {
+        return null;
       }
-    };
-    next(start);
-  }) as Promise<Solution | null>;
+      const t = await hashChallenge(salt, n, algorithm);
+      if (t === challenge) {
+        return {
+          number: n,
+          took: Date.now() - startTime,
+        };
+      }
+    }
+    return null;
+  }
   return {
-    promise,
+    promise: fn(),
     controller,
   };
 }

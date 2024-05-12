@@ -185,8 +185,19 @@
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
       }
+      // The use of Expires header is deprecated, use salt params instead
       const expHeader = resp.headers.get('Expires');
       const configHeader = resp.headers.get('X-Altcha-Config');
+      const json = await resp.json();
+      const params = new URLSearchParams(json.salt.split('?')?.[1]);
+      const expires = params.get('expires') || params.get('expire');
+      if (expires) {
+        const date = new Date(+expires * 1000);
+        const diff = !isNaN(date.getTime()) ? date.getTime() - Date.now() : 0;
+        if (diff > 0) {
+          setExpire(diff);
+        }
+      }
       if (configHeader) {
         try {
           const config = JSON.parse(configHeader);
@@ -212,7 +223,7 @@
           }
         }
       }
-      return resp.json();
+      return json;
     }
   }
 
@@ -262,7 +273,7 @@
     challenge: string,
     salt: string,
     alg?: string,
-    max: number = maxnumber,
+    max: number = typeof test === 'number' ? test : maxnumber,
     concurrency: number = Math.ceil(workers)
   ): Promise<Solution | null> {
     const workers: Worker[] = [];

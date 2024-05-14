@@ -54,7 +54,7 @@ See [server documentation](https://altcha.org/docs/server-integration) for more 
 
 Required options (at least one is required):
 
-- __challengeurl__ - URL of your server to fetch the challenge from. Refer to [server integration](/docs/server-integration).
+- __challengeurl__ - URL of your server to fetch the challenge from. Refer to [server integration](https://altcha.org/docs/server-integration).
 - __challengejson__ - JSON-encoded challenge data. If avoiding an HTTP request to `challengeurl`, provide the data here.
 
 Additional options:

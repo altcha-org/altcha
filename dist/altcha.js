@@ -869,7 +869,7 @@ function Ot(r, e, t) {
   gt(() => {
     g && (g.removeEventListener("submit", ve), g.removeEventListener("reset", we), g.removeEventListener("focusin", ye), g = null);
   }), mt(() => {
-    L("mounted", "0.4.0"), L("workers", d), m && L("using test mode"), C && ne(C), s !== void 0 && L("auto", s), g = re.closest("form"), g && (g.addEventListener("submit", ve), g.addEventListener("reset", we), s === "onfocus" && g.addEventListener("focusin", ye)), s === "onload" && Y();
+    L("mounted", "0.4.1"), L("workers", d), m && L("using test mode"), C && ne(C), s !== void 0 && L("auto", s), g = re.closest("form"), g && (g.addEventListener("submit", ve), g.addEventListener("reset", we), s === "onfocus" && g.addEventListener("focusin", ye)), s === "onload" && Y();
   });
   function L(...n) {
     (Z || n.some((u) => u instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);

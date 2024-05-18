@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import css from "rollup-plugin-css-only";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,6 +10,10 @@ export default defineConfig({
       compilerOptions: {
         customElement: true,
       },
+      emitCss: true,
+    }),
+    css({ 
+      output: 'altcha.css',
     }),
   ],
   build: {

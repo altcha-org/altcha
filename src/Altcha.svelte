@@ -5,6 +5,10 @@
   }}
 />
 
+<style lang="scss" global>
+  @use './altcha.css';
+</style>
+
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
   import InlineWorker from './worker?worker&inline';
@@ -107,7 +111,9 @@
   }
 
   function onFormFocusIn(ev: FocusEvent) {
-    verify();
+    if (state === State.UNVERIFIED) {
+      verify();
+    }
   }
 
   function onFormSubmit(ev: SubmitEvent) {
@@ -654,105 +660,3 @@
     </div>
   {/if}
 </div>
-
-<style global>
-  .altcha {
-    background: var(--altcha-color-base, transparent);
-    border: var(--altcha-border-width, 1px) solid
-      var(--altcha-color-border, #a0a0a0);
-    border-radius: var(--altcha-border-radius, 3px);
-    color: var(--altcha-color-text, currentColor);
-    display: flex;
-    flex-direction: column;
-    max-width: var(--altcha-max-width, 260px);
-    overflow: hidden;
-    position: relative;
-    text-align: left;
-  }
-
-  .altcha:focus-within {
-    border-color: var(--altcha-color-border-focus, currentColor);
-  }
-
-  .altcha-main {
-    align-items: center;
-    display: flex;
-    gap: 0.4rem;
-    padding: 0.7rem;
-  }
-
-  .altcha-label {
-    flex-grow: 1;
-  }
-
-  .altcha-label label {
-    cursor: pointer;
-  }
-
-  .altcha-logo {
-    color: currentColor;
-    opacity: 0.3;
-  }
-
-  .altcha-logo:hover {
-    opacity: 1;
-  }
-
-  .altcha-error {
-    color: var(--altcha-color-error-text, #f23939);
-    display: flex;
-    font-size: 0.85rem;
-    gap: 0.3rem;
-    padding: 0 0.7rem 0.7rem;
-  }
-
-  .altcha-footer {
-    align-items: center;
-    background-color: var(--altcha-color-footer-bg, transparent);
-    display: flex;
-    font-size: 0.75rem;
-    opacity: 0.4;
-    padding: 0.2rem 0.7rem;
-    text-align: right;
-  }
-
-  .altcha-footer:hover {
-    opacity: 1;
-  }
-
-  .altcha-footer > *:first-child {
-    flex-grow: 1;
-  }
-
-  .altcha-footer :global(a) {
-    color: currentColor;
-  }
-
-  .altcha-checkbox {
-    display: flex;
-    align-items: center;
-    height: 24px;
-    width: 24px;
-  }
-
-  .altcha-checkbox input {
-    width: 18px;
-    height: 18px;
-    margin: 0;
-  }
-
-  .altcha-hidden {
-    display: none;
-  }
-
-  .altcha-spinner {
-    animation: altcha-spinner 0.75s infinite linear;
-    transform-origin: center;
-  }
-
-  @keyframes altcha-spinner {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>

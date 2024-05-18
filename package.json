@@ -34,6 +34,10 @@
     ".": {
       "import": "./dist/altcha.js",
       "require": "./dist/altcha.umd.cjs"
+    },
+    "./altcha.css": {
+      "import": "./dist/altcha.css",
+      "require": "./dist/altcha.css"
     }
   },
   "scripts": {
@@ -57,6 +61,7 @@
     "husky": "^9.0.11",
     "prettier": "3.2.5",
     "prettier-plugin-svelte": "^3.2.3",
+    "rollup-plugin-css-only": "^4.5.2",
     "sass": "^1.71.1",
     "svelte": "^4.2.11",
     "svelte-check": "^3.4.6",

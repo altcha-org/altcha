@@ -52,7 +52,7 @@
   let error: string | null = null;
   let payload: string | null = null;
   let state: State = State.UNVERIFIED;
-  let expireTimeout: ReturnType<typeof setTimeout>;
+  let expireTimeout: ReturnType<typeof setTimeout> | null = null;
 
   $: parsedChallenge = challengejson
     ? parseJsonAttribute(challengejson)
@@ -76,6 +76,10 @@
       elForm.removeEventListener('reset', onFormReset);
       elForm.removeEventListener('focusin', onFormFocusIn);
       elForm = null;
+    }
+    if (expireTimeout) {
+      clearTimeout(expireTimeout);
+      expireTimeout = null;
     }
   });
 
@@ -346,7 +350,10 @@
 
   function setExpire(duration: number) {
     log('expire', duration);
-    clearTimeout(expireTimeout);
+    if (expireTimeout) {
+      clearTimeout(expireTimeout);
+      expireTimeout = null;
+    }
     if (duration < 1) {
       expireChallenge();
     } else {
@@ -506,7 +513,10 @@
     newState: State = State.UNVERIFIED,
     err: string | null = null
   ) {
-    clearTimeout(expireTimeout);
+    if (expireTimeout) {
+      clearTimeout(expireTimeout);
+      expireTimeout = null;
+    }
     checked = false;
     error = err;
     payload = null;

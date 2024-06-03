@@ -863,7 +863,7 @@ function Xt() {
 }
 function Ot(r, e, t) {
   var Ee, $e;
-  let i, o, l, { auto: s = void 0 } = e, { blockspam: f = void 0 } = e, { challengeurl: a = void 0 } = e, { challengejson: h = void 0 } = e, { debug: Z = !1 } = e, { expire: C = void 0 } = e, { hidefooter: M = !1 } = e, { hidelogo: V = !1 } = e, { name: D = "altcha" } = e, { maxnumber: p = 1e6 } = e, { mockerror: H = !1 } = e, { refetchonexpire: X = !0 } = e, { spamfilter: _ = !1 } = e, { strings: k = void 0 } = e, { test: m = !1 } = e, { verifyurl: y = void 0 } = e, { workers: d = navigator.hardwareConcurrency || 8 } = e;
+  let i, o, l, { auto: s = void 0 } = e, { blockspam: f = void 0 } = e, { challengeurl: a = void 0 } = e, { challengejson: h = void 0 } = e, { debug: Z = !1 } = e, { expire: C = void 0 } = e, { hidefooter: M = !1 } = e, { hidelogo: V = !1 } = e, { name: D = "altcha" } = e, { maxnumber: p = 1e6 } = e, { mockerror: H = !1 } = e, { refetchonexpire: X = !0 } = e, { spamfilter: _ = !1 } = e, { strings: k = void 0 } = e, { test: m = !1 } = e, { verifyurl: y = void 0 } = e, { workers: d = Math.min(16, navigator.hardwareConcurrency || 8) } = e;
   const I = bt(), ge = ["SHA-256", "SHA-384", "SHA-512"], be = ($e = (Ee = document.documentElement.lang) == null ? void 0 : Ee.split("-")) == null ? void 0 : $e[0];
   let F = !1, ne, g = null, ce = null, Y = null, U = b.UNVERIFIED, G = null;
   gt(() => {

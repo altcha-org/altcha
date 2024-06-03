@@ -39,7 +39,7 @@
   export let strings: string | undefined = undefined;
   export let test: boolean | number = false;
   export let verifyurl: string | undefined = undefined;
-  export let workers: number = navigator.hardwareConcurrency || 8;
+  export let workers: number = Math.min(16, navigator.hardwareConcurrency || 8);
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];

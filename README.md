@@ -70,7 +70,7 @@ Additional options:
 - __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
 - __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - __verifyurl__ - Enable server-side verification by configuring the URL to use for verification requests. This option can be used in conjunction with `spamfilter` to enable server-side verification.
-- __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`).
+- __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max. value `16`).
 
 Development / testing options:
 

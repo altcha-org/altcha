@@ -43,6 +43,7 @@
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
+  const ariaLinkLabel = 'Visit Altcha.org';
   const website = 'https://altcha.org/';
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
 
@@ -59,9 +60,10 @@
     : undefined;
   $: parsedStrings = strings ? parseJsonAttribute(strings) : {};
   $: _strings = {
+    ariaLinkLabel,
     error: 'Verification failed. Try again later.',
     expired: 'Verification expired. Try again.',
-    footer: `Protected by <a href="${website}" target="_blank">ALTCHA</a>`,
+    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
     label: "I'm not a robot",
     verified: 'Verified',
     verifying: 'Verifying...',
@@ -613,7 +615,7 @@
 
     {#if hidelogo !== true}
       <div>
-        <a href={website} target="_blank" class="altcha-logo">
+        <a href={website} target="_blank" class="altcha-logo" aria-label={_strings.ariaLinkLabel}>
           <svg
             width="22"
             height="22"

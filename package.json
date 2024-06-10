@@ -6,10 +6,10 @@
   "author": {
     "name": "Daniel Regeci"
   },
-  "homepage": "https://github.com/altcha-org/altchajs",
+  "homepage": "https://github.com/altcha-org/altcha",
   "repository": {
     "type": "git",
-    "url": "https://github.com/altcha-org/altchajs"
+    "url": "https://github.com/altcha-org/altcha"
   },
   "type": "module",
   "keywords": [

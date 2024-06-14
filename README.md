@@ -50,6 +50,10 @@ See the [configuration](#configuration) below or visit the [website integration 
 
 See [server documentation](https://altcha.org/docs/server-integration) for more details.
 
+## Content Security Policy (CSP)
+
+The default distribution bundle of the WebComponent includes styles and the worker in a single file. This might cause issues with strict CSP rules. If you require strict CSP compliance, consider using the scripts located in the `/dist_external` directory. For more details, please refer to the [documentation](https://altcha.org/docs/website-integration).
+
 ## Configuration
 
 Required options (at least one is required):
@@ -71,6 +75,7 @@ Additional options:
 - __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - __verifyurl__ - Enable server-side verification by configuring the URL to use for verification requests. This option can be used in conjunction with `spamfilter` to enable server-side verification.
 - __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max. value `16`).
+- __workerurl__ - The URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
 
 Development / testing options:
 

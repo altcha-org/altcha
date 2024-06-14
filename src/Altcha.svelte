@@ -375,7 +375,7 @@
       ...(elForm?.querySelectorAll(
         names?.length
           ? names.map((name) => `input[name="${name}"]`).join(', ')
-          : 'input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])'
+          : 'input[type="email"]:not([data-no-spamfilter]), input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])'
       ) || []),
     ] as HTMLInputElement[];
     return elInputs.reduce(

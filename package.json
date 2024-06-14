@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "GDPR compliant, self-hosted CAPTCHA alternative.",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci"
@@ -26,7 +26,8 @@
     "svelte"
   ],
   "files": [
-    "dist"
+    "dist",
+    "dist_external"
   ],
   "main": "./dist/altcha.umd.cjs",
   "module": "./dist/altcha.js",
@@ -39,7 +40,11 @@
       "import": "./dist_external/altcha.css",
       "require": "./dist_external/altcha.css"
     },
-    "./worker.js": {
+    "./external/altcha.js": {
+      "import": "./dist_external/altcha.js",
+      "require": "./dist_external/altcha.umd.cjs"
+    },
+    "./external/worker.js": {
       "import": "./dist_external/worker.js",
       "require": "./dist_external/worker.js"
     }

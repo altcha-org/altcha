@@ -822,7 +822,7 @@ function Vt(r, e, t) {
   ht(() => {
     m && (m.removeEventListener("submit", ye), m.removeEventListener("reset", ve), m.removeEventListener("focusin", we), m = null), H && (clearTimeout(H), H = null);
   }), at(() => {
-    L("mounted", "0.4.3"), L("workers", d), g && L("using test mode"), C && ie(C), s !== void 0 && L("auto", s), m = ne.closest("form"), m && (m.addEventListener("submit", ye), m.addEventListener("reset", ve), s === "onfocus" && m.addEventListener("focusin", we)), s === "onload" && X();
+    L("mounted", "0.5.0"), L("workers", d), g && L("using test mode"), C && ie(C), s !== void 0 && L("auto", s), m = ne.closest("form"), m && (m.addEventListener("submit", ye), m.addEventListener("reset", ve), s === "onfocus" && m.addEventListener("focusin", we)), s === "onload" && X();
   });
   function L(...n) {
     (N || n.some((h) => h instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);
@@ -969,7 +969,7 @@ function Vt(r, e, t) {
   }
   function Ke(n) {
     return [
-      ...(m == null ? void 0 : m.querySelectorAll(n != null && n.length ? n.map((w) => `input[name="${w}"]`).join(", ") : 'input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])')) || []
+      ...(m == null ? void 0 : m.querySelectorAll(n != null && n.length ? n.map((w) => `input[name="${w}"]`).join(", ") : 'input[type="email"]:not([data-no-spamfilter]), input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])')) || []
     ].reduce(
       (w, R) => {
         const T = R.name, S = R.value.trim();

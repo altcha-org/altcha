@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import InlineWorker from './worker?worker&inline';
   import Altcha from './Altcha.svelte';
+  
+  globalThis.createAltchaWorker = (url?: string) => new InlineWorker();
 
   const success = location.hash.includes('success');
   const failure = location.hash.includes('failure');

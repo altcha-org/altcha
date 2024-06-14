@@ -11,7 +11,6 @@
 
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
-  import InlineWorker from './worker?worker&inline';
   import { solveChallenge, createTestChallenge } from './helpers';
   import { State } from './types';
   import type {
@@ -40,6 +39,7 @@
   export let test: boolean | number = false;
   export let verifyurl: string | undefined = undefined;
   export let workers: number = Math.min(16, navigator.hardwareConcurrency || 8);
+  export let workerurl: string | undefined = void 0;
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
@@ -296,7 +296,7 @@
       throw new Error('Too many workers. Max. 16 allowed workers.');
     }
     for (let i = 0; i < concurrency; i++) {
-      workers.push(new InlineWorker());
+      workers.push(createAltchaWorker(workerurl));
     }
     const step = Math.ceil(max / concurrency);
     const solutions = await Promise.all(

@@ -1,7 +1,9 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import css from "rollup-plugin-css-only";
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import css from 'rollup-plugin-css-only';
+
+const EXTERNAL = process.env.BUILD_EXTERNAL === '1';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,27 +11,37 @@ export default defineConfig({
     svelte({
       compilerOptions: {
         customElement: true,
+        css: EXTERNAL ? 'none' : 'injected',
       },
-      emitCss: true,
     }),
-    css({ 
+    EXTERNAL ? css({
       output: 'altcha.css',
-    }),
+    }) : void 0,
   ],
   build: {
-    target: "modules",
+    target: 'modules',
     lib: {
-      entry: "src/entry.ts",
-      name: "altcha",
-      formats: ["iife", "es", "umd"],
+      entry: EXTERNAL
+        ? 'src/entry-external.ts'
+        : 'src/entry.ts',
+      name: 'altcha',
+      formats: ['iife', 'es', 'umd'],
     },
-    minify: "esbuild",
+    outDir: EXTERNAL ? 'dist_external' : 'dist',
+    minify: 'esbuild',
     rollupOptions: {},
   },
   define: {
     ALTCHA_VERSION: JSON.stringify(process.env.npm_package_version),
   },
+  worker: {
+    rollupOptions: {
+      output: {
+        entryFileNames: '[name].js',
+      },
+    },
+  },
   test: {
-    setupFiles: ["./tests/setup.ts"],
+    setupFiles: ['./tests/setup.ts'],
   },
 });

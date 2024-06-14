@@ -36,13 +36,19 @@
       "require": "./dist/altcha.umd.cjs"
     },
     "./altcha.css": {
-      "import": "./dist/altcha.css",
-      "require": "./dist/altcha.css"
+      "import": "./dist_external/altcha.css",
+      "require": "./dist_external/altcha.css"
+    },
+    "./worker.js": {
+      "import": "./dist_external/worker.js",
+      "require": "./dist_external/worker.js"
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "rimraf dist && vite build && echo \"declare module 'altcha';\" > dist/altcha.d.ts",
+    "build": "npm run build:bundle && npm run build:external",
+    "build:bundle": "rimraf dist && vite build && echo \"declare module 'altcha';\" > dist/altcha.d.ts",
+    "build:external": "rimraf dist_external && BUILD_EXTERNAL=1 vite build && echo \"declare module 'altcha';\" > dist_external/altcha.d.ts",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write ./src/**/*",
@@ -67,7 +73,7 @@
     "svelte-check": "^3.4.6",
     "tslib": "^2.6.0",
     "typescript": "^5.0.2",
-    "vite": "^5.1.4",
+    "vite": "^5.3.0",
     "vitest": "^0.34.6"
   }
 }

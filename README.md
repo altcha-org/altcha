@@ -8,7 +8,18 @@ https://altcha.org
 
 - __Friction-less__ - Using PoW instead of visual puzzles.
 - __Cookie-less__ - GDPR compliant by design.
-- __Self-hosted__ - Without reliance on external providers.
+- __Self-hosted__ - Without reliance on external providers in self-hosted mode.
+- __SaaS available__ - Visit [altcha.org](https://altcha.org/docs/api) to get started with the SaaS API.
+
+## Integrations
+
+- [WordPress plugin](https://github.com/altcha-org/wordpress-plugin)
+- [Other libraries and plugins](https://altcha.org/docs/integrations/)
+
+## More anti-spam solutions
+
+- [Spam Filter](https://altcha.org/anti-spam) - stop sophisticated attacks and human-generated spam by classifying data.
+- [ALTCHA lib](https://github.com/altcha-org/altcha-lib) - invisible Captcha, custom components and server-side M2M ALTCHA.
 
 ## Usage
 
@@ -165,7 +176,7 @@ document.querySelector('#altcha').addEventListener('statechange', (ev) => {
 
 ## Spam Filter
 
-The widget integrates with ALTCHA's [Spam Filter API](https://altcha.org/docs/api/spam-filter-api) to allow checking submitted form data for potential spam.
+The widget integrates with ALTCHA's [Anti-Spam solution](https://altcha.org/anti-spam) to allow checking submitted form data for potential spam.
 
 The Spam Filter API analyzes various signals in the submitted data to determine if it exhibits characteristics of spam. This non-invasive filtering helps reduce spam submissions without frustrating legitimate users.
 
@@ -192,6 +203,8 @@ SpamFilter configuration options:
 - __fields__ - An array of input names to send to the spam filter.
 - __ipAddress__ - The user's IP is detected automatically but can be overridden or disabled with `false`.
 - __timeZone__ - The user's timezone is detected automatically but can be overridden or disabled with `false`.
+
+To include the email field into `fields` (for easier server-side verification), configure the list of input names using the `spamfilter.fields: string[]` option.
 
 ### Exclude Inputs from Spam Checking
 

@@ -25,7 +25,7 @@ export default defineConfig({
         ? 'src/entry-external.ts'
         : 'src/entry.ts',
       name: 'altcha',
-      formats: ['iife', 'es', 'umd'],
+      formats: ['es', 'umd'],
     },
     outDir: EXTERNAL ? 'dist_external' : 'dist',
     minify: 'esbuild',

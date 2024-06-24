@@ -13,7 +13,11 @@ export interface Configure {
   challenge?: Challenge;
   challengeurl?: string;
   debug?: boolean;
+  delay?: number;
   expire?: number;
+  floating?: 'auto' | 'top' | 'bottom';
+  floatinganchor?: string;
+  floatingoffset?: number;
   autorenew?: boolean;
   hidefooter?: boolean;
   hidelogo?: boolean;
@@ -23,7 +27,7 @@ export interface Configure {
   refetchonexpire?: boolean;
   spamfilter?: boolean;
   strings?: Partial<Strings>;
-  test?: boolean | number;
+  test?: boolean | number | 'delay';
   verifyurl?: string;
   workers?: number;
 }

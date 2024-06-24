@@ -5,10 +5,6 @@
   }}
 />
 
-<style lang="scss" global>
-  @use './altcha.css';
-</style>
-
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
   import { solveChallenge, createTestChallenge } from './helpers';
@@ -27,7 +23,18 @@
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
   export let debug: boolean = false;
+  export let delay: number = 0;
   export let expire: number | undefined = undefined;
+  export let floating:
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'false'
+    | ''
+    | boolean
+    | undefined = undefined;
+  export let floatinganchor: string | undefined = undefined;
+  export let floatingoffset: number | undefined = undefined;
   export let hidefooter: boolean = false;
   export let hidelogo: boolean = false;
   export let name: string = 'altcha';
@@ -49,6 +56,8 @@
 
   let checked: boolean = false;
   let el: HTMLElement;
+  let elAnchorArrow: HTMLElement | null = null;
+  let elFloatingAnchor: HTMLElement | null = null;
   let elForm: HTMLFormElement | null = null;
   let error: string | null = null;
   let payload: string | null = null;
@@ -71,6 +80,7 @@
     ...parsedStrings,
   };
   $: dispatch('statechange', { payload, state });
+  $: onStateChange(state);
 
   onDestroy(() => {
     if (elForm) {
@@ -83,6 +93,9 @@
       clearTimeout(expireTimeout);
       expireTimeout = null;
     }
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('scroll', onDocumentScroll);
+    window.removeEventListener('resize', onWindowResize);
   });
 
   onMount(() => {
@@ -97,9 +110,14 @@
     if (auto !== undefined) {
       log('auto', auto);
     }
+    if (floating !== undefined) {
+      setFloating(floating);
+    }
     elForm = el.closest('form');
     if (elForm) {
-      elForm.addEventListener('submit', onFormSubmit);
+      elForm.addEventListener('submit', onFormSubmit, {
+        capture: true,
+      });
       elForm.addEventListener('reset', onFormReset);
       if (auto === 'onfocus') {
         elForm.addEventListener('focusin', onFormFocusIn);
@@ -123,12 +141,20 @@
   }
 
   function onFormSubmit(ev: SubmitEvent) {
-    if (elForm && auto === 'onsubmit' && state === State.UNVERIFIED) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      verify().then(() => {
-        elForm?.requestSubmit();
-      });
+    if (elForm && auto === 'onsubmit') {
+      if (state === State.UNVERIFIED) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        verify().then(() => {
+          elForm?.requestSubmit();
+        });
+      } else if (state !== State.VERIFIED) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (state === State.VERIFYING) {
+          onInvalid();
+        }
+      }
     }
   }
 
@@ -344,9 +370,41 @@
     }
   }
 
+  function onDocumentClick(ev: MouseEvent) {
+    const target = ev.target as HTMLElement;
+    if (
+      floating &&
+      target &&
+      !el.contains(target) &&
+      state === State.VERIFIED
+    ) {
+      el.style.display = 'none';
+    }
+  }
+
+  function onDocumentScroll() {
+    if (floating) {
+      repositionFloating();
+    }
+  }
+
   function onInvalid() {
     if (state === State.VERIFYING) {
       alert(_strings.waitAlert);
+    }
+  }
+
+  function onStateChange(_: typeof state) {
+    if (floating && state !== State.UNVERIFIED) {
+      requestAnimationFrame(() => {
+        repositionFloating();
+      });
+    }
+  }
+
+  function onWindowResize() {
+    if (floating) {
+      repositionFloating();
     }
   }
 
@@ -363,9 +421,35 @@
     }
   }
 
+  function setFloating(strategy: typeof floating) {
+    log('floating', strategy);
+    if (floating !== strategy) {
+      el.style.left = '';
+      el.style.top = '';
+    }
+    floating =
+      strategy === true || strategy === ''
+        ? 'auto'
+        : strategy === false || strategy === 'false'
+          ? undefined
+          : floating;
+    if (floating) {
+      if (!auto) {
+        auto = 'onsubmit';
+      }
+      document.addEventListener('scroll', onDocumentScroll);
+      document.addEventListener('click', onDocumentClick);
+      window.addEventListener('resize', onWindowResize);
+    } else if (auto === 'onsubmit') {
+      auto = undefined;
+    }
+  }
+
   function getEmail(name?: string) {
     const elInput = elForm?.querySelector(
-      typeof name === 'string' ? `input[name="${name}"]` : 'input[type="email"]:not([data-no-spamfilter])'
+      typeof name === 'string'
+        ? `input[name="${name}"]`
+        : 'input[type="email"]:not([data-no-spamfilter])'
     ) as HTMLInputElement;
     return elInput?.value?.slice(elInput.value.indexOf('@')) || void 1;
   }
@@ -430,7 +514,8 @@
       body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
       body.email = email === false ? undefined : getEmail(email);
       body.fields = fields === false ? undefined : getTextFields(fields);
-      body.timeZone = timeZone === false ? undefined : timeZone || getTimeZone();
+      body.timeZone =
+        timeZone === false ? undefined : timeZone || getTimeZone();
       body.expectedCountries = expectedCountries;
       body.expectedLanguages =
         expectedLanguages || (documentLocale ? [documentLocale] : undefined);
@@ -455,12 +540,78 @@
     }
   }
 
+  function repositionFloating(viewportOffset: number = 20) {
+    if (el) {
+      if (!elFloatingAnchor) {
+        elFloatingAnchor =
+          (floatinganchor
+            ? document.querySelector(floatinganchor)
+            : elForm?.querySelector(
+                'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
+              )) || elForm;
+      }
+      if (elFloatingAnchor) {
+        // @ts-expect-error
+        const offsetY = parseInt(floatingoffset, 10) || 12;
+        const anchorBoundry = elFloatingAnchor.getBoundingClientRect();
+        const elBoundary = el.getBoundingClientRect();
+        const docHeight = document.documentElement.clientHeight;
+        const docWidth = document.documentElement.clientWidth;
+        const showOnTop =
+          floating === 'auto'
+            ? anchorBoundry.bottom +
+                elBoundary.height +
+                offsetY +
+                viewportOffset >
+              docHeight
+            : floating === 'top';
+        const left = Math.max(
+          viewportOffset,
+          Math.min(
+            docWidth - viewportOffset - elBoundary.width,
+            anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2
+          )
+        );
+        if (showOnTop) {
+          el.style.top = `${anchorBoundry.top - (elBoundary.height + offsetY)}px`;
+        } else {
+          el.style.top = `${anchorBoundry.bottom + offsetY}px`;
+        }
+        el.style.left = `${left}px`;
+        el.setAttribute('data-floating', showOnTop ? 'top' : 'bottom');
+        if (elAnchorArrow) {
+          const anchorArrowBoundry = elAnchorArrow.getBoundingClientRect();
+          elAnchorArrow.style.left =
+            anchorBoundry.left -
+            left +
+            anchorBoundry.width / 2 -
+            anchorArrowBoundry.width / 2 +
+            'px';
+        }
+      } else {
+        log('unable to find floating anchor element');
+      }
+    }
+  }
+
   export function configure(options: Configure) {
     if (options.auto !== undefined) {
       auto = options.auto;
       if (auto === 'onload') {
         verify();
       }
+    }
+    if (options.floatinganchor !== undefined) {
+      floatinganchor = options.floatinganchor;
+    }
+    if (options.delay !== undefined) {
+      delay = options.delay;
+    }
+    if (options.floatingoffset !== undefined) {
+      floatingoffset = options.floatingoffset;
+    }
+    if (options.floating !== undefined) {
+      setFloating(options.floating);
     }
     if (options.expire !== undefined) {
       setExpire(options.expire);
@@ -495,7 +646,10 @@
       refetchonexpire = !!options.refetchonexpire;
     }
     if (options.spamfilter !== undefined) {
-      spamfilter = typeof options.spamfilter === 'object' ? options.spamfilter : !!options.spamfilter;
+      spamfilter =
+        typeof options.spamfilter === 'object'
+          ? options.spamfilter
+          : !!options.spamfilter;
     }
     if (options.strings) {
       parsedStrings = options.strings;
@@ -527,6 +681,7 @@
 
   export async function verify() {
     reset(State.VERIFYING);
+    await new Promise((resolve) => setTimeout(resolve, delay || 0));
     return fetchChallenge()
       .then((data) => {
         validateChallenge(data);
@@ -568,7 +723,7 @@
   }
 </script>
 
-<div bind:this={el} class="altcha" data-state={state}>
+<div bind:this={el} class="altcha" data-state={state} data-floating={floating}>
   <div class="altcha-main">
     {#if state === State.VERIFYING}
       <svg
@@ -615,7 +770,12 @@
 
     {#if hidelogo !== true}
       <div>
-        <a href={website} target="_blank" class="altcha-logo" aria-label={_strings.ariaLinkLabel}>
+        <a
+          href={website}
+          target="_blank"
+          class="altcha-logo"
+          aria-label={_strings.ariaLinkLabel}
+        >
           <svg
             width="22"
             height="22"
@@ -671,4 +831,12 @@
       <div>{@html _strings.footer}</div>
     </div>
   {/if}
+
+  {#if floating}
+    <div bind:this={elAnchorArrow} class="altcha-anchor-arrow"></div>
+  {/if}
 </div>
+
+<style lang="scss" global>
+  @use './altcha.css';
+</style>

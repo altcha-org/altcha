@@ -76,7 +76,11 @@ Additional options:
 
 - __auto__ - Automatically verify without user interaction (possible values: `onfocus`, `onload`, `onsubmit`).
 - __blockspam__ - Only used in conjunction with the `spamfilter` option. If enabled, it will block form submission and fail verification if the Spam Filter returns a negative classification. This effectively prevents submission of the form.
+- __delay__ - The artificial delay in milliseconds to apply before the verification (defaults to 0).
 - __expire__ - The challenge expiration (duration in milliseconds).
+- __floating__ - Enable floating UI (possible values: `auto`, `top`, `bottom`).
+- __floatinganchor__ - The CSS selector of the "anchor" to which the floating UI will be attached to (defaults to the `button[type="submit"]` in the related form).
+- __floatingoffset__ - The Y offset from the anchor element for the floating UI expressed in pixels (defaults to `12`).
 - __hidefooter__ - Hide the footer (ALTCHA link).
 - __hidelogo__ - Hide the ALTCHA logo.
 - __maxnumber__ - The max. number to iterate to (defaults to 1,000,000).
@@ -124,7 +128,11 @@ export interface Configure {
     signature: string;
   };
   debug?: boolean;
+  delay?: number;
   expire?: number;
+  floating?: 'auto' | 'top' | 'bottom';
+  floatinganchor?: string;
+  floatingoffset?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;

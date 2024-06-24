@@ -7,13 +7,53 @@
   display: flex;
   flex-direction: column;
   max-width: var(--altcha-max-width, 260px);
-  overflow: hidden;
   position: relative;
   text-align: left;
 }
 
 .altcha:focus-within {
   border-color: var(--altcha-color-border-focus, currentColor);
+}
+
+.altcha[data-floating] {
+  background: var(--altcha-color-base, white);
+  display: none;
+  filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.2));
+  left: -100%;
+  position: fixed;
+  top: -100%;
+  width: var(--altcha-max-width, 260px);
+  z-index: 999999;
+}
+
+.altcha[data-floating="top"] .altcha-anchor-arrow {
+  border-bottom-color: transparent;
+  border-top-color: var(--altcha-color-border, #a0a0a0);
+  bottom: -12px;
+  top: auto;
+}
+
+.altcha[data-floating="bottom"]:focus-within::after {
+  border-bottom-color: var(--altcha-color-border-focus, currentColor);
+}
+
+.altcha[data-floating="top"]:focus-within::after {
+  border-top-color: var(--altcha-color-border-focus, currentColor);
+}
+
+.altcha[data-floating]:not([data-state="unverified"]) {
+  display: block;
+}
+
+.altcha-anchor-arrow {
+  border: 6px solid transparent;
+  border-bottom-color: var(--altcha-color-border, #a0a0a0);
+  content: '';
+  height: 0;
+  left: 12px;
+  position: absolute;
+  top: -12px;
+  width: 0;
 }
 
 .altcha-main {

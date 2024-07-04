@@ -389,7 +389,7 @@
   }
 
   function onInvalid() {
-    if (state === State.VERIFYING) {
+    if (state === State.VERIFYING && _strings.waitAlert) {
       alert(_strings.waitAlert);
     }
   }

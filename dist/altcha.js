@@ -900,7 +900,7 @@ function or(r, e, t) {
   jt(() => {
     m && (m.removeEventListener("submit", Le), m.removeEventListener("reset", Re), m.removeEventListener("focusin", Ce), m = null), W && (clearTimeout(W), W = null), document.removeEventListener("click", Ne), document.removeEventListener("scroll", Se), window.removeEventListener("resize", Te);
   }), St(() => {
-    C("mounted", "0.6.0"), C("workers", ie), h && C("using test mode"), D && ae(D), s !== void 0 && C("auto", s), k !== void 0 && Ze(k), m = E.closest("form"), m && (m.addEventListener("submit", Le, { capture: !0 }), m.addEventListener("reset", Re), s === "onfocus" && m.addEventListener("focusin", Ce)), s === "onload" && q();
+    C("mounted", "0.6.1"), C("workers", ie), h && C("using test mode"), D && ae(D), s !== void 0 && C("auto", s), k !== void 0 && Ze(k), m = E.closest("form"), m && (m.addEventListener("submit", Le, { capture: !0 }), m.addEventListener("reset", Re), s === "onfocus" && m.addEventListener("focusin", Ce)), s === "onload" && q();
   });
   function C(...n) {
     (U || n.some((f) => f instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);
@@ -1042,7 +1042,7 @@ function or(r, e, t) {
     k && we();
   }
   function je() {
-    M === b.VERIFYING && alert(l.waitAlert);
+    M === b.VERIFYING && l.waitAlert && alert(l.waitAlert);
   }
   function ut(n) {
     k && M !== b.UNVERIFIED && requestAnimationFrame(() => {

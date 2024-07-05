@@ -494,31 +494,41 @@
     };
     if (spamfilter) {
       const {
+        blockedCountries,
+        classifier,
+        disableRules,
         email,
         expectedLanguages,
         expectedCountries,
         fields,
         ipAddress,
+        text,
         timeZone,
       } =
         typeof spamfilter === 'object'
           ? spamfilter
           : {
+              blockedCountries: undefined,
+              classifier: undefined,
+              disableRules: undefined,
               email: undefined,
               expectedCountries: undefined,
               expectedLanguages: undefined,
               fields: undefined,
               ipAddress: undefined,
+              text: undefined,
               timeZone: undefined,
             };
-      body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
+      body.blockedCountries = blockedCountries;
+      body.classifier = classifier === false ? undefined : classifier;
+      body.disableRules = disableRules;
       body.email = email === false ? undefined : getEmail(email);
-      body.fields = fields === false ? undefined : getTextFields(fields);
-      body.timeZone =
-        timeZone === false ? undefined : timeZone || getTimeZone();
       body.expectedCountries = expectedCountries;
-      body.expectedLanguages =
-        expectedLanguages || (documentLocale ? [documentLocale] : undefined);
+      body.expectedLanguages = expectedLanguages || (documentLocale ? [documentLocale] : undefined);
+      body.fields = fields === false ? undefined : getTextFields(fields);
+      body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
+      body.text = text === false ? undefined : text;
+      body.timeZone = timeZone === false ? undefined : timeZone || getTimeZone();
     }
     const resp = await fetch(verifyurl, {
       body: JSON.stringify(body),

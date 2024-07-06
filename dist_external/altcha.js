@@ -852,7 +852,7 @@ function zt(n, e, t) {
   Lt(() => {
     m && (m.removeEventListener("submit", $e), m.removeEventListener("reset", Me), m.removeEventListener("focusin", Re), m = null), U && (clearTimeout(U), U = null), document.removeEventListener("click", Ne), document.removeEventListener("scroll", je), window.removeEventListener("resize", Pe);
   }), Ct(() => {
-    x("mounted", "0.6.1"), x("workers", ie), d && x("using test mode"), F && ae(F), s !== void 0 && x("auto", s), v !== void 0 && Fe(v), m = p.closest("form"), m && (m.addEventListener("submit", $e, { capture: !0 }), m.addEventListener("reset", Me), s === "onfocus" && m.addEventListener("focusin", Re)), s === "onload" && K();
+    x("mounted", "0.6.2"), x("workers", ie), d && x("using test mode"), F && ae(F), s !== void 0 && x("auto", s), v !== void 0 && Fe(v), m = p.closest("form"), m && (m.addEventListener("submit", $e, { capture: !0 }), m.addEventListener("reset", Me), s === "onfocus" && m.addEventListener("focusin", Re)), s === "onload" && K();
   });
   function x(...r) {
     (H || r.some((c) => c instanceof Error)) && console[r[0] instanceof Error ? "error" : "log"]("ALTCHA", ...r);

@@ -25,7 +25,7 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   refetchonexpire?: boolean;
-  spamfilter?: boolean;
+  spamfilter?: boolean | SpamFilter;
   strings?: Partial<Strings>;
   test?: boolean | number | 'delay';
   verifyurl?: string;
@@ -34,14 +34,14 @@ export interface Configure {
 
 export interface SpamFilter {
   blockedCountries?: string[];
-  classifier?: string | false;
+  classifier?: string;
   disableRules?: string[];
   email?: string | false;
   expectedCountries?: string[];
   expectedLanguages?: string[];
   fields?: string[] | false;
   ipAddress?: string | false;
-  text?: string | string[] | false;
+  text?: string | string[];
   timeZone?: string | false;
 }
 

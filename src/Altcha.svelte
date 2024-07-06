@@ -520,14 +520,14 @@
               timeZone: undefined,
             };
       body.blockedCountries = blockedCountries;
-      body.classifier = classifier === false ? undefined : classifier;
+      body.classifier = classifier;
       body.disableRules = disableRules;
       body.email = email === false ? undefined : getEmail(email);
       body.expectedCountries = expectedCountries;
       body.expectedLanguages = expectedLanguages || (documentLocale ? [documentLocale] : undefined);
       body.fields = fields === false ? undefined : getTextFields(fields);
       body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
-      body.text = text === false ? undefined : text;
+      body.text = text;
       body.timeZone = timeZone === false ? undefined : timeZone || getTimeZone();
     }
     const resp = await fetch(verifyurl, {

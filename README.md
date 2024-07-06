@@ -194,22 +194,30 @@ The Spam Filter can be enabled with default configuration by setting the `spamfi
 
 ```ts
 interface SpamFilter {
+  blockedCountries?: string[];
+  classifier?: string;
+  disableRules?: string[];
   email?: string | false;
-  expectedLanguages?: string[];
   expectedCountries?: string[];
+  expectedLanguages?: string[];
   fields?: string[] | false;
   ipAddress?: string | false;
+  text?: string | string[];
   timeZone?: string | false;
 }
 ```
 
 SpamFilter configuration options:
 
+- __blockedCountries__ - An array of country codes (ISO 3166 alpha-2) that you want to block.
+- __classifier__ - Enforce a specific classifier.
+- __disableRules__ - An array of rules to disable.
 - __email__ - The name of the input field for the user's email. Disable email checking with `false`.
-- __expectedLanguages__ - An array of expected languages as 2-letter codes (ISO 639 alpha-2).  
 - __expectedCountries__ - An array of expected countries as 2-letter codes (ISO 3166-1 alpha-2).
+- __expectedLanguages__ - An array of expected languages as 2-letter codes (ISO 639 alpha-2).
 - __fields__ - An array of input names to send to the spam filter.
 - __ipAddress__ - The user's IP is detected automatically but can be overridden or disabled with `false`.
+- __text__ - The text to classify. An array of strings can also be submitted.
 - __timeZone__ - The user's timezone is detected automatically but can be overridden or disabled with `false`.
 
 To include the email field into `fields` (for easier server-side verification), configure the list of input names using the `spamfilter.fields: string[]` option.

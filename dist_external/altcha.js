@@ -27,7 +27,7 @@ function E(n, e) {
 function P(n, e, t) {
   n.insertBefore(e, t || null);
 }
-function D(n) {
+function N(n) {
   n.parentNode && n.parentNode.removeChild(n);
 }
 function $(n) {
@@ -198,7 +198,7 @@ function jt(n, e, t, i, l, o, s = null, a = [-1]) {
   }) : [], h.update(), H = !0, ce(h.before_update), h.fragment = i ? i(h.ctx) : !1, e.target) {
     if (e.hydrate) {
       const T = Et(e.target);
-      h.fragment && h.fragment.l(T), T.forEach(D);
+      h.fragment && h.fragment.l(T), T.forEach(N);
     } else
       h.fragment && h.fragment.c();
     e.intro && Tt(n.$$.fragment), St(n, e.target, e.anchor), w();
@@ -259,7 +259,7 @@ typeof HTMLElement == "function" && (rt = class extends HTMLElement {
               P(h, s, H);
             },
             d: function(h) {
-              h && D(s);
+              h && N(s);
             }
           };
         };
@@ -486,7 +486,7 @@ function Ye(n) {
       P(l, e, o), E(e, t), E(e, i);
     },
     d(l) {
-      l && D(e);
+      l && N(e);
     }
   };
 }
@@ -511,7 +511,7 @@ function qt(n) {
       l[4] + "_checkbox") && f(e, "for", i);
     },
     d(l) {
-      l && D(e);
+      l && N(e);
     }
   };
 }
@@ -533,7 +533,7 @@ function Zt(n) {
       i[11].verifying + "") && (e.innerHTML = t);
     },
     d(i) {
-      i && D(e);
+      i && N(e);
     }
   };
 }
@@ -569,7 +569,7 @@ function Yt(n) {
       o[5]);
     },
     d(o) {
-      o && (D(e), D(i), D(l));
+      o && (N(e), N(i), N(l));
     }
   };
 }
@@ -589,7 +589,7 @@ function Ge(n) {
       u[11].ariaLinkLabel) && f(t, "aria-label", a);
     },
     d(u) {
-      u && D(e);
+      u && N(e);
     }
   };
 }
@@ -613,7 +613,7 @@ function We(n) {
       s === (s = o(u)) && a ? a.p(u, h) : (a.d(1), a = s(u), a && (a.c(), a.m(e, null)));
     },
     d(u) {
-      u && D(e), a.d();
+      u && N(e), a.d();
     }
   };
 }
@@ -646,7 +646,7 @@ function Gt(n) {
       );
     },
     d(i) {
-      i && D(e);
+      i && N(e);
     }
   };
 }
@@ -679,7 +679,7 @@ function Wt(n) {
       );
     },
     d(i) {
-      i && D(e);
+      i && N(e);
     }
   };
 }
@@ -701,7 +701,7 @@ function Xe(n) {
       l[11].footer + "") && (t.innerHTML = i);
     },
     d(l) {
-      l && D(e);
+      l && N(e);
     }
   };
 }
@@ -716,7 +716,7 @@ function Je(n) {
     },
     p: re,
     d(t) {
-      t && D(e), n[36](null);
+      t && N(e), n[36](null);
     }
   };
 }
@@ -830,7 +830,7 @@ function Xt(n) {
     i: re,
     o: re,
     d(d) {
-      d && D(e), M && M.d(), S.d(), L && L.d(), I && I.d(), _ && _.d(), A && A.d(), n[37](null), O = !1, ce(X);
+      d && N(e), M && M.d(), S.d(), L && L.d(), I && I.d(), _ && _.d(), A && A.d(), n[37](null), O = !1, ce(X);
     }
   };
 }
@@ -848,22 +848,22 @@ function zt(n, e, t) {
   var Oe, Be;
   let i, l, o, { auto: s = void 0 } = e, { blockspam: a = void 0 } = e, { challengeurl: u = void 0 } = e, { challengejson: h = void 0 } = e, { debug: H = !1 } = e, { delay: T = 0 } = e, { expire: F = void 0 } = e, { floating: v = void 0 } = e, { floatinganchor: O = void 0 } = e, { floatingoffset: X = void 0 } = e, { hidefooter: M = !1 } = e, { hidelogo: Q = !1 } = e, { name: Y = "altcha" } = e, { maxnumber: S = 1e6 } = e, { mockerror: L = !1 } = e, { refetchonexpire: I = !0 } = e, { spamfilter: _ = !1 } = e, { strings: A = void 0 } = e, { test: d = !1 } = e, { verifyurl: y = void 0 } = e, { workers: ie = Math.min(16, navigator.hardwareConcurrency || 8) } = e, { workerurl: we = void 0 } = e;
   const _e = It(), Ie = ["SHA-256", "SHA-384", "SHA-512"], Ae = (Be = (Oe = document.documentElement.lang) == null ? void 0 : Oe.split("-")) == null ? void 0 : Be[0];
-  let G = !1, p, J = null, ue = null, m = null, ye = null, z = null, N = b.UNVERIFIED, U = null;
+  let G = !1, p, J = null, ue = null, m = null, ye = null, z = null, j = b.UNVERIFIED, U = null;
   Lt(() => {
     m && (m.removeEventListener("submit", $e), m.removeEventListener("reset", Me), m.removeEventListener("focusin", Re), m = null), U && (clearTimeout(U), U = null), document.removeEventListener("click", Ne), document.removeEventListener("scroll", je), window.removeEventListener("resize", Pe);
   }), Ct(() => {
-    x("mounted", "0.6.2"), x("workers", ie), d && x("using test mode"), F && ae(F), s !== void 0 && x("auto", s), v !== void 0 && Fe(v), m = p.closest("form"), m && (m.addEventListener("submit", $e, { capture: !0 }), m.addEventListener("reset", Me), s === "onfocus" && m.addEventListener("focusin", Re)), s === "onload" && K();
+    x("mounted", "0.6.3"), x("workers", ie), d && x("using test mode"), F && ae(F), s !== void 0 && x("auto", s), v !== void 0 && Fe(v), m = p.closest("form"), m && (m.addEventListener("submit", $e, { capture: !0 }), m.addEventListener("reset", Me), s === "onfocus" && m.addEventListener("focusin", Re)), s === "onload" && K();
   });
   function x(...r) {
     (H || r.some((c) => c instanceof Error)) && console[r[0] instanceof Error ? "error" : "log"]("ALTCHA", ...r);
   }
   function Re(r) {
-    N === b.UNVERIFIED && K();
+    j === b.UNVERIFIED && K();
   }
   function $e(r) {
-    m && s === "onsubmit" && (N === b.UNVERIFIED ? (r.preventDefault(), r.stopPropagation(), K().then(() => {
+    m && s === "onsubmit" && (j === b.UNVERIFIED ? (r.preventDefault(), r.stopPropagation(), K().then(() => {
       m == null || m.requestSubmit();
-    })) : N !== b.VERIFIED && (r.preventDefault(), r.stopPropagation(), N === b.VERIFYING && Ve()));
+    })) : j !== b.VERIFIED && (r.preventDefault(), r.stopPropagation(), j === b.VERIFYING && Ve()));
   }
   function Me() {
     he();
@@ -910,7 +910,7 @@ function zt(n, e, t) {
       });
       if (c.status !== 200)
         throw new Error(`Server responded with ${c.status}.`);
-      const g = c.headers.get("Expires"), R = c.headers.get("X-Altcha-Config"), j = await c.json(), V = new URLSearchParams((r = j.salt.split("?")) == null ? void 0 : r[1]), q = V.get("expires") || V.get("expire");
+      const g = c.headers.get("Expires"), R = c.headers.get("X-Altcha-Config"), V = await c.json(), D = new URLSearchParams((r = V.salt.split("?")) == null ? void 0 : r[1]), q = D.get("expires") || D.get("expire");
       if (q) {
         const k = new Date(+q * 1e3), C = isNaN(k.getTime()) ? 0 : k.getTime() - Date.now();
         C > 0 && ae(C);
@@ -929,11 +929,11 @@ function zt(n, e, t) {
           C > 0 && ae(C);
         }
       }
-      return j;
+      return V;
     }
   }
   function De() {
-    u && I && N === b.VERIFIED ? K() : he(b.EXPIRED, o.expired);
+    u && I && j === b.VERIFIED ? K() : he(b.EXPIRED, o.expired);
   }
   async function st(r) {
     let c = null;
@@ -951,20 +951,20 @@ function zt(n, e, t) {
       solution: await Ut(r.challenge, r.salt, r.algorithm, r.maxnumber || S).promise
     };
   }
-  async function ft(r, c, g, R = typeof d == "number" ? d : S, j = Math.ceil(ie)) {
-    const V = [];
-    if (j < 1)
+  async function ft(r, c, g, R = typeof d == "number" ? d : S, V = Math.ceil(ie)) {
+    const D = [];
+    if (V < 1)
       throw new Error("Wrong number of workers configured.");
-    if (j > 16)
+    if (V > 16)
       throw new Error("Too many workers. Max. 16 allowed workers.");
-    for (let C = 0; C < j; C++)
-      V.push(createAltchaWorker(we));
-    const q = Math.ceil(R / j), k = await Promise.all(V.map((C, ve) => {
+    for (let C = 0; C < V; C++)
+      D.push(createAltchaWorker(we));
+    const q = Math.ceil(R / V), k = await Promise.all(D.map((C, ve) => {
       const oe = ve * q;
       return new Promise((de) => {
         C.addEventListener("message", (ge) => {
           if (ge.data)
-            for (const le of V)
+            for (const le of D)
               le !== C && le.postMessage({ type: "abort" });
           de(ge.data);
         }), C.postMessage({
@@ -979,25 +979,25 @@ function zt(n, e, t) {
         });
       });
     }));
-    for (const C of V)
+    for (const C of D)
       C.terminate();
     return k.find((C) => !!C) || null;
   }
   function ct() {
-    [b.UNVERIFIED, b.ERROR, b.EXPIRED].includes(N) ? _ && (m == null ? void 0 : m.reportValidity()) === !1 ? t(7, G = !1) : K() : t(7, G = !0);
+    [b.UNVERIFIED, b.ERROR, b.EXPIRED].includes(j) ? _ && (m == null ? void 0 : m.reportValidity()) === !1 ? t(7, G = !1) : K() : t(7, G = !0);
   }
   function Ne(r) {
     const c = r.target;
-    v && c && !p.contains(c) && N === b.VERIFIED && t(8, p.style.display = "none", p);
+    v && c && !p.contains(c) && j === b.VERIFIED && t(8, p.style.display = "none", p);
   }
   function je() {
     v && ke();
   }
   function Ve() {
-    N === b.VERIFYING && o.waitAlert && alert(o.waitAlert);
+    j === b.VERIFYING && o.waitAlert && alert(o.waitAlert);
   }
   function ut(r) {
-    v && N !== b.UNVERIFIED && requestAnimationFrame(() => {
+    v && j !== b.UNVERIFIED && requestAnimationFrame(() => {
       ke();
     });
   }
@@ -1020,8 +1020,9 @@ function zt(n, e, t) {
       ...(m == null ? void 0 : m.querySelectorAll(r != null && r.length ? r.map((g) => `input[name="${g}"]`).join(", ") : 'input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])')) || []
     ].reduce(
       (g, R) => {
-        const j = R.name, V = R.value.trim();
-        return j && V && (g[j] = V), g;
+        const V = R.name, D = R.value;
+        return V && D && (g[V] = /\n/.test(D) ? D.replace(new RegExp("(?<!\\r)\\n", "g"), `\r
+`) : D), g;
       },
       {}
     );
@@ -1032,7 +1033,7 @@ function zt(n, e, t) {
     x("requesting server verification from", y);
     const c = { payload: r };
     if (_) {
-      const { blockedCountries: j, classifier: V, disableRules: q, email: k, expectedLanguages: C, expectedCountries: ve, fields: oe, ipAddress: de, text: ge, timeZone: le } = typeof _ == "object" ? _ : {
+      const { blockedCountries: V, classifier: D, disableRules: q, email: k, expectedLanguages: C, expectedCountries: ve, fields: oe, ipAddress: de, text: ge, timeZone: le } = typeof _ == "object" ? _ : {
         blockedCountries: void 0,
         classifier: void 0,
         disableRules: void 0,
@@ -1044,7 +1045,7 @@ function zt(n, e, t) {
         text: void 0,
         timeZone: void 0
       };
-      c.blockedCountries = j, c.classifier = V, c.disableRules = q, c.email = k === !1 ? void 0 : at(k), c.expectedCountries = ve, c.expectedLanguages = C || (Ae ? [Ae] : void 0), c.fields = oe === !1 ? void 0 : ht(oe), c.ipAddress = de === !1 ? void 0 : de || "auto", c.text = ge, c.timeZone = le === !1 ? void 0 : le || Jt();
+      c.blockedCountries = V, c.classifier = D, c.disableRules = q, c.email = k === !1 ? void 0 : at(k), c.expectedCountries = ve, c.expectedLanguages = C || (Ae ? [Ae] : void 0), c.fields = oe === !1 ? void 0 : ht(oe), c.ipAddress = de === !1 ? void 0 : de || "auto", c.text = ge, c.timeZone = le === !1 ? void 0 : le || Jt();
     }
     const g = await fetch(y, {
       body: JSON.stringify(c),
@@ -1060,7 +1061,7 @@ function zt(n, e, t) {
   function ke(r = 20) {
     if (p)
       if (ue || (ue = (O ? document.querySelector(O) : m == null ? void 0 : m.querySelector('input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])')) || m), ue) {
-        const c = parseInt(X, 10) || 12, g = ue.getBoundingClientRect(), R = p.getBoundingClientRect(), j = document.documentElement.clientHeight, V = document.documentElement.clientWidth, q = v === "auto" ? g.bottom + R.height + c + r > j : v === "top", k = Math.max(r, Math.min(V - r - R.width, g.left + g.width / 2 - R.width / 2));
+        const c = parseInt(X, 10) || 12, g = ue.getBoundingClientRect(), R = p.getBoundingClientRect(), V = document.documentElement.clientHeight, D = document.documentElement.clientWidth, q = v === "auto" ? g.bottom + R.height + c + r > V : v === "top", k = Math.max(r, Math.min(D - r - R.width, g.left + g.width / 2 - R.width / 2));
         if (q ? t(8, p.style.top = `${g.top - (R.height + c)}px`, p) : t(8, p.style.top = `${g.bottom + c}px`, p), t(8, p.style.left = `${k}px`, p), p.setAttribute("data-floating", q ? "top" : "bottom"), J) {
           const C = J.getBoundingClientRect();
           t(9, J.style.left = g.left - k + g.width / 2 - C.width / 2 + "px", J);
@@ -1072,7 +1073,7 @@ function zt(n, e, t) {
     r.auto !== void 0 && (t(0, s = r.auto), s === "onload" && K()), r.floatinganchor !== void 0 && t(18, O = r.floatinganchor), r.delay !== void 0 && t(16, T = r.delay), r.floatingoffset !== void 0 && t(19, X = r.floatingoffset), r.floating !== void 0 && Fe(r.floating), r.expire !== void 0 && (ae(r.expire), t(17, F = r.expire)), r.challenge && (Se(r.challenge), i = r.challenge), r.challengeurl !== void 0 && t(14, u = r.challengeurl), r.debug !== void 0 && t(15, H = !!r.debug), r.hidefooter !== void 0 && t(2, M = !!r.hidefooter), r.hidelogo !== void 0 && t(3, Q = !!r.hidelogo), r.maxnumber !== void 0 && t(20, S = +r.maxnumber), r.mockerror !== void 0 && t(21, L = !!r.mockerror), r.name !== void 0 && t(4, Y = r.name), r.refetchonexpire !== void 0 && t(22, I = !!r.refetchonexpire), r.spamfilter !== void 0 && t(23, _ = typeof r.spamfilter == "object" ? r.spamfilter : !!r.spamfilter), r.strings && t(34, l = r.strings), r.test !== void 0 && t(24, d = typeof r.test == "number" ? r.test : !!r.test), r.verifyurl !== void 0 && t(25, y = r.verifyurl), r.workers !== void 0 && t(26, ie = +r.workers);
   }
   function he(r = b.UNVERIFIED, c = null) {
-    U && (clearTimeout(U), U = null), t(7, G = !1), t(10, ye = c), t(5, z = null), t(6, N = r);
+    U && (clearTimeout(U), U = null), t(7, G = !1), t(10, ye = c), t(5, z = null), t(6, j = r);
   }
   async function K() {
     return he(b.VERIFYING), await new Promise((r) => setTimeout(r, T || 0)), lt().then((r) => (Se(r), x("challenge", r), st(r))).then(({ data: r, solution: c }) => {
@@ -1084,10 +1085,10 @@ function zt(n, e, t) {
         throw x("Unable to find a solution. Ensure that the 'maxnumber' attribute is greater than the randomly generated number."), new Error("Unexpected result returned.");
     }).then(() => {
       At().then(() => {
-        t(6, N = b.VERIFIED), t(7, G = !0), x("verified"), _e("verified", { payload: z });
+        t(6, j = b.VERIFIED), t(7, G = !0), x("verified"), _e("verified", { payload: z });
       });
     }).catch((r) => {
-      x(r), t(6, N = b.ERROR), t(7, G = !1), t(10, ye = r.message);
+      x(r), t(6, j = b.ERROR), t(7, G = !1), t(10, ye = r.message);
     });
   }
   function gt() {
@@ -1120,7 +1121,7 @@ function zt(n, e, t) {
       waitAlert: "Verifying... please wait.",
       ...l
     }), n.$$.dirty[0] & /*payload, state*/
-    96 && _e("statechange", { payload: z, state: N }), n.$$.dirty[0] & /*state*/
+    96 && _e("statechange", { payload: z, state: j }), n.$$.dirty[0] & /*state*/
     64 && ut();
   }, [
     s,
@@ -1129,7 +1130,7 @@ function zt(n, e, t) {
     Q,
     Y,
     z,
-    N,
+    j,
     G,
     p,
     J,

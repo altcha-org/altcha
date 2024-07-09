@@ -900,7 +900,7 @@ function or(r, e, t) {
   jt(() => {
     m && (m.removeEventListener("submit", Ae), m.removeEventListener("reset", Ne), m.removeEventListener("focusin", Ie), m = null), W && (clearTimeout(W), W = null), document.removeEventListener("click", Ze), document.removeEventListener("scroll", Me), window.removeEventListener("resize", $e);
   }), St(() => {
-    E("mounted", "0.6.2"), E("workers", ie), h && E("using test mode"), D && ue(D), s !== void 0 && E("auto", s), k !== void 0 && De(k), m = x.closest("form"), m && (m.addEventListener("submit", Ae, { capture: !0 }), m.addEventListener("reset", Ne), s === "onfocus" && m.addEventListener("focusin", Ie)), s === "onload" && q();
+    E("mounted", "0.6.3"), E("workers", ie), h && E("using test mode"), D && ue(D), s !== void 0 && E("auto", s), k !== void 0 && De(k), m = x.closest("form"), m && (m.addEventListener("submit", Ae, { capture: !0 }), m.addEventListener("reset", Ne), s === "onfocus" && m.addEventListener("focusin", Ie)), s === "onload" && q();
   });
   function E(...n) {
     (U || n.some((a) => a instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);

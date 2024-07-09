@@ -465,9 +465,9 @@
     return elInputs.reduce(
       (acc, el) => {
         const name = el.name;
-        const value = el.value.trim();
+        const value = el.value;
         if (name && value) {
-          acc[name] = value;
+          acc[name] = /\n/.test(value) ? value.replace(/(?<!\r)\n/g, '\r\n') : value;
         }
         return acc;
       },

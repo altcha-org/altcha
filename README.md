@@ -139,7 +139,7 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   refetchonexpire?: boolean;
-  spamfilter: boolean | SpamFilter;
+  spamfilter: boolean | 'ipAddress' | SpamFilter;
   strings?: {
     error?: string;
     footer?: string;
@@ -151,6 +151,7 @@ export interface Configure {
   test?: boolean | number;
   verifyurl?: string;
   workers?: number;
+  workerurl?: string;
 }
 ```
 
@@ -190,7 +191,7 @@ The Spam Filter API analyzes various signals in the submitted data to determine 
 
 ### Spam Filter Configuration
 
-The Spam Filter can be enabled with default configuration by setting the `spamfilter` option to `true`, or it can be customized using the following configuration schema:
+The Spam Filter can be enabled with default configuration by setting the `spamfilter` option to `true`, or `ipAddress` to verify only the IP address and the time zone, or it can be customized using the following configuration schema:
 
 ```ts
 interface SpamFilter {

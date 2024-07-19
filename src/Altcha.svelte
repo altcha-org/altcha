@@ -41,7 +41,7 @@
   export let maxnumber: number = 1e6;
   export let mockerror: boolean = false;
   export let refetchonexpire: boolean = true;
-  export let spamfilter: boolean | SpamFilter = false;
+  export let spamfilter: boolean | 'ipAddress' | SpamFilter = false;
   export let strings: string | undefined = undefined;
   export let test: boolean | number = false;
   export let verifyurl: string | undefined = undefined;
@@ -64,6 +64,9 @@
   let state: State = State.UNVERIFIED;
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  $: isFreeSaaS =
+    !!challengeurl?.includes('.altcha.org') &&
+    !!challengeurl?.includes('apiKey=ckey_');
   $: parsedChallenge = challengejson
     ? parseJsonAttribute(challengejson)
     : undefined;
@@ -125,6 +128,11 @@
     }
     if (auto === 'onload') {
       verify();
+    }
+    if (isFreeSaaS && (hidefooter || hidelogo)) {
+      log(
+        'Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.'
+      );
     }
   });
 
@@ -315,12 +323,7 @@
     concurrency: number = Math.ceil(workers)
   ): Promise<Solution | null> {
     const workers: Worker[] = [];
-    if (concurrency < 1) {
-      throw new Error('Wrong number of workers configured.');
-    }
-    if (concurrency > 16) {
-      throw new Error('Too many workers. Max. 16 allowed workers.');
-    }
+    concurrency = Math.min(16, Math.max(1, concurrency));
     for (let i = 0; i < concurrency; i++) {
       workers.push(createAltchaWorker(workerurl));
     }
@@ -467,7 +470,9 @@
         const name = el.name;
         const value = el.value;
         if (name && value) {
-          acc[name] = /\n/.test(value) ? value.replace(/(?<!\r)\n/g, '\r\n') : value;
+          acc[name] = /\n/.test(value)
+            ? value.replace(/(?<!\r)\n/g, '\r\n')
+            : value;
         }
         return acc;
       },
@@ -504,31 +509,19 @@
         ipAddress,
         text,
         timeZone,
-      } =
-        typeof spamfilter === 'object'
-          ? spamfilter
-          : {
-              blockedCountries: undefined,
-              classifier: undefined,
-              disableRules: undefined,
-              email: undefined,
-              expectedCountries: undefined,
-              expectedLanguages: undefined,
-              fields: undefined,
-              ipAddress: undefined,
-              text: undefined,
-              timeZone: undefined,
-            };
+      } = getSpamFilterOptions();
       body.blockedCountries = blockedCountries;
       body.classifier = classifier;
       body.disableRules = disableRules;
       body.email = email === false ? undefined : getEmail(email);
       body.expectedCountries = expectedCountries;
-      body.expectedLanguages = expectedLanguages || (documentLocale ? [documentLocale] : undefined);
+      body.expectedLanguages =
+        expectedLanguages || (documentLocale ? [documentLocale] : undefined);
       body.fields = fields === false ? undefined : getTextFields(fields);
       body.ipAddress = ipAddress === false ? undefined : ipAddress || 'auto';
       body.text = text;
-      body.timeZone = timeZone === false ? undefined : timeZone || getTimeZone();
+      body.timeZone =
+        timeZone === false ? undefined : timeZone || getTimeZone();
     }
     const resp = await fetch(verifyurl, {
       body: JSON.stringify(body),
@@ -548,6 +541,37 @@
     if (blockspam && json.classification === 'BAD') {
       throw new Error('SpamFilter returned negative classification.');
     }
+  }
+
+  function getSpamFilterOptions(): SpamFilter {
+    if (spamfilter === 'ipAddress') {
+      return {
+        blockedCountries: undefined,
+        classifier: undefined,
+        disableRules: undefined,
+        email: false,
+        expectedCountries: undefined,
+        expectedLanguages: undefined,
+        fields: false,
+        ipAddress: undefined,
+        text: undefined,
+        timeZone: undefined,
+      };
+    }
+    return typeof spamfilter === 'object'
+      ? spamfilter
+      : {
+          blockedCountries: undefined,
+          classifier: undefined,
+          disableRules: undefined,
+          email: undefined,
+          expectedCountries: undefined,
+          expectedLanguages: undefined,
+          fields: undefined,
+          ipAddress: undefined,
+          text: undefined,
+          timeZone: undefined,
+        };
   }
 
   function repositionFloating(viewportOffset: number = 20) {
@@ -673,6 +697,9 @@
     if (options.workers !== undefined) {
       workers = +options.workers;
     }
+    if (options.workerurl !== undefined) {
+      workerurl = options.workerurl;
+    }
   }
 
   export function reset(
@@ -778,7 +805,7 @@
       {/if}
     </div>
 
-    {#if hidelogo !== true}
+    {#if hidelogo !== true || isFreeSaaS}
       <div>
         <a
           href={website}
@@ -836,7 +863,7 @@
     </div>
   {/if}
 
-  {#if _strings.footer && hidefooter !== true}
+  {#if _strings.footer && (hidefooter !== true || isFreeSaaS)}
     <div class="altcha-footer">
       <div>{@html _strings.footer}</div>
     </div>

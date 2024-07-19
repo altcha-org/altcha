@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "GDPR compliant, self-hosted CAPTCHA alternative.",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",
@@ -53,8 +53,8 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:bundle && npm run build:external",
-    "build:bundle": "rimraf dist && vite build && echo \"declare module 'altcha';\" > dist/altcha.d.ts",
-    "build:external": "rimraf dist_external && BUILD_EXTERNAL=1 vite build && echo \"declare module 'altcha';\" > dist_external/altcha.d.ts",
+    "build:bundle": "rimraf dist && vite build && cp src/declarations.d.ts dist/altcha.d.ts",
+    "build:external": "rimraf dist_external && BUILD_EXTERNAL=1 vite build && cp src/declarations.d.ts dist_external/altcha.d.ts",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write ./src/**/*",

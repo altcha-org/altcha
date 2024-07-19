@@ -25,11 +25,12 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   refetchonexpire?: boolean;
-  spamfilter?: boolean | SpamFilter;
+  spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: Partial<Strings>;
   test?: boolean | number | 'delay';
   verifyurl?: string;
   workers?: number;
+  workerurl?: string;
 }
 
 export interface SpamFilter {

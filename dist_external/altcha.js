@@ -856,7 +856,7 @@ function Qt(n, e, t) {
   At(() => {
     m && (m.removeEventListener("submit", Me), m.removeEventListener("reset", Se), m.removeEventListener("focusin", $e), m = null), U && (clearTimeout(U), U = null), document.removeEventListener("click", je), document.removeEventListener("scroll", Ve), window.removeEventListener("resize", Pe);
   }), It(() => {
-    E("mounted", "0.6.4"), E("workers", oe), _ && E("using test mode"), P && de(P), c !== void 0 && E("auto", c), k !== void 0 && He(k), m = C.closest("form"), m && (m.addEventListener("submit", Me, { capture: !0 }), m.addEventListener("reset", Se), c === "onfocus" && m.addEventListener("focusin", $e)), c === "onload" && ee(), i && (J || Z) && E("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
+    E("mounted", "0.6.5"), E("workers", oe), _ && E("using test mode"), P && de(P), c !== void 0 && E("auto", c), k !== void 0 && He(k), m = C.closest("form"), m && (m.addEventListener("submit", Me, { capture: !0 }), m.addEventListener("reset", Se), c === "onfocus" && m.addEventListener("focusin", $e)), c === "onload" && ee(), i && (J || Z) && E("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
   });
   function E(...r) {
     (S || r.some((a) => a instanceof Error)) && console[r[0] instanceof Error ? "error" : "log"]("ALTCHA", ...r);

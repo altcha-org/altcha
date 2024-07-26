@@ -20,7 +20,14 @@ https://altcha.org
 - [Lit](https://github.com/altcha-org/altcha-starter-lit-ts)
 - [Angular](https://github.com/altcha-org/altcha-starter-angular)
 
-## Integrations
+## Server Integrations
+
+- [TypeScript](https://github.com/altcha-org/altcha-lib)
+- [PHP](https://github.com/altcha-org/altcha-lib-php)
+- [Go](https://github.com/altcha-org/altcha-lib-go)
+- [Python](https://github.com/altcha-org/altcha-lib-py)
+
+## Plugins
 
 - [WordPress plugin](https://github.com/altcha-org/wordpress-plugin)
 - [Other libraries and plugins](https://altcha.org/docs/integrations/)
@@ -28,7 +35,6 @@ https://altcha.org
 ## More anti-spam solutions
 
 - [Spam Filter](https://altcha.org/anti-spam) - stop sophisticated attacks and human-generated spam by classifying data.
-- [ALTCHA lib](https://github.com/altcha-org/altcha-lib) - invisible Captcha, custom components and server-side M2M ALTCHA.
 
 ## Usage
 

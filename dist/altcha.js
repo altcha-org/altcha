@@ -904,7 +904,7 @@ function sr(r, e, t) {
   Mt(() => {
     m && (m.removeEventListener("submit", Se), m.removeEventListener("reset", Ne), m.removeEventListener("focusin", Ae), m = null), X && (clearTimeout(X), X = null), document.removeEventListener("click", Te), document.removeEventListener("scroll", Ve), window.removeEventListener("resize", Fe);
   }), jt(() => {
-    x("mounted", "0.6.5"), x("workers", oe), v && x("using test mode"), F && he(F), a !== void 0 && x("auto", a), k !== void 0 && $e(k), m = C.closest("form"), m && (m.addEventListener("submit", Se, { capture: !0 }), m.addEventListener("reset", Ne), a === "onfocus" && m.addEventListener("focusin", Ae)), a === "onload" && ee(), i && (K || H) && x("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
+    x("mounted", "0.6.6"), x("workers", oe), v && x("using test mode"), F && he(F), a !== void 0 && x("auto", a), k !== void 0 && $e(k), m = C.closest("form"), m && (m.addEventListener("submit", Se, { capture: !0 }), m.addEventListener("reset", Ne), a === "onfocus" && m.addEventListener("focusin", Ae)), a === "onload" && ee(), i && (K || H) && x("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
   });
   function x(...n) {
     (N || n.some((u) => u instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);

@@ -20,7 +20,7 @@ declare global {
       '--altcha-max-width'?: string;
     }
 
-    interface AltchaWidget {
+    interface AltchaWidget extends React.HTMLAttributes<HTMLElement> {
       auto?: 'onfocus' | 'onload' | 'onsubmit';
       blockspam?: boolean;
       challengeurl?: string;
@@ -36,6 +36,7 @@ declare global {
       name?: string;
       maxnumber?: number;
       mockerror?: boolean;
+      ref?: React.RefObject<HTMLElement>;
       refetchonexpire?: boolean;
       spamfilter?: boolean | 'ipAddress';
       strings?: string;

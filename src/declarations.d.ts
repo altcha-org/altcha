@@ -3,9 +3,60 @@ export {};
 declare module 'altcha';
 
 declare global {
+  type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';
+
+  interface AltchaStateChangeEvent extends CustomEvent<{
+    payload?: string;
+    state: AltchaState;
+  }> {}
+
+  interface AltchaVerifiedEvent extends CustomEvent<{
+    payload: string;
+  }> {}
+
+  interface AltchaServerVerificationEvent extends CustomEvent<Record<string, unknown>> {}
+
+  interface AltchaWidget {
+    auto?: 'onfocus' | 'onload' | 'onsubmit';
+    blockspam?: boolean;
+    challengeurl?: string;
+    challengejson?: string;
+    debug?: boolean;
+    delay?: number;
+    expire?: number;
+    floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
+    floatinganchor?: string;
+    floatingoffset?: number;
+    hidefooter?: boolean;
+    hidelogo?: boolean;
+    name?: string;
+    maxnumber?: number;
+    mockerror?: boolean;
+    refetchonexpire?: boolean;
+    spamfilter?: boolean | 'ipAddress';
+    strings?: string;
+    test?: boolean | number;
+    verifyurl?: string;
+    workers?: number;
+    workerurl?: string;
+  }
+
+  declare namespace svelteHTML {
+    interface IntrinsicElements {
+      'altcha-widget': AltchaWidgetSvelte;
+    }
+
+    interface AltchaWidgetSvelte extends AltchaWidget {
+      'on:statechange'?: (event: AltchaStateChangeEvent) => void;
+      'on:serververification'?: (event: AltchaServerVerificationEvent) => void; 
+      'on:verified'?: (event: AltchaVerifiedEvent) => void; 
+      style?: string;
+    }
+  }
+
   namespace JSX {
     interface IntrinsicElements {
-      'altcha-widget': AltchaWidget;
+      'altcha-widget': AltchaWidgetReact;
     }
 
     interface AltchaWidgetCSSProperties extends React.CSSProperties {
@@ -20,31 +71,9 @@ declare global {
       '--altcha-max-width'?: string;
     }
 
-    interface AltchaWidget extends React.HTMLAttributes<HTMLElement> {
-      auto?: 'onfocus' | 'onload' | 'onsubmit';
-      blockspam?: boolean;
-      challengeurl?: string;
-      challengejson?: string;
-      debug?: boolean;
-      delay?: number;
-      expire?: number;
-      floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
-      floatinganchor?: string;
-      floatingoffset?: number;
-      hidefooter?: boolean;
-      hidelogo?: boolean;
-      name?: string;
-      maxnumber?: number;
-      mockerror?: boolean;
+    interface AltchaWidgetReact extends AltchaWidget extends React.HTMLAttributes<HTMLElement> {
       ref?: React.RefObject<HTMLElement>;
-      refetchonexpire?: boolean;
-      spamfilter?: boolean | 'ipAddress';
-      strings?: string;
       style?: AltchaWidgetCSSProperties;
-      test?: boolean | number;
-      verifyurl?: string;
-      workers?: number;
-      workerurl?: string;
     }
   }
 }

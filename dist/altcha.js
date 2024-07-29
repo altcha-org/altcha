@@ -1,16 +1,16 @@
 var _t = Object.defineProperty;
 var kt = (r, e, t) => e in r ? _t(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
 var U = (r, e, t) => kt(r, typeof e != "symbol" ? e + "" : e, t);
-const tt = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGY9bmV3IFRleHRFbmNvZGVyO2Z1bmN0aW9uIGQoZSl7cmV0dXJuWy4uLm5ldyBVaW50OEFycmF5KGUpXS5tYXAodD0+dC50b1N0cmluZygxNikucGFkU3RhcnQoMiwiMCIpKS5qb2luKCIiKX1hc3luYyBmdW5jdGlvbiBwKGUsdCxvKXtyZXR1cm4gZChhd2FpdCBjcnlwdG8uc3VidGxlLmRpZ2VzdChvLnRvVXBwZXJDYXNlKCksZi5lbmNvZGUoZSt0KSkpfWZ1bmN0aW9uIGcoZSx0LG89IlNIQS0yNTYiLGw9MWU2LGM9MCl7Y29uc3QgYT1uZXcgQWJvcnRDb250cm9sbGVyLGk9RGF0ZS5ub3coKTtyZXR1cm57cHJvbWlzZTooYXN5bmMoKT0+e2ZvcihsZXQgbj1jO248PWw7bis9MSl7aWYoYS5zaWduYWwuYWJvcnRlZClyZXR1cm4gbnVsbDtpZihhd2FpdCBwKHQsbixvKT09PWUpcmV0dXJue251bWJlcjpuLHRvb2s6RGF0ZS5ub3coKS1pfX1yZXR1cm4gbnVsbH0pKCksY29udHJvbGxlcjphfX1sZXQgcjtvbm1lc3NhZ2U9YXN5bmMgZT0+e2NvbnN0e3R5cGU6dCxwYXlsb2FkOm99PWUuZGF0YTtpZih0PT09ImFib3J0IilyPT1udWxsfHxyLmFib3J0KCkscj12b2lkIDA7ZWxzZSBpZih0PT09IndvcmsiKXtjb25zdHthbGc6bCxjaGFsbGVuZ2U6YyxtYXg6YSxzYWx0Omksc3RhcnQ6dX09b3x8e30sbj1nKGMsaSxsLGEsdSk7cj1uLmNvbnRyb2xsZXIsbi5wcm9taXNlLnRoZW4ocz0+e3NlbGYucG9zdE1lc3NhZ2UocyYmey4uLnMsd29ya2VyOiEwfSl9KX19fSkoKTsK", xt = (r) => Uint8Array.from(atob(r), (e) => e.charCodeAt(0)), Be = typeof window < "u" && window.Blob && new Blob([xt(tt)], { type: "text/javascript;charset=utf-8" });
+const tt = "KGZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGY9bmV3IFRleHRFbmNvZGVyO2Z1bmN0aW9uIGQoZSl7cmV0dXJuWy4uLm5ldyBVaW50OEFycmF5KGUpXS5tYXAodD0+dC50b1N0cmluZygxNikucGFkU3RhcnQoMiwiMCIpKS5qb2luKCIiKX1hc3luYyBmdW5jdGlvbiBwKGUsdCxvKXtyZXR1cm4gZChhd2FpdCBjcnlwdG8uc3VidGxlLmRpZ2VzdChvLnRvVXBwZXJDYXNlKCksZi5lbmNvZGUoZSt0KSkpfWZ1bmN0aW9uIGcoZSx0LG89IlNIQS0yNTYiLGw9MWU2LGM9MCl7Y29uc3QgYT1uZXcgQWJvcnRDb250cm9sbGVyLGk9RGF0ZS5ub3coKTtyZXR1cm57cHJvbWlzZTooYXN5bmMoKT0+e2ZvcihsZXQgbj1jO248PWw7bis9MSl7aWYoYS5zaWduYWwuYWJvcnRlZClyZXR1cm4gbnVsbDtpZihhd2FpdCBwKHQsbixvKT09PWUpcmV0dXJue251bWJlcjpuLHRvb2s6RGF0ZS5ub3coKS1pfX1yZXR1cm4gbnVsbH0pKCksY29udHJvbGxlcjphfX1sZXQgcjtvbm1lc3NhZ2U9YXN5bmMgZT0+e2NvbnN0e3R5cGU6dCxwYXlsb2FkOm99PWUuZGF0YTtpZih0PT09ImFib3J0IilyPT1udWxsfHxyLmFib3J0KCkscj12b2lkIDA7ZWxzZSBpZih0PT09IndvcmsiKXtjb25zdHthbGc6bCxjaGFsbGVuZ2U6YyxtYXg6YSxzYWx0Omksc3RhcnQ6dX09b3x8e30sbj1nKGMsaSxsLGEsdSk7cj1uLmNvbnRyb2xsZXIsbi5wcm9taXNlLnRoZW4ocz0+e3NlbGYucG9zdE1lc3NhZ2UocyYmey4uLnMsd29ya2VyOiEwfSl9KX19fSkoKTsK", xt = (r) => Uint8Array.from(atob(r), (e) => e.charCodeAt(0)), Be = typeof self < "u" && self.Blob && new Blob([xt(tt)], { type: "text/javascript;charset=utf-8" });
 function Et(r) {
   let e;
   try {
-    if (e = Be && (window.URL || window.webkitURL).createObjectURL(Be), !e) throw "";
+    if (e = Be && (self.URL || self.webkitURL).createObjectURL(Be), !e) throw "";
     const t = new Worker(e, {
       name: r == null ? void 0 : r.name
     });
     return t.addEventListener("error", () => {
-      (window.URL || window.webkitURL).revokeObjectURL(e);
+      (self.URL || self.webkitURL).revokeObjectURL(e);
     }), t;
   } catch {
     return new Worker(
@@ -20,7 +20,7 @@ function Et(r) {
       }
     );
   } finally {
-    e && (window.URL || window.webkitURL).revokeObjectURL(e);
+    e && (self.URL || self.webkitURL).revokeObjectURL(e);
   }
 }
 function ie() {
@@ -69,7 +69,7 @@ function zt(r, e) {
     e
   ), e.sheet;
 }
-function D(r, e, t) {
+function $(r, e, t) {
   r.insertBefore(e, t || null);
 }
 function j(r) {
@@ -166,7 +166,7 @@ function y() {
     try {
       for (; te < re.length; ) {
         const e = re[te];
-        te++, ce(e), Dt(e.$$);
+        te++, ce(e), $t(e.$$);
       }
     } catch (e) {
       throw re.length = 0, te = 0, e;
@@ -182,20 +182,20 @@ function y() {
     We.pop()();
   Ce = !1, Ee.clear(), ce(r);
 }
-function Dt(r) {
+function $t(r) {
   if (r.fragment !== null) {
     r.update(), fe(r.before_update);
     const e = r.dirty;
     r.dirty = [-1], r.fragment && r.fragment.p(r.ctx, e), r.after_update.forEach(Le);
   }
 }
-function Ft(r) {
+function Dt(r) {
   const e = [], t = [];
   ne.forEach((i) => r.indexOf(i) === -1 ? e.push(i) : t.push(i)), t.forEach((i) => i()), ne = e;
 }
-const $t = /* @__PURE__ */ new Set();
+const Ft = /* @__PURE__ */ new Set();
 function Ut(r, e) {
-  r && r.i && ($t.delete(r), r.i(e));
+  r && r.i && (Ft.delete(r), r.i(e));
 }
 function Gt(r, e, t) {
   const { fragment: i, after_update: o } = r.$$;
@@ -206,7 +206,7 @@ function Gt(r, e, t) {
 }
 function Xt(r, e) {
   const t = r.$$;
-  t.fragment !== null && (Ft(t.after_update), fe(t.on_destroy), t.fragment && t.fragment.d(e), t.on_destroy = t.fragment = null, t.ctx = []);
+  t.fragment !== null && (Dt(t.after_update), fe(t.on_destroy), t.fragment && t.fragment.d(e), t.on_destroy = t.fragment = null, t.ctx = []);
 }
 function Bt(r, e) {
   r.$$.dirty[0] === -1 && (re.push(r), ot(), r.$$.dirty.fill(0)), r.$$.dirty[e / 31 | 0] |= 1 << e % 31;
@@ -236,11 +236,11 @@ function Ht(r, e, t, i, o, l, c = null, a = [-1]) {
     root: e.target || d.$$.root
   };
   c && c(f.root);
-  let $ = !1;
-  if (f.ctx = t ? t(r, e.props || {}, (N, G, ...F) => {
-    const k = F.length ? F[0] : G;
-    return f.ctx && o(f.ctx[N], f.ctx[N] = k) && (!f.skip_bound && f.bound[N] && f.bound[N](k), $ && Bt(r, N)), G;
-  }) : [], f.update(), $ = !0, fe(f.before_update), f.fragment = i ? i(f.ctx) : !1, e.target) {
+  let F = !1;
+  if (f.ctx = t ? t(r, e.props || {}, (N, G, ...D) => {
+    const k = D.length ? D[0] : G;
+    return f.ctx && o(f.ctx[N], f.ctx[N] = k) && (!f.skip_bound && f.bound[N] && f.bound[N](k), F && Bt(r, N)), G;
+  }) : [], f.update(), F = !0, fe(f.before_update), f.fragment = i ? i(f.ctx) : !1, e.target) {
     if (e.hydrate) {
       const N = St(e.target);
       f.fragment && f.fragment.l(N), N.forEach(j);
@@ -300,8 +300,8 @@ typeof HTMLElement == "function" && (lt = class extends HTMLElement {
              * @param {HTMLElement} target
              * @param {HTMLElement} [anchor]
              */
-            m: function(f, $) {
-              D(f, c, $);
+            m: function(f, F) {
+              $(f, c, F);
             },
             d: function(f) {
               f && j(c);
@@ -361,7 +361,7 @@ typeof HTMLElement == "function" && (lt = class extends HTMLElement {
   }
   disconnectedCallback() {
     this.$$cn = !1, Promise.resolve().then(() => {
-      this.$$cn || (this.$$c.$destroy(), this.$$c = void 0);
+      !this.$$cn && this.$$c && (this.$$c.$destroy(), this.$$c = void 0);
     });
   }
   $$g_p(e) {
@@ -428,7 +428,7 @@ function Ot(r, e, t, i, o, l) {
         return (d = this.$$c) == null ? void 0 : d[a];
       }
     });
-  }), l && (c = l(c)), r.element = /** @type {any} */
+  }), r.element = /** @type {any} */
   c, c;
 }
 class Wt {
@@ -531,7 +531,7 @@ function Pe(r) {
       e = O("svg"), t = O("path"), i = O("path"), s(t, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), s(t, "fill", "currentColor"), s(t, "opacity", ".25"), s(i, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), s(i, "fill", "currentColor"), s(i, "class", "altcha-spinner svelte-ddsc3z"), s(e, "width", "24"), s(e, "height", "24"), s(e, "viewBox", "0 0 24 24"), s(e, "xmlns", "http://www.w3.org/2000/svg");
     },
     m(o, l) {
-      D(o, e, l), _(e, t), _(e, i);
+      $(o, e, l), _(e, t), _(e, i);
     },
     d(o) {
       o && j(e);
@@ -549,7 +549,7 @@ function er(r) {
       r[4] + "_checkbox"), s(e, "class", "svelte-ddsc3z");
     },
     m(o, l) {
-      D(o, e, l), e.innerHTML = t;
+      $(o, e, l), e.innerHTML = t;
     },
     p(o, l) {
       l[0] & /*_strings*/
@@ -573,7 +573,7 @@ function tr(r) {
       e = A("span");
     },
     m(i, o) {
-      D(i, e, o), e.innerHTML = t;
+      $(i, e, o), e.innerHTML = t;
     },
     p(i, o) {
       o[0] & /*_strings*/
@@ -601,7 +601,7 @@ function rr(r) {
       r[5];
     },
     m(l, c) {
-      D(l, e, c), e.innerHTML = t, D(l, i, c), D(l, o, c);
+      $(l, e, c), e.innerHTML = t, $(l, i, c), $(l, o, c);
     },
     p(l, c) {
       c[0] & /*_strings*/
@@ -629,7 +629,7 @@ function Ye(r) {
       r[11].ariaLinkLabel);
     },
     m(d, f) {
-      D(d, e, f), _(e, t), _(t, i), _(i, o), _(i, l), _(i, c);
+      $(d, e, f), _(e, t), _(t, i), _(i, o), _(i, l), _(i, c);
     },
     p(d, f) {
       f[0] & /*_strings*/
@@ -655,7 +655,7 @@ function Ke(r) {
       e = A("div"), t = O("svg"), i = O("path"), o = Y(), a.c(), s(i, "stroke-linecap", "round"), s(i, "stroke-linejoin", "round"), s(i, "d", "M6 18L18 6M6 6l12 12"), s(t, "width", "14"), s(t, "height", "14"), s(t, "xmlns", "http://www.w3.org/2000/svg"), s(t, "fill", "none"), s(t, "viewBox", "0 0 24 24"), s(t, "stroke-width", "1.5"), s(t, "stroke", "currentColor"), s(e, "class", "altcha-error svelte-ddsc3z");
     },
     m(d, f) {
-      D(d, e, f), _(e, t), _(t, i), _(e, o), a.m(e, null);
+      $(d, e, f), _(e, t), _(t, i), _(e, o), a.m(e, null);
     },
     p(d, f) {
       c === (c = l(d)) && a ? a.p(d, f) : (a.d(1), a = c(d), a && (a.c(), a.m(e, null)));
@@ -680,7 +680,7 @@ function nr(r) {
       );
     },
     m(i, o) {
-      D(i, e, o), e.innerHTML = t;
+      $(i, e, o), e.innerHTML = t;
     },
     p(i, o) {
       o[0] & /*_strings*/
@@ -713,7 +713,7 @@ function ir(r) {
       );
     },
     m(i, o) {
-      D(i, e, o), e.innerHTML = t;
+      $(i, e, o), e.innerHTML = t;
     },
     p(i, o) {
       o[0] & /*_strings*/
@@ -741,7 +741,7 @@ function Je(r) {
       e = A("div"), t = A("div"), s(t, "class", "svelte-ddsc3z"), s(e, "class", "altcha-footer svelte-ddsc3z");
     },
     m(o, l) {
-      D(o, e, l), _(e, t), t.innerHTML = i;
+      $(o, e, l), _(e, t), t.innerHTML = i;
     },
     p(o, l) {
       l[0] & /*_strings*/
@@ -760,7 +760,7 @@ function qe(r) {
       e = A("div"), s(e, "class", "altcha-anchor-arrow svelte-ddsc3z");
     },
     m(t, i) {
-      D(t, e, i), r[37](e);
+      $(t, e, i), r[37](e);
     },
     p: ie,
     d(t) {
@@ -769,7 +769,7 @@ function qe(r) {
   };
 }
 function or(r) {
-  let e, t, i, o, l, c, a, d, f, $, N, G, F, k, W, S = (
+  let e, t, i, o, l, c, a, d, f, F, N, G, D, k, W, S = (
     /*state*/
     r[6] === b.VERIFYING && Pe()
   );
@@ -801,7 +801,7 @@ function or(r) {
   );
   return {
     c() {
-      e = A("div"), t = A("div"), S && S.c(), i = Y(), o = A("div"), l = A("input"), d = Y(), f = A("div"), M.c(), $ = Y(), E && E.c(), N = Y(), R && R.c(), G = Y(), I && I.c(), F = Y(), w && w.c(), s(l, "type", "checkbox"), s(l, "id", c = /*name*/
+      e = A("div"), t = A("div"), S && S.c(), i = Y(), o = A("div"), l = A("input"), d = Y(), f = A("div"), M.c(), F = Y(), E && E.c(), N = Y(), R && R.c(), G = Y(), I && I.c(), D = Y(), w && w.c(), s(l, "type", "checkbox"), s(l, "id", c = /*name*/
       r[4] + "_checkbox"), l.required = a = /*auto*/
       r[0] !== "onsubmit", s(l, "class", "svelte-ddsc3z"), s(o, "class", "altcha-checkbox svelte-ddsc3z"), Oe(
         o,
@@ -821,8 +821,8 @@ function or(r) {
       );
     },
     m(h, v) {
-      D(h, e, v), _(e, t), S && S.m(t, null), _(t, i), _(t, o), _(o, l), l.checked = /*checked*/
-      r[7], _(t, d), _(t, f), M.m(f, null), _(t, $), E && E.m(t, null), _(e, N), R && R.m(e, null), _(e, G), I && I.m(e, null), _(e, F), w && w.m(e, null), r[38](e), k || (W = [
+      $(h, e, v), _(e, t), S && S.m(t, null), _(t, i), _(t, o), _(o, l), l.checked = /*checked*/
+      r[7], _(t, d), _(t, f), M.m(f, null), _(t, F), E && E.m(t, null), _(e, N), R && R.m(e, null), _(e, G), I && I.m(e, null), _(e, D), w && w.m(e, null), r[38](e), k || (W = [
         xe(
           l,
           "change",
@@ -864,7 +864,7 @@ function or(r) {
       h[6] === b.EXPIRED ? R ? R.p(h, v) : (R = Ke(h), R.c(), R.m(e, G)) : R && (R.d(1), R = null), /*_strings*/
       h[11].footer && /*hidefooter*/
       (h[2] !== !0 || /*isFreeSaaS*/
-      h[12]) ? I ? I.p(h, v) : (I = Je(h), I.c(), I.m(e, F)) : I && (I.d(1), I = null), /*floating*/
+      h[12]) ? I ? I.p(h, v) : (I = Je(h), I.c(), I.m(e, D)) : I && (I.d(1), I = null), /*floating*/
       h[1] ? w ? w.p(h, v) : (w = qe(h), w.c(), w.m(e, null)) : w && (w.d(1), w = null), v[0] & /*state*/
       64 && s(
         e,
@@ -898,13 +898,13 @@ function lr() {
 }
 function sr(r, e, t) {
   var Ge, Xe;
-  let i, o, l, c, { auto: a = void 0 } = e, { blockspam: d = void 0 } = e, { challengeurl: f = void 0 } = e, { challengejson: $ = void 0 } = e, { debug: N = !1 } = e, { delay: G = 0 } = e, { expire: F = void 0 } = e, { floating: k = void 0 } = e, { floatinganchor: W = void 0 } = e, { floatingoffset: S = void 0 } = e, { hidefooter: K = !1 } = e, { hidelogo: H = !1 } = e, { name: M = "altcha" } = e, { maxnumber: E = 1e6 } = e, { mockerror: R = !1 } = e, { refetchonexpire: I = !0 } = e, { spamfilter: w = !1 } = e, { strings: h = void 0 } = e, { test: v = !1 } = e, { verifyurl: J = void 0 } = e, { workers: oe = Math.min(16, navigator.hardwareConcurrency || 8) } = e, { workerurl: ue = void 0 } = e;
+  let i, o, l, c, { auto: a = void 0 } = e, { blockspam: d = void 0 } = e, { challengeurl: f = void 0 } = e, { challengejson: F = void 0 } = e, { debug: N = !1 } = e, { delay: G = 0 } = e, { expire: D = void 0 } = e, { floating: k = void 0 } = e, { floatinganchor: W = void 0 } = e, { floatingoffset: S = void 0 } = e, { hidefooter: K = !1 } = e, { hidelogo: H = !1 } = e, { name: M = "altcha" } = e, { maxnumber: E = 1e6 } = e, { mockerror: R = !1 } = e, { refetchonexpire: I = !0 } = e, { spamfilter: w = !1 } = e, { strings: h = void 0 } = e, { test: v = !1 } = e, { verifyurl: J = void 0 } = e, { workers: oe = Math.min(16, navigator.hardwareConcurrency || 8) } = e, { workerurl: ue = void 0 } = e;
   const ye = Tt(), Ie = ["SHA-256", "SHA-384", "SHA-512"], ze = (Xe = (Ge = document.documentElement.lang) == null ? void 0 : Ge.split("-")) == null ? void 0 : Xe[0];
   let P = !1, C, q = null, de = null, m = null, pe = null, Q = null, T = b.UNVERIFIED, X = null;
   Mt(() => {
-    m && (m.removeEventListener("submit", Se), m.removeEventListener("reset", Ne), m.removeEventListener("focusin", Ae), m = null), X && (clearTimeout(X), X = null), document.removeEventListener("click", Te), document.removeEventListener("scroll", Ve), window.removeEventListener("resize", Fe);
+    m && (m.removeEventListener("submit", Se), m.removeEventListener("reset", Ne), m.removeEventListener("focusin", Ae), m = null), X && (clearTimeout(X), X = null), document.removeEventListener("click", Te), document.removeEventListener("scroll", Ve), window.removeEventListener("resize", De);
   }), jt(() => {
-    x("mounted", "0.6.6"), x("workers", oe), v && x("using test mode"), F && he(F), a !== void 0 && x("auto", a), k !== void 0 && $e(k), m = C.closest("form"), m && (m.addEventListener("submit", Se, { capture: !0 }), m.addEventListener("reset", Ne), a === "onfocus" && m.addEventListener("focusin", Ae)), a === "onload" && ee(), i && (K || H) && x("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
+    x("mounted", "0.6.7"), x("workers", oe), v && x("using test mode"), D && he(D), a !== void 0 && x("auto", a), k !== void 0 && Fe(k), m = C.closest("form"), m && (m.addEventListener("submit", Se, { capture: !0 }), m.addEventListener("reset", Ne), a === "onfocus" && m.addEventListener("focusin", Ae)), a === "onload" && ee(), i && (K || H) && x("Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.");
   });
   function x(...n) {
     (N || n.some((u) => u instanceof Error)) && console[n[0] instanceof Error ? "error" : "log"]("ALTCHA", ...n);
@@ -915,7 +915,7 @@ function sr(r, e, t) {
   function Se(n) {
     m && a === "onsubmit" && (T === b.UNVERIFIED ? (n.preventDefault(), n.stopPropagation(), ee().then(() => {
       m == null || m.requestSubmit();
-    })) : T !== b.VERIFIED && (n.preventDefault(), n.stopPropagation(), T === b.VERIFYING && De()));
+    })) : T !== b.VERIFIED && (n.preventDefault(), n.stopPropagation(), T === b.VERIFYING && $e()));
   }
   function Ne() {
     ge();
@@ -974,7 +974,7 @@ function sr(r, e, t) {
         } catch (p) {
           x("unable to configure from X-Altcha-Config", p);
         }
-      if (!F && (g != null && g.length)) {
+      if (!D && (g != null && g.length)) {
         const p = Date.parse(g);
         if (p) {
           const L = p - Date.now();
@@ -1042,7 +1042,7 @@ function sr(r, e, t) {
   function Ve() {
     k && _e();
   }
-  function De() {
+  function $e() {
     T === b.VERIFYING && c.waitAlert && alert(c.waitAlert);
   }
   function ht(n) {
@@ -1050,14 +1050,14 @@ function sr(r, e, t) {
       _e();
     });
   }
-  function Fe() {
+  function De() {
     k && _e();
   }
   function he(n) {
     x("expire", n), X && (clearTimeout(X), X = null), n < 1 ? Me() : X = setTimeout(Me, n);
   }
-  function $e(n) {
-    x("floating", n), k !== n && (t(8, C.style.left = "", C), t(8, C.style.top = "", C)), t(1, k = n === !0 || n === "" ? "auto" : n === !1 || n === "false" ? void 0 : k), k ? (a || t(0, a = "onsubmit"), document.addEventListener("scroll", Ve), document.addEventListener("click", Te), window.addEventListener("resize", Fe)) : a === "onsubmit" && t(0, a = void 0);
+  function Fe(n) {
+    x("floating", n), k !== n && (t(8, C.style.left = "", C), t(8, C.style.top = "", C)), t(1, k = n === !0 || n === "" ? "auto" : n === !1 || n === "false" ? void 0 : k), k ? (a || t(0, a = "onsubmit"), document.addEventListener("scroll", Ve), document.addEventListener("click", Te), window.addEventListener("resize", De)) : a === "onsubmit" && t(0, a = void 0);
   }
   function gt(n) {
     var g;
@@ -1133,7 +1133,7 @@ function sr(r, e, t) {
         x("unable to find floating anchor element");
   }
   function Ue(n) {
-    n.auto !== void 0 && (t(0, a = n.auto), a === "onload" && ee()), n.floatinganchor !== void 0 && t(19, W = n.floatinganchor), n.delay !== void 0 && t(17, G = n.delay), n.floatingoffset !== void 0 && t(20, S = n.floatingoffset), n.floating !== void 0 && $e(n.floating), n.expire !== void 0 && (he(n.expire), t(18, F = n.expire)), n.challenge && (je(n.challenge), o = n.challenge), n.challengeurl !== void 0 && t(15, f = n.challengeurl), n.debug !== void 0 && t(16, N = !!n.debug), n.hidefooter !== void 0 && t(2, K = !!n.hidefooter), n.hidelogo !== void 0 && t(3, H = !!n.hidelogo), n.maxnumber !== void 0 && t(21, E = +n.maxnumber), n.mockerror !== void 0 && t(22, R = !!n.mockerror), n.name !== void 0 && t(4, M = n.name), n.refetchonexpire !== void 0 && t(23, I = !!n.refetchonexpire), n.spamfilter !== void 0 && t(24, w = typeof n.spamfilter == "object" ? n.spamfilter : !!n.spamfilter), n.strings && t(35, l = n.strings), n.test !== void 0 && t(25, v = typeof n.test == "number" ? n.test : !!n.test), n.verifyurl !== void 0 && t(26, J = n.verifyurl), n.workers !== void 0 && t(27, oe = +n.workers), n.workerurl !== void 0 && t(28, ue = n.workerurl);
+    n.auto !== void 0 && (t(0, a = n.auto), a === "onload" && ee()), n.floatinganchor !== void 0 && t(19, W = n.floatinganchor), n.delay !== void 0 && t(17, G = n.delay), n.floatingoffset !== void 0 && t(20, S = n.floatingoffset), n.floating !== void 0 && Fe(n.floating), n.expire !== void 0 && (he(n.expire), t(18, D = n.expire)), n.challenge && (je(n.challenge), o = n.challenge), n.challengeurl !== void 0 && t(15, f = n.challengeurl), n.debug !== void 0 && t(16, N = !!n.debug), n.hidefooter !== void 0 && t(2, K = !!n.hidefooter), n.hidelogo !== void 0 && t(3, H = !!n.hidelogo), n.maxnumber !== void 0 && t(21, E = +n.maxnumber), n.mockerror !== void 0 && t(22, R = !!n.mockerror), n.name !== void 0 && t(4, M = n.name), n.refetchonexpire !== void 0 && t(23, I = !!n.refetchonexpire), n.spamfilter !== void 0 && t(24, w = typeof n.spamfilter == "object" ? n.spamfilter : !!n.spamfilter), n.strings && t(35, l = n.strings), n.test !== void 0 && t(25, v = typeof n.test == "number" ? n.test : !!n.test), n.verifyurl !== void 0 && t(26, J = n.verifyurl), n.workers !== void 0 && t(27, oe = +n.workers), n.workerurl !== void 0 && t(28, ue = n.workerurl);
   }
   function ge(n = b.UNVERIFIED, u = null) {
     X && (clearTimeout(X), X = null), t(7, P = !1), t(10, pe = u), t(5, Q = null), t(6, T = n);
@@ -1168,11 +1168,11 @@ function sr(r, e, t) {
     });
   }
   return r.$$set = (n) => {
-    "auto" in n && t(0, a = n.auto), "blockspam" in n && t(29, d = n.blockspam), "challengeurl" in n && t(15, f = n.challengeurl), "challengejson" in n && t(30, $ = n.challengejson), "debug" in n && t(16, N = n.debug), "delay" in n && t(17, G = n.delay), "expire" in n && t(18, F = n.expire), "floating" in n && t(1, k = n.floating), "floatinganchor" in n && t(19, W = n.floatinganchor), "floatingoffset" in n && t(20, S = n.floatingoffset), "hidefooter" in n && t(2, K = n.hidefooter), "hidelogo" in n && t(3, H = n.hidelogo), "name" in n && t(4, M = n.name), "maxnumber" in n && t(21, E = n.maxnumber), "mockerror" in n && t(22, R = n.mockerror), "refetchonexpire" in n && t(23, I = n.refetchonexpire), "spamfilter" in n && t(24, w = n.spamfilter), "strings" in n && t(31, h = n.strings), "test" in n && t(25, v = n.test), "verifyurl" in n && t(26, J = n.verifyurl), "workers" in n && t(27, oe = n.workers), "workerurl" in n && t(28, ue = n.workerurl);
+    "auto" in n && t(0, a = n.auto), "blockspam" in n && t(29, d = n.blockspam), "challengeurl" in n && t(15, f = n.challengeurl), "challengejson" in n && t(30, F = n.challengejson), "debug" in n && t(16, N = n.debug), "delay" in n && t(17, G = n.delay), "expire" in n && t(18, D = n.expire), "floating" in n && t(1, k = n.floating), "floatinganchor" in n && t(19, W = n.floatinganchor), "floatingoffset" in n && t(20, S = n.floatingoffset), "hidefooter" in n && t(2, K = n.hidefooter), "hidelogo" in n && t(3, H = n.hidelogo), "name" in n && t(4, M = n.name), "maxnumber" in n && t(21, E = n.maxnumber), "mockerror" in n && t(22, R = n.mockerror), "refetchonexpire" in n && t(23, I = n.refetchonexpire), "spamfilter" in n && t(24, w = n.spamfilter), "strings" in n && t(31, h = n.strings), "test" in n && t(25, v = n.test), "verifyurl" in n && t(26, J = n.verifyurl), "workers" in n && t(27, oe = n.workers), "workerurl" in n && t(28, ue = n.workerurl);
   }, r.$$.update = () => {
     r.$$.dirty[0] & /*challengeurl*/
     32768 && t(12, i = !!(f != null && f.includes(".altcha.org")) && !!(f != null && f.includes("apiKey=ckey_"))), r.$$.dirty[0] & /*challengejson*/
-    1073741824 && (o = $ ? et($) : void 0), r.$$.dirty[1] & /*strings*/
+    1073741824 && (o = F ? et(F) : void 0), r.$$.dirty[1] & /*strings*/
     1 && t(35, l = h ? et(h) : {}), r.$$.dirty[1] & /*parsedStrings*/
     16 && t(11, c = {
       ariaLinkLabel: Qe,
@@ -1202,11 +1202,11 @@ function sr(r, e, t) {
     c,
     i,
     dt,
-    De,
+    $e,
     f,
     N,
     G,
-    F,
+    D,
     W,
     S,
     E,
@@ -1218,7 +1218,7 @@ function sr(r, e, t) {
     oe,
     ue,
     d,
-    $,
+    F,
     h,
     Ue,
     ge,

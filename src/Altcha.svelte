@@ -7,7 +7,8 @@
 
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
-  import { solveChallenge, createTestChallenge } from './helpers';
+  import { solveChallenge, createTestChallenge, getTimeZone } from './helpers';
+  import { Session } from './session';
   import { State } from './types';
   import type {
     Configure,
@@ -18,7 +19,9 @@
     ServerVerificationPayload,
   } from './types';
 
+  export let analytics: boolean = false;
   export let auto: 'onfocus' | 'onload' | 'onsubmit' | undefined = undefined;
+  export let beaconurl: string | undefined = undefined
   export let blockspam: boolean | undefined = undefined;
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
@@ -46,7 +49,7 @@
   export let test: boolean | number = false;
   export let verifyurl: string | undefined = undefined;
   export let workers: number = Math.min(16, navigator.hardwareConcurrency || 8);
-  export let workerurl: string | undefined = void 0;
+  export let workerurl: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
@@ -60,9 +63,11 @@
   let elFloatingAnchor: HTMLElement | null = null;
   let elForm: HTMLFormElement | null = null;
   let error: string | null = null;
-  let payload: string | null = null;
-  let state: State = State.UNVERIFIED;
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
+  let payload: string | null = null;
+  let session: Session | null = null;
+  let sessionPayload: string | null = null;
+  let state: State = State.UNVERIFIED;
 
   $: isFreeSaaS =
     !!challengeurl?.includes('.altcha.org') &&
@@ -83,6 +88,7 @@
     ...parsedStrings,
   };
   $: dispatch('statechange', { payload, state });
+  $: onErrorChange(error);
   $: onStateChange(state);
 
   onDestroy(() => {
@@ -91,6 +97,9 @@
       elForm.removeEventListener('reset', onFormReset);
       elForm.removeEventListener('focusin', onFormFocusIn);
       elForm = null;
+    }
+    if (session) {
+      session.destroy();
     }
     if (expireTimeout) {
       clearTimeout(expireTimeout);
@@ -126,6 +135,9 @@
         elForm.addEventListener('focusin', onFormFocusIn);
       }
     }
+    if (analytics) {
+      enableAnalytics();
+    }
     if (auto === 'onload') {
       verify();
     }
@@ -149,6 +161,10 @@
   }
 
   function onFormSubmit(ev: SubmitEvent) {
+    if (elForm && session && state === State.VERIFIED) {
+      session.end();
+      sessionPayload = session.dataAsBase64();
+    }
     if (elForm && auto === 'onsubmit') {
       if (state === State.UNVERIFIED) {
         ev.preventDefault();
@@ -219,14 +235,21 @@
       log('generating test challenge', { test });
       return createTestChallenge(typeof test !== 'boolean' ? +test : undefined);
     } else {
+      if (!challengeurl && elForm) {
+        const action = elForm.getAttribute('action');
+        if (action?.includes('/form/')) {
+          // ALTCHA Forms url for challenges
+          challengeurl = action + '/altcha';
+        }
+      }
       if (!challengeurl) {
         throw new Error(`Attribute challengeurl not set.`);
       }
       log('fetching challenge from', challengeurl);
       const resp = await fetch(challengeurl, {
-        headers: {
-          'x-altcha-spam-filter': !!spamfilter ? '1' : '0',
-        },
+        headers: !!spamfilter ? {
+          'x-altcha-spam-filter': '1',
+        } : {},
       });
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
@@ -270,6 +293,26 @@
         }
       }
       return json;
+    }
+  }
+
+  function enableAnalytics () {
+    if (session) {
+      // already enabled
+      return;
+    }
+    if (elForm) {
+      log('analytics enabled');
+      session = new Session(elForm);
+      if (beaconurl === undefined) {
+        const action = elForm.getAttribute('action'); 
+        if (action) {
+          beaconurl = action + '/beacon';
+        }
+      }
+      session.beaconUrl = beaconurl || null;
+    } else {
+      log('analytics cannot be enabled - form element not found');
     }
   }
 
@@ -397,6 +440,12 @@
     }
   }
 
+  function onErrorChange(_: typeof error) {
+    if (session) {
+      session.trackError(error);
+    }
+  }
+
   function onStateChange(_: typeof state) {
     if (floating && state !== State.UNVERIFIED) {
       requestAnimationFrame(() => {
@@ -478,15 +527,6 @@
       },
       {} as Record<string, string>
     );
-  }
-
-  function getTimeZone() {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch {
-      // noop
-    }
-    return undefined;
   }
 
   async function requestServerVerification(verificationPayload: string) {
@@ -629,10 +669,20 @@
   }
 
   export function configure(options: Configure) {
+    if (options.analytics) {
+      analytics = options.analytics;
+      enableAnalytics();
+    }
     if (options.auto !== undefined) {
       auto = options.auto;
       if (auto === 'onload') {
         verify();
+      }
+    }
+    if (options.beaconurl) {
+      beaconurl = options.beaconurl;
+      if (session) {
+        session.beaconUrl = beaconurl;
       }
     }
     if (options.floatinganchor !== undefined) {
@@ -798,6 +848,10 @@
       {#if state === State.VERIFIED}
         <span>{@html _strings.verified}</span>
         <input type="hidden" {name} value={payload} />
+
+        {#if session}
+        <input type="hidden" name="__session" value={sessionPayload} />
+        {/if}
       {:else if state === State.VERIFYING}
         <span>{@html _strings.verifying}</span>
       {:else}

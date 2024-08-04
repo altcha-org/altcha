@@ -68,3 +68,13 @@ export function solveChallenge(
     controller,
   };
 }
+
+export function getTimeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    // noop
+  }
+  return undefined;
+}
+

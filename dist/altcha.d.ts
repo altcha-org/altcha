@@ -17,7 +17,9 @@ declare global {
   interface AltchaServerVerificationEvent extends CustomEvent<Record<string, unknown>> {}
 
   interface AltchaWidget {
+    analytics?: boolean | string;
     auto?: 'onfocus' | 'onload' | 'onsubmit';
+    beaconurl?: string;
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;

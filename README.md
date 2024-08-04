@@ -26,6 +26,8 @@ https://altcha.org
 - [PHP](https://github.com/altcha-org/altcha-lib-php)
 - [Go](https://github.com/altcha-org/altcha-lib-go)
 - [Python](https://github.com/altcha-org/altcha-lib-py)
+- [Java](https://github.com/altcha-org/altcha-lib-java)
+- [Ruby](https://github.com/altcha-org/altcha-lib-rb)
 
 ## Plugins
 
@@ -89,7 +91,9 @@ Required options (at least one is required):
 
 Additional options:
 
+- __analytics__ - Enable analytics with [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
 - __auto__ - Automatically verify without user interaction (possible values: `onfocus`, `onload`, `onsubmit`).
+- __beaconurl__ - URL to which analytics data will be sent using a beacon POST if the form is abandoned. This option is only used when `analytics` is enabled.
 - __blockspam__ - Only used in conjunction with the `spamfilter` option. If enabled, it will block form submission and fail verification if the Spam Filter returns a negative classification. This effectively prevents submission of the form.
 - __delay__ - The artificial delay in milliseconds to apply before the verification (defaults to 0).
 - __expire__ - The challenge expiration (duration in milliseconds).
@@ -103,7 +107,7 @@ Additional options:
 - __spamfilter__ - Enable [Spam Filter](#spam-filter).
 - __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
 - __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
-- __verifyurl__ - Enable server-side verification by configuring the URL to use for verification requests. This option can be used in conjunction with `spamfilter` to enable server-side verification.
+- __verifyurl__ - URL for server-side verification requests. This option is automatically configured when the `spamfilter` option is used. Override this setting only if you are using a custom server implementation.
 - __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max. value `16`).
 - __workerurl__ - The URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
 
@@ -135,35 +139,41 @@ Available configuration options:
 
 ```ts
 export interface Configure {
-  auto?: 'onload' | 'onsubmit'; 
+  analytics?: boolean | string;
+  auto?: 'onfocus' | 'onload' | 'onsubmit';
+  beaconurl?: string;
   challenge?: {
     algorithm: string;
     challenge: string;
+    maxnumber?: number;
     salt: string;
     signature: string;
   };
+  challengeurl?: string;
   debug?: boolean;
   delay?: number;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
   floatingoffset?: number;
+  autorenew?: boolean;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
   refetchonexpire?: boolean;
-  spamfilter: boolean | 'ipAddress' | SpamFilter;
+  spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: {
-    error?: string;
-    footer?: string;
-    label?: string;
-    verified?: string;
-    verifying?: string;
-    waitAlert?: string;
-  };
-  test?: boolean | number;
+    error: string;
+    expired: string;
+    footer: string;
+    label: string;
+    verified: string;
+    verifying: string;
+    waitAlert: string;
+  }
+  test?: boolean | number | 'delay';
   verifyurl?: string;
   workers?: number;
   workerurl?: string;
@@ -196,7 +206,7 @@ document.querySelector('#altcha').addEventListener('statechange', (ev) => {
 ```
 
 > [!IMPORTANT]  
-> Both programmatic configuration and event listeners have to called/attached after the ALTCHA script loads, such as within window.addEventListener('load', ...).
+> Both programmatic configuration and event listeners have to called/attached after the ALTCHA script loads, such as within `window.addEventListener('load', ...)`.
 
 ## Spam Filter
 

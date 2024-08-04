@@ -9,7 +9,9 @@ export interface Strings {
 }
 
 export interface Configure {
+  analytics?: boolean;
   auto?: 'onfocus' | 'onload' | 'onsubmit';
+  beaconurl?: string;
   challenge?: Challenge;
   challengeurl?: string;
   debug?: boolean;

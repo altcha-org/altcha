@@ -28,6 +28,7 @@ https://altcha.org
 - [Python](https://github.com/altcha-org/altcha-lib-py)
 - [Java](https://github.com/altcha-org/altcha-lib-java)
 - [Ruby](https://github.com/altcha-org/altcha-lib-rb)
+- [Elixir](https://github.com/altcha-org/altcha-lib-ex)
 
 ## Plugins
 

@@ -62,7 +62,7 @@ export function solveChallenge(
       }
     }
     return null;
-  }
+  };
   return {
     promise: fn(),
     controller,
@@ -78,3 +78,83 @@ export function getTimeZone() {
   return undefined;
 }
 
+export function base64ToUint8Array(encoded: string) {
+  const str = atob(encoded);
+  const ua = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) {
+    ua[i] = str.charCodeAt(i);
+  }
+  return ua;
+}
+
+export function numberToUint8Array(num: number, len: number = 12) {
+  const ua = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    ua[i] = num % 256;
+    num = Math.floor(num / 256);
+  }
+  return ua;
+}
+
+export async function clarifyData(
+  encrypted: string,
+  key: string = '',
+  max: number = 1e6,
+  start: number = 0
+) {
+  const algorithm = 'AES-GCM';
+  const controller = new AbortController();
+  const startTime = Date.now();
+  const fn = async () => {
+    for (let n = start; n <= max; n += 1) {
+      if (controller.signal.aborted || !cryptoKey || !encryptedData) {
+        return null;
+      }
+      try {
+        const decryptedData = await crypto.subtle.decrypt(
+          {
+            name: algorithm,
+            iv: numberToUint8Array(n),
+          },
+          cryptoKey,
+          encryptedData,
+        );
+        if (decryptedData) {
+          return {
+            clearText: new TextDecoder().decode(decryptedData),
+            took: Date.now() - startTime,
+          };
+        }
+
+      } catch {
+        // noop
+      }
+    }
+    return null;
+  };
+  let cryptoKey: CryptoKey | null = null;
+  let encryptedData: Uint8Array | null = null;
+  try {
+    encryptedData = base64ToUint8Array(encrypted);
+    const keyHash = await crypto.subtle.digest(
+      'SHA-256',
+      encoder.encode(key)
+    );
+    cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyHash,
+      algorithm,
+      false,
+      ['decrypt']
+    );
+  } catch {
+    return {
+      promise: Promise.reject(),
+      controller,
+    };
+  }
+  return {
+    promise: fn(),
+    controller,
+  };
+}

@@ -16,7 +16,7 @@ declare global {
 
   interface AltchaServerVerificationEvent extends CustomEvent<Record<string, unknown>> {}
 
-  interface AltchaWidget {
+  interface AltchaWidgetOptions {
     analytics?: boolean | string;
     auto?: 'onfocus' | 'onload' | 'onsubmit';
     beaconurl?: string;
@@ -31,9 +31,10 @@ declare global {
     floatingoffset?: number;
     hidefooter?: boolean;
     hidelogo?: boolean;
-    name?: string;
     maxnumber?: number;
     mockerror?: boolean;
+    name?: string;
+    obfuscated?: string;
     refetchonexpire?: boolean;
     spamfilter?: boolean | 'ipAddress';
     strings?: string;
@@ -41,6 +42,16 @@ declare global {
     verifyurl?: string;
     workers?: number;
     workerurl?: string;
+  }
+
+  interface AltchaWidgetMethods {
+    configure: (options: AltchaWidgetOptions) => void;
+    clarify: () => Promise<void>;
+    reset: (newState: AltchaState = 'unverified', err: string | null = null) => void;
+    verify: () => Promise<void>;
+  }
+
+  interface AltchaWidget extends AltchaWidgetOptions extends AltchaWidgetMethods {
   }
 
   declare namespace svelteHTML {
@@ -74,6 +85,7 @@ declare global {
     }
 
     interface AltchaWidgetReact extends AltchaWidget extends React.HTMLAttributes<HTMLElement> {
+      children?: React.ReactNode;
       ref?: React.RefObject<HTMLElement>;
       style?: AltchaWidgetCSSProperties;
     }

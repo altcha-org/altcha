@@ -7,7 +7,12 @@
 
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
-  import { solveChallenge, createTestChallenge, getTimeZone } from './helpers';
+  import {
+    solveChallenge,
+    createTestChallenge,
+    getTimeZone,
+    clarifyData,
+  } from './helpers';
   import { Session } from './session';
   import { State } from './types';
   import type {
@@ -17,11 +22,13 @@
     Solution,
     SpamFilter,
     ServerVerificationPayload,
+    Obfuscated,
+    ClarifySolution,
   } from './types';
 
   export let analytics: boolean = false;
   export let auto: 'onfocus' | 'onload' | 'onsubmit' | undefined = undefined;
-  export let beaconurl: string | undefined = undefined
+  export let beaconurl: string | undefined = undefined;
   export let blockspam: boolean | undefined = undefined;
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
@@ -43,6 +50,7 @@
   export let name: string = 'altcha';
   export let maxnumber: number = 1e6;
   export let mockerror: boolean = false;
+  export let obfuscated: string | undefined = undefined;
   export let refetchonexpire: boolean = true;
   export let spamfilter: boolean | 'ipAddress' | SpamFilter = false;
   export let strings: string | undefined = undefined;
@@ -58,10 +66,12 @@
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
 
   let checked: boolean = false;
+  let clarifiedData: string | null = null;
   let el: HTMLElement;
   let elAnchorArrow: HTMLElement | null = null;
   let elFloatingAnchor: HTMLElement | null = null;
   let elForm: HTMLFormElement | null = null;
+  let elClarifyButton: HTMLElement | null = null;
   let error: string | null = null;
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
   let payload: string | null = null;
@@ -87,9 +97,13 @@
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
   };
-  $: dispatch('statechange', { payload, state });
+  $: dispatch(
+    'statechange',
+    clarifiedData ? { clarifiedData, state } : { payload, state }
+  );
   $: onErrorChange(error);
   $: onStateChange(state);
+  $: onClarifiedDataChange(clarifiedData);
 
   onDestroy(() => {
     if (elForm) {
@@ -97,6 +111,9 @@
       elForm.removeEventListener('reset', onFormReset);
       elForm.removeEventListener('focusin', onFormFocusIn);
       elForm = null;
+    }
+    if (elClarifyButton) {
+      el.removeEventListener('click', onClarifyClick);
     }
     if (session) {
       session.destroy();
@@ -135,11 +152,21 @@
         elForm.addEventListener('focusin', onFormFocusIn);
       }
     }
+    elClarifyButton =
+      el.parentElement?.querySelector('[data-clarify-button]') ||
+      (el.parentElement?.querySelector('button, a') as HTMLElement | null);
+    if (elClarifyButton) {
+      elClarifyButton.addEventListener('click', onClarifyClick);
+    }
     if (analytics) {
       enableAnalytics();
     }
     if (auto === 'onload') {
-      verify();
+      if (obfuscated) {
+        clarify();
+      } else {
+        verify();
+      }
     }
     if (isFreeSaaS && (hidefooter || hidelogo)) {
       log(
@@ -151,6 +178,13 @@
   function log(...args: any[]) {
     if (debug || args.some((a) => a instanceof Error)) {
       console[args[0] instanceof Error ? 'error' : 'log']('ALTCHA', ...args);
+    }
+  }
+
+  function onClarifyClick(ev: Event) {
+    ev.preventDefault();
+    if (state === State.UNVERIFIED) {
+      clarify();
     }
   }
 
@@ -247,9 +281,11 @@
       }
       log('fetching challenge from', challengeurl);
       const resp = await fetch(challengeurl, {
-        headers: !!spamfilter ? {
-          'x-altcha-spam-filter': '1',
-        } : {},
+        headers: !!spamfilter
+          ? {
+              'x-altcha-spam-filter': '1',
+            }
+          : {},
       });
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
@@ -296,7 +332,7 @@
     }
   }
 
-  function enableAnalytics () {
+  function enableAnalytics() {
     if (session) {
       // already enabled
       return;
@@ -305,7 +341,7 @@
       log('analytics enabled');
       session = new Session(elForm);
       if (beaconurl === undefined) {
-        const action = elForm.getAttribute('action'); 
+        const action = elForm.getAttribute('action');
         if (action) {
           beaconurl = action + '/beacon';
         }
@@ -325,27 +361,34 @@
     }
   }
 
-  async function run(
-    data: Challenge
-  ): Promise<{ data: Challenge; solution: Solution | null }> {
-    let solution: Solution | null = null;
+  async function run(data: Challenge | Obfuscated): Promise<{
+    data: Challenge | Obfuscated;
+    solution: Solution | ClarifySolution | null;
+  }> {
+    let solution: Solution | ClarifySolution | null = null;
     if ('Worker' in window) {
       try {
-        solution = await runWorker(
-          data.challenge,
-          data.salt,
-          data.algorithm,
-          data.maxnumber
-        );
+        solution = await runWorker(data, data.maxnumber);
       } catch (err) {
         log(err);
       }
-      if (solution?.number !== undefined) {
+      if (solution?.number !== undefined || 'obfuscated' in data) {
         return {
           data,
           solution,
         };
       }
+    }
+    if ('obfuscated' in data) {
+      const solution = await clarifyData(
+        data.obfuscated,
+        data.key,
+        data.maxnumber
+      );
+      return {
+        data,
+        solution: await solution.promise,
+      };
     }
     return {
       data,
@@ -359,9 +402,7 @@
   }
 
   async function runWorker(
-    challenge: string,
-    salt: string,
-    alg?: string,
+    challenge: Challenge | Obfuscated,
     max: number = typeof test === 'number' ? test : maxnumber,
     concurrency: number = Math.ceil(workers)
   ): Promise<Solution | null> {
@@ -386,13 +427,9 @@
             resolve(message.data);
           });
           worker.postMessage({
-            payload: {
-              alg,
-              challenge,
-              max: start + step,
-              salt,
-              start,
-            },
+            payload: challenge,
+            max: start + step,
+            start,
             type: 'work',
           });
         }) as Promise<Solution | null>;
@@ -408,6 +445,8 @@
     if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(state)) {
       if (spamfilter && elForm?.reportValidity() === false) {
         checked = false;
+      } else if (obfuscated) {
+        clarify();
       } else {
         verify();
       }
@@ -437,6 +476,28 @@
   function onInvalid() {
     if (state === State.VERIFYING && _strings.waitAlert) {
       alert(_strings.waitAlert);
+    }
+  }
+
+  function onClarifiedDataChange(_: typeof clarifiedData) {
+    if (clarifiedData) {
+      const match = clarifiedData.match(/^(mailto|tel|sms|https?):/);
+      let el: HTMLAnchorElement | Text;
+      if (match) {
+        const [contact] = clarifiedData
+          .slice(clarifiedData.indexOf(':') + 1)
+          .replace(/^\/\//, '')
+          .split('?');
+        el = document.createElement('a');
+        el.href = clarifiedData;
+        el.innerHTML = contact;
+      } else {
+        el = document.createTextNode(clarifiedData);
+      }
+      if (elClarifyButton && el) {
+        elClarifyButton.after(el);
+        elClarifyButton.parentElement?.removeChild(elClarifyButton);
+      }
     }
   }
 
@@ -622,7 +683,9 @@
             ? document.querySelector(floatinganchor)
             : elForm?.querySelector(
                 'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
-              )) || elForm;
+              )) ||
+          elForm ||
+          elClarifyButton;
       }
       if (elFloatingAnchor) {
         // @ts-expect-error
@@ -673,10 +736,17 @@
       analytics = options.analytics;
       enableAnalytics();
     }
+    if (options.obfuscated !== undefined) {
+      obfuscated = options.obfuscated;
+    }
     if (options.auto !== undefined) {
       auto = options.auto;
       if (auto === 'onload') {
-        verify();
+        if (obfuscated) {
+          clarify();
+        } else {
+          verify();
+        }
       }
     }
     if (options.beaconurl) {
@@ -777,20 +847,22 @@
       })
       .then(({ data, solution }) => {
         log('solution', solution);
-        if (solution?.number !== undefined) {
-          if (verifyurl) {
-            return requestServerVerification(
-              createAltchaPayload(data, solution)
-            );
+        if ('challenge' in data && solution && !('clearText' in solution)) {
+          if (solution?.number !== undefined) {
+            if (verifyurl) {
+              return requestServerVerification(
+                createAltchaPayload(data, solution)
+              );
+            } else {
+              payload = createAltchaPayload(data, solution);
+              log('payload', payload);
+            }
           } else {
-            payload = createAltchaPayload(data, solution);
-            log('payload', payload);
+            log(
+              "Unable to find a solution. Ensure that the 'maxnumber' attribute is greater than the randomly generated number."
+            );
+            throw new Error('Unexpected result returned.');
           }
-        } else {
-          log(
-            "Unable to find a solution. Ensure that the 'maxnumber' attribute is greater than the randomly generated number."
-          );
-          throw new Error('Unexpected result returned.');
         }
       })
       .then(() => {
@@ -808,7 +880,44 @@
         error = err.message;
       });
   }
+
+  export async function clarify() {
+    if (!obfuscated) {
+      state = State.ERROR;
+      return;
+    }
+    reset(State.VERIFYING);
+    await new Promise((resolve) => setTimeout(resolve, delay || 0));
+    const [data, params] = obfuscated.split('?');
+    const parsedParams = new URLSearchParams(params || '');
+    let key = parsedParams.get('key') || undefined;
+    if (key) {
+      const match = key.match(/^\(prompt:?(.*)\)$/);
+      if (match) {
+        key = prompt(match[1] || 'Enter Key:') || undefined;
+      }
+    }
+    const { solution } = await run({
+      obfuscated: data,
+      key,
+      maxnumber,
+    });
+    if (solution && 'clearText' in solution) {
+      clarifiedData = solution.clearText;
+      state = State.VERIFIED;
+      checked = true;
+      if (floating && el) {
+        el.style.display = 'none';
+      }
+    } else {
+      state = State.ERROR;
+      checked = false;
+      error = 'Unable to decrypt data.';
+    }
+  }
 </script>
+
+<slot />
 
 <div bind:this={el} class="altcha" data-state={state} data-floating={floating}>
   <div class="altcha-main">
@@ -850,7 +959,7 @@
         <input type="hidden" {name} value={payload} />
 
         {#if session}
-        <input type="hidden" name="__session" value={sessionPayload} />
+          <input type="hidden" name="__session" value={sessionPayload} />
         {/if}
       {:else if state === State.VERIFYING}
         <span>{@html _strings.verifying}</span>

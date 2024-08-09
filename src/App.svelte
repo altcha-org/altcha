@@ -15,6 +15,7 @@
   let mockerror: boolean = false;
 
   let altcha: Altcha;
+  let altchaObfuscated: Altcha;
 
   onMount(() => {
     location.hash = '';
@@ -100,6 +101,20 @@
       <button type="reset">Reset</button>
     </div>
   </form>
+
+  <div>
+    Email:
+    <Altcha
+      bind:this={altchaObfuscated}
+      obfuscated="14tZkC2tFAQSrksIcD3OTD0u4ZWE4VkePJ5d0oVyoGmABDyW9YvNTA=="
+      on:statechange={(ev) => console.log('Event: statechange:', ev.detail)}
+      delay={1500}
+      name="email"
+      floating
+    >
+      <a href="#">(click to reveal)</a>
+    </Altcha>
+  </div>
 </main>
 
 <style lang="scss">

@@ -26,6 +26,7 @@ export interface Configure {
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
+  obfuscated?: string;
   refetchonexpire?: boolean;
   spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: Partial<Strings>;
@@ -84,6 +85,18 @@ export interface Payload {
   signature: string;
   test?: boolean;
   took: number;
+}
+
+export interface Obfuscated {
+  obfuscated: string;
+  key?: string;
+  maxnumber?: number;
+}
+
+export interface ClarifySolution {
+  clearText: string;
+  took: number;
+  worker?: boolean;
 }
 
 export enum State {

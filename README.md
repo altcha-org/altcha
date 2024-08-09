@@ -2,14 +2,15 @@
 
 ALTCHA uses a proof-of-work mechanism to protect your website, APIs, and online services from spam and abuse. Unlike other solutions, ALTCHA is self-hosted, does not use cookies nor fingerprinting, does not track users, and is fully compliant with GDPR.
 
-https://altcha.org
+Visit [ALTCHA](https://altcha.org) for more information.
 
-## Benefits
+## Features
 
-- __Friction-less__ - Using PoW instead of visual puzzles.
-- __Cookie-less__ - GDPR compliant by design.
-- __Self-hosted__ - Without reliance on external providers in self-hosted mode.
-- __SaaS available__ - Visit [altcha.org](https://altcha.org/docs/api) to get started with the SaaS API.
+- **Frictionless CAPTCHA Alternative** - Employs proof-of-work (PoW) instead of visual puzzles.
+- **Data Obfuscation** - Safeguards your email address from scraping.
+- **Cookie-less** - Designed to be GDPR compliant by default.
+- **Self-hosted** - Operates independently without relying on external providers.
+- **SaaS Available** - Get started with the SaaS API at [altcha.org/docs/api](https://altcha.org/docs/api).
 
 ## Examples
 
@@ -105,8 +106,9 @@ Additional options:
 - __hidelogo__ - Hide the ALTCHA logo.
 - __maxnumber__ - The max. number to iterate to (defaults to 1,000,000).
 - __name__ - The name of the hidden field containing the payload (defaults to "altcha").
+- __obfuscated__ - The [obfuscated data](https://altcha.org/docs/obfuscation) provided as a base64-encoded string. Use only without `challengeurl`/`challengejson`.
 - __spamfilter__ - Enable [Spam Filter](#spam-filter).
-- __strings__ - JSON-encoded translation strings. Refer to [customization](/docs/widget-customization).
+- __strings__ - JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
 - __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - __verifyurl__ - URL for server-side verification requests. This option is automatically configured when the `spamfilter` option is used. Override this setting only if you are using a custom server implementation.
 - __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max. value `16`).
@@ -163,6 +165,7 @@ export interface Configure {
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
+  obfuscated?: string;
   refetchonexpire?: boolean;
   spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: {

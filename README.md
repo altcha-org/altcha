@@ -80,6 +80,16 @@ See the [configuration](#configuration) below or visit the [website integration 
 
 See [server documentation](https://altcha.org/docs/server-integration) for more details.
 
+## Bundle Size
+
+ALTCHA's default bundle is lightweight, combining all assets, including CSS and the JavaScript Web Worker, into a single file. When GZIPped, it totals only 18.35 kB, making ALTCHA’s widget 93% smaller than reCAPTCHA.
+
+|Distribution|Size (GZIPped)|
+|---|---|
+|ALTCHA (v0.8.x)|18.35 kB|
+|hCaptcha|48 kB|
+|reCAPTCHA|270+ kB|
+
 ## Content Security Policy (CSP)
 
 The default distribution bundle of the WebComponent includes styles and the worker in a single file. This might cause issues with strict CSP rules. If you require strict CSP compliance, consider using the scripts located in the `/dist_external` directory. For more details, please refer to the [documentation](https://altcha.org/docs/website-integration).

@@ -3,6 +3,9 @@ export {};
 declare module 'altcha';
 
 declare global {
+  var altchaCreateWorker: (url?: string) => Worker;
+  var altchaPlugins: any[];
+
   type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';
 
   interface AltchaStateChangeEvent extends CustomEvent<{
@@ -17,9 +20,7 @@ declare global {
   interface AltchaServerVerificationEvent extends CustomEvent<Record<string, unknown>> {}
 
   interface AltchaWidgetOptions {
-    analytics?: boolean | string;
-    auto?: 'onfocus' | 'onload' | 'onsubmit';
-    beaconurl?: string;
+    auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;
@@ -47,7 +48,13 @@ declare global {
   interface AltchaWidgetMethods {
     configure: (options: AltchaWidgetOptions) => void;
     clarify: () => Promise<void>;
+    getConfiguration: () => AltchaWidgetOptions;
+    getFloatingAnchor: () => HTMLElement | null;
+    getPlugin: <T = unknown>(name: string) => T;
+    getState: () => AltchaState;
     reset: (newState: AltchaState = 'unverified', err: string | null = null) => void;
+    setFloatingAnchor: (el: HTMLElement) => void; 
+    setState: (newState: AltchaState, err: string | null = null) => void; 
     verify: () => Promise<void>;
   }
 

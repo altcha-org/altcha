@@ -31,7 +31,7 @@ Visit [ALTCHA](https://altcha.org) for more information.
 - [Ruby](https://github.com/altcha-org/altcha-lib-rb)
 - [Elixir](https://github.com/altcha-org/altcha-lib-ex)
 
-## Plugins
+## CMS
 
 - [WordPress plugin](https://github.com/altcha-org/wordpress-plugin)
 - [Other libraries and plugins](https://altcha.org/docs/integrations/)
@@ -82,12 +82,12 @@ See [server documentation](https://altcha.org/docs/server-integration) for more 
 
 ## Bundle Size
 
-ALTCHA's default bundle is lightweight, combining all assets, including CSS and the JavaScript Web Worker, into a single file. When GZIPped, it totals only 18.35 kB, making ALTCHA’s widget 93% smaller than reCAPTCHA.
+ALTCHA's default bundle is lightweight, combining all assets, including CSS and the JavaScript Web Worker, into a single file. When GZIPped, it totals only 17 kB, making ALTCHA’s widget 94% smaller than reCAPTCHA.
 
 |Distribution|Size (GZIPped)|
 |---|---|
-|ALTCHA (v0.8.x)|18.35 kB|
-|hCaptcha|48 kB|
+|ALTCHA (v0.9.x)|17 kB|
+|hCaptcha|48+ kB|
 |reCAPTCHA|270+ kB|
 
 ## Content Security Policy (CSP)
@@ -98,37 +98,60 @@ The default distribution bundle of the WebComponent includes styles and the work
 
 Required options (at least one is required):
 
-- __challengeurl__ - URL of your server to fetch the challenge from. Refer to [server integration](https://altcha.org/docs/server-integration).
-- __challengejson__ - JSON-encoded challenge data. If avoiding an HTTP request to `challengeurl`, provide the data here.
+- **challengeurl**: URL of your server to fetch the challenge from. Refer to [server integration](https://altcha.org/docs/server-integration).
+- **challengejson**: JSON-encoded challenge data. If avoiding an HTTP request to `challengeurl`, provide the data here.
 
 Additional options:
 
-- __analytics__ - Enable analytics with [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
-- __auto__ - Automatically verify without user interaction (possible values: `onfocus`, `onload`, `onsubmit`).
-- __beaconurl__ - URL to which analytics data will be sent using a beacon POST if the form is abandoned. This option is only used when `analytics` is enabled.
-- __blockspam__ - Only used in conjunction with the `spamfilter` option. If enabled, it will block form submission and fail verification if the Spam Filter returns a negative classification. This effectively prevents submission of the form.
-- __delay__ - The artificial delay in milliseconds to apply before the verification (defaults to 0).
-- __expire__ - The challenge expiration (duration in milliseconds).
-- __floating__ - Enable floating UI (possible values: `auto`, `top`, `bottom`).
-- __floatinganchor__ - The CSS selector of the "anchor" to which the floating UI will be attached to (defaults to the `button[type="submit"]` in the related form).
-- __floatingoffset__ - The Y offset from the anchor element for the floating UI expressed in pixels (defaults to `12`).
-- __hidefooter__ - Hide the footer (ALTCHA link).
-- __hidelogo__ - Hide the ALTCHA logo.
-- __maxnumber__ - The max. number to iterate to (defaults to 1,000,000).
-- __name__ - The name of the hidden field containing the payload (defaults to "altcha").
-- __obfuscated__ - The [obfuscated data](https://altcha.org/docs/obfuscation) provided as a base64-encoded string. Use only without `challengeurl`/`challengejson`.
-- __spamfilter__ - Enable [Spam Filter](#spam-filter).
-- __strings__ - JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
-- __refetchonexpire__ - Automatically re-fetch and re-validate when the challenge expires (defaults to true).
-- __verifyurl__ - URL for server-side verification requests. This option is automatically configured when the `spamfilter` option is used. Override this setting only if you are using a custom server implementation.
-- __workers__ - The number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max. value `16`).
-- __workerurl__ - The URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
+- **auto**: Automatically verify without user interaction (possible values: `off`, `onfocus`, `onload`, `onsubmit`).
+- **delay**: Artificial delay in milliseconds before verification (defaults to 0).
+- **expire**: Challenge expiration duration in milliseconds.
+- **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
+- **floatinganchor**: CSS selector of the "anchor" to which the floating UI will be attached (defaults to the `button[type="submit"]` in the related form).
+- **floatingoffset**: Y offset from the anchor element for the floating UI in pixels (defaults to `12`).
+- **hidefooter**: Hide the footer (ALTCHA link).
+- **hidelogo**: Hide the ALTCHA logo.
+- **maxnumber**: Max number to iterate to (defaults to 1,000,000).
+- **name**: Name of the hidden field containing the payload (defaults to "altcha").
+- **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
+- **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
+- **workers**: Number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max value `16`).
+- **workerurl**: URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
 
-Development / testing options:
+Spam Filter-related options:
 
-- __debug__ - Print log messages in the console.
-- __mockerror__ - Causes the verification to always fail with a "mock" error.
-- __test__ - Generates a "mock" challenge within the widget, bypassing the request to `challengeurl`.
+- **blockspam**: Only used with the `spamfilter` option. If enabled, it will block form submission and fail verification if the Spam Filter returns a negative classification. This prevents form submission.
+- **spamfilter**: Enable [Spam Filter](#spam-filter).
+- **verifyurl**: URL for server-side verification requests. This option is automatically configured when the `spamfilter` option is used. Override this setting only if using a custom server implementation.
+
+Data Obfuscation options:
+
+- **obfuscated**: The [obfuscated data](https://altcha.org/docs/obfuscation) provided as a base64-encoded string (requires `altcha/obfuscation` plugin). Use only without `challengeurl`/`challengejson`.
+
+Development / Testing options:
+
+- **debug**: Print log messages in the console.
+- **mockerror**: Causes verification to always fail with a "mock" error.
+- **test**: Generates a "mock" challenge within the widget, bypassing the request to `challengeurl`.
+
+## Plugins
+
+Version 0.9.x introduced _plugins_ that can be enabled by importing individual plugin scripts:
+
+```js
+import 'altcha/obfuscation';
+import 'altcha';
+```
+
+It is recommended to import plugins _before_ the main `altcha` package to ensure proper registration before any widget instance is created.
+
+Available plugins built-in to the `altcha` package:
+
+- `altcha/analytics`: Enable analytics with [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
+- `altcha/obfuscation`: Enable [obfuscation](https://altcha.org/docs/obfuscation) for sensitive data such as email addresses or phone numbers.
+- `altcha/upload`: Enable file upload from `type=file` fields to [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
+
+To enable specific plugins for a particular instance of the widget, use the `plugins` attribute in the widget tag. List the names of the plugins you want to enable, separated by commas, such as `plugins="analytics,obfuscation"`. Plugins still need to be imported as described above. The `plugins` attribute only specifies which plugins should be active for that instance, even if other plugins are already imported.
 
 ## Programmatic Configuration
 
@@ -152,9 +175,7 @@ Available configuration options:
 
 ```ts
 export interface Configure {
-  analytics?: boolean | string;
-  auto?: 'onfocus' | 'onload' | 'onsubmit';
-  beaconurl?: string;
+  auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
   challenge?: {
     algorithm: string;
     challenge: string;
@@ -196,9 +217,10 @@ export interface Configure {
 
 ## Events
 
-- __serververification__ - Triggers upon a server verification (only in conjunction with `spamfilter`).
-- __statechange__ - Triggers whenever an internal `state` changes.
-- __verified__ - Triggers when the challenge is verified.
+- **load** - Triggers when the widget loads. The exported methods become available after this event.
+- **serververification** - Triggers upon a server verification (only in conjunction with `spamfilter`).
+- **statechange** - Triggers whenever an internal `state` changes.
+- **verified** - Triggers when the challenge is verified.
 
 ```ts
 enum State {
@@ -249,16 +271,16 @@ interface SpamFilter {
 
 SpamFilter configuration options:
 
-- __blockedCountries__ - An array of country codes (ISO 3166 alpha-2) that you want to block.
-- __classifier__ - Enforce a specific classifier.
-- __disableRules__ - An array of rules to disable.
-- __email__ - The name of the input field for the user's email. Disable email checking with `false`.
-- __expectedCountries__ - An array of expected countries as 2-letter codes (ISO 3166-1 alpha-2).
-- __expectedLanguages__ - An array of expected languages as 2-letter codes (ISO 639 alpha-2).
-- __fields__ - An array of input names to send to the spam filter.
-- __ipAddress__ - The user's IP is detected automatically but can be overridden or disabled with `false`.
-- __text__ - The text to classify. An array of strings can also be submitted.
-- __timeZone__ - The user's timezone is detected automatically but can be overridden or disabled with `false`.
+- **blockedCountries** - An array of country codes (ISO 3166 alpha-2) that you want to block.
+- **classifier** - Enforce a specific classifier.
+- **disableRules** - An array of rules to disable.
+- **email** - The name of the input field for the user's email. Disable email checking with `false`.
+- **expectedCountries** - An array of expected countries as 2-letter codes (ISO 3166-1 alpha-2).
+- **expectedLanguages** - An array of expected languages as 2-letter codes (ISO 639 alpha-2).
+- **fields** - An array of input names to send to the spam filter.
+- **ipAddress** - The user's IP is detected automatically but can be overridden or disabled with `false`.
+- **text** - The text to classify. An array of strings can also be submitted.
+- **timeZone** - The user's timezone is detected automatically but can be overridden or disabled with `false`.
 
 To include the email field into `fields` (for easier server-side verification), configure the list of input names using the `spamfilter.fields: string[]` option.
 

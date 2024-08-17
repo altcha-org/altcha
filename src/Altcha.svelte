@@ -13,8 +13,8 @@
     getTimeZone,
     clarifyData,
   } from './helpers';
-  import { Session } from './session';
   import { State } from './types';
+  import type { Plugin } from './plugin';
   import type {
     Configure,
     Payload,
@@ -24,11 +24,10 @@
     ServerVerificationPayload,
     Obfuscated,
     ClarifySolution,
+    PluginContext,
   } from './types';
 
-  export let analytics: boolean = false;
-  export let auto: 'onfocus' | 'onload' | 'onsubmit' | undefined = undefined;
-  export let beaconurl: string | undefined = undefined;
+  export let auto: 'off' | 'onfocus' | 'onload' | 'onsubmit' | undefined = undefined;
   export let blockspam: boolean | undefined = undefined;
   export let challengeurl: string | undefined = undefined;
   export let challengejson: string | undefined = undefined;
@@ -51,6 +50,7 @@
   export let maxnumber: number = 1e6;
   export let mockerror: boolean = false;
   export let obfuscated: string | undefined = undefined;
+  export let plugins: string | undefined = undefined;
   export let refetchonexpire: boolean = true;
   export let spamfilter: boolean | 'ipAddress' | SpamFilter = false;
   export let strings: string | undefined = undefined;
@@ -66,17 +66,14 @@
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
 
   let checked: boolean = false;
-  let clarifiedData: string | null = null;
   let el: HTMLElement;
   let elAnchorArrow: HTMLElement | null = null;
   let elFloatingAnchor: HTMLElement | null = null;
   let elForm: HTMLFormElement | null = null;
-  let elClarifyButton: HTMLElement | null = null;
   let error: string | null = null;
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
   let payload: string | null = null;
-  let session: Session | null = null;
-  let sessionPayload: string | null = null;
+  let loadedPlugins: Plugin[] = [];
   let state: State = State.UNVERIFIED;
 
   $: isFreeSaaS =
@@ -97,26 +94,17 @@
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
   };
-  $: dispatch(
-    'statechange',
-    clarifiedData ? { clarifiedData, state } : { payload, state }
-  );
+  $: dispatch('statechange', { payload, state });
   $: onErrorChange(error);
   $: onStateChange(state);
-  $: onClarifiedDataChange(clarifiedData);
 
   onDestroy(() => {
+    destroyPlugins();
     if (elForm) {
       elForm.removeEventListener('submit', onFormSubmit);
       elForm.removeEventListener('reset', onFormReset);
       elForm.removeEventListener('focusin', onFormFocusIn);
       elForm = null;
-    }
-    if (elClarifyButton) {
-      el.removeEventListener('click', onClarifyClick);
-    }
-    if (session) {
-      session.destroy();
     }
     if (expireTimeout) {
       clearTimeout(expireTimeout);
@@ -130,6 +118,13 @@
   onMount(() => {
     log('mounted', ALTCHA_VERSION);
     log('workers', workers);
+    loadPlugins();
+    log(
+      'plugins',
+      loadedPlugins.length
+        ? loadedPlugins.map((plugin) => (plugin.constructor as any).pluginName).join(', ')
+        : 'none'
+    );
     if (test) {
       log('using test mode');
     }
@@ -152,15 +147,6 @@
         elForm.addEventListener('focusin', onFormFocusIn);
       }
     }
-    elClarifyButton =
-      el.parentElement?.querySelector('[data-clarify-button]') ||
-      (el.parentElement?.querySelector('button, a') as HTMLElement | null);
-    if (elClarifyButton) {
-      elClarifyButton.addEventListener('click', onClarifyClick);
-    }
-    if (analytics) {
-      enableAnalytics();
-    }
     if (auto === 'onload') {
       if (obfuscated) {
         clarify();
@@ -170,60 +156,17 @@
     }
     if (isFreeSaaS && (hidefooter || hidelogo)) {
       log(
-        'Attributes hidefooter and hidelogo ignored because usage with free API Keys require attribution.'
+        'Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution.'
       );
     }
+    requestAnimationFrame(() => {
+      dispatch('load');
+    });
   });
 
-  function log(...args: any[]) {
-    if (debug || args.some((a) => a instanceof Error)) {
-      console[args[0] instanceof Error ? 'error' : 'log']('ALTCHA', ...args);
-    }
-  }
-
-  function onClarifyClick(ev: Event) {
-    ev.preventDefault();
-    if (state === State.UNVERIFIED) {
-      clarify();
-    }
-  }
-
-  function onFormFocusIn(ev: FocusEvent) {
-    if (state === State.UNVERIFIED) {
-      verify();
-    }
-  }
-
-  function onFormSubmit(ev: SubmitEvent) {
-    if (elForm && session && state === State.VERIFIED) {
-      session.end();
-      sessionPayload = session.dataAsBase64();
-    }
-    if (elForm && auto === 'onsubmit') {
-      if (state === State.UNVERIFIED) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        verify().then(() => {
-          elForm?.requestSubmit();
-        });
-      } else if (state !== State.VERIFIED) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (state === State.VERIFYING) {
-          onInvalid();
-        }
-      }
-    }
-  }
-
-  function onFormReset() {
-    reset();
-  }
-
-  function parseJsonAttribute(str: string) {
-    return JSON.parse(str);
-  }
-
+  /**
+   * Creates a Base64-encoded payload with solution.
+   */
   function createAltchaPayload(data: Challenge, solution: Solution): string {
     return btoa(
       JSON.stringify({
@@ -238,26 +181,30 @@
     );
   }
 
-  function validateChallenge(data: Challenge) {
-    if (!data.algorithm) {
-      throw new Error(`Invalid challenge. Property algorithm is missing.`);
-    }
-    if (data.signature === undefined) {
-      throw new Error('Invalid challenge. Property signature is missing.');
-    }
-    if (!allowedAlgs.includes(data.algorithm.toUpperCase())) {
-      throw new Error(
-        `Unknown algorithm value. Allowed values: ${allowedAlgs.join(', ')}`
-      );
-    }
-    if (!data.challenge || data.challenge.length < 40) {
-      throw new Error('Challenge is too short. Min. 40 chars.');
-    }
-    if (!data.salt || data.salt.length < 10) {
-      throw new Error('Salt is too short. Min. 10 chars.');
+  /**
+   * Destroys all loaded plugins.
+   */
+  function destroyPlugins() {
+    for (const plugin of loadedPlugins) {
+      plugin.destroy();
     }
   }
 
+  /**
+   * Sets the state to EXPIRED or re-fetches the challenge if `refetchonexpire` is enabled.
+   */
+  function expireChallenge() {
+    if (challengeurl && refetchonexpire && state === State.VERIFIED) {
+      // re-fetch challenge and verify again
+      verify();
+    } else {
+      reset(State.EXPIRED, _strings.expired);
+    }
+  }
+
+  /**
+   * Fetches the challenge from the configured `challengeurl` or `challengejson`.
+   */
   async function fetchChallenge(): Promise<Challenge> {
     if (mockerror) {
       log('mocking error');
@@ -332,232 +279,9 @@
     }
   }
 
-  function enableAnalytics() {
-    if (session) {
-      // already enabled
-      return;
-    }
-    if (elForm) {
-      log('analytics enabled');
-      session = new Session(elForm);
-      if (beaconurl === undefined) {
-        const action = elForm.getAttribute('action');
-        if (action) {
-          beaconurl = action + '/beacon';
-        }
-      }
-      session.beaconUrl = beaconurl || null;
-    } else {
-      log('analytics cannot be enabled - form element not found');
-    }
-  }
-
-  function expireChallenge() {
-    if (challengeurl && refetchonexpire && state === State.VERIFIED) {
-      // re-fetch challenge and verify again
-      verify();
-    } else {
-      reset(State.EXPIRED, _strings.expired);
-    }
-  }
-
-  async function run(data: Challenge | Obfuscated): Promise<{
-    data: Challenge | Obfuscated;
-    solution: Solution | ClarifySolution | null;
-  }> {
-    let solution: Solution | ClarifySolution | null = null;
-    if ('Worker' in window) {
-      try {
-        solution = await runWorker(data, data.maxnumber);
-      } catch (err) {
-        log(err);
-      }
-      if (solution?.number !== undefined || 'obfuscated' in data) {
-        return {
-          data,
-          solution,
-        };
-      }
-    }
-    if ('obfuscated' in data) {
-      const solution = await clarifyData(
-        data.obfuscated,
-        data.key,
-        data.maxnumber
-      );
-      return {
-        data,
-        solution: await solution.promise,
-      };
-    }
-    return {
-      data,
-      solution: await solveChallenge(
-        data.challenge,
-        data.salt,
-        data.algorithm,
-        data.maxnumber || maxnumber
-      ).promise,
-    };
-  }
-
-  async function runWorker(
-    challenge: Challenge | Obfuscated,
-    max: number = typeof test === 'number' ? test : maxnumber,
-    concurrency: number = Math.ceil(workers)
-  ): Promise<Solution | null> {
-    const workers: Worker[] = [];
-    concurrency = Math.min(16, Math.max(1, concurrency));
-    for (let i = 0; i < concurrency; i++) {
-      workers.push(createAltchaWorker(workerurl));
-    }
-    const step = Math.ceil(max / concurrency);
-    const solutions = await Promise.all(
-      workers.map((worker, i) => {
-        const start = i * step;
-        return new Promise((resolve) => {
-          worker.addEventListener('message', (message: MessageEvent) => {
-            if (message.data) {
-              for (const w of workers) {
-                if (w !== worker) {
-                  w.postMessage({ type: 'abort' });
-                }
-              }
-            }
-            resolve(message.data);
-          });
-          worker.postMessage({
-            payload: challenge,
-            max: start + step,
-            start,
-            type: 'work',
-          });
-        }) as Promise<Solution | null>;
-      })
-    );
-    for (const worker of workers) {
-      worker.terminate();
-    }
-    return solutions.find((solution) => !!solution) || null;
-  }
-
-  function onCheckedChange() {
-    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(state)) {
-      if (spamfilter && elForm?.reportValidity() === false) {
-        checked = false;
-      } else if (obfuscated) {
-        clarify();
-      } else {
-        verify();
-      }
-    } else {
-      checked = true;
-    }
-  }
-
-  function onDocumentClick(ev: MouseEvent) {
-    const target = ev.target as HTMLElement;
-    if (
-      floating &&
-      target &&
-      !el.contains(target) &&
-      state === State.VERIFIED
-    ) {
-      el.style.display = 'none';
-    }
-  }
-
-  function onDocumentScroll() {
-    if (floating) {
-      repositionFloating();
-    }
-  }
-
-  function onInvalid() {
-    if (state === State.VERIFYING && _strings.waitAlert) {
-      alert(_strings.waitAlert);
-    }
-  }
-
-  function onClarifiedDataChange(_: typeof clarifiedData) {
-    if (clarifiedData) {
-      const match = clarifiedData.match(/^(mailto|tel|sms|https?):/);
-      let el: HTMLAnchorElement | Text;
-      if (match) {
-        const [contact] = clarifiedData
-          .slice(clarifiedData.indexOf(':') + 1)
-          .replace(/^\/\//, '')
-          .split('?');
-        el = document.createElement('a');
-        el.href = clarifiedData;
-        el.innerHTML = contact;
-      } else {
-        el = document.createTextNode(clarifiedData);
-      }
-      if (elClarifyButton && el) {
-        elClarifyButton.after(el);
-        elClarifyButton.parentElement?.removeChild(elClarifyButton);
-      }
-    }
-  }
-
-  function onErrorChange(_: typeof error) {
-    if (session) {
-      session.trackError(error);
-    }
-  }
-
-  function onStateChange(_: typeof state) {
-    if (floating && state !== State.UNVERIFIED) {
-      requestAnimationFrame(() => {
-        repositionFloating();
-      });
-    }
-  }
-
-  function onWindowResize() {
-    if (floating) {
-      repositionFloating();
-    }
-  }
-
-  function setExpire(duration: number) {
-    log('expire', duration);
-    if (expireTimeout) {
-      clearTimeout(expireTimeout);
-      expireTimeout = null;
-    }
-    if (duration < 1) {
-      expireChallenge();
-    } else {
-      expireTimeout = setTimeout(expireChallenge, duration);
-    }
-  }
-
-  function setFloating(strategy: typeof floating) {
-    log('floating', strategy);
-    if (floating !== strategy) {
-      el.style.left = '';
-      el.style.top = '';
-    }
-    floating =
-      strategy === true || strategy === ''
-        ? 'auto'
-        : strategy === false || strategy === 'false'
-          ? undefined
-          : floating;
-    if (floating) {
-      if (!auto) {
-        auto = 'onsubmit';
-      }
-      document.addEventListener('scroll', onDocumentScroll);
-      document.addEventListener('click', onDocumentClick);
-      window.addEventListener('resize', onWindowResize);
-    } else if (auto === 'onsubmit') {
-      auto = undefined;
-    }
-  }
-
+  /**
+   * Get the email field value fot the Spam Filter.
+   */
   function getEmail(name?: string) {
     const elInput = elForm?.querySelector(
       typeof name === 'string'
@@ -567,6 +291,43 @@
     return elInput?.value?.slice(elInput.value.indexOf('@')) || void 1;
   }
 
+  /**
+   * Get configuration options for the Spam Filter.
+   */
+  function getSpamFilterOptions(): SpamFilter {
+    if (spamfilter === 'ipAddress') {
+      return {
+        blockedCountries: undefined,
+        classifier: undefined,
+        disableRules: undefined,
+        email: false,
+        expectedCountries: undefined,
+        expectedLanguages: undefined,
+        fields: false,
+        ipAddress: undefined,
+        text: undefined,
+        timeZone: undefined,
+      };
+    }
+    return typeof spamfilter === 'object'
+      ? spamfilter
+      : {
+          blockedCountries: undefined,
+          classifier: undefined,
+          disableRules: undefined,
+          email: undefined,
+          expectedCountries: undefined,
+          expectedLanguages: undefined,
+          fields: undefined,
+          ipAddress: undefined,
+          text: undefined,
+          timeZone: undefined,
+        };
+  }
+
+  /**
+   * Get all text field values for the Spam Filter.
+   */
   function getTextFields(names?: string[]) {
     const elInputs = [
       ...(elForm?.querySelectorAll(
@@ -590,6 +351,243 @@
     );
   }
 
+  /**
+   * Loads the registered plugins.
+   */
+  function loadPlugins() {
+    const enabledPlugins =
+      plugins !== undefined ? plugins.split(',') : undefined;
+    for (const Plugin of globalThis.altchaPlugins) {
+      if (!enabledPlugins || enabledPlugins.includes(Plugin.pluginName)) {
+        loadedPlugins.push(
+          new Plugin({
+            el,
+            clarify,
+            dispatch,
+            getConfiguration,
+            getFloatingAnchor,
+            getState,
+            log,
+            reset,
+            solve,
+            setState,
+            setFloatingAnchor,
+            verify,
+          } satisfies PluginContext)
+        );
+      }
+    }
+  }
+
+  /**
+   * Logs debug information to the console.
+   */
+  function log(...args: unknown[]) {
+    if (debug || args.some((a) => a instanceof Error)) {
+      console[args[0] instanceof Error ? 'error' : 'log'](
+        'ALTCHA',
+        `[name=${name}]`,
+        ...args
+      );
+    }
+  }
+
+  /**
+   * Called when the checkbox is checked or unchecked.
+   */
+  function onCheckedChange() {
+    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(state)) {
+      if (spamfilter && elForm?.reportValidity() === false) {
+        checked = false;
+      } else if (obfuscated) {
+        clarify();
+      } else {
+        verify();
+      }
+    } else {
+      checked = true;
+    }
+  }
+
+  /**
+   * Handles click events on the document.
+   */
+  function onDocumentClick(ev: MouseEvent) {
+    const target = ev.target as HTMLElement;
+    if (
+      floating &&
+      target &&
+      !el.contains(target) &&
+      (state === State.VERIFIED || (auto === 'off' && state === State.UNVERIFIED))
+    ) {
+      el.style.display = 'none';
+    }
+  }
+
+  /**
+   * Handles scroll events on the document.
+   */
+  function onDocumentScroll() {
+    if (floating && state !== State.UNVERIFIED) {
+      repositionFloating();
+    }
+  }
+
+  /**
+   * Handles changes in the error state and notifies plugins.
+   */
+  function onErrorChange(_: typeof error) {
+    for (const plugin of loadedPlugins) {
+      if (typeof plugin.onErrorChange === 'function') {
+        plugin.onErrorChange(error);
+      }
+    }
+  }
+
+  /**
+   * Handles the form focus-in event.
+   */
+  function onFormFocusIn(ev: FocusEvent) {
+    if (state === State.UNVERIFIED) {
+      verify();
+    }
+  }
+
+  /**
+   * Handles the form submission event.
+   */
+  function onFormSubmit(ev: SubmitEvent) {
+    if (elForm && auto === 'onsubmit') {
+      if (state === State.UNVERIFIED) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        verify().then(() => {
+          elForm?.requestSubmit();
+        });
+      } else if (state !== State.VERIFIED) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (state === State.VERIFYING) {
+          onInvalid();
+        }
+      }
+    } else if (elForm && floating && auto === 'off' && state === State.UNVERIFIED) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      el.style.display = 'block';
+      repositionFloating();
+    }
+  }
+
+  /**
+   * Handles the form reset event.
+   */
+  function onFormReset() {
+    reset();
+  }
+
+  /**
+   * Called when the form is submitted while in VERIFYING state and shows an alert message if the string `waitAlert` is configured.
+   */
+  function onInvalid() {
+    if (state === State.VERIFYING && _strings.waitAlert) {
+      alert(_strings.waitAlert);
+    }
+  }
+
+  /**
+   * Handles changes in the state and updates the UI accordingly.
+   */
+  function onStateChange(_: typeof state) {
+    for (const plugin of loadedPlugins) {
+      if (typeof plugin.onStateChange === 'function') {
+        plugin.onStateChange(state);
+      }
+    }
+    if (floating && state !== State.UNVERIFIED) {
+      requestAnimationFrame(() => {
+        repositionFloating();
+      });
+    }
+    checked = state === State.VERIFIED;
+  }
+
+  /**
+   * Handles resize events on the window.
+   */
+  function onWindowResize() {
+    if (floating) {
+      repositionFloating();
+    }
+  }
+
+  /**
+   * Parses a JSON attribute string.
+   */
+  function parseJsonAttribute(str: string) {
+    return JSON.parse(str);
+  }
+
+  /**
+   * Repositions the floating UI element based on scroll position.
+   */
+  function repositionFloating(viewportOffset: number = 20) {
+    if (el) {
+      if (!elFloatingAnchor) {
+        elFloatingAnchor =
+          (floatinganchor
+            ? document.querySelector(floatinganchor)
+            : elForm?.querySelector(
+                'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
+              )) || elForm;
+      }
+      if (elFloatingAnchor) {
+        // @ts-expect-error
+        const offsetY = parseInt(floatingoffset, 10) || 12;
+        const anchorBoundry = elFloatingAnchor.getBoundingClientRect();
+        const elBoundary = el.getBoundingClientRect();
+        const docHeight = document.documentElement.clientHeight;
+        const docWidth = document.documentElement.clientWidth;
+        const showOnTop =
+          floating === 'auto'
+            ? anchorBoundry.bottom +
+                elBoundary.height +
+                offsetY +
+                viewportOffset >
+              docHeight
+            : floating === 'top';
+        const left = Math.max(
+          viewportOffset,
+          Math.min(
+            docWidth - viewportOffset - elBoundary.width,
+            anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2
+          )
+        );
+        if (showOnTop) {
+          el.style.top = `${anchorBoundry.top - (elBoundary.height + offsetY)}px`;
+        } else {
+          el.style.top = `${anchorBoundry.bottom + offsetY}px`;
+        }
+        el.style.left = `${left}px`;
+        el.setAttribute('data-floating', showOnTop ? 'top' : 'bottom');
+        if (elAnchorArrow) {
+          const anchorArrowBoundry = elAnchorArrow.getBoundingClientRect();
+          elAnchorArrow.style.left =
+            anchorBoundry.left -
+            left +
+            anchorBoundry.width / 2 -
+            anchorArrowBoundry.width / 2 +
+            'px';
+        }
+      } else {
+        log('unable to find floating anchor element');
+      }
+    }
+  }
+
+  /**
+   * Classifies the data using the Spam Filter and sets the payload.
+   */
   async function requestServerVerification(verificationPayload: string) {
     if (!verifyurl) {
       throw new Error('Attribute verifyurl not set.');
@@ -644,98 +642,177 @@
     }
   }
 
-  function getSpamFilterOptions(): SpamFilter {
-    if (spamfilter === 'ipAddress') {
+  /**
+   * Sets the expiration timeout for the challenge.
+   */
+  function setExpire(duration: number) {
+    log('expire', duration);
+    if (expireTimeout) {
+      clearTimeout(expireTimeout);
+      expireTimeout = null;
+    }
+    if (duration < 1) {
+      expireChallenge();
+    } else {
+      expireTimeout = setTimeout(expireChallenge, duration);
+    }
+  }
+
+  /**
+   * Set the floating UI mode.
+   */
+  function setFloating(strategy: typeof floating) {
+    log('floating', strategy);
+    if (floating !== strategy) {
+      el.style.left = '';
+      el.style.top = '';
+    }
+    floating =
+      strategy === true || strategy === ''
+        ? 'auto'
+        : strategy === false || strategy === 'false'
+          ? undefined
+          : floating;
+    if (floating) {
+      if (!auto) {
+        auto = 'onsubmit';
+      }
+      document.addEventListener('scroll', onDocumentScroll);
+      document.addEventListener('click', onDocumentClick);
+      window.addEventListener('resize', onWindowResize);
+    } else if (auto === 'onsubmit') {
+      auto = undefined;
+    }
+  }
+
+  /**
+   * Validates a retrieved challenge and throws if invalid.
+   */
+  function validateChallenge(data: Challenge) {
+    if (!data.algorithm) {
+      throw new Error(`Invalid challenge. Property algorithm is missing.`);
+    }
+    if (data.signature === undefined) {
+      throw new Error('Invalid challenge. Property signature is missing.');
+    }
+    if (!allowedAlgs.includes(data.algorithm.toUpperCase())) {
+      throw new Error(
+        `Unknown algorithm value. Allowed values: ${allowedAlgs.join(', ')}`
+      );
+    }
+    if (!data.challenge || data.challenge.length < 40) {
+      throw new Error('Challenge is too short. Min. 40 chars.');
+    }
+    if (!data.salt || data.salt.length < 10) {
+      throw new Error('Salt is too short. Min. 10 chars.');
+    }
+  }
+
+  async function solve(data: Challenge | Obfuscated): Promise<{
+    data: Challenge | Obfuscated;
+    solution: Solution | ClarifySolution | null;
+  }> {
+    let solution: Solution | ClarifySolution | null = null;
+    if ('Worker' in window) {
+      try {
+        solution = await solveWorkers(data, data.maxnumber);
+      } catch (err) {
+        log(err);
+      }
+      if (solution?.number !== undefined || 'obfuscated' in data) {
+        return {
+          data,
+          solution,
+        };
+      }
+    }
+    if ('obfuscated' in data) {
+      const solution = await clarifyData(
+        data.obfuscated,
+        data.key,
+        data.maxnumber
+      );
       return {
-        blockedCountries: undefined,
-        classifier: undefined,
-        disableRules: undefined,
-        email: false,
-        expectedCountries: undefined,
-        expectedLanguages: undefined,
-        fields: false,
-        ipAddress: undefined,
-        text: undefined,
-        timeZone: undefined,
+        data,
+        solution: await solution.promise,
       };
     }
-    return typeof spamfilter === 'object'
-      ? spamfilter
-      : {
-          blockedCountries: undefined,
-          classifier: undefined,
-          disableRules: undefined,
-          email: undefined,
-          expectedCountries: undefined,
-          expectedLanguages: undefined,
-          fields: undefined,
-          ipAddress: undefined,
-          text: undefined,
-          timeZone: undefined,
-        };
+    return {
+      data,
+      solution: await solveChallenge(
+        data.challenge,
+        data.salt,
+        data.algorithm,
+        data.maxnumber || maxnumber
+      ).promise,
+    };
   }
 
-  function repositionFloating(viewportOffset: number = 20) {
-    if (el) {
-      if (!elFloatingAnchor) {
-        elFloatingAnchor =
-          (floatinganchor
-            ? document.querySelector(floatinganchor)
-            : elForm?.querySelector(
-                'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
-              )) ||
-          elForm ||
-          elClarifyButton;
-      }
-      if (elFloatingAnchor) {
-        // @ts-expect-error
-        const offsetY = parseInt(floatingoffset, 10) || 12;
-        const anchorBoundry = elFloatingAnchor.getBoundingClientRect();
-        const elBoundary = el.getBoundingClientRect();
-        const docHeight = document.documentElement.clientHeight;
-        const docWidth = document.documentElement.clientWidth;
-        const showOnTop =
-          floating === 'auto'
-            ? anchorBoundry.bottom +
-                elBoundary.height +
-                offsetY +
-                viewportOffset >
-              docHeight
-            : floating === 'top';
-        const left = Math.max(
-          viewportOffset,
-          Math.min(
-            docWidth - viewportOffset - elBoundary.width,
-            anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2
-          )
-        );
-        if (showOnTop) {
-          el.style.top = `${anchorBoundry.top - (elBoundary.height + offsetY)}px`;
-        } else {
-          el.style.top = `${anchorBoundry.bottom + offsetY}px`;
-        }
-        el.style.left = `${left}px`;
-        el.setAttribute('data-floating', showOnTop ? 'top' : 'bottom');
-        if (elAnchorArrow) {
-          const anchorArrowBoundry = elAnchorArrow.getBoundingClientRect();
-          elAnchorArrow.style.left =
-            anchorBoundry.left -
-            left +
-            anchorBoundry.width / 2 -
-            anchorArrowBoundry.width / 2 +
-            'px';
-        }
-      } else {
-        log('unable to find floating anchor element');
-      }
+  async function solveWorkers(
+    challenge: Challenge | Obfuscated,
+    max: number = typeof test === 'number' ? test : maxnumber,
+    concurrency: number = Math.ceil(workers)
+  ): Promise<Solution | null> {
+    const workers: Worker[] = [];
+    concurrency = Math.min(16, Math.max(1, concurrency));
+    for (let i = 0; i < concurrency; i++) {
+      workers.push(altchaCreateWorker(workerurl));
+    }
+    const step = Math.ceil(max / concurrency);
+    const solutions = await Promise.all(
+      workers.map((worker, i) => {
+        const start = i * step;
+        return new Promise((resolve) => {
+          worker.addEventListener('message', (message: MessageEvent) => {
+            if (message.data) {
+              for (const w of workers) {
+                if (w !== worker) {
+                  w.postMessage({ type: 'abort' });
+                }
+              }
+            }
+            resolve(message.data);
+          });
+          worker.postMessage({
+            payload: challenge,
+            max: start + step,
+            start,
+            type: 'work',
+          });
+        }) as Promise<Solution | null>;
+      })
+    );
+    for (const worker of workers) {
+      worker.terminate();
+    }
+    return solutions.find((solution) => !!solution) || null;
+  }
+
+  /**
+   * Clarifies the data by verifying obfuscated information.
+   */
+  export async function clarify() {
+    if (!obfuscated) {
+      state = State.ERROR;
+      return;
+    }
+    const plugin = loadedPlugins.find((p) => (p.constructor as any).pluginName === 'obfuscation');
+    if (!plugin || !('clarify' in plugin)) {
+      state = State.ERROR;
+      log(
+        'Plugin `obfuscation` not found. Import `altcha/plugins/obfuscation` to load it.'
+      );
+      return;
+    }
+    if ('clarify' in plugin && typeof plugin.clarify === 'function') {
+      return plugin.clarify();
     }
   }
 
+  /**
+   * Programmatically configure the widget with given options.
+   */
   export function configure(options: Configure) {
-    if (options.analytics) {
-      analytics = options.analytics;
-      enableAnalytics();
-    }
     if (options.obfuscated !== undefined) {
       obfuscated = options.obfuscated;
     }
@@ -749,11 +826,8 @@
         }
       }
     }
-    if (options.beaconurl) {
-      beaconurl = options.beaconurl;
-      if (session) {
-        session.beaconUrl = beaconurl;
-      }
+    if (options.blockspam !== undefined) {
+      blockspam = !!options.blockspam;
     }
     if (options.floatinganchor !== undefined) {
       floatinganchor = options.floatinganchor;
@@ -822,6 +896,60 @@
     }
   }
 
+  /**
+   * Get the current configuration options.
+   */
+  export function getConfiguration(): Configure {
+    return {
+      auto,
+      blockspam,
+      challengeurl,
+      debug,
+      delay,
+      expire,
+      floating: floating as Configure['floating'],
+      floatinganchor,
+      floatingoffset,
+      hidefooter,
+      hidelogo,
+      name,
+      maxnumber,
+      mockerror,
+      obfuscated,
+      refetchonexpire,
+      spamfilter,
+      strings: _strings,
+      test,
+      verifyurl,
+      workers,
+      workerurl,
+    };
+  }
+
+  /**
+   * Get the current "floating anchor" as an HTML element or null.
+   */
+  export function getFloatingAnchor() {
+    return elFloatingAnchor;
+  }
+
+  /**
+   * Get a loaded plugin by it's name.
+   */
+  export function getPlugin(name: string) {
+    return loadedPlugins.find((plugin) => (plugin.constructor as any).pluginName === name);
+  }
+
+  /**
+   * Get the current state.
+   */
+  export function getState() {
+    return state;
+  }
+
+  /**
+   * Clears the state and resets the form.
+   */
   export function reset(
     newState: State = State.UNVERIFIED,
     err: string | null = null
@@ -836,6 +964,24 @@
     state = newState;
   }
 
+  /**
+   * Set the "floating anchor" HTML element.
+   */
+  export function setFloatingAnchor(el: HTMLElement) {
+    elFloatingAnchor = el;
+  }
+
+  /**
+   * Set the state and optional error message.
+   */
+  export function setState(newState: State, err: string | null = null) {
+    state = newState;
+    error = err;
+  }
+
+  /**
+   * Triggers verification.
+   */
   export async function verify() {
     reset(State.VERIFYING);
     await new Promise((resolve) => setTimeout(resolve, delay || 0));
@@ -843,7 +989,7 @@
       .then((data) => {
         validateChallenge(data);
         log('challenge', data);
-        return run(data);
+        return solve(data);
       })
       .then(({ data, solution }) => {
         log('solution', solution);
@@ -868,7 +1014,6 @@
       .then(() => {
         tick().then(() => {
           state = State.VERIFIED;
-          checked = true;
           log('verified');
           dispatch('verified', { payload });
         });
@@ -876,44 +1021,8 @@
       .catch((err) => {
         log(err);
         state = State.ERROR;
-        checked = false;
         error = err.message;
       });
-  }
-
-  export async function clarify() {
-    if (!obfuscated) {
-      state = State.ERROR;
-      return;
-    }
-    reset(State.VERIFYING);
-    await new Promise((resolve) => setTimeout(resolve, delay || 0));
-    const [data, params] = obfuscated.split('?');
-    const parsedParams = new URLSearchParams(params || '');
-    let key = parsedParams.get('key') || undefined;
-    if (key) {
-      const match = key.match(/^\(prompt:?(.*)\)$/);
-      if (match) {
-        key = prompt(match[1] || 'Enter Key:') || undefined;
-      }
-    }
-    const { solution } = await run({
-      obfuscated: data,
-      key,
-      maxnumber,
-    });
-    if (solution && 'clearText' in solution) {
-      clarifiedData = solution.clearText;
-      state = State.VERIFIED;
-      checked = true;
-      if (floating && el) {
-        el.style.display = 'none';
-      }
-    } else {
-      state = State.ERROR;
-      checked = false;
-      error = 'Unable to decrypt data.';
-    }
   }
 </script>
 
@@ -946,7 +1055,7 @@
       <input
         type="checkbox"
         id="{name}_checkbox"
-        required={auto !== 'onsubmit'}
+        required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
         bind:checked
         on:change={onCheckedChange}
         on:invalid={onInvalid}
@@ -957,10 +1066,6 @@
       {#if state === State.VERIFIED}
         <span>{@html _strings.verified}</span>
         <input type="hidden" {name} value={payload} />
-
-        {#if session}
-          <input type="hidden" name="__session" value={sessionPayload} />
-        {/if}
       {:else if state === State.VERIFYING}
         <span>{@html _strings.verifying}</span>
       {:else}

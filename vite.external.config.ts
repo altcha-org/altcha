@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import css from 'rollup-plugin-css-only';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,18 +9,21 @@ export default defineConfig({
     svelte({
       compilerOptions: {
         customElement: true,
-        css: 'injected',
+        css: 'none',
       },
+    }),
+    css({
+      output: 'altcha.css',
     }),
   ],
   build: {
     target: 'modules',
     lib: {
-      entry: 'src/entry.ts',
+      entry: 'src/entry-external.ts',
       name: 'altcha',
       formats: ['es', 'umd'],
     },
-    outDir: 'dist',
+    outDir: 'dist_external',
     minify: 'esbuild',
     rollupOptions: {},
   },

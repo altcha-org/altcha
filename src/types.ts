@@ -9,9 +9,8 @@ export interface Strings {
 }
 
 export interface Configure {
-  analytics?: boolean;
-  auto?: 'onfocus' | 'onload' | 'onsubmit';
-  beaconurl?: string;
+  auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
+  blockspam?: boolean;
   challenge?: Challenge;
   challengeurl?: string;
   debug?: boolean;
@@ -97,6 +96,24 @@ export interface ClarifySolution {
   clearText: string;
   took: number;
   worker?: boolean;
+}
+
+export interface PluginContext {
+  el: HTMLElement;
+  clarify(): Promise<void>;
+  dispatch: (event: string, details?: unknown) => void;
+  getConfiguration(): Configure;
+  getFloatingAnchor(): HTMLElement | null;
+  getState(): State;
+  log(...args: unknown[]): void;
+  reset(state?: State, err?: string | null): void;
+  solve(data: Challenge | Obfuscated): Promise<{
+    data: Challenge | Obfuscated;
+    solution: Solution | ClarifySolution | null;
+  }>;
+  setFloatingAnchor(el: HTMLElement): void;
+  setState(state: State, err?: string | null): void;
+  verify(): Promise<void>;
 }
 
 export enum State {

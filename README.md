@@ -86,7 +86,7 @@ ALTCHA's default bundle is lightweight, combining all assets, including CSS and 
 
 |Distribution|Size (GZIPped)|
 |---|---|
-|ALTCHA (v0.9.x)|17 kB|
+|ALTCHA (v1.x)|17 kB|
 |hCaptcha|48+ kB|
 |reCAPTCHA|270+ kB|
 

@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "GDPR compliant, self-hosted CAPTCHA alternative.",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",
@@ -78,25 +78,25 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.46.1",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tsconfig/svelte": "^5.0.4",
-    "@types/node": "^20.15.0",
-    "husky": "^9.1.4",
+    "@types/node": "^20.16.3",
+    "husky": "^9.1.5",
     "prettier": "3.2.5",
     "prettier-plugin-svelte": "^3.2.6",
     "rollup-plugin-css-only": "^4.5.2",
     "sass": "^1.77.8",
-    "svelte": "^4.2.18",
-    "svelte-check": "^3.8.5",
-    "tslib": "^2.6.3",
+    "svelte": "^4.2.19",
+    "svelte-check": "^3.8.6",
+    "tslib": "^2.7.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vitest": "^0.34.6"
   },
   "dependencies": {
     "@altcha/crypto": "^0.0.1"
   },
-	"optionalDependencies": {
-		"@rollup/rollup-linux-x64-gnu": "4.18.0"
-	}
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.18.0"
+  }
 }

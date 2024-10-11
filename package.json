@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "GDPR compliant, self-hosted CAPTCHA alternative.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",
@@ -74,9 +74,11 @@
     "format": "prettier --write ./src/**/*",
     "test": "vitest run tests/helpers.test.ts",
     "test:e2e": "playwright test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "rm -rf node_modules/svelte && cp -R node_modules/@ovx/svelte node_modules/svelte"
   },
   "devDependencies": {
+    "@ovx/svelte": "4.2.19",
     "@playwright/test": "^1.46.1",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tsconfig/svelte": "^5.0.4",

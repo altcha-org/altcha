@@ -92,14 +92,14 @@ function Jt(n) {
 function L(n, e) {
   n.appendChild(e);
 }
-function Qt(n, e, t) {
-  const i = $t(n);
+function $t(n, e, t) {
+  const i = Qt(n);
   if (!i.getElementById(e)) {
     const o = Z("style");
     o.id = e, o.textContent = t, qt(i, o);
   }
 }
-function $t(n) {
+function Qt(n) {
   if (!n) return document;
   const e = n.getRootNode ? n.getRootNode() : n.ownerDocument;
   return e && /** @type {ShadowRoot} */
@@ -124,13 +124,13 @@ function Y(n) {
 function Z(n) {
   return document.createElement(n);
 }
-function $(n) {
+function Q(n) {
   return document.createElementNS("http://www.w3.org/2000/svg", n);
 }
 function en(n) {
   return document.createTextNode(n);
 }
-function Q() {
+function $() {
   return en(" ");
 }
 function Le(n, e, t, i) {
@@ -340,6 +340,10 @@ typeof HTMLElement == "function" && (wt = class extends HTMLElement {
     if (super.removeEventListener(e, t, i), this.$$c) {
       const o = this.$$l_u.get(t);
       o && (o(), this.$$l_u.delete(t));
+    }
+    if (this.$$l[e]) {
+      const o = this.$$l[e].indexOf(t);
+      o >= 0 && this.$$l[e].splice(o, 1);
     }
   }
   async connectedCallback() {
@@ -644,13 +648,13 @@ async function Cn(n, e = "", t = 1e6, i = 0) {
 }
 var m = /* @__PURE__ */ ((n) => (n.ERROR = "error", n.VERIFIED = "verified", n.VERIFYING = "verifying", n.UNVERIFIED = "unverified", n.EXPIRED = "expired", n))(m || {});
 function In(n) {
-  Qt(n, "svelte-ddsc3z", '.altcha.svelte-ddsc3z.svelte-ddsc3z{background:var(--altcha-color-base, transparent);border:var(--altcha-border-width, 1px) solid var(--altcha-color-border, #a0a0a0);border-radius:var(--altcha-border-radius, 3px);color:var(--altcha-color-text, currentColor);display:flex;flex-direction:column;max-width:var(--altcha-max-width, 260px);position:relative;text-align:left}.altcha.svelte-ddsc3z.svelte-ddsc3z:focus-within{border-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating].svelte-ddsc3z.svelte-ddsc3z{background:var(--altcha-color-base, white);display:none;filter:drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.2));left:-100%;position:fixed;top:-100%;width:var(--altcha-max-width, 260px);z-index:999999}.altcha[data-floating=top].svelte-ddsc3z .altcha-anchor-arrow.svelte-ddsc3z{border-bottom-color:transparent;border-top-color:var(--altcha-color-border, #a0a0a0);bottom:-12px;top:auto}.altcha[data-floating=bottom].svelte-ddsc3z.svelte-ddsc3z:focus-within::after{border-bottom-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating=top].svelte-ddsc3z.svelte-ddsc3z:focus-within::after{border-top-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating].svelte-ddsc3z.svelte-ddsc3z:not([data-state=unverified]){display:block}.altcha-anchor-arrow.svelte-ddsc3z.svelte-ddsc3z{border:6px solid transparent;border-bottom-color:var(--altcha-color-border, #a0a0a0);content:"";height:0;left:12px;position:absolute;top:-12px;width:0}.altcha-main.svelte-ddsc3z.svelte-ddsc3z{align-items:center;display:flex;gap:0.4rem;padding:0.7rem}.altcha-label.svelte-ddsc3z.svelte-ddsc3z{flex-grow:1}.altcha-label.svelte-ddsc3z label.svelte-ddsc3z{cursor:pointer}.altcha-logo.svelte-ddsc3z.svelte-ddsc3z{color:currentColor;opacity:0.3}.altcha-logo.svelte-ddsc3z.svelte-ddsc3z:hover{opacity:1}.altcha-error.svelte-ddsc3z.svelte-ddsc3z{color:var(--altcha-color-error-text, #f23939);display:flex;font-size:0.85rem;gap:0.3rem;padding:0 0.7rem 0.7rem}.altcha-footer.svelte-ddsc3z.svelte-ddsc3z{align-items:center;background-color:var(--altcha-color-footer-bg, transparent);display:flex;font-size:0.75rem;opacity:0.4;padding:0.2rem 0.7rem;text-align:right}.altcha-footer.svelte-ddsc3z.svelte-ddsc3z:hover{opacity:1}.altcha-footer.svelte-ddsc3z>.svelte-ddsc3z:first-child{flex-grow:1}.altcha-footer.svelte-ddsc3z a{color:currentColor}.altcha-checkbox.svelte-ddsc3z.svelte-ddsc3z{display:flex;align-items:center;height:24px;width:24px}.altcha-checkbox.svelte-ddsc3z input.svelte-ddsc3z{width:18px;height:18px;margin:0}.altcha-hidden.svelte-ddsc3z.svelte-ddsc3z{display:none}.altcha-spinner.svelte-ddsc3z.svelte-ddsc3z{animation:svelte-ddsc3z-altcha-spinner 0.75s infinite linear;transform-origin:center}@keyframes svelte-ddsc3z-altcha-spinner{100%{transform:rotate(360deg)}}');
+  $t(n, "svelte-ddsc3z", '.altcha.svelte-ddsc3z.svelte-ddsc3z{background:var(--altcha-color-base, transparent);border:var(--altcha-border-width, 1px) solid var(--altcha-color-border, #a0a0a0);border-radius:var(--altcha-border-radius, 3px);color:var(--altcha-color-text, currentColor);display:flex;flex-direction:column;max-width:var(--altcha-max-width, 260px);position:relative;text-align:left}.altcha.svelte-ddsc3z.svelte-ddsc3z:focus-within{border-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating].svelte-ddsc3z.svelte-ddsc3z{background:var(--altcha-color-base, white);display:none;filter:drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.2));left:-100%;position:fixed;top:-100%;width:var(--altcha-max-width, 260px);z-index:999999}.altcha[data-floating=top].svelte-ddsc3z .altcha-anchor-arrow.svelte-ddsc3z{border-bottom-color:transparent;border-top-color:var(--altcha-color-border, #a0a0a0);bottom:-12px;top:auto}.altcha[data-floating=bottom].svelte-ddsc3z.svelte-ddsc3z:focus-within::after{border-bottom-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating=top].svelte-ddsc3z.svelte-ddsc3z:focus-within::after{border-top-color:var(--altcha-color-border-focus, currentColor)}.altcha[data-floating].svelte-ddsc3z.svelte-ddsc3z:not([data-state=unverified]){display:block}.altcha-anchor-arrow.svelte-ddsc3z.svelte-ddsc3z{border:6px solid transparent;border-bottom-color:var(--altcha-color-border, #a0a0a0);content:"";height:0;left:12px;position:absolute;top:-12px;width:0}.altcha-main.svelte-ddsc3z.svelte-ddsc3z{align-items:center;display:flex;gap:0.4rem;padding:0.7rem}.altcha-label.svelte-ddsc3z.svelte-ddsc3z{flex-grow:1}.altcha-label.svelte-ddsc3z label.svelte-ddsc3z{cursor:pointer}.altcha-logo.svelte-ddsc3z.svelte-ddsc3z{color:currentColor;opacity:0.3}.altcha-logo.svelte-ddsc3z.svelte-ddsc3z:hover{opacity:1}.altcha-error.svelte-ddsc3z.svelte-ddsc3z{color:var(--altcha-color-error-text, #f23939);display:flex;font-size:0.85rem;gap:0.3rem;padding:0 0.7rem 0.7rem}.altcha-footer.svelte-ddsc3z.svelte-ddsc3z{align-items:center;background-color:var(--altcha-color-footer-bg, transparent);display:flex;font-size:0.75rem;opacity:0.4;padding:0.2rem 0.7rem;text-align:right}.altcha-footer.svelte-ddsc3z.svelte-ddsc3z:hover{opacity:1}.altcha-footer.svelte-ddsc3z>.svelte-ddsc3z:first-child{flex-grow:1}.altcha-footer.svelte-ddsc3z a{color:currentColor}.altcha-checkbox.svelte-ddsc3z.svelte-ddsc3z{display:flex;align-items:center;height:24px;width:24px}.altcha-checkbox.svelte-ddsc3z input.svelte-ddsc3z{width:18px;height:18px;margin:0}.altcha-hidden.svelte-ddsc3z.svelte-ddsc3z{display:none}.altcha-spinner.svelte-ddsc3z.svelte-ddsc3z{animation:svelte-ddsc3z-altcha-spinner 0.75s infinite linear;transform-origin:center}@keyframes svelte-ddsc3z-altcha-spinner{100%{transform:rotate(360deg)}}');
 }
 function lt(n) {
   let e, t, i;
   return {
     c() {
-      e = $("svg"), t = $("path"), i = $("path"), a(t, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), a(t, "fill", "currentColor"), a(t, "opacity", ".25"), a(i, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), a(i, "fill", "currentColor"), a(i, "class", "altcha-spinner svelte-ddsc3z"), a(e, "width", "24"), a(e, "height", "24"), a(e, "viewBox", "0 0 24 24"), a(e, "xmlns", "http://www.w3.org/2000/svg");
+      e = Q("svg"), t = Q("path"), i = Q("path"), a(t, "d", "M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"), a(t, "fill", "currentColor"), a(t, "opacity", ".25"), a(i, "d", "M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"), a(i, "fill", "currentColor"), a(i, "class", "altcha-spinner svelte-ddsc3z"), a(e, "width", "24"), a(e, "height", "24"), a(e, "viewBox", "0 0 24 24"), a(e, "xmlns", "http://www.w3.org/2000/svg");
     },
     m(o, l) {
       X(o, e, l), L(e, t), L(e, i);
@@ -714,7 +718,7 @@ function zn(n) {
   ), i, o;
   return {
     c() {
-      e = Z("span"), i = Q(), o = Z("input"), a(o, "type", "hidden"), a(
+      e = Z("span"), i = $(), o = Z("input"), a(o, "type", "hidden"), a(
         o,
         "name",
         /*name*/
@@ -747,7 +751,7 @@ function st(n) {
   let e, t, i, o, l, s, d;
   return {
     c() {
-      e = Z("div"), t = Z("a"), i = $("svg"), o = $("path"), l = $("path"), s = $("path"), a(o, "d", "M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z"), a(o, "fill", "currentColor"), a(l, "d", "M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z"), a(l, "fill", "currentColor"), a(s, "d", "M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z"), a(s, "fill", "currentColor"), a(i, "width", "22"), a(i, "height", "22"), a(i, "viewBox", "0 0 20 20"), a(i, "fill", "none"), a(i, "xmlns", "http://www.w3.org/2000/svg"), a(t, "href", xt), a(t, "target", "_blank"), a(t, "class", "altcha-logo svelte-ddsc3z"), a(t, "aria-label", d = /*_strings*/
+      e = Z("div"), t = Z("a"), i = Q("svg"), o = Q("path"), l = Q("path"), s = Q("path"), a(o, "d", "M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z"), a(o, "fill", "currentColor"), a(l, "d", "M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z"), a(l, "fill", "currentColor"), a(s, "d", "M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z"), a(s, "fill", "currentColor"), a(i, "width", "22"), a(i, "height", "22"), a(i, "viewBox", "0 0 20 20"), a(i, "fill", "none"), a(i, "xmlns", "http://www.w3.org/2000/svg"), a(t, "href", xt), a(t, "target", "_blank"), a(t, "class", "altcha-logo svelte-ddsc3z"), a(t, "aria-label", d = /*_strings*/
       n[11].ariaLinkLabel);
     },
     m(h, f) {
@@ -774,7 +778,7 @@ function ct(n) {
   let s = l(n), d = s(n);
   return {
     c() {
-      e = Z("div"), t = $("svg"), i = $("path"), o = Q(), d.c(), a(i, "stroke-linecap", "round"), a(i, "stroke-linejoin", "round"), a(i, "d", "M6 18L18 6M6 6l12 12"), a(t, "width", "14"), a(t, "height", "14"), a(t, "xmlns", "http://www.w3.org/2000/svg"), a(t, "fill", "none"), a(t, "viewBox", "0 0 24 24"), a(t, "stroke-width", "1.5"), a(t, "stroke", "currentColor"), a(e, "class", "altcha-error svelte-ddsc3z");
+      e = Z("div"), t = Q("svg"), i = Q("path"), o = $(), d.c(), a(i, "stroke-linecap", "round"), a(i, "stroke-linejoin", "round"), a(i, "d", "M6 18L18 6M6 6l12 12"), a(t, "width", "14"), a(t, "height", "14"), a(t, "xmlns", "http://www.w3.org/2000/svg"), a(t, "fill", "none"), a(t, "viewBox", "0 0 24 24"), a(t, "stroke-width", "1.5"), a(t, "stroke", "currentColor"), a(e, "class", "altcha-error svelte-ddsc3z");
     },
     m(h, f) {
       X(h, e, f), L(e, t), L(t, i), L(e, o), d.m(e, null);
@@ -934,7 +938,7 @@ function Tn(n) {
   );
   return {
     c() {
-      G && G.c(), e = Q(), t = Z("div"), i = Z("div"), A && A.c(), o = Q(), l = Z("div"), s = Z("input"), f = Q(), C = Z("div"), H.c(), b = Q(), x && x.c(), M = Q(), T && T.c(), D = Q(), z && z.c(), j = Q(), _ && _.c(), a(s, "type", "checkbox"), a(s, "id", d = /*name*/
+      G && G.c(), e = $(), t = Z("div"), i = Z("div"), A && A.c(), o = $(), l = Z("div"), s = Z("input"), f = $(), C = Z("div"), H.c(), b = $(), x && x.c(), M = $(), T && T.c(), D = $(), z && z.c(), j = $(), _ && _.c(), a(s, "type", "checkbox"), a(s, "id", d = /*name*/
       n[4] + "_checkbox"), s.required = h = /*auto*/
       n[0] !== "onsubmit" && (!/*floating*/
       n[1] || /*auto*/
@@ -1057,7 +1061,7 @@ function Zn(n, e, t) {
   ln(() => {
     Et(), v && (v.removeEventListener("submit", Fe), v.removeEventListener("reset", De), v.removeEventListener("focusin", Xe), v = null), B && (clearTimeout(B), B = null), document.removeEventListener("click", He), document.removeEventListener("scroll", Ye), window.removeEventListener("resize", Pe);
   }), on(() => {
-    k("mounted", "1.0.0"), k("workers", le), Nt(), k("plugins", te.length ? te.map((r) => r.constructor.pluginName).join(", ") : "none"), y && k("using test mode"), S && ke(S), f !== void 0 && k("auto", f), N !== void 0 && We(N), v = E.closest("form"), v && (v.addEventListener("submit", Fe, { capture: !0 }), v.addEventListener("reset", De), f === "onfocus" && v.addEventListener("focusin", Xe)), f === "onload" && (x ? ge() : ne()), i && (G || A) && k("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    k("mounted", "1.0.1"), k("workers", le), Nt(), k("plugins", te.length ? te.map((r) => r.constructor.pluginName).join(", ") : "none"), y && k("using test mode"), S && ke(S), f !== void 0 && k("auto", f), N !== void 0 && We(N), v = E.closest("form"), v && (v.addEventListener("submit", Fe, { capture: !0 }), v.addEventListener("reset", De), f === "onfocus" && v.addEventListener("focusin", Xe)), f === "onload" && (x ? ge() : ne()), i && (G || A) && k("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       de("load");
     });
   });
@@ -1177,8 +1181,8 @@ function Zn(n, e, t) {
         log: k,
         reset: me,
         solve: Ke,
-        setState: $e,
-        setFloatingAnchor: Qe,
+        setState: Qe,
+        setFloatingAnchor: $e,
         verify: ne
       }));
   }
@@ -1371,10 +1375,10 @@ function Zn(n, e, t) {
   function me(r = m.UNVERIFIED, c = null) {
     B && (clearTimeout(B), B = null), t(8, re = !1), t(5, he = c), t(6, oe = null), t(7, R = r);
   }
-  function Qe(r) {
+  function $e(r) {
     se = r;
   }
-  function $e(r, c = null) {
+  function Qe(r, c = null) {
     t(7, R = r), t(5, he = c);
   }
   async function ne() {
@@ -1470,8 +1474,8 @@ function Zn(n, e, t) {
     Vt,
     Je,
     me,
-    Qe,
     $e,
+    Qe,
     ne,
     l,
     h,

@@ -1012,9 +1012,9 @@
         }
       })
       .then(() => {
+        state = State.VERIFIED;
+        log('verified');
         tick().then(() => {
-          state = State.VERIFIED;
-          log('verified');
           dispatch('verified', { payload });
         });
       })

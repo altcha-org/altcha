@@ -1061,7 +1061,7 @@ function Zn(n, e, t) {
   ln(() => {
     Et(), v && (v.removeEventListener("submit", Fe), v.removeEventListener("reset", De), v.removeEventListener("focusin", Xe), v = null), B && (clearTimeout(B), B = null), document.removeEventListener("click", He), document.removeEventListener("scroll", Ye), window.removeEventListener("resize", Pe);
   }), on(() => {
-    k("mounted", "1.0.5"), k("workers", le), Nt(), k("plugins", te.length ? te.map((r) => r.constructor.pluginName).join(", ") : "none"), y && k("using test mode"), S && ke(S), f !== void 0 && k("auto", f), N !== void 0 && We(N), v = E.closest("form"), v && (v.addEventListener("submit", Fe, { capture: !0 }), v.addEventListener("reset", De), f === "onfocus" && v.addEventListener("focusin", Xe)), f === "onload" && (x ? ge() : ne()), i && (G || A) && k("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    k("mounted", "1.0.6"), k("workers", le), Nt(), k("plugins", te.length ? te.map((r) => r.constructor.pluginName).join(", ") : "none"), y && k("using test mode"), S && ke(S), f !== void 0 && k("auto", f), N !== void 0 && We(N), v = E.closest("form"), v && (v.addEventListener("submit", Fe, { capture: !0 }), v.addEventListener("reset", De), f === "onfocus" && v.addEventListener("focusin", Xe)), f === "onload" && (x ? ge() : ne()), i && (G || A) && k("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       de("load");
     });
   });
@@ -1391,8 +1391,8 @@ function Zn(n, e, t) {
         } else
           throw k("Unable to find a solution. Ensure that the 'maxnumber' attribute is greater than the randomly generated number."), new Error("Unexpected result returned.");
     }).then(() => {
-      cn().then(() => {
-        t(7, R = m.VERIFIED), k("verified"), de("verified", { payload: oe });
+      t(7, R = m.VERIFIED), k("verified"), cn().then(() => {
+        de("verified", { payload: oe });
       });
     }).catch((r) => {
       k(r), t(7, R = m.ERROR), t(5, he = r.message);

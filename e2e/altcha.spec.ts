@@ -41,5 +41,23 @@ test('should set options via configure()', async ({ page }) => {
   expect(await page.locator('#test-configure .altcha-logo').first().count()).toBe(0);
 });
 
+test('should trigger verification and emit verified event', async ({ page }) => {
+  await page.goto('./e2e/index.html');
+  const cmp = page.locator('#test-verification-altcha').first();
+  const ok = await cmp.evaluate(cmpElement => {
+    return new Promise((resolve) => {
+      cmpElement.addEventListener('verified', () => {
+        const form = cmpElement.closest('form');
+        const formData = new FormData(form!);
+        const solution = formData.get('alctha-verification');
+        resolve(!!solution);
+      });
+      // @ts-expect-error typings
+      cmpElement.verify();
+      setTimeout(() => resolve(false), 5000);
+    })
+  });
+  expect(ok).toBe(true);
+});
 
 

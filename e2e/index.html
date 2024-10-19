@@ -57,6 +57,23 @@
         </script>
       </div>
 
+      <div id="test-verification">
+        <form method="post">
+          <altcha-widget
+            id="test-verification-altcha"
+            name="alctha-verification"
+          ></altcha-widget>
+        </form>
+
+        <script>
+          window.addEventListener('load', () => {
+            document.querySelector('#test-verification-altcha').configure({
+              test: 10,
+            });
+          });
+        </script>
+      </div>
+
     </main>
   </body>
 </html>

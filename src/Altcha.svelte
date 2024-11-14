@@ -77,7 +77,8 @@
   let state: State = State.UNVERIFIED;
 
   $: isFreeSaaS =
-    !!challengeurl?.includes('.altcha.org') &&
+    challengejson && 
+    new URL(challengejson, location.origin).host.endsWith('.altcha.org') &&
     !!challengeurl?.includes('apiKey=ckey_');
   $: parsedChallenge = challengejson
     ? parseJsonAttribute(challengejson)

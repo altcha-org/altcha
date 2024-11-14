@@ -53,6 +53,9 @@ export async function hashChallenge(
   num: number,
   algorithm: string
 ): Promise<string> {
+  if (typeof crypto === 'undefined' || !('subtle' in crypto) || !('digest' in crypto.subtle)) {
+    throw new Error('Web Crypto is not available. Secure context is required (https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts).');
+  }
   return ab2hex(
     await crypto.subtle.digest(
       algorithm.toUpperCase(),

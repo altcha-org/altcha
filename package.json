@@ -79,9 +79,8 @@
     "postinstall": "node postinstall.js"
   },
   "devDependencies": {
-    "@ovx/svelte": "4.2.19",
     "@playwright/test": "^1.46.1",
-    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^20.16.3",
     "husky": "^9.1.5",
@@ -89,11 +88,11 @@
     "prettier-plugin-svelte": "^3.2.6",
     "rollup-plugin-css-only": "^4.5.2",
     "sass": "^1.77.8",
-    "svelte": "^4.2.19",
-    "svelte-check": "^3.8.6",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.2",
+    "vite": "^5.4.4",
     "vitest": "^0.34.6"
   },
   "dependencies": {

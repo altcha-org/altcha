@@ -16,20 +16,20 @@
   const failure = location.hash.includes('failure');
   const params = new URLSearchParams(location.search);
 
-  let challengeurl: string = params.get('challengeurl') || '';
-  let submiturl: string = params.get('submiturl') || '';
-  let test: boolean = !challengeurl && params.get('test') !== '0' && !submiturl;
-  let mockerror: boolean = false;
+  let challengeurl: string = $state(params.get('challengeurl') || '');
+  let submiturl: string = $state(params.get('submiturl') || '');
+  let test: boolean = $state(!challengeurl && params.get('test') !== '0' && !submiturl);
+  let mockerror: boolean = $state(false);
 
-  let altcha: Altcha;
-  let altchaObfuscated: Altcha;
+  let altcha: Altcha = $state()!;
+  let altchaObfuscated: Altcha = $state()!;
   
   let uploadProgress: {
     bytesLoaded: number;
     bytesTotal: number;
     pendingFiles: [string, File][];
     uploadHandles: any[];
-  } | null = null;
+  } | null = $state(null);
 
   onMount(() => {
     location.hash = '';
@@ -86,7 +86,7 @@
   <form
     action={submiturl}
     method="post"
-    on:submit={(ev) => (test ? ev.preventDefault() : undefined)}
+    onsubmit={(ev) => (test ? ev.preventDefault() : undefined)}
   >
     <div>Test form</div>
 
@@ -104,10 +104,10 @@
       {challengeurl}
       {mockerror}
       {test}
-      on:statechange={(ev) => console.log('Event: statechange:', ev.detail)}
-      on:verified={(ev) => console.log('Event: verified:', ev.detail)}
-      on:serververification={(ev) =>
-        console.log('Event: serververification:', ev.detail)}
+      onStateChange={(ev) => console.log('Event: statechange:', ev)}
+      onVerified={(ev) => console.log('Event: verified:', ev)}
+      onServerVerification={(ev) =>
+        console.log('Event: serververification:', ev)}
     />
 
     <div>
@@ -119,7 +119,7 @@
   <form
     action={submiturl}
     method="post"
-    on:submit={(ev) => (test ? ev.preventDefault() : undefined)}
+    onsubmit={(ev) => (test ? ev.preventDefault() : undefined)}
   >
     <div>File Upload</div>
 
@@ -151,8 +151,8 @@
         uploadProgress = ev.detail;
         console.log('Event: uploadprogress', ev.detail);
       }}
-      on:statechange={(ev) => console.log('Event: statechange:', ev.detail)}
-      on:verified={(ev) => console.log('Event: verified:', ev.detail)}
+      onServerVerification={(ev) => console.log('Event: statechange:', ev)}
+      onVerified={(ev) => console.log('Event: verified:', ev)}
     />
 
     {#if uploadProgress}

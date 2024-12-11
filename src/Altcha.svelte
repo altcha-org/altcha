@@ -6,7 +6,7 @@
 />
 
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
   import {
     solveChallenge,
     createTestChallenge,
@@ -27,77 +27,119 @@
     PluginContext,
   } from './types';
 
-  export let auto: 'off' | 'onfocus' | 'onload' | 'onsubmit' | undefined = undefined;
-  export let blockspam: boolean | undefined = undefined;
-  export let challengeurl: string | undefined = undefined;
-  export let challengejson: string | undefined = undefined;
-  export let debug: boolean = false;
-  export let delay: number = 0;
-  export let expire: number | undefined = undefined;
-  export let floating:
+  interface Props {
+    auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit' | undefined;
+    blockspam?: boolean | undefined;
+    challengeurl?: string | undefined;
+    challengejson?: string | undefined;
+    debug?: boolean;
+    delay?: number;
+    expire?: number | undefined;
+    floating?: 
     | 'auto'
     | 'top'
     | 'bottom'
     | 'false'
     | ''
     | boolean
-    | undefined = undefined;
-  export let floatinganchor: string | undefined = undefined;
-  export let floatingoffset: number | undefined = undefined;
-  export let hidefooter: boolean = false;
-  export let hidelogo: boolean = false;
-  export let name: string = 'altcha';
-  export let maxnumber: number = 1e6;
-  export let mockerror: boolean = false;
-  export let obfuscated: string | undefined = undefined;
-  export let plugins: string | undefined = undefined;
-  export let refetchonexpire: boolean = true;
-  export let spamfilter: boolean | 'ipAddress' | SpamFilter = false;
-  export let strings: string | undefined = undefined;
-  export let test: boolean | number = false;
-  export let verifyurl: string | undefined = undefined;
-  export let workers: number = Math.min(16, navigator.hardwareConcurrency || 8);
-  export let workerurl: string | undefined = undefined;
+    | undefined;
+    floatinganchor?: string | undefined;
+    floatingoffset?: number | undefined;
+    hidefooter?: boolean;
+    hidelogo?: boolean;
+    name?: string;
+    maxnumber?: number;
+    mockerror?: boolean;
+    obfuscated?: string | undefined;
+    onLoad?: () => void;
+    onStateChange?: (data: { payload: string | null; state: State }) => void;
+    onServerVerification?: (resp: any) => void;
+    onVerified?: (data: { payload: string | null }) => void;
+    plugins?: string | undefined;
+    refetchonexpire?: boolean;
+    spamfilter?: boolean | 'ipAddress' | SpamFilter;
+    strings?: string | undefined;
+    test?: boolean | number;
+    verifyurl?: string | undefined;
+    workers?: number;
+    workerurl?: string | undefined;
+  }
 
-  const dispatch = createEventDispatcher();
+  let {
+    auto = undefined,
+    blockspam = undefined,
+    challengeurl = undefined,
+    challengejson = undefined,
+    debug = false,
+    delay = 0,
+    expire = undefined,
+    floating = undefined,
+    floatinganchor = undefined,
+    floatingoffset = undefined,
+    hidefooter = false,
+    hidelogo = false,
+    name = 'altcha',
+    maxnumber = 1e6,
+    mockerror = false,
+    onLoad = undefined,
+    onServerVerification = undefined,
+    onStateChange = undefined,
+    onVerified = undefined,
+    obfuscated = undefined,
+    plugins = undefined,
+    refetchonexpire = true,
+    spamfilter = false,
+    strings = undefined,
+    test = false,
+    verifyurl = undefined,
+    workers = Math.min(16, navigator.hardwareConcurrency || 8),
+    workerurl = undefined
+  }: Props = $props();
+
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const ariaLinkLabel = 'Visit Altcha.org';
   const website = 'https://altcha.org/';
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
-
-  let checked: boolean = false;
-  let el: HTMLElement;
-  let elAnchorArrow: HTMLElement | null = null;
-  let elFloatingAnchor: HTMLElement | null = null;
-  let elForm: HTMLFormElement | null = null;
-  let error: string | null = null;
-  let expireTimeout: ReturnType<typeof setTimeout> | null = null;
-  let payload: string | null = null;
-  let loadedPlugins: Plugin[] = [];
-  let state: State = State.UNVERIFIED;
-
-  $: isFreeSaaS =
-    challengejson && 
-    new URL(challengejson, location.origin).host.endsWith('.altcha.org') &&
-    !!challengeurl?.includes('apiKey=ckey_');
-  $: parsedChallenge = challengejson
-    ? parseJsonAttribute(challengejson)
-    : undefined;
-  $: parsedStrings = strings ? parseJsonAttribute(strings) : {};
-  $: _strings = {
+  const isFreeSaaS =
+    $derived(challengeurl && 
+    new URL(challengeurl, location.origin).host.endsWith('.altcha.org') &&
+    !!challengeurl?.includes('apiKey=ckey_'));
+  const parsedChallengeJson = $derived(challengejson ? parseJsonAttribute(challengejson) : undefined);
+  const parsedStrings = $derived(strings ? parseJsonAttribute(strings) : {});
+  const _strings = $derived({
     ariaLinkLabel,
     error: 'Verification failed. Try again later.',
     expired: 'Verification expired. Try again.',
-    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
+    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings?.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
     label: "I'm not a robot",
     verified: 'Verified',
     verifying: 'Verifying...',
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
-  };
-  $: dispatch('statechange', { payload, state });
-  $: onErrorChange(error);
-  $: onStateChange(state);
+  });
+
+  let checked: boolean = $state(false);
+  let el: HTMLElement = $state()!;
+  let elAnchorArrow: HTMLElement | null = $state(null);
+  let elFloatingAnchor: HTMLElement | null = null;
+  let elForm: HTMLFormElement | null = null;
+  let error: string | null = $state(null);
+  let expireTimeout: ReturnType<typeof setTimeout> | null = null;
+  let payload: string | null = $state(null);
+  let loadedPlugins: Plugin[] = [];
+  let currentState: State = $state(State.UNVERIFIED);
+
+  $effect(() => {
+    onStateChange?.({ payload, state: currentState });
+  });
+
+  $effect(() => {
+    onErrorChangeHandler(error);
+  });
+
+  $effect(() => {
+    onStateChangeHandler(currentState);
+  });
 
   onDestroy(() => {
     destroyPlugins();
@@ -138,7 +180,7 @@
     if (floating !== undefined) {
       setFloating(floating);
     }
-    elForm = el.closest('form');
+    elForm = el?.closest('form');
     if (elForm) {
       elForm.addEventListener('submit', onFormSubmit, {
         capture: true,
@@ -161,7 +203,7 @@
       );
     }
     requestAnimationFrame(() => {
-      dispatch('load');
+      onLoad?.();
     });
   });
 
@@ -195,7 +237,7 @@
    * Sets the state to EXPIRED or re-fetches the challenge if `refetchonexpire` is enabled.
    */
   function expireChallenge() {
-    if (challengeurl && refetchonexpire && state === State.VERIFIED) {
+    if (challengeurl && refetchonexpire && currentState === State.VERIFIED) {
       // re-fetch challenge and verify again
       verify();
     } else {
@@ -210,9 +252,9 @@
     if (mockerror) {
       log('mocking error');
       throw new Error('Mocked error.');
-    } else if (parsedChallenge) {
+    } else if (parsedChallengeJson) {
       log('using provided json data');
-      return parsedChallenge;
+      return parsedChallengeJson;
     } else if (test) {
       log('generating test challenge', { test });
       return createTestChallenge(typeof test !== 'boolean' ? +test : undefined);
@@ -364,7 +406,6 @@
           new Plugin({
             el,
             clarify,
-            dispatch,
             getConfiguration,
             getFloatingAnchor,
             getState,
@@ -397,7 +438,7 @@
    * Called when the checkbox is checked or unchecked.
    */
   function onCheckedChange() {
-    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(state)) {
+    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(currentState)) {
       if (spamfilter && elForm?.reportValidity() === false) {
         checked = false;
       } else if (obfuscated) {
@@ -419,7 +460,7 @@
       floating &&
       target &&
       !el.contains(target) &&
-      (state === State.VERIFIED || (auto === 'off' && state === State.UNVERIFIED))
+      (currentState === State.VERIFIED || (auto === 'off' && currentState === State.UNVERIFIED))
     ) {
       el.style.display = 'none';
     }
@@ -429,7 +470,7 @@
    * Handles scroll events on the document.
    */
   function onDocumentScroll() {
-    if (floating && state !== State.UNVERIFIED) {
+    if (floating && currentState !== State.UNVERIFIED) {
       repositionFloating();
     }
   }
@@ -437,7 +478,7 @@
   /**
    * Handles changes in the error state and notifies plugins.
    */
-  function onErrorChange(_: typeof error) {
+  function onErrorChangeHandler(_: typeof error) {
     for (const plugin of loadedPlugins) {
       if (typeof plugin.onErrorChange === 'function') {
         plugin.onErrorChange(error);
@@ -449,7 +490,7 @@
    * Handles the form focus-in event.
    */
   function onFormFocusIn(ev: FocusEvent) {
-    if (state === State.UNVERIFIED) {
+    if (currentState === State.UNVERIFIED) {
       verify();
     }
   }
@@ -459,20 +500,20 @@
    */
   function onFormSubmit(ev: SubmitEvent) {
     if (elForm && auto === 'onsubmit') {
-      if (state === State.UNVERIFIED) {
+      if (currentState === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
           elForm?.requestSubmit();
         });
-      } else if (state !== State.VERIFIED) {
+      } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
-        if (state === State.VERIFYING) {
+        if (currentState === State.VERIFYING) {
           onInvalid();
         }
       }
-    } else if (elForm && floating && auto === 'off' && state === State.UNVERIFIED) {
+    } else if (elForm && floating && auto === 'off' && currentState === State.UNVERIFIED) {
       ev.preventDefault();
       ev.stopPropagation();
       el.style.display = 'block';
@@ -491,7 +532,7 @@
    * Called when the form is submitted while in VERIFYING state and shows an alert message if the string `waitAlert` is configured.
    */
   function onInvalid() {
-    if (state === State.VERIFYING && _strings.waitAlert) {
+    if (currentState === State.VERIFYING && _strings.waitAlert) {
       alert(_strings.waitAlert);
     }
   }
@@ -499,18 +540,18 @@
   /**
    * Handles changes in the state and updates the UI accordingly.
    */
-  function onStateChange(_: typeof state) {
+  function onStateChangeHandler(_: typeof currentState) {
     for (const plugin of loadedPlugins) {
       if (typeof plugin.onStateChange === 'function') {
-        plugin.onStateChange(state);
+        plugin.onStateChange(currentState);
       }
     }
-    if (floating && state !== State.UNVERIFIED) {
+    if (floating && currentState !== State.UNVERIFIED) {
       requestAnimationFrame(() => {
         repositionFloating();
       });
     }
-    checked = state === State.VERIFIED;
+    checked = currentState === State.VERIFIED;
   }
 
   /**
@@ -537,7 +578,7 @@
       if (!elFloatingAnchor) {
         elFloatingAnchor =
           (floatinganchor
-            ? document.querySelector(floatinganchor)
+            ? document.querySelector<HTMLElement>(floatinganchor)
             : elForm?.querySelector(
                 'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
               )) || elForm;
@@ -637,7 +678,7 @@
     if (json?.payload) {
       payload = json.payload;
     }
-    dispatch('serververification', json);
+    onServerVerification?.(json);
     if (blockspam && json.classification === 'BAD') {
       throw new Error('SpamFilter returned negative classification.');
     }
@@ -794,12 +835,12 @@
    */
   export async function clarify() {
     if (!obfuscated) {
-      state = State.ERROR;
+      currentState = State.ERROR;
       return;
     }
     const plugin = loadedPlugins.find((p) => (p.constructor as any).pluginName === 'obfuscation');
     if (!plugin || !('clarify' in plugin)) {
-      state = State.ERROR;
+      currentState = State.ERROR;
       log(
         'Plugin `obfuscation` not found. Import `altcha/plugins/obfuscation` to load it.'
       );
@@ -847,8 +888,8 @@
       expire = options.expire;
     }
     if (options.challenge) {
-      validateChallenge(options.challenge);
-      parsedChallenge = options.challenge;
+      challengejson = typeof options.challenge === 'string' ? options.challenge : JSON.stringify(options.challenge);
+      validateChallenge(parsedChallengeJson);
     }
     if (options.challengeurl !== undefined) {
       challengeurl = options.challengeurl;
@@ -881,7 +922,7 @@
           : !!options.spamfilter;
     }
     if (options.strings) {
-      parsedStrings = options.strings;
+      strings = typeof options.strings === 'string' ? options.strings : JSON.stringify(options.strings);
     }
     if (options.test !== undefined) {
       test = typeof options.test === 'number' ? options.test : !!options.test;
@@ -945,7 +986,7 @@
    * Get the current state.
    */
   export function getState() {
-    return state;
+    return currentState;
   }
 
   /**
@@ -962,7 +1003,7 @@
     checked = false;
     error = err;
     payload = null;
-    state = newState;
+    currentState = newState;
   }
 
   /**
@@ -976,7 +1017,7 @@
    * Set the state and optional error message.
    */
   export function setState(newState: State, err: string | null = null) {
-    state = newState;
+    currentState = newState;
     error = err;
   }
 
@@ -1013,25 +1054,62 @@
         }
       })
       .then(() => {
-        state = State.VERIFIED;
+        currentState = State.VERIFIED;
         log('verified');
         tick().then(() => {
-          dispatch('verified', { payload });
+          onVerified?.({ payload })
         });
       })
       .catch((err) => {
         log(err);
-        state = State.ERROR;
+        currentState = State.ERROR;
         error = err.message;
       });
   }
+
+  /*
+  let isFreeSaaS =
+    $derived(challengejson && 
+    new URL(challengejson, location.origin).host.endsWith('.altcha.org') &&
+    !!challengeurl?.includes('apiKey=ckey_'));
+  let parsedChallenge: any = null;
+  run(() => {
+    parsedChallenge = challengejson
+      ? parseJsonAttribute(challengejson)
+      : undefined;
+  });
+  let parsedStrings: any = {};
+  run(() => {
+    parsedStrings = strings ? parseJsonAttribute(strings) : {};
+  });
+  let _strings = $derived({
+    ariaLinkLabel,
+    error: 'Verification failed. Try again later.',
+    expired: 'Verification expired. Try again.',
+    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings?.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
+    label: "I'm not a robot",
+    verified: 'Verified',
+    verifying: 'Verifying...',
+    waitAlert: 'Verifying... please wait.',
+    ...parsedStrings,
+  });
+  run(() => {
+    dispatch('statechange', { payload, currentState });
+  });
+  run(() => {
+    onErrorChange(error);
+  });
+  run(() => {
+    onStateChange(currentState);
+  });
+  */
 </script>
 
 <slot />
 
-<div bind:this={el} class="altcha" data-state={state} data-floating={floating}>
+<div bind:this={el} class="altcha" data-state={currentState} data-floating={floating}>
   <div class="altcha-main">
-    {#if state === State.VERIFYING}
+    {#if currentState === State.VERIFYING}
       <svg
         width="24"
         height="24"
@@ -1051,23 +1129,23 @@
 
     <div
       class="altcha-checkbox"
-      class:altcha-hidden={state === State.VERIFYING}
+      class:altcha-hidden={currentState === State.VERIFYING}
     >
       <input
         type="checkbox"
         id="{name}_checkbox"
         required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
         bind:checked
-        on:change={onCheckedChange}
-        on:invalid={onInvalid}
+        onchange={onCheckedChange}
+        oninvalid={onInvalid}
       />
     </div>
 
     <div class="altcha-label">
-      {#if state === State.VERIFIED}
+      {#if currentState === State.VERIFIED}
         <span>{@html _strings.verified}</span>
         <input type="hidden" {name} value={payload} />
-      {:else if state === State.VERIFYING}
+      {:else if currentState === State.VERIFYING}
         <span>{@html _strings.verifying}</span>
       {:else}
         <label for="{name}_checkbox">{@html _strings.label}</label>
@@ -1107,7 +1185,7 @@
     {/if}
   </div>
 
-  {#if error || state === State.EXPIRED}
+  {#if error || currentState === State.EXPIRED}
     <div class="altcha-error">
       <svg
         width="14"
@@ -1124,7 +1202,7 @@
           d="M6 18L18 6M6 6l12 12"
         />
       </svg>
-      {#if state === State.EXPIRED}
+      {#if currentState === State.EXPIRED}
         <div title={error}>{@html _strings.expired}</div>
       {:else}
         <div title={error}>{@html _strings.error}</div>

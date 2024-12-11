@@ -11,7 +11,7 @@ export interface Strings {
 export interface Configure {
   auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
   blockspam?: boolean;
-  challenge?: Challenge;
+  challenge?: Challenge | string;
   challengeurl?: string;
   debug?: boolean;
   delay?: number;
@@ -28,7 +28,7 @@ export interface Configure {
   obfuscated?: string;
   refetchonexpire?: boolean;
   spamfilter?: boolean | 'ipAddress' | SpamFilter;
-  strings?: Partial<Strings>;
+  strings?: Partial<Strings> | string;
   test?: boolean | number | 'delay';
   verifyurl?: string;
   workers?: number;
@@ -101,7 +101,7 @@ export interface ClarifySolution {
 export interface PluginContext {
   el: HTMLElement;
   clarify(): Promise<void>;
-  dispatch: (event: string, details?: unknown) => void;
+  //dispatch: (event: string, details?: unknown) => void;
   getConfiguration(): Configure;
   getFloatingAnchor(): HTMLElement | null;
   getState(): State;

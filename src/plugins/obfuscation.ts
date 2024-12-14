@@ -92,6 +92,8 @@ export class PluginObfuscation extends Plugin {
       maxnumber,
     });
 
+    console.log(solution, maxnumber, data, key)
+
     if (solution && 'clearText' in solution) {
       this.#renderClearText(solution.clearText);
       setState(State.VERIFIED);

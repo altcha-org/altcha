@@ -36,6 +36,14 @@ declare global {
     mockerror?: boolean;
     name?: string;
     obfuscated?: string;
+    oncleartext?: (ev: CustomEvent) => void;
+    onload?: (ev: CustomEvent) => void;
+    onstatechange?: (ev: CustomEvent) => void;
+    onverified?: (ev: CustomEvent) => void;
+    onserververification?: (ev: CustomEvent) => void;
+    onupload?: (ev: CustomEvent) => void;
+    onuploadprogress?: (ev: CustomEvent) => void;
+    plugins?: string;
     refetchonexpire?: boolean;
     spamfilter?: boolean | 'ipAddress';
     strings?: string;

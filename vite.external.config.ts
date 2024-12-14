@@ -9,7 +9,7 @@ export default defineConfig({
     svelte({
       compilerOptions: {
         customElement: true,
-        css: 'none',
+        css: 'external',
       },
     }),
     css({

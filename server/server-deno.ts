@@ -30,6 +30,7 @@ app.get('/altcha', async (c) =>
     await createChallenge({
       expires: new Date(Date.now() + 3600000),
       hmacKey: HMAC_KEY,
+      maxNumber: 1000,
     }
   )
 ));

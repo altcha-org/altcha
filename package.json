@@ -79,13 +79,14 @@
     "postinstall": "node postinstall.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.46.1",
+    "@playwright/test": "^1.49.1",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^20.16.3",
     "husky": "^9.1.5",
     "prettier": "3.2.5",
     "prettier-plugin-svelte": "^3.2.6",
+    "rimraf": "^6.0.1",
     "rollup-plugin-css-only": "^4.5.2",
     "sass": "^1.77.8",
     "svelte": "^5.0.0",

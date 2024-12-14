@@ -101,7 +101,7 @@ export interface ClarifySolution {
 export interface PluginContext {
   el: HTMLElement;
   clarify(): Promise<void>;
-  //dispatch: (event: string, details?: unknown) => void;
+  dispatch: <T>(event: string, detail?: T) => void;
   getConfiguration(): Configure;
   getFloatingAnchor(): HTMLElement | null;
   getState(): State;

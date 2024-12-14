@@ -51,10 +51,6 @@
     maxnumber?: number;
     mockerror?: boolean;
     obfuscated?: string | undefined;
-    onLoad?: () => void;
-    onStateChange?: (data: { payload: string | null; state: State }) => void;
-    onServerVerification?: (resp: any) => void;
-    onVerified?: (data: { payload: string | null }) => void;
     plugins?: string | undefined;
     refetchonexpire?: boolean;
     spamfilter?: boolean | 'ipAddress' | SpamFilter;
@@ -81,10 +77,6 @@
     name = 'altcha',
     maxnumber = 1e6,
     mockerror = false,
-    onLoad = undefined,
-    onServerVerification = undefined,
-    onStateChange = undefined,
-    onVerified = undefined,
     obfuscated = undefined,
     plugins = undefined,
     refetchonexpire = true,
@@ -99,6 +91,9 @@
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const ariaLinkLabel = 'Visit Altcha.org';
   const website = 'https://altcha.org/';
+  const dispatch = <T>(event: string, detail?: T) => $host().dispatchEvent(new CustomEvent(event, {
+    detail,
+  }));
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
   const isFreeSaaS =
     $derived(challengeurl && 
@@ -130,7 +125,7 @@
   let currentState: State = $state(State.UNVERIFIED);
 
   $effect(() => {
-    onStateChange?.({ payload, state: currentState });
+    dispatch('statechange', {payload, state: currentState })
   });
 
   $effect(() => {
@@ -203,7 +198,7 @@
       );
     }
     requestAnimationFrame(() => {
-      onLoad?.();
+      dispatch('load');
     });
   });
 
@@ -406,6 +401,7 @@
           new Plugin({
             el,
             clarify,
+            dispatch,
             getConfiguration,
             getFloatingAnchor,
             getState,
@@ -678,7 +674,7 @@
     if (json?.payload) {
       payload = json.payload;
     }
-    onServerVerification?.(json);
+    dispatch('serververification', json);
     if (blockspam && json.classification === 'BAD') {
       throw new Error('SpamFilter returned negative classification.');
     }
@@ -1057,7 +1053,7 @@
         currentState = State.VERIFIED;
         log('verified');
         tick().then(() => {
-          onVerified?.({ payload })
+          dispatch('verified', { payload });
         });
       })
       .catch((err) => {
@@ -1066,43 +1062,6 @@
         error = err.message;
       });
   }
-
-  /*
-  let isFreeSaaS =
-    $derived(challengejson && 
-    new URL(challengejson, location.origin).host.endsWith('.altcha.org') &&
-    !!challengeurl?.includes('apiKey=ckey_'));
-  let parsedChallenge: any = null;
-  run(() => {
-    parsedChallenge = challengejson
-      ? parseJsonAttribute(challengejson)
-      : undefined;
-  });
-  let parsedStrings: any = {};
-  run(() => {
-    parsedStrings = strings ? parseJsonAttribute(strings) : {};
-  });
-  let _strings = $derived({
-    ariaLinkLabel,
-    error: 'Verification failed. Try again later.',
-    expired: 'Verification expired. Try again.',
-    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings?.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
-    label: "I'm not a robot",
-    verified: 'Verified',
-    verifying: 'Verifying...',
-    waitAlert: 'Verifying... please wait.',
-    ...parsedStrings,
-  });
-  run(() => {
-    dispatch('statechange', { payload, currentState });
-  });
-  run(() => {
-    onErrorChange(error);
-  });
-  run(() => {
-    onStateChange(currentState);
-  });
-  */
 </script>
 
 <slot />
@@ -1143,10 +1102,10 @@
 
     <div class="altcha-label">
       {#if currentState === State.VERIFIED}
-        <span>{@html _strings.verified}</span>
+        <span role="status" aria-live="polite">{@html _strings.verified}</span>
         <input type="hidden" {name} value={payload} />
       {:else if currentState === State.VERIFYING}
-        <span>{@html _strings.verifying}</span>
+        <span role="status" aria-live="polite">{@html _strings.verifying}</span>
       {:else}
         <label for="{name}_checkbox">{@html _strings.label}</label>
       {/if}

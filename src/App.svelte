@@ -6,7 +6,8 @@
   import './plugins/analytics';
   import './plugins/upload';
 
-  import Altcha from './Altcha.svelte';
+  import './Altcha.svelte';
+  import type Altcha from './Altcha.svelte';
   
   globalThis.altchaCreateWorker = (url?: string) => new InlineWorker();
   globalThis.altchaPlugins = globalThis.altchaPlugins || [];
@@ -18,7 +19,7 @@
 
   let challengeurl: string = $state(params.get('challengeurl') || '');
   let submiturl: string = $state(params.get('submiturl') || '');
-  let test: boolean = $state(!challengeurl && params.get('test') !== '0' && !submiturl);
+  let test: boolean = $state(false);
   let mockerror: boolean = $state(false);
 
   let altcha: Altcha = $state()!;
@@ -30,6 +31,10 @@
     pendingFiles: [string, File][];
     uploadHandles: any[];
   } | null = $state(null);
+
+  $effect(() => {
+    test = !challengeurl && params.get('test') !== '0' && !submiturl;
+  });
 
   onMount(() => {
     location.hash = '';
@@ -98,17 +103,17 @@
       />
     </div>
 
-    <Altcha
+    <altcha-widget
       bind:this={altcha}
       debug
       {challengeurl}
       {mockerror}
       {test}
-      onStateChange={(ev) => console.log('Event: statechange:', ev)}
-      onVerified={(ev) => console.log('Event: verified:', ev)}
-      onServerVerification={(ev) =>
+      onstatechange={(ev) => console.log('Event: statechange:', ev)}
+      onverified={(ev) => console.log('Event: verified:', ev)}
+      onserververification={(ev) =>
         console.log('Event: serververification:', ev)}
-    />
+    ></altcha-widget>
 
     <div>
       <button type="submit">Submit</button>
@@ -138,7 +143,7 @@
       />
     </div>
 
-    <Altcha
+    <altcha-widget
       bind:this={altcha}
       debug
       name="upload"
@@ -146,14 +151,14 @@
       {challengeurl}
       {mockerror}
       {test}
-      on:upload={(ev) => console.log('Event: upload', ev.detail)}
-      on:uploadprogress={(ev) => {
+      onupload={(ev) => console.log('Event: upload', ev.detail)}
+      onuploadprogress={(ev) => {
         uploadProgress = ev.detail;
         console.log('Event: uploadprogress', ev.detail);
       }}
-      onServerVerification={(ev) => console.log('Event: statechange:', ev)}
-      onVerified={(ev) => console.log('Event: verified:', ev)}
-    />
+      onserververification={(ev) => console.log('Event: statechange:', ev)}
+      onverified={(ev) => console.log('Event: verified:', ev)}
+    ></altcha-widget>
 
     {#if uploadProgress}
     <div>
@@ -172,7 +177,7 @@
   <div class="form">
     <div>
       Obfuscated Email:
-      <Altcha
+      <altcha-widget
         bind:this={altchaObfuscated}
         obfuscated="14tZkC2tFAQSrksIcD3OTD0u4ZWE4VkePJ5d0oVyoGmABDyW9YvNTA=="
         debug
@@ -180,10 +185,10 @@
         name="email"
         plugins="obfuscation"
         floating
-        on:cleartext={(ev) => console.log('Event: cleartext:', ev.detail)}
+        oncleartext={(ev) => console.log('Event: cleartext:', ev.detail)}
       >
         <a href="#">(click to reveal)</a>
-      </Altcha>
+      </altcha-widget>
     </div>
   </div>
 </main>

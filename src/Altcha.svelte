@@ -791,19 +791,19 @@
     max: number = typeof test === 'number' ? test : maxnumber,
     concurrency: number = Math.ceil(workers)
   ): Promise<Solution | null> {
-    const workers: Worker[] = [];
+    const workersInstances: Worker[] = [];
     concurrency = Math.min(16, Math.max(1, concurrency));
     for (let i = 0; i < concurrency; i++) {
-      workers.push(altchaCreateWorker(workerurl));
+      workersInstances.push(altchaCreateWorker(workerurl));
     }
     const step = Math.ceil(max / concurrency);
     const solutions = await Promise.all(
-      workers.map((worker, i) => {
+      workersInstances.map((worker, i) => {
         const start = i * step;
         return new Promise((resolve) => {
           worker.addEventListener('message', (message: MessageEvent) => {
             if (message.data) {
-              for (const w of workers) {
+              for (const w of workersInstances) {
                 if (w !== worker) {
                   w.postMessage({ type: 'abort' });
                 }
@@ -820,7 +820,7 @@
         }) as Promise<Solution | null>;
       })
     );
-    for (const worker of workers) {
+    for (const worker of workersInstances) {
       worker.terminate();
     }
     return solutions.find((solution) => !!solution) || null;

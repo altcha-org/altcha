@@ -2178,7 +2178,7 @@ function Ql(e, t) {
       solution: await zl(n.challenge, n.salt, n.algorithm, n.maxnumber || A()).promise
     };
   }
-  async function ei(n, f = typeof W() == "number" ? W() : A(), _ = Math.ceil(J)) {
+  async function ei(n, f = typeof W() == "number" ? W() : A(), _ = Math.ceil(J())) {
     const k = [];
     _ = Math.min(16, Math.max(1, _));
     for (let b = 0; b < _; b++)

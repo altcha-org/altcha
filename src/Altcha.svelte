@@ -4,40 +4,40 @@
     shadow: 'none',
     props: {
       blockspam: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       debug: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       delay: {
-        type: 'Number'
+        type: 'Number',
       },
       expire: {
-        type: 'Number'
+        type: 'Number',
       },
       floatingoffset: {
-        type: 'Number'
+        type: 'Number',
       },
       hidefooter: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       hidelogo: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       maxnumber: {
-        type: 'Number'
+        type: 'Number',
       },
       mockerror: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       refetchonexpire: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       test: {
-        type: 'Boolean'
+        type: 'Boolean',
       },
       workers: {
-        type: 'Number'
+        type: 'Number',
       },
     },
   }}
@@ -75,14 +75,7 @@
     debug?: boolean;
     delay?: number;
     expire?: number | undefined;
-    floating?: 
-    | 'auto'
-    | 'top'
-    | 'bottom'
-    | 'false'
-    | ''
-    | boolean
-    | undefined;
+    floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean | undefined;
     floatinganchor?: string | undefined;
     floatingoffset?: number | undefined;
     hidefooter?: boolean;
@@ -126,21 +119,28 @@
     test = false,
     verifyurl = undefined,
     workers = Math.min(16, navigator.hardwareConcurrency || 8),
-    workerurl = undefined
+    workerurl = undefined,
   }: Props = $props();
 
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const ariaLinkLabel = 'Visit Altcha.org';
   const website = 'https://altcha.org/';
-  const dispatch = <T>(event: string, detail?: T) => $host().dispatchEvent(new CustomEvent(event, {
-    detail,
-  }));
+  const dispatch = <T,>(event: string, detail?: T) => {
+    $host().dispatchEvent(
+      new CustomEvent(event, {
+        detail,
+      })
+    );
+  };
   const documentLocale = document.documentElement.lang?.split('-')?.[0];
-  const isFreeSaaS =
-    $derived(challengeurl && 
-    new URL(challengeurl, location.origin).host.endsWith('.altcha.org') &&
-    !!challengeurl?.includes('apiKey=ckey_'));
-  const parsedChallengeJson = $derived(challengejson ? parseJsonAttribute(challengejson) : undefined);
+  const isFreeSaaS = $derived(
+    challengeurl &&
+      new URL(challengeurl, location.origin).host.endsWith('.altcha.org') &&
+      !!challengeurl?.includes('apiKey=ckey_')
+  );
+  const parsedChallengeJson = $derived(
+    challengejson ? parseJsonAttribute(challengejson) : undefined
+  );
   const parsedStrings = $derived(strings ? parseJsonAttribute(strings) : {});
   const _strings = $derived({
     ariaLinkLabel,
@@ -155,19 +155,15 @@
   });
 
   let checked: boolean = $state(false);
+  let currentState: State = $state(State.UNVERIFIED);
   let el: HTMLElement = $state()!;
   let elAnchorArrow: HTMLElement | null = $state(null);
   let elFloatingAnchor: HTMLElement | null = null;
   let elForm: HTMLFormElement | null = null;
   let error: string | null = $state(null);
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
-  let payload: string | null = $state(null);
   let loadedPlugins: Plugin[] = [];
-  let currentState: State = $state(State.UNVERIFIED);
-
-  $effect(() => {
-    dispatch('statechange', {payload, state: currentState })
-  });
+  let payload: string | null = $state(null);
 
   $effect(() => {
     onErrorChangeHandler(error);
@@ -201,7 +197,9 @@
     log(
       'plugins',
       loadedPlugins.length
-        ? loadedPlugins.map((plugin) => (plugin.constructor as any).pluginName).join(', ')
+        ? loadedPlugins
+            .map((plugin) => (plugin.constructor as any).pluginName)
+            .join(', ')
         : 'none'
     );
     if (test) {
@@ -311,7 +309,8 @@
       if (customfetch) {
         log('using customfetch');
         if (typeof customfetch === 'string') {
-          customFetch = globalThis[customfetch as keyof typeof globalThis] || null;
+          customFetch =
+            globalThis[customfetch as keyof typeof globalThis] || null;
           if (!customFetch) {
             throw new Error(`Custom fetch function not found: ${customfetch}`);
           }
@@ -320,11 +319,12 @@
         }
       }
       const init: RequestInit = {
-        headers: spamfilter !== false
-          ? {
-              'x-altcha-spam-filter': '1',
-            }
-          : {},
+        headers:
+          spamfilter !== false
+            ? {
+                'x-altcha-spam-filter': '1',
+              }
+            : {},
       };
       if (customFetch) {
         resp = await customFetch(challengeurl, init);
@@ -518,7 +518,8 @@
       floating &&
       target &&
       !el.contains(target) &&
-      (currentState === State.VERIFIED || (auto === 'off' && currentState === State.UNVERIFIED))
+      (currentState === State.VERIFIED ||
+        (auto === 'off' && currentState === State.UNVERIFIED))
     ) {
       el.style.display = 'none';
     }
@@ -571,7 +572,12 @@
           onInvalid();
         }
       }
-    } else if (elForm && floating && auto === 'off' && currentState === State.UNVERIFIED) {
+    } else if (
+      elForm &&
+      floating &&
+      auto === 'off' &&
+      currentState === State.UNVERIFIED
+    ) {
       ev.preventDefault();
       ev.stopPropagation();
       el.style.display = 'block';
@@ -893,12 +899,14 @@
    */
   export async function clarify() {
     if (!obfuscated) {
-      currentState = State.ERROR;
+      setState(State.ERROR);
       return;
     }
-    const plugin = loadedPlugins.find((p) => (p.constructor as any).pluginName === 'obfuscation');
+    const plugin = loadedPlugins.find(
+      (p) => (p.constructor as any).pluginName === 'obfuscation'
+    );
     if (!plugin || !('clarify' in plugin)) {
-      currentState = State.ERROR;
+      setState(State.ERROR);
       log(
         'Plugin `obfuscation` not found. Import `altcha/plugins/obfuscation` to load it.'
       );
@@ -949,7 +957,10 @@
       expire = options.expire;
     }
     if (options.challenge) {
-      challengejson = typeof options.challenge === 'string' ? options.challenge : JSON.stringify(options.challenge);
+      challengejson =
+        typeof options.challenge === 'string'
+          ? options.challenge
+          : JSON.stringify(options.challenge);
       validateChallenge(parsedChallengeJson);
     }
     if (options.challengeurl !== undefined) {
@@ -983,7 +994,10 @@
           : !!options.spamfilter;
     }
     if (options.strings) {
-      strings = typeof options.strings === 'string' ? options.strings : JSON.stringify(options.strings);
+      strings =
+        typeof options.strings === 'string'
+          ? options.strings
+          : JSON.stringify(options.strings);
     }
     if (options.test !== undefined) {
       test = typeof options.test === 'number' ? options.test : !!options.test;
@@ -1040,7 +1054,9 @@
    * Get a loaded plugin by it's name.
    */
   export function getPlugin(name: string) {
-    return loadedPlugins.find((plugin) => (plugin.constructor as any).pluginName === name);
+    return loadedPlugins.find(
+      (plugin) => (plugin.constructor as any).pluginName === name
+    );
   }
 
   /**
@@ -1062,9 +1078,8 @@
       expireTimeout = null;
     }
     checked = false;
-    error = err;
     payload = null;
-    currentState = newState;
+    setState(newState, err);
   }
 
   /**
@@ -1080,6 +1095,7 @@
   export function setState(newState: State, err: string | null = null) {
     currentState = newState;
     error = err;
+    dispatch('statechange', { payload, state: currentState });
   }
 
   /**
@@ -1115,7 +1131,7 @@
         }
       })
       .then(() => {
-        currentState = State.VERIFIED;
+        setState(State.VERIFIED);
         log('verified');
         tick().then(() => {
           dispatch('verified', { payload });
@@ -1123,15 +1139,19 @@
       })
       .catch((err) => {
         log(err);
-        currentState = State.ERROR;
-        error = err.message;
+        setState(State.ERROR, err.message);
       });
   }
 </script>
 
 <slot />
 
-<div bind:this={el} class="altcha" data-state={currentState} data-floating={floating}>
+<div
+  bind:this={el}
+  class="altcha"
+  data-state={currentState}
+  data-floating={floating}
+>
   <div class="altcha-main">
     {#if currentState === State.VERIFYING}
       <svg

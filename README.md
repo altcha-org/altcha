@@ -104,6 +104,8 @@ Required options (at least one is required):
 Additional options:
 
 - **auto**: Automatically verify without user interaction (possible values: `off`, `onfocus`, `onload`, `onsubmit`).
+- **customfetch**: A custom `fetch` function for retrieving the challenge.  
+  Accepts `url: string` and `init: RequestInit` as arguments and must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response).  
 - **delay**: Artificial delay in milliseconds before verification (defaults to 0).
 - **expire**: Challenge expiration duration in milliseconds.
 - **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
@@ -184,6 +186,7 @@ export interface Configure {
     signature: string;
   };
   challengeurl?: string;
+  customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
   debug?: boolean;
   delay?: number;
   expire?: number;
@@ -214,6 +217,42 @@ export interface Configure {
   workerurl?: string;
 }
 ```
+
+## Custom `fetch` Function  
+
+The widget does not send cookies (i.e., it does not use `credentials: 'include'`) when requesting the challenge from the server. To modify this behavior or add custom request headers, use the `customfetch` configuration option. This option lets you define a custom request function.  
+
+The custom function must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) object.  
+
+### Sending Cookies  
+
+To include cookies in the request, use `credentials: 'include'`:  
+
+```ts
+function altchaCustomFetch(url: string, init: RequestInit) {
+  return fetch(url, {
+    ...init,
+    credentials: 'include', // Include cookies with the request
+  });
+}
+```  
+
+For more details on possible request options, refer to the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) documentation.  
+
+### Using `customfetch`  
+
+The `customfetch` option can accept either:  
+- A `string` (the name of a globally accessible function defined in the global context, such as `window`), or  
+- A function itself.  
+
+### Example Usage  
+
+```html
+<altcha-widget
+  challengeurl="https://example.com/challenge"
+  customfetch="altchaCustomFetch"
+></altcha-widget>
+```  
 
 ## Events
 
@@ -290,6 +329,10 @@ By default, all text inputs and textareas within the parent form are spam-checke
 
 ## Contributing
 See [Contributing Guide](https://github.com/altcha-org/altcha/blob/main/CONTRIBUTING.md) and please follow our [Code of Conduct](https://github.com/altcha-org/altcha/blob/main/CODE_OF_CONDUCT.md).
+
+## Sponsorship  
+
+This project is sponsored by [BAUSW.com - Digital Construction Site Diary](https://bausw.com/digital-construction-diary/), promoting transparency and trust in construction projects with real-time documentation.
 
 ## License
 

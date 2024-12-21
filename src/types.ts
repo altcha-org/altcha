@@ -13,6 +13,7 @@ export interface Configure {
   blockspam?: boolean;
   challenge?: Challenge | string;
   challengeurl?: string;
+  customfetch?: string | CustomFetchFunction;
   debug?: boolean;
   delay?: number;
   expire?: number;
@@ -123,3 +124,5 @@ export enum State {
   UNVERIFIED = 'unverified',
   EXPIRED = 'expired',
 }
+
+export type CustomFetchFunction = (url: string, init?: RequestInit) => Promise<Response>;

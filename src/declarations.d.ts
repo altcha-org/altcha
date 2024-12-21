@@ -24,6 +24,7 @@ declare global {
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;
+    customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
     debug?: boolean;
     delay?: number;
     expire?: number;

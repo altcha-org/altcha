@@ -63,6 +63,7 @@
     Obfuscated,
     ClarifySolution,
     PluginContext,
+    CustomFetchFunction,
   } from './types';
 
   interface Props {
@@ -70,6 +71,7 @@
     blockspam?: boolean | undefined;
     challengeurl?: string | undefined;
     challengejson?: string | undefined;
+    customfetch?: string | CustomFetchFunction | undefined;
     debug?: boolean;
     delay?: number;
     expire?: number | undefined;
@@ -104,6 +106,7 @@
     blockspam = undefined,
     challengeurl = undefined,
     challengejson = undefined,
+    customfetch = undefined,
     debug = false,
     delay = 0,
     expire = undefined,
@@ -303,13 +306,34 @@
         throw new Error(`Attribute challengeurl not set.`);
       }
       log('fetching challenge from', challengeurl);
-      const resp = await fetch(challengeurl, {
+      let customFetch: CustomFetchFunction | null = null;
+      let resp: Response | null = null;
+      if (customfetch) {
+        log('using customfetch');
+        if (typeof customfetch === 'string') {
+          customFetch = globalThis[customfetch as keyof typeof globalThis] || null;
+          if (!customFetch) {
+            throw new Error(`Custom fetch function not found: ${customfetch}`);
+          }
+        } else {
+          customFetch = customfetch;
+        }
+      }
+      const init: RequestInit = {
         headers: spamfilter !== false
           ? {
               'x-altcha-spam-filter': '1',
             }
           : {},
-      });
+      };
+      if (customFetch) {
+        resp = await customFetch(challengeurl, init);
+        if (!resp || resp instanceof Response === false) {
+          throw new Error(`Custom fetch function did not return a response.`);
+        }
+      } else {
+        resp = await fetch(challengeurl, init);
+      }
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
       }
@@ -904,6 +928,9 @@
     }
     if (options.blockspam !== undefined) {
       blockspam = !!options.blockspam;
+    }
+    if (options.customfetch !== undefined) {
+      customfetch = options.customfetch;
     }
     if (options.floatinganchor !== undefined) {
       floatinganchor = options.floatinganchor;

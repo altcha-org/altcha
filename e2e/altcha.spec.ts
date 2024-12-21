@@ -2,10 +2,9 @@ import { test, expect } from '@playwright/test';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-test.only('should be rendered', async ({ page }) => {
+test('should be rendered', async ({ page }) => {
   await page.goto('./e2e/index.html');
   const cmp = page.locator('#test-render .altcha').first();
-  console.log(await cmp.innerHTML())
   await expect(cmp).toContainText(/Protected by/);
 });
 

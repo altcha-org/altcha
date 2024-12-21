@@ -2,6 +2,44 @@
   customElement={{
     tag: 'altcha-widget',
     shadow: 'none',
+    props: {
+      blockspam: {
+        type: 'Boolean'
+      },
+      debug: {
+        type: 'Boolean'
+      },
+      delay: {
+        type: 'Number'
+      },
+      expire: {
+        type: 'Number'
+      },
+      floatingoffset: {
+        type: 'Number'
+      },
+      hidefooter: {
+        type: 'Boolean'
+      },
+      hidelogo: {
+        type: 'Boolean'
+      },
+      maxnumber: {
+        type: 'Number'
+      },
+      mockerror: {
+        type: 'Boolean'
+      },
+      refetchonexpire: {
+        type: 'Boolean'
+      },
+      test: {
+        type: 'Boolean'
+      },
+      workers: {
+        type: 'Number'
+      },
+    },
   }}
 />
 
@@ -266,7 +304,7 @@
       }
       log('fetching challenge from', challengeurl);
       const resp = await fetch(challengeurl, {
-        headers: !!spamfilter
+        headers: spamfilter !== false
           ? {
               'x-altcha-spam-filter': '1',
             }
@@ -435,7 +473,7 @@
    */
   function onCheckedChange() {
     if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(currentState)) {
-      if (spamfilter && elForm?.reportValidity() === false) {
+      if (spamfilter !== false && elForm?.reportValidity() === false) {
         checked = false;
       } else if (obfuscated) {
         clarify();
@@ -634,7 +672,7 @@
     const body: ServerVerificationPayload = {
       payload: verificationPayload,
     };
-    if (spamfilter) {
+    if (spamfilter !== false) {
       const {
         blockedCountries,
         classifier,

@@ -107,3 +107,29 @@ declare global {
     }
   }
 }
+
+declare module "react" {
+  namespace JSX {
+    interface IntrinsicElements {
+      'altcha-widget': AltchaWidgetReact;
+    }
+
+    interface AltchaWidgetCSSProperties extends React.CSSProperties {
+      '--altcha-border-width'?: string;
+      '--altcha-border-radius'?: string;
+      '--altcha-color-base'?: string;
+      '--altcha-color-border'?: string;
+      '--altcha-color-text'?: string;
+      '--altcha-color-border-focus'?: string;
+      '--altcha-color-error-text'?: string;
+      '--altcha-color-footer-bg'?: string;
+      '--altcha-max-width'?: string;
+    }
+
+    interface AltchaWidgetReact extends AltchaWidget extends React.HTMLAttributes<HTMLElement> {
+      children?: React.ReactNode;
+      ref?: React.RefObject<HTMLElement | null>;
+      style?: AltchaWidgetCSSProperties;
+    }
+  }
+}

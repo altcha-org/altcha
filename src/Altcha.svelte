@@ -337,8 +337,6 @@
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
       }
-      // The use of Expires header is deprecated, use salt params instead
-      const expHeader = resp.headers.get('Expires');
       const configHeader = resp.headers.get('X-Altcha-Config');
       const json = await resp.json();
       const params = new URLSearchParams(json.salt.split('?')?.[1]);
@@ -364,15 +362,6 @@
           }
         } catch (err) {
           log('unable to configure from X-Altcha-Config', err);
-        }
-      }
-      if (!expire && expHeader?.length) {
-        const parsed = Date.parse(expHeader);
-        if (parsed) {
-          const diff = parsed - Date.now();
-          if (diff > 0) {
-            setExpire(diff);
-          }
         }
       }
       return json;

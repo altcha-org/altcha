@@ -360,7 +360,7 @@ export class PluginUpload extends Plugin {
   async #putFile(
     url: string,
     handle: UploadHandle,
-    body: ArrayBuffer | File,
+    body: Uint8Array<ArrayBufferLike> | ArrayBuffer | File,
     headers: Record<string, string> = {}
   ) {
     return new Promise((resolve, reject) => {

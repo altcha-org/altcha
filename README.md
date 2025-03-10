@@ -113,6 +113,7 @@ Additional options:
 - **floatingoffset**: Y offset from the anchor element for the floating UI in pixels (defaults to `12`).
 - **hidefooter**: Hide the footer (ALTCHA link).
 - **hidelogo**: Hide the ALTCHA logo.
+- **id**: The checkbox `id` attribute. Useful for multiple instances of the widget on the same page.
 - **maxnumber**: Max number to iterate to (defaults to 1,000,000).
 - **name**: Name of the hidden field containing the payload (defaults to "altcha").
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).

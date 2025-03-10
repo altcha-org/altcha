@@ -33,6 +33,7 @@ declare global {
     floatingoffset?: number;
     hidefooter?: boolean;
     hidelogo?: boolean;
+    id?: string;
     maxnumber?: number;
     mockerror?: boolean;
     name?: string;

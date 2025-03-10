@@ -80,6 +80,7 @@
     floatingoffset?: number | undefined;
     hidefooter?: boolean;
     hidelogo?: boolean;
+    id?: string;
     name?: string;
     maxnumber?: number;
     mockerror?: boolean;
@@ -108,6 +109,7 @@
     floatingoffset = undefined,
     hidefooter = false,
     hidelogo = false,
+    id = undefined,
     name = 'altcha',
     maxnumber = 1e6,
     mockerror = false,
@@ -153,6 +155,7 @@
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
   });
+  const widgetId = $derived(id || `${name}_checkbox`);
 
   let checked: boolean = $state(false);
   let currentState: State = $state(State.UNVERIFIED);
@@ -1166,7 +1169,7 @@
     >
       <input
         type="checkbox"
-        id="{name}_checkbox"
+        id={widgetId}
         required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
         bind:checked
         onchange={onCheckedChange}
@@ -1181,7 +1184,7 @@
       {:else if currentState === State.VERIFYING}
         <span role="status" aria-live="polite">{@html _strings.verifying}</span>
       {:else}
-        <label for="{name}_checkbox">{@html _strings.label}</label>
+        <label for={widgetId}>{@html _strings.label}</label>
       {/if}
     </div>
 

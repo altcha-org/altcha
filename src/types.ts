@@ -20,7 +20,6 @@ export interface Configure {
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
   floatingoffset?: number;
-  autorenew?: boolean;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;

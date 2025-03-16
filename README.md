@@ -1,16 +1,17 @@
 # ALTCHA
 
-ALTCHA uses a proof-of-work mechanism to protect your website, APIs, and online services from spam and abuse. Unlike other solutions, ALTCHA is self-hosted, does not use cookies nor fingerprinting, does not track users, and is fully compliant with GDPR.
+ALTCHA leverages a proof-of-work mechanism to safeguard your website, APIs, and online services from spam and abuse. Unlike traditional solutions, ALTCHA is self-hosted, does not rely on cookies or fingerprinting, and ensures complete user privacy. It is fully compliant with [GDPR](https://altcha.org/docs/gdpr/), [WCAG 2.2 AA-level](https://altcha.org/docs/wcag/), and the [European Accessibility Act](https://altcha.org/docs/european-accessibility-act-2025/).
 
-Visit [ALTCHA](https://altcha.org) for more information.
+For more details, visit [ALTCHA](https://altcha.org).
 
 ## Features
 
-- **Frictionless CAPTCHA Alternative** - Employs proof-of-work (PoW) instead of visual puzzles.
-- **Data Obfuscation** - Safeguards your email address from scraping.
-- **Cookie-less** - Designed to be GDPR compliant by default.
-- **Self-hosted** - Operates independently without relying on external providers.
-- **SaaS Available** - Get started with the SaaS API at [altcha.org/docs/api](https://altcha.org/docs/api).
+- **Frictionless Experience**: Utilizes proof-of-work (PoW) instead of visual puzzles, ensuring a seamless user experience.
+- **Cookie-Free Design**: Built to be GDPR-compliant by default, with no cookies or tracking.
+- **Fully Accessible**: Meets WCAG 2.2 AA-level standards and complies with the European Accessibility Act (EAA).
+- **Lightweight**: Minimal bundle size for fast page loads and optimal performance.
+- **Self-Hosted**: Operates independently without depending on third-party services.
+- **SaaS Option Available**: Get started quickly with the SaaS API at [altcha.org](https://altcha.org/).
 
 ## Examples
 
@@ -111,7 +112,7 @@ Additional options:
 - **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
 - **floatinganchor**: CSS selector of the "anchor" to which the floating UI will be attached (defaults to the `button[type="submit"]` in the related form).
 - **floatingoffset**: Y offset from the anchor element for the floating UI in pixels (defaults to `12`).
-- **floatingpersist**: Whether to "persist" (keep visible) the floating widget after verification (defaults to `false`, meaning the widget will hide).
+- **floatingpersist**: Whether to "persist" (keep visible) the floating widget after verification (possible values: `true` | `false` | `focus`; defaults to `false`, meaning the widget will hide).
 - **hidefooter**: Hide the footer (ALTCHA link).
 - **hidelogo**: Hide the ALTCHA logo.
 - **id**: The checkbox `id` attribute. Useful for multiple instances of the widget on the same page.
@@ -195,7 +196,7 @@ export interface Configure {
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
   floatingoffset?: number;
-  autorenew?: boolean;
+  floatingpersist?: boolean | 'focus';
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;

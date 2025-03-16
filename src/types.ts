@@ -20,7 +20,6 @@ export interface Configure {
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
   floatingoffset?: number;
-  autorenew?: boolean;
   hidefooter?: boolean;
   hidelogo?: boolean;
   maxnumber?: number;
@@ -73,6 +72,7 @@ export interface Challenge {
   algorithm: string;
   challenge: string;
   maxnumber?: number;
+  maxNumber?: number;
   salt: string;
   signature: string;
 }
@@ -91,6 +91,7 @@ export interface Obfuscated {
   obfuscated: string;
   key?: string;
   maxnumber?: number;
+  maxNumber?: number;
 }
 
 export interface ClarifySolution {

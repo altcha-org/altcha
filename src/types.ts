@@ -73,6 +73,7 @@ export interface Challenge {
   algorithm: string;
   challenge: string;
   maxnumber?: number;
+  maxNumber?: number;
   salt: string;
   signature: string;
 }
@@ -91,6 +92,7 @@ export interface Obfuscated {
   obfuscated: string;
   key?: string;
   maxnumber?: number;
+  maxNumber?: number;
 }
 
 export interface ClarifySolution {

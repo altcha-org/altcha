@@ -760,7 +760,7 @@
     let solution: Solution | ClarifySolution | null = null;
     if ('Worker' in window) {
       try {
-        solution = await solveWorkers(data, data.maxnumber);
+        solution = await solveWorkers(data, data.maxNumber || data.maxnumber || maxnumber);
       } catch (err) {
         log(err);
       }
@@ -775,7 +775,7 @@
       const solution = await clarifyData(
         data.obfuscated,
         data.key,
-        data.maxnumber
+        data.maxNumber || data.maxnumber
       );
       return {
         data,
@@ -788,18 +788,18 @@
         data.challenge,
         data.salt,
         data.algorithm,
-        data.maxnumber || maxnumber
+        data.maxNumber || data.maxnumber || maxnumber
       ).promise,
     };
   }
 
   async function solveWorkers(
     challenge: Challenge | Obfuscated,
-    max: number = typeof test === 'number' ? test : maxnumber,
+    max: number = typeof test === 'number' ? test : (challenge.maxNumber || challenge.maxnumber || maxnumber),
     concurrency: number = Math.ceil(workers)
   ): Promise<Solution | null> {
     const workersInstances: Worker[] = [];
-    concurrency = Math.min(16, Math.max(1, concurrency));
+    concurrency = Math.min(16, max, Math.max(1, concurrency));
     for (let i = 0; i < concurrency; i++) {
       workersInstances.push(altchaCreateWorker(workerurl));
     }
@@ -1125,8 +1125,8 @@
       })
       .then(({ data, solution }) => {
         log('solution', solution);
-        if ('challenge' in data && solution && !('clearText' in solution)) {
-          if (solution?.number !== undefined) {
+        if (!solution || (data && 'challenge' in data && !('clearText' in solution))) {
+          if (solution?.number !== undefined && 'challenge' in data) {
             if (verifyurl) {
               return requestServerVerification(
                 createAltchaPayload(data, solution)

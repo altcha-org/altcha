@@ -111,6 +111,7 @@ Additional options:
 - **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
 - **floatinganchor**: CSS selector of the "anchor" to which the floating UI will be attached (defaults to the `button[type="submit"]` in the related form).
 - **floatingoffset**: Y offset from the anchor element for the floating UI in pixels (defaults to `12`).
+- **floatingpersist**: Whether to "persist" (keep visible) the floating widget after verification (defaults to `false`, meaning the widget will hide).
 - **hidefooter**: Hide the footer (ALTCHA link).
 - **hidelogo**: Hide the ALTCHA logo.
 - **id**: The checkbox `id` attribute. Useful for multiple instances of the widget on the same page.

@@ -78,6 +78,7 @@
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean | undefined;
     floatinganchor?: string | undefined;
     floatingoffset?: number | undefined;
+    floatingpersist?: 'focus' | boolean | undefined;
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
@@ -107,6 +108,7 @@
     floating = undefined,
     floatinganchor = undefined,
     floatingoffset = undefined,
+    floatingpersist = false,
     hidefooter = false,
     hidelogo = false,
     id = undefined,
@@ -223,7 +225,7 @@
         capture: true,
       });
       elForm.addEventListener('reset', onFormReset);
-      if (auto === 'onfocus') {
+      if (auto === 'onfocus' || floatingpersist === 'focus') {
         elForm.addEventListener('focusin', onFormFocusIn);
       }
     }
@@ -510,10 +512,11 @@
       floating &&
       target &&
       !el.contains(target) &&
-      (currentState === State.VERIFIED ||
+      ((currentState === State.VERIFIED && floatingpersist === false) ||
+        (currentState === State.VERIFIED && floatingpersist === 'focus' && !elForm?.matches(':focus-within')) ||
         (auto === 'off' && currentState === State.UNVERIFIED))
     ) {
-      el.style.display = 'none';
+      hide();
     }
   }
 
@@ -543,6 +546,8 @@
   function onFormFocusIn(ev: FocusEvent) {
     if (currentState === State.UNVERIFIED) {
       verify();
+    } else if (floating && floatingpersist === 'focus' && currentState === State.VERIFIED) {
+      show();
     }
   }
 
@@ -572,8 +577,7 @@
     ) {
       ev.preventDefault();
       ev.stopPropagation();
-      el.style.display = 'block';
-      repositionFloating();
+      show();
     }
   }
 
@@ -624,63 +628,6 @@
    */
   function parseJsonAttribute(str: string) {
     return JSON.parse(str);
-  }
-
-  /**
-   * Repositions the floating UI element based on scroll position.
-   */
-  function repositionFloating(viewportOffset: number = 20) {
-    if (el) {
-      if (!elFloatingAnchor) {
-        elFloatingAnchor =
-          (floatinganchor
-            ? document.querySelector<HTMLElement>(floatinganchor)
-            : elForm?.querySelector(
-                'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
-              )) || elForm;
-      }
-      if (elFloatingAnchor) {
-        // @ts-expect-error
-        const offsetY = parseInt(floatingoffset, 10) || 12;
-        const anchorBoundry = elFloatingAnchor.getBoundingClientRect();
-        const elBoundary = el.getBoundingClientRect();
-        const docHeight = document.documentElement.clientHeight;
-        const docWidth = document.documentElement.clientWidth;
-        const showOnTop =
-          floating === 'auto'
-            ? anchorBoundry.bottom +
-                elBoundary.height +
-                offsetY +
-                viewportOffset >
-              docHeight
-            : floating === 'top';
-        const left = Math.max(
-          viewportOffset,
-          Math.min(
-            docWidth - viewportOffset - elBoundary.width,
-            anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2
-          )
-        );
-        if (showOnTop) {
-          el.style.top = `${anchorBoundry.top - (elBoundary.height + offsetY)}px`;
-        } else {
-          el.style.top = `${anchorBoundry.bottom + offsetY}px`;
-        }
-        el.style.left = `${left}px`;
-        el.setAttribute('data-floating', showOnTop ? 'top' : 'bottom');
-        if (elAnchorArrow) {
-          const anchorArrowBoundry = elAnchorArrow.getBoundingClientRect();
-          elAnchorArrow.style.left =
-            anchorBoundry.left -
-            left +
-            anchorBoundry.width / 2 -
-            anchorArrowBoundry.width / 2 +
-            'px';
-        }
-      } else {
-        log('unable to find floating anchor element');
-      }
-    }
   }
 
   /**
@@ -1059,6 +1006,70 @@
   }
 
   /**
+   * Hide the widget using `display = 'none'`
+   */
+  export function hide() {
+    el.style.display = 'none';
+  }
+
+  /**
+   * Repositions the floating UI element based on scroll position.
+   */
+  export function repositionFloating(viewportOffset: number = 20) {
+    if (el) {
+      if (!elFloatingAnchor) {
+        elFloatingAnchor =
+          (floatinganchor
+            ? document.querySelector<HTMLElement>(floatinganchor)
+            : elForm?.querySelector(
+                'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])'
+              )) || elForm;
+      }
+      if (elFloatingAnchor) {
+        // @ts-expect-error
+        const offsetY = parseInt(floatingoffset, 10) || 12;
+        const anchorBoundry = elFloatingAnchor.getBoundingClientRect();
+        const elBoundary = el.getBoundingClientRect();
+        const docHeight = document.documentElement.clientHeight;
+        const docWidth = document.documentElement.clientWidth;
+        const showOnTop =
+          floating === 'auto'
+            ? anchorBoundry.bottom +
+                elBoundary.height +
+                offsetY +
+                viewportOffset >
+              docHeight
+            : floating === 'top';
+        const left = Math.max(
+          viewportOffset,
+          Math.min(
+            docWidth - viewportOffset - elBoundary.width,
+            anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2
+          )
+        );
+        if (showOnTop) {
+          el.style.top = `${anchorBoundry.top - (elBoundary.height + offsetY)}px`;
+        } else {
+          el.style.top = `${anchorBoundry.bottom + offsetY}px`;
+        }
+        el.style.left = `${left}px`;
+        el.setAttribute('data-floating', showOnTop ? 'top' : 'bottom');
+        if (elAnchorArrow) {
+          const anchorArrowBoundry = elAnchorArrow.getBoundingClientRect();
+          elAnchorArrow.style.left =
+            anchorBoundry.left -
+            left +
+            anchorBoundry.width / 2 -
+            anchorArrowBoundry.width / 2 +
+            'px';
+        }
+      } else {
+        log('unable to find floating anchor element');
+      }
+    }
+  }
+
+  /**
    * Clears the state and resets the form.
    */
   export function reset(
@@ -1088,6 +1099,16 @@
     currentState = newState;
     error = err;
     dispatch('statechange', { payload, state: currentState });
+  }
+
+  /**
+   * Show the widget using `display = 'block'` and reposition when floating.
+   */
+  export function show() {
+    el.style.display = 'block';
+    if (floating) {
+      repositionFloating();
+    }
   }
 
   /**

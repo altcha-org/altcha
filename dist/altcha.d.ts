@@ -31,6 +31,7 @@ declare global {
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
     floatinganchor?: string;
     floatingoffset?: number;
+    floatingpersist?: 'focus' | boolean;
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
@@ -62,9 +63,12 @@ declare global {
     getFloatingAnchor: () => HTMLElement | null;
     getPlugin: <T = unknown>(name: string) => T;
     getState: () => AltchaState;
+    hide: () => void;
+    repositionFloating: (viewportOffset: numer = 20) => void;
     reset: (newState: AltchaState = 'unverified', err: string | null = null) => void;
     setFloatingAnchor: (el: HTMLElement) => void; 
     setState: (newState: AltchaState, err: string | null = null) => void; 
+    show: () => void;
     verify: () => Promise<void>;
   }
 

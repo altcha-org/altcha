@@ -64,51 +64,56 @@ declare global {
     getPlugin: <T = unknown>(name: string) => T;
     getState: () => AltchaState;
     hide: () => void;
-    repositionFloating: (viewportOffset: numer = 20) => void;
-    reset: (newState: AltchaState = 'unverified', err: string | null = null) => void;
+    repositionFloating: (viewportOffset?: number) => void;
+    reset: (newState?: AltchaState, err?: string | null) => void;
     setFloatingAnchor: (el: HTMLElement) => void; 
-    setState: (newState: AltchaState, err: string | null = null) => void; 
+    setState: (newState: AltchaState, err?: string | null) => void; 
     show: () => void;
     verify: () => Promise<void>;
   }
 
-  interface AltchaWidget extends AltchaWidgetOptions extends AltchaWidgetMethods {
+  interface AltchaWidget extends AltchaWidgetOptions {
   }
 
-  declare namespace svelteHTML {
-    interface IntrinsicElements {
-      'altcha-widget': AltchaWidgetSvelte;
-    }
+  interface AltchaWidgetCSSProperties extends React.CSSProperties {
+    '--altcha-border-width'?: string;
+    '--altcha-border-radius'?: string;
+    '--altcha-color-base'?: string;
+    '--altcha-color-border'?: string;
+    '--altcha-color-text'?: string;
+    '--altcha-color-border-focus'?: string;
+    '--altcha-color-error-text'?: string;
+    '--altcha-color-footer-bg'?: string;
+    '--altcha-max-width'?: string;
+  }
 
-    interface AltchaWidgetSvelte extends AltchaWidget {
-      'on:statechange'?: (event: AltchaStateChangeEvent) => void;
-      'on:serververification'?: (event: AltchaServerVerificationEvent) => void; 
-      'on:verified'?: (event: AltchaVerifiedEvent) => void; 
-      style?: string;
-    }
+  interface AltchaWidgetReact extends AltchaWidget, React.HTMLAttributes<HTMLElement> {
+    children?: React.ReactNode;
+    ref?: React.RefObject<HTMLElement | null>;
+    style?: AltchaWidgetCSSProperties;
   }
 
   namespace JSX {
     interface IntrinsicElements {
       'altcha-widget': AltchaWidgetReact;
     }
+  }
 
-    interface AltchaWidgetCSSProperties extends React.CSSProperties {
-      '--altcha-border-width'?: string;
-      '--altcha-border-radius'?: string;
-      '--altcha-color-base'?: string;
-      '--altcha-color-border'?: string;
-      '--altcha-color-text'?: string;
-      '--altcha-color-border-focus'?: string;
-      '--altcha-color-error-text'?: string;
-      '--altcha-color-footer-bg'?: string;
-      '--altcha-max-width'?: string;
+  namespace React {
+    namespace JSX {
+      interface IntrinsicElements {
+        'altcha-widget': AltchaWidgetReact;
+      }
+    }
+  }
+
+  namespace svelteHTML {
+    interface IntrinsicElements {
+      'altcha-widget': AltchaWidgetSvelte;
     }
 
-    interface AltchaWidgetReact extends AltchaWidget extends React.HTMLAttributes<HTMLElement> {
-      children?: React.ReactNode;
-      ref?: React.RefObject<HTMLElement>;
-      style?: AltchaWidgetCSSProperties;
+    interface AltchaWidgetSvelte extends AltchaWidget {
+      style?: string;
     }
   }
 }
@@ -118,23 +123,21 @@ declare module "react" {
     interface IntrinsicElements {
       'altcha-widget': AltchaWidgetReact;
     }
+  }
+}
 
-    interface AltchaWidgetCSSProperties extends React.CSSProperties {
-      '--altcha-border-width'?: string;
-      '--altcha-border-radius'?: string;
-      '--altcha-color-base'?: string;
-      '--altcha-color-border'?: string;
-      '--altcha-color-text'?: string;
-      '--altcha-color-border-focus'?: string;
-      '--altcha-color-error-text'?: string;
-      '--altcha-color-footer-bg'?: string;
-      '--altcha-max-width'?: string;
+declare module "react/jsx-runtime" {
+  namespace JSX {
+    interface IntrinsicElements {
+      'altcha-widget': AltchaWidgetReact;
     }
+  }
+}
 
-    interface AltchaWidgetReact extends AltchaWidget extends React.HTMLAttributes<HTMLElement> {
-      children?: React.ReactNode;
-      ref?: React.RefObject<HTMLElement | null>;
-      style?: AltchaWidgetCSSProperties;
+declare module "react/jsx-dev-runtime" {
+  namespace JSX {
+    interface IntrinsicElements {
+      'altcha-widget': AltchaWidgetReact;
     }
   }
 }

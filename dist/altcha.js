@@ -1945,7 +1945,7 @@ function sa(e, t) {
     Zn(), w && (w.removeEventListener("submit", _r), w.removeEventListener("reset", mr), w.removeEventListener("focusin", gr), w = null), fe && (clearTimeout(fe), fe = null), document.removeEventListener("click", vr), document.removeEventListener("scroll", hr), window.removeEventListener("resize", pr);
   }), qn(() => {
     var n;
-    I("mounted", "1.4.0"), I("workers", Ue()), Qn(), I("plugins", xe.length ? xe.map((u) => u.constructor.pluginName).join(", ") : "none"), Q() && I("using test mode"), c() && zt(c()), r() !== void 0 && I("auto", r()), v() !== void 0 && yr(v()), w = (n = d(j)) == null ? void 0 : n.closest("form"), w && (w.addEventListener("submit", _r, { capture: !0 }), w.addEventListener("reset", mr), (r() === "onfocus" || m() === "focus") && w.addEventListener("focusin", gr)), r() === "onload" && (H() ? lt() : $e()), d(Pt) && (p() || T()) && I("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    I("mounted", "1.4.1"), I("workers", Ue()), Qn(), I("plugins", xe.length ? xe.map((u) => u.constructor.pluginName).join(", ") : "none"), Q() && I("using test mode"), c() && zt(c()), r() !== void 0 && I("auto", r()), v() !== void 0 && yr(v()), w = (n = d(j)) == null ? void 0 : n.closest("form"), w && (w.addEventListener("submit", _r, { capture: !0 }), w.addEventListener("reset", mr), (r() === "onfocus" || m() === "focus") && w.addEventListener("focusin", gr)), r() === "onload" && (H() ? lt() : $e()), d(Pt) && (p() || T()) && I("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       nt("load");
     });
   });

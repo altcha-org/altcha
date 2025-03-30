@@ -75,7 +75,7 @@ declare global {
   interface AltchaWidget extends AltchaWidgetOptions {
   }
 
-  interface AltchaWidgetCSSProperties extends React.CSSProperties {
+  interface AltchaWidgetCSSProperties extends Partial<CSSStyleDeclaration> {
     '--altcha-border-width'?: string;
     '--altcha-border-radius'?: string;
     '--altcha-color-base'?: string;
@@ -87,9 +87,13 @@ declare global {
     '--altcha-max-width'?: string;
   }
 
-  interface AltchaWidgetReact extends AltchaWidget, React.HTMLAttributes<HTMLElement> {
-    children?: React.ReactNode;
-    ref?: React.RefObject<HTMLElement | null>;
+  interface AltchaWidgetReactRefObject<T> {
+    current: T | null;
+  }
+
+  interface AltchaWidgetReact extends AltchaWidget {
+    children?: string | number | Node | DocumentFragment;
+    ref?: AltchaWidgetReactRefObject<HTMLElement>;
     style?: AltchaWidgetCSSProperties;
   }
 

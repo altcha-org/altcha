@@ -1,6 +1,8 @@
 <html>
   <head>
-    <script async defer src="../dist/altcha.js" type="module"></script>
+    <!--
+      <script async defer src="../dist/altcha.js" type="module"></script>
+    -->
   </head>
 
   <body>
@@ -61,7 +63,7 @@
         <form method="post">
           <altcha-widget
             id="test-verification-altcha"
-            name="alctha-verification"
+            name="altcha-verification"
           ></altcha-widget>
         </form>
 
@@ -73,6 +75,37 @@
           });
         </script>
       </div>
+
+      <div id="test-code-challenge">
+        <form method="post">
+          <altcha-widget
+            id="test-code-challenge-altcha"
+            name="altcha-code-challenge"
+            verifyurl="/verify"
+          ></altcha-widget>
+        </form>
+
+        <script>
+          window.addEventListener('load', () => {
+            const challenge ={
+                "codeChallenge": {
+                    "audio": "/v1/challenge/audio/WTiqG2Ra3aYbyR426xaB-2b0CPdwf_KB2YIGk8yjFo0.mp3",
+                    "image": "data:image/jpeg;base64,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",
+                    "length": 5
+                },
+                "algorithm": "SHA-256",
+                "challenge": "1ac25e8ed79d03a47a3b10bd8e494c2b3503db0cb1597dab7c805caa3bd3654f",
+                "maxnumber": 10,
+                "salt": "4e5eaaafd360886c8c2e6fb0?edk=ftuop27m6nl9b4kdh7llolnnod&codeChallengeHash=cfdbcb0b9e362c1e6654fdec",
+                "signature": "041781384c32dd3aa46ca785ea2dc57c3eb3e604b2b3ee7aeeab59481bbaae6d"
+            };
+            document.querySelector('#test-code-challenge-altcha').configure({
+              challenge,
+            });
+          });
+        </script>
+      </div>
+
 
     </main>
   </body>

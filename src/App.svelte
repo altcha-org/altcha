@@ -3,16 +3,14 @@
   import InlineWorker from './worker?worker&inline';
   
   import './plugins/obfuscation';
-  import './plugins/analytics';
   import './plugins/upload';
 
+  import './altcha.css';
   import './Altcha.svelte';
   import type Altcha from './Altcha.svelte';
-  
+
   globalThis.altchaCreateWorker = (url?: string) => new InlineWorker();
-  globalThis.altchaPlugins = globalThis.altchaPlugins || [];
-
-
+  
   const success = location.hash.includes('success');
   const failure = location.hash.includes('failure');
   const params = new URLSearchParams(location.search);
@@ -23,6 +21,7 @@
   let mockerror: boolean = $state(false);
 
   let altcha: Altcha = $state()!;
+  let altchaUpload: Altcha = $state()!;
   let altchaObfuscated: Altcha = $state()!;
   
   let uploadProgress: {
@@ -144,9 +143,8 @@
     </div>
 
     <altcha-widget
-      bind:this={altcha}
+      bind:this={altchaUpload}
       debug
-      name="upload"
       plugins="upload"
       {challengeurl}
       {mockerror}
@@ -187,6 +185,7 @@
         floating
         oncleartext={(ev) => console.log('Event: cleartext:', ev.detail)}
       >
+        <!-- svelte-ignore a11y_invalid_attribute -->
         <a href="#">(click to reveal)</a>
       </altcha-widget>
     </div>

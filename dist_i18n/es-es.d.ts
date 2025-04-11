@@ -1,0 +1,1 @@
+declare module 'altcha/i18n/es-es';

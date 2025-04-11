@@ -62,6 +62,26 @@ export interface ServerVerificationPayload {
   timeZone?: string;
 }
 
+export interface SentinelVerificationPayload {
+  code?: string;
+  email?: string;
+  fields?: Record<string, string>;
+  ipAddress?: string;
+  payload: string;
+  text?: string | string[];
+  timeZone?: string;
+}
+
+export interface SentinelVerificationResponse {
+  algorithm: Algorithm;
+  apiKey: string;
+  reason?: string;
+  score: number;
+  signature: string;
+  verificationData: string;
+  verified: boolean;
+}
+
 export interface Solution {
   number: number;
   took: number;
@@ -69,6 +89,11 @@ export interface Solution {
 }
 
 export interface Challenge {
+  codeChallenge?: {
+    audio?: string;
+    image: string;
+    length?: number;
+  };
   algorithm: string;
   challenge: string;
   maxnumber?: number;
@@ -119,11 +144,20 @@ export interface PluginContext {
 }
 
 export enum State {
+  CODE = 'code',
   ERROR = 'error',
   VERIFIED = 'verified',
   VERIFYING = 'verifying',
   UNVERIFIED = 'unverified',
   EXPIRED = 'expired',
+}
+
+export enum AudioState {
+  ERROR = 'error',
+  LOADING = 'loading',
+  PLAYING = 'playing',
+  PAUSED = 'paused',
+  READY = 'ready',
 }
 
 export type CustomFetchFunction = (url: string, init?: RequestInit) => Promise<Response>;

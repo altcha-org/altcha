@@ -61,6 +61,125 @@
   display: flex;
   gap: 0.4rem;
   padding: 0.7rem;
+  position: relative;
+}
+
+.altcha-code-challenge {
+  background: var(--altcha-color-base, white);
+  border: 1px solid var(--altcha-color-border-focus, currentColor);
+  border-radius: var(--altcha-border-radius, 3px);
+  filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.2));
+  padding: 0.5rem;
+  position: absolute;
+  top: 2.5rem;
+  z-index: 9999999;
+}
+
+.altcha-code-challenge > form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.altcha-code-challenge-input {
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  box-sizing: border-box;
+  outline: none;
+  font-size: 16px;
+  padding: 0.35rem;
+  width: 220px;
+}
+
+.altcha-code-challenge-input:focus {
+  outline: 2px solid rgba(0, 0, 250, 0.2);
+}
+
+.altcha-code-challenge-input:disabled {
+  opacity: 0.7;
+}
+
+.altcha-code-challenge-image {
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  box-sizing: border-box;
+  object-fit: contain;
+  height: 50px;
+  width: 220px;
+}
+
+.altcha-code-challenge-audio,
+.altcha-code-challenge-reload {
+  background: #efefef;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+.altcha-code-challenge-audio:disabled,
+.altcha-code-challenge-reload:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.altcha-code-challenge-audio > *,
+.altcha-code-challenge-reload > * {
+  height: 20px;
+  width: 20px;
+}
+
+.altcha-code-challenge-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.altcha-code-challenge-buttons-left {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.altcha-code-challenge-verify {
+  align-items: center;
+  background: blue;
+  border: 0;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  font-size: 100%;
+  padding: 0.35rem 1rem;
+}
+
+.altcha-code-challenge-verify:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.altcha-code-challenge-arrow {
+  border: 6px solid transparent;
+  border-bottom-color: var(--altcha-color-border, currentColor);
+  content: '';
+  height: 0;
+  left: 0.15rem;
+  position: absolute;
+  top: -12px;
+  width: 0;
+}
+
+.altcha[data-floating="top"] .altcha-code-challenge {
+  top: -150px;
+}
+
+.altcha[data-floating="top"] .altcha-code-challenge-arrow {
+  border-bottom-color: transparent;
+  border-top-color: var(--altcha-color-border, currentColor);
+  bottom: -12px;
+  top: auto;
 }
 
 .altcha-label {

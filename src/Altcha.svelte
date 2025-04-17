@@ -1166,12 +1166,23 @@
   data-floating={floating}
 >
   <div class="altcha-main">
-    {#if currentState === State.VERIFYING}
+    <div class="altcha-checkbox">
+      <input
+        type="checkbox"
+        id={widgetId}
+        required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
+        bind:checked
+        onchange={onCheckedChange}
+        oninvalid={onInvalid}
+      />
+
       <svg
+        class="altcha-loader"
         width="24"
         height="24"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
         ><path
           d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
           fill="currentColor"
@@ -1182,25 +1193,11 @@
           class="altcha-spinner"
         /></svg
       >
-    {/if}
-
-    <div
-      class="altcha-checkbox"
-      class:altcha-hidden={currentState === State.VERIFYING}
-    >
-      <input
-        type="checkbox"
-        id={widgetId}
-        required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
-        bind:checked
-        onchange={onCheckedChange}
-        oninvalid={onInvalid}
-      />
-
-      {#if currentState === State.VERIFIED}
-        <input type="hidden" {name} value={payload} />
-      {/if}
     </div>
+
+    {#if currentState === State.VERIFIED}
+      <input type="hidden" {name} value={payload} />
+    {/if}
 
     <div class="altcha-label">
       <label for={widgetId}>

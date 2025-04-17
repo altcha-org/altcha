@@ -1196,17 +1196,22 @@
         onchange={onCheckedChange}
         oninvalid={onInvalid}
       />
+
+      {#if currentState === State.VERIFIED}
+        <input type="hidden" {name} value={payload} />
+      {/if}
     </div>
 
     <div class="altcha-label">
-      {#if currentState === State.VERIFIED}
-        <span role="status" aria-live="polite">{@html _strings.verified}</span>
-        <input type="hidden" {name} value={payload} />
-      {:else if currentState === State.VERIFYING}
-        <span role="status" aria-live="polite">{@html _strings.verifying}</span>
-      {:else}
-        <label for={widgetId}>{@html _strings.label}</label>
-      {/if}
+      <label for={widgetId}>
+        {#if currentState === State.VERIFIED}
+          {@html _strings.verified}
+        {:else if currentState === State.VERIFYING}
+          {@html _strings.verifying}
+        {:else}
+          {@html _strings.label}
+        {/if}
+      </label>
     </div>
 
     {#if hidelogo !== true || isFreeSaaS}

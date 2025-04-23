@@ -60,4 +60,22 @@ test('should trigger verification and emit verified event', async ({ page }) => 
   expect(ok).toBe(true);
 });
 
+test('should emit the `code` event and display the code challenge dialog', async ({ page }) => {
+  await page.goto('./e2e/index.html');
+  const cmp = page.locator('#test-code-challenge-altcha').first();
+  const ok = await cmp.evaluate(cmpElement => {
+    return new Promise((resolve) => {
+      cmpElement.addEventListener('code', async () => {
+        expect(await cmp.locator('.altcha-code-challenge-image').first().count()).toBe(1);
+        expect(await cmp.locator('.altcha-code-challenge-input').first().count()).toBe(1);
+        resolve(true);
+      });
+      // @ts-expect-error typings
+      cmpElement.verify();
+      setTimeout(() => resolve(0), 5000);
+    })
+  });
+  expect(ok).toBe(true);
+});
+
 

@@ -1,0 +1,22 @@
+const e = {
+  ariaLinkLabel: "Bezoek Altcha.org",
+  enterCode: "Voer code in",
+  enterCodeAria: "Voer de code in die je hoort. Druk op Spatie om de audio af te spelen.",
+  error: "Verificatie mislukt. Probeer het later opnieuw.",
+  expired: "Verificatie verlopen. Probeer het opnieuw.",
+  extraCheck: "Verificatie vereist!",
+  footer: 'Beschermd door <a href="https://altcha.org/" target="_blank" aria-label="Bezoek Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Audio-uitdaging ontvangen",
+  label: "Ik ben geen robot",
+  loading: "Laden...",
+  reload: "Herladen",
+  verify: "Verifiëren",
+  verified: "Geverifieerd",
+  verifying: "Bezig met verifiëren...",
+  waitAlert: "Bezig met verifiëren... even geduld a.u.b."
+};
+typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
+globalThis.altchaI18n.nl = e;
+export {
+  e as i18n
+};

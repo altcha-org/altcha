@@ -3,5 +3,6 @@ import Altcha from './Altcha.svelte';
 
 globalThis.altchaCreateWorker = (url?: string) => url ? new Worker(new URL(url)) : new InlineWorker();
 globalThis.altchaPlugins = globalThis.altchaPlugins || [];
+globalThis.altchaI18n = globalThis.altchaI18n || {};
 
 export { Altcha };

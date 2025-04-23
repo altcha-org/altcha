@@ -8,7 +8,6 @@
   flex-direction: column;
   max-width: var(--altcha-max-width, 260px);
   position: relative;
-  text-align: left;
 }
 
 .altcha:focus-within {
@@ -183,16 +182,13 @@
 }
 
 .altcha-label {
-  flex-grow: 1;
-}
-
-.altcha-label label {
   cursor: pointer;
+  flex-grow: 1;
 }
 
 .altcha-logo {
   color: currentColor;
-  opacity: 0.3;
+  opacity: 0.7;
 }
 
 .altcha-logo:hover {
@@ -212,17 +208,13 @@
   background-color: var(--altcha-color-footer-bg, transparent);
   display: flex;
   font-size: 0.75rem;
-  opacity: 0.4;
+  opacity: 0.7;
+  justify-content: end;
   padding: 0.2rem 0.7rem;
-  text-align: right;
 }
 
 .altcha-footer:hover {
   opacity: 1;
-}
-
-.altcha-footer > *:first-child {
-  flex-grow: 1;
 }
 
 .altcha-footer :global(a) {
@@ -242,8 +234,11 @@
   margin: 0;
 }
 
-.altcha-hidden {
-  display: none;
+.altcha-checkbox-verifying input {
+  appearance: none;
+  pointer-events: none;
+  height: 0;
+  width: 0;
 }
 
 .altcha-spinner {

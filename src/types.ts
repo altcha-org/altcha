@@ -22,11 +22,14 @@ export interface Configure {
   floatingoffset?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
+  locale?: string;
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
   obfuscated?: string;
   refetchonexpire?: boolean;
+  sentinel?: Sentinel;
+  /** @deprecated */
   spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: Partial<Strings> | string;
   test?: boolean | number | 'delay';
@@ -35,6 +38,7 @@ export interface Configure {
   workerurl?: string;
 }
 
+/** @deprecated */
 export interface SpamFilter {
   blockedCountries?: string[];
   classifier?: string;
@@ -46,6 +50,11 @@ export interface SpamFilter {
   ipAddress?: string | false;
   text?: string | string[];
   timeZone?: string | false;
+}
+
+export interface Sentinel {
+  fields?: boolean;
+  timeZone?: boolean;
 }
 
 export interface ServerVerificationPayload {

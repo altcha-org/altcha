@@ -5,6 +5,7 @@ declare module 'altcha';
 declare global {
   var altchaCreateWorker: (url?: string) => Worker;
   var altchaPlugins: any[];
+  var altchaI18n: Record<string, any>;
 
   type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';
 
@@ -35,6 +36,7 @@ declare global {
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
+    locale?: string;
     maxnumber?: number;
     mockerror?: boolean;
     name?: string;

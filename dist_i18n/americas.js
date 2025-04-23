@@ -1,0 +1,57 @@
+const e = {
+  ariaLinkLabel: "Visitez Altcha.org",
+  enterCode: "Entrez le code",
+  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
+  error: "Échec de la vérification. Réessayez plus tard.",
+  expired: "La vérification a expiré. Réessayez.",
+  extraCheck: "Vérification requise !",
+  footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Obtenir un défi audio",
+  label: "Je ne suis pas un robot",
+  loading: "Chargement...",
+  reload: "Recharger",
+  verify: "Vérifier",
+  verified: "Vérifié",
+  verifying: "Vérification en cours...",
+  waitAlert: "Vérification en cours... veuillez patienter."
+};
+typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
+globalThis.altchaI18n["fr-ca"] = e;
+const a = {
+  ariaLinkLabel: "Visitar Altcha.org",
+  enterCode: "Ingresa el código",
+  enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
+  error: "Falló la verificación. Por favor vuelve a intentarlo más tarde.",
+  expired: "La verificación expiró. Por favor inténtalo de nuevo.",
+  extraCheck: "¡Verificación requerida!",
+  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Obtener un reto de audio",
+  label: "No soy un robot",
+  loading: "Cargando...",
+  reload: "Volver a cargar",
+  verify: "Verificar",
+  verified: "Verificado",
+  verifying: "Verificando...",
+  waitAlert: "Verificando... por favor espera."
+};
+typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
+globalThis.altchaI18n["es-419"] = a;
+const r = {
+  ariaLinkLabel: "Visitar Altcha.org",
+  enterCode: "Digite o código",
+  enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
+  error: "Falha na verificação. Por favor, tente novamente mais tarde.",
+  expired: "Verificação expirada. Por favor, tente novamente.",
+  extraCheck: "Verificação necessária!",
+  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Obter desafio de áudio",
+  label: "Eu não sou um robô",
+  loading: "Carregando...",
+  reload: "Recarregar",
+  verify: "Verificar",
+  verified: "Verificado",
+  verifying: "Verificando...",
+  waitAlert: "Verificando... por favor aguarde."
+};
+typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
+globalThis.altchaI18n["pt-br"] = r;

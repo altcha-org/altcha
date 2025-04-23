@@ -30,7 +30,7 @@
     "dist",
     "dist_external",
     "dist_plugins",
-    "postinstall.js"
+    "dist_i18n"
   ],
   "main": "./dist/altcha.umd.cjs",
   "module": "./dist/altcha.js",
@@ -63,24 +63,28 @@
     "./worker": {
       "import": "./dist_external/worker.js",
       "require": "./dist_external/worker.js"
+    },
+    "./i18n/*": {
+      "import": "./dist_i18n/*.js",
+      "require": "./dist_i18n/*.umd.js"
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:bundle && npm run build:external && npm run build:plugins",
+    "build": "npm run build:bundle && npm run build:external && npm run build:plugins && npm run build:i18n",
     "build:bundle": "rimraf dist && vite build && cp src/declarations.d.ts dist/altcha.d.ts",
     "build:external": "rimraf dist_external && vite build -c vite.external.config.ts && cp src/declarations.d.ts dist_external/altcha.d.ts",
     "build:plugins": "rimraf dist_plugins && find src/plugins -type f -name '*.ts' | xargs -I {} vite build -c vite.plugins.config.ts -- {}",
+    "build:i18n": "rimraf dist_i18n && find src/i18n -type f -name '*.ts' | xargs -I {} vite build -c vite.i18n.config.ts -- {}",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "format": "prettier --write ./src/**/*",
     "test": "vitest run tests/helpers.test.ts",
     "test:e2e": "playwright test",
-    "prepare": "husky",
-    "postinstall": "node postinstall.js"
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
+    "@playwright/test": "^1.52.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^20.16.3",

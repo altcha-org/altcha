@@ -683,12 +683,23 @@
    * Handles the form submission event.
    */
   function onFormSubmit(ev: SubmitEvent) {
+    const target = ev.target as HTMLFormElement | null;
+    const submitter = ev.submitter as HTMLElement | null;
+    const isCodeChallengeForm = target?.hasAttribute('data-code-challenge-form');
+    if (isCodeChallengeForm) {
+      // Submit event from the code-challenge form -> don't handle
+      return;
+    }
     if (elForm && auto === 'onsubmit') {
       if (currentState === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
-          elForm?.requestSubmit();
+          if (submitter && ['INPUT', 'BUTTON'].includes(submitter.tagName) && submitter.getAttribute('name')) {
+            submitter.click();
+          } else {
+            elForm?.requestSubmit();
+          }
         });
       } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
@@ -1331,7 +1342,7 @@
             } else if (verifyurl && sentinel !== undefined) {
               return requestSentinelVerification(
                 createAltchaPayload(data, solution)
-              ) as Promise<any>;
+              ) as Promise<unknown>;
 
             } else if (verifyurl) {
               return requestServerVerification(
@@ -1461,7 +1472,8 @@
       <div class="altcha-code-challenge-arrow"></div>
 
       <form
-        onsubmit={onCodeChallengeSubmit}
+        data-code-challenge-form="1"
+        onsubmitcapture={onCodeChallengeSubmit}
       >
         <img class="altcha-code-challenge-image" src={codeChallenge.challenge.codeChallenge.image} alt="" />
 

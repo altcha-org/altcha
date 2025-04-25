@@ -4,7 +4,7 @@ export const i18n = {
   enterCodeAria: 'أدخل الرمز الذي تسمعه. اضغط على المسافة لتشغيل الصوت.',
   error: 'فشل التحقق. حاول مرة أخرى لاحقاً.',
   expired: 'انتهت صلاحية التحقق. حاول مرة أخرى.',
-  extraCheck: 'مطلوب التحقق!',
+  verificationRequired: 'مطلوب التحقق!',
   footer:
     'محمي بواسطة <a href="https://altcha.org/" target="_blank" aria-label="زور Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'احصل على تحدي صوتي',

@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.",
   error: "Patvirtinimas nepavyko. Bandykite vėliau.",
   expired: "Patvirtinimo laikas baigėsi. Bandykite dar kartą.",
-  extraCheck: "Reikalingas patvirtinimas!",
+  verificationRequired: "Reikalingas patvirtinimas!",
   footer: 'Apsaugota <a href="https://altcha.org/" target="_blank" aria-label="Apsilankykite Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Gauti garso užduotį",
   label: "Aš nesu robotas",

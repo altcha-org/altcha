@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
   error: "A hitelesítés nem sikerült. Próbáld meg később újra.",
   expired: "A hitelesítés lejárt. Próbáld újra.",
-  extraCheck: "Ellenőrzés szükséges!",
+  verificationRequired: "Ellenőrzés szükséges!",
   footer: 'Védve a következő által: <a href="https://altcha.org/" target="_blank" aria-label="Látogass el az Altcha.org oldalra">ALTCHA</a>',
   getAudioChallenge: "Hangalapú kihívás kérése",
   label: "Nem vagyok robot",

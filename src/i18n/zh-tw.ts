@@ -4,7 +4,7 @@ export const i18n = {
   enterCodeAria: '輸入您聽到的代碼。按空格鍵播放音頻。',
   error: '驗證失敗。稍後再試。',
   expired: '驗證已過期。請重試。',
-  extraCheck: '需要驗證！',
+  verificationRequired: '需要驗證！',
   footer:
     '由 <a href="https://altcha.org/" target="_blank" aria-label="訪問 Altcha.org">ALTCHA</a> 保護',
   getAudioChallenge: '獲取音頻挑戰',

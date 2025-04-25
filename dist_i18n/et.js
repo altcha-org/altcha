@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
   error: "Kinnitamine ebaõnnestus. Proovi hiljem uuesti.",
   expired: "Kinnitamine aegus. Proovi uuesti.",
-  extraCheck: "Kontroll on vajalik!",
+  verificationRequired: "Kontroll on vajalik!",
   footer: 'Kaitstud <a href="https://altcha.org/" target="_blank" aria-label="Külasta Altcha.org">ALTCHA</a> poolt',
   getAudioChallenge: "Hangi heliülesanne",
   label: "Ma ei ole robot",

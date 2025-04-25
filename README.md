@@ -1,110 +1,143 @@
-# ALTCHA
+# ALTCHA  
 
-ALTCHA leverages a proof-of-work mechanism to safeguard your website, APIs, and online services from spam and abuse. Unlike traditional solutions, ALTCHA is self-hosted, does not rely on cookies or fingerprinting, and ensures complete user privacy. It is fully compliant with [GDPR](https://altcha.org/docs/gdpr/), [WCAG 2.2 AA-level](https://altcha.org/docs/wcag/), and the [European Accessibility Act](https://altcha.org/docs/european-accessibility-act-2025/).
+ALTCHA is a self-hosted, privacy-first security solution that protects your websites, APIs, and online services from spam and abuse through an innovative proof-of-work mechanism. Unlike traditional CAPTCHAs that depend on intrusive methods like cookies or fingerprinting, ALTCHA delivers robust protection while respecting user privacy.
 
-For more details, visit [ALTCHA](https://altcha.org).
+ALTCHA is fully compliant with:
 
-## Features
+- **Global privacy regulations**: GDPR, HIPAA, CCPA, LGPD, and PIPL
+- **Accessibility standards**: [WCAG 2.2 AA-level](https://altcha.org/docs/wcag/) and the [European Accessibility Act](https://altcha.org/docs/european-accessibility-act-2025/)
 
-- **Frictionless Experience**: Utilizes proof-of-work (PoW) instead of visual puzzles, ensuring a seamless user experience.
-- **Cookie-Free Design**: Built to be GDPR-compliant by default, with no cookies or tracking.
-- **Fully Accessible**: Meets WCAG 2.2 AA-level standards and complies with the European Accessibility Act (EAA).
-- **Lightweight**: Minimal bundle size for fast page loads and optimal performance.
-- **Self-Hosted**: Operates independently without depending on third-party services.
-- **SaaS Option Available**: Get started quickly with the SaaS API at [altcha.org](https://altcha.org/).
+For more details, visit [altcha.org](https://altcha.org).  
 
-## Examples
+## Features  
 
-- [React](https://github.com/altcha-org/altcha-starter-react-ts)
-- [Vue](https://github.com/altcha-org/altcha-starter-vue-ts)
-- [Svelte](https://github.com/altcha-org/altcha-starter-svelte-ts)
-- [Solid](https://github.com/altcha-org/altcha-starter-solid-ts)
-- [Lit](https://github.com/altcha-org/altcha-starter-lit-ts)
-- [Angular](https://github.com/altcha-org/altcha-starter-angular)
+- **Frictionless Experience**: Uses proof-of-work (PoW) instead of visual puzzles for a seamless user experience.  
+- **Code Challenge (New in v2)**: Supports accessible code challenges ("enter code from image") with an audio option.  
+- **Cookie-Free Design**: GDPR-compliant by default—no cookies or tracking.  
+- **Fully Accessible**: Meets WCAG 2.2 AA-level standards and complies with the European Accessibility Act (EAA).  
+- **Lightweight**: Minimal bundle size for fast page loads and optimal performance.  
+- **Self-Hosted**: No dependency on third-party services.  
 
-## Server Integrations
+## What’s New in v2  
 
-- [TypeScript](https://github.com/altcha-org/altcha-lib)
-- [PHP](https://github.com/altcha-org/altcha-lib-php)
-- [Go](https://github.com/altcha-org/altcha-lib-go)
-- [Python](https://github.com/altcha-org/altcha-lib-py)
-- [Java](https://github.com/altcha-org/altcha-lib-java)
-- [Ruby](https://github.com/altcha-org/altcha-lib-rb)
-- [Elixir](https://github.com/altcha-org/altcha-lib-ex)
+Version 2 introduces enhanced accessibility, expanded language support (42+ languages), and integration with **ALTCHA Sentinel**—a self-hosted anti-spam solution for websites, apps, and services.  
 
-## CMS
+### Key Improvements in v2  
 
-- [WordPress plugin](https://github.com/altcha-org/wordpress-plugin)
-- [Other libraries and plugins](https://altcha.org/docs/integrations/)
+- **Built-in Internationalization (i18n)** for 42+ languages  
+- **Improved RTL (right-to-left) language support**  
+- **Enhanced WCAG accessibility**  
+- **Support for accessible code challenges** (image + audio options)  
 
-## More anti-spam solutions
+## Examples  
 
-- [Spam Filter](https://altcha.org/anti-spam) - stop sophisticated attacks and human-generated spam by classifying data.
+Explore starter templates for popular frameworks:  
 
-## Usage
+- [React](https://github.com/altcha-org/altcha-starter-react-ts)  
+- [Vue](https://github.com/altcha-org/altcha-starter-vue-ts)  
+- [Svelte](https://github.com/altcha-org/altcha-starter-svelte-ts)  
+- [Solid](https://github.com/altcha-org/altcha-starter-solid-ts)  
+- [Lit](https://github.com/altcha-org/altcha-starter-lit-ts)  
+- [Angular](https://github.com/altcha-org/altcha-starter-angular)  
 
-ALTCHA widget is distributed as a "Web Component" and [supports all modern browsers](https://developer.mozilla.org/en-US/docs/Web/API/Web_components#browser_compatibility).
+## Server Integrations  
 
-### 1. Install ALTCHA
+- [TypeScript](https://github.com/altcha-org/altcha-lib)  
+- [PHP](https://github.com/altcha-org/altcha-lib-php)  
+- [Go](https://github.com/altcha-org/altcha-lib-go)  
+- [Python](https://github.com/altcha-org/altcha-lib-py)  
+- [Java](https://github.com/altcha-org/altcha-lib-java)  
+- [Ruby](https://github.com/altcha-org/altcha-lib-rb)  
+- [Elixir](https://github.com/altcha-org/altcha-lib-ex)  
+
+## Plugins & CMS  
+
+- [Libraries and plugins](https://altcha.org/docs/integrations/)  
+
+## Usage  
+
+The ALTCHA widget is distributed as a **Web Component** and [supports all modern browsers](https://developer.mozilla.org/en-US/docs/Web/API/Web_components#browser_compatibility).  
+
+### 1. Install ALTCHA  
 
 ```sh
 npm install altcha
 ```
 
-import `altcha` in your main file:
+Import in your main file:  
 
 ```js
 import 'altcha';
 ```
 
-or insert `<script>` tag to your website:
+Or load via `<script>` tag:  
 
 ```html
 <script async defer src="/altcha.js" type="module"></script>
 ```
 
-CDN: https://cdn.jsdelivr.net/gh/altcha-org/altcha@main/dist/altcha.min.js
+**CDN**:  
+```html
+<script async defer src="https://cdn.jsdelivr.net/gh/altcha-org/altcha@main/dist/altcha.min.js" type="module"></script>
+```
 
-### 2. Use `<altcha-widget>` tag in your forms
+### 2. Add `<altcha-widget>` to Your Forms  
 
 ```html
 <form>
-  <altcha-widget
-    challengeurl="https://..."
-  ></altcha-widget>  
+  <altcha-widget challengeurl="https://..."></altcha-widget>
 </form>
 ```
 
-See the [configuration](#configuration) below or visit the [website integration documentation](https://altcha.org/docs/website-integration).
+See [configuration options](#configuration) or the [website integration docs](https://altcha.org/docs/website-integration).  
 
-### 3. Integrate ALTCHA with your server
+### 3. Integrate with Your Server  
 
-See [server documentation](https://altcha.org/docs/server-integration) for more details.
+Refer to the [server documentation](https://altcha.org/docs/server-integration) for implementation details.  
 
-## Bundle Size
+## Supported Browsers  
 
-ALTCHA's default bundle is lightweight, combining all assets, including CSS and the JavaScript Web Worker, into a single file. When GZIPped, it totals only 17 kB, making ALTCHA’s widget 94% smaller than reCAPTCHA.
+ALTCHA works on modern browsers with **Web Crypto API** support (specifically `crypto.subtle` - [caniuse.com](https://caniuse.com/?search=subtle)).  
 
-|Distribution|Size (GZIPped)|
-|---|---|
-|ALTCHA (v1.x)|17 kB|
-|hCaptcha|48+ kB|
-|reCAPTCHA|270+ kB|
+**Supported**:  
 
-## Content Security Policy (CSP)
+- Chrome (desktop & Android)  
+- Edge  
+- Firefox (desktop & Android)  
+- Safari (macOS & iOS)  
+- Any browser supporting Web Components + Web Crypto  
 
-The default distribution bundle of the WebComponent includes styles and the worker in a single file. This might cause issues with strict CSP rules. If you require strict CSP compliance, consider using the scripts located in the `/dist_external` directory. For more details, please refer to the [documentation](https://altcha.org/docs/website-integration).
+**Not Supported**:  
 
-## Configuration
+- Internet Explorer 11 (or older)
+
+## Bundle Size  
+
+ALTCHA is optimized for performance:  
+
+| Distribution      | Size (GZIPped) |  
+|-------------------|----------------|  
+| ALTCHA (v2.x)     | 26 kB          |  
+| hCaptcha          | 48+ kB         |  
+| reCAPTCHA         | 270+ kB        |  
+
+When GZIPped, it totals about 26 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
+
+## Content Security Policy (CSP)  
+
+The default bundle includes styles and workers in a single file. For strict CSP compliance, use scripts from `/dist_external`. Learn more in the [documentation](https://altcha.org/docs/website-integration).  
+
+## Configuration  
 
 Required options (at least one is required):
 
-- **challengeurl**: URL of your server to fetch the challenge from. Refer to [server integration](https://altcha.org/docs/server-integration).
-- **challengejson**: JSON-encoded challenge data. If avoiding an HTTP request to `challengeurl`, provide the data here.
+- **challengeurl**: Server endpoint to fetch the challenge.  
+- **challengejson**: Preloaded JSON challenge data (avoids HTTP requests).  
 
 Additional options:
 
 - **auto**: Automatically verify without user interaction (possible values: `off`, `onfocus`, `onload`, `onsubmit`).
+- **credentials**: Whether to include [credentials](https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#credentials) with the challenge request (possible values: `omit`, `same-origin`, `include`).
 - **customfetch**: A custom `fetch` function for retrieving the challenge.  
   Accepts `url: string` and `init: RequestInit` as arguments and must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response).  
 - **delay**: Artificial delay in milliseconds before verification (defaults to 0).
@@ -116,18 +149,13 @@ Additional options:
 - **hidefooter**: Hide the footer (ALTCHA link).
 - **hidelogo**: Hide the ALTCHA logo.
 - **id**: The checkbox `id` attribute. Useful for multiple instances of the widget on the same page.
+- **language**: The ISO alpha-2 code of the language to use (the language file be imported from `altcha/i18n/*`).
 - **maxnumber**: Max number to iterate to (defaults to 1,000,000).
 - **name**: Name of the hidden field containing the payload (defaults to "altcha").
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
 - **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - **workers**: Number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max value `16`).
 - **workerurl**: URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
-
-Spam Filter-related options:
-
-- **blockspam**: Only used with the `spamfilter` option. If enabled, it will block form submission and fail verification if the Spam Filter returns a negative classification. This prevents form submission.
-- **spamfilter**: Enable [Spam Filter](#spam-filter).
-- **verifyurl**: URL for server-side verification requests. This option is automatically configured when the `spamfilter` option is used. Override this setting only if using a custom server implementation.
 
 Data Obfuscation options:
 
@@ -139,24 +167,48 @@ Development / Testing options:
 - **mockerror**: Causes verification to always fail with a "mock" error.
 - **test**: Generates a "mock" challenge within the widget, bypassing the request to `challengeurl`.
 
-## Plugins
+## Internationalization (i18n)  
 
-Version 0.9.x introduced _plugins_ that can be enabled by importing individual plugin scripts:
+ALTCHA supports **42+ languages**. Import translations from `altcha/i18n/*`:  
 
 ```js
-import 'altcha/obfuscation';
 import 'altcha';
+import 'altcha/i18n/all'; // All languages
+// Or import specific languages:
+import 'altcha/i18n/de';
+import 'altcha/i18n/fr';
 ```
 
-It is recommended to import plugins _before_ the main `altcha` package to ensure proper registration before any widget instance is created.
+The widget auto-detects language from `<html lang="...">` or `navigator.languages`. Override with the `language` attribute:  
 
-Available plugins built-in to the `altcha` package:
+```html
+<altcha-widget language="de"></altcha-widget>
+```
 
-- `altcha/analytics`: Enable analytics with [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
-- `altcha/obfuscation`: Enable [obfuscation](https://altcha.org/docs/obfuscation) for sensitive data such as email addresses or phone numbers.
-- `altcha/upload`: Enable file upload from `type=file` fields to [ALTCHA Forms](https://altcha.org/forms/). See [HTML submissions documentation](https://altcha.org/docs/forms/features/html-submissions).
+## Code Challenges  
 
-To enable specific plugins for a particular instance of the widget, use the `plugins` attribute in the widget tag. List the names of the plugins you want to enable, separated by commas, such as `plugins="analytics,obfuscation"`. Plugins still need to be imported as described above. The `plugins` attribute only specifies which plugins should be active for that instance, even if other plugins are already imported.
+For additional verification, ALTCHA supports **image/audio code challenges** (e.g., "Enter the code from the image"). This feature requires **ALTCHA Sentinel** or a custom server implementation.  
+
+## Plugins  
+
+Extend functionality with plugins:  
+
+```js
+import 'altcha/obfuscation'; // Data obfuscation
+import 'altcha/upload';      // File uploads
+import 'altcha';             // Main package
+```
+
+Enable plugins per widget:  
+
+```html
+<altcha-widget plugins="upload,obfuscation"></altcha-widget>
+```
+
+### Available Plugins  
+
+- **obfuscation**: Secure sensitive data (emails, phone numbers).  
+- **upload**: File uploads.  
 
 ## Programmatic Configuration
 
@@ -182,6 +234,11 @@ Available configuration options:
 export interface Configure {
   auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
   challenge?: {
+    codeChallenge?: {
+      audio?: string;
+      image: string;
+      length?: number;
+    };
     algorithm: string;
     challenge: string;
     maxnumber?: number;
@@ -189,6 +246,7 @@ export interface Configure {
     signature: string;
   };
   challengeurl?: string;
+  credentials?: 'omit' | 'same-origin' | 'include' | boolean;
   customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
   debug?: boolean;
   delay?: number;
@@ -204,12 +262,19 @@ export interface Configure {
   name?: string;
   obfuscated?: string;
   refetchonexpire?: boolean;
-  spamfilter?: boolean | 'ipAddress' | SpamFilter;
+  spamfilter?: boolean | 'ipAddress' | SpamFilter; // deprecated
   strings?: {
+    ariaLinkLabel: strin;
+    enterCode: string;
+    enterCodeAria: string;
     error: string;
     expired: string;
     footer: string;
+    getAudioChallenge: string;
     label: string;
+    loading: string;
+    reload: strin;
+    verificationRequired: string;
     verified: string;
     verifying: string;
     waitAlert: string;
@@ -221,51 +286,18 @@ export interface Configure {
 }
 ```
 
-## Custom `fetch` Function  
-
-The widget does not send cookies (i.e., it does not use `credentials: 'include'`) when requesting the challenge from the server. To modify this behavior or add custom request headers, use the `customfetch` configuration option. This option lets you define a custom request function.  
-
-The custom function must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) object.  
-
-### Sending Cookies  
-
-To include cookies in the request, use `credentials: 'include'`:  
-
-```ts
-function altchaCustomFetch(url: string, init: RequestInit) {
-  return fetch(url, {
-    ...init,
-    credentials: 'include', // Include cookies with the request
-  });
-}
-```  
-
-For more details on possible request options, refer to the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) documentation.  
-
-### Using `customfetch`  
-
-The `customfetch` option can accept either:  
-- A `string` (the name of a globally accessible function defined in the global context, such as `window`), or  
-- A function itself.  
-
-### Example Usage  
-
-```html
-<altcha-widget
-  challengeurl="https://example.com/challenge"
-  customfetch="altchaCustomFetch"
-></altcha-widget>
-```  
-
 ## Events
 
+- **code** - Triggers when code-challenge verification is requested.
 - **load** - Triggers when the widget loads. The exported methods become available after this event.
-- **serververification** - Triggers upon a server verification (only in conjunction with `spamfilter`).
+- **sentinelverification** - Triggers upon a verification with ALTCHA Sentinel.
+- **serververification** - (Deprecated) Triggers upon a server verification (only in conjunction with `spamfilter`).
 - **statechange** - Triggers whenever an internal `state` changes.
 - **verified** - Triggers when the challenge is verified.
 
 ```ts
 enum State {
+  CODE = 'code',
   ERROR = 'error',
   VERIFIED = 'verified',
   VERIFYING = 'verifying',
@@ -286,58 +318,14 @@ document.querySelector('#altcha').addEventListener('statechange', (ev) => {
 > [!IMPORTANT]  
 > Both programmatic configuration and event listeners have to called/attached after the ALTCHA script loads, such as within `window.addEventListener('load', ...)`.
 
-## Spam Filter
+## Contributing  
 
-The widget integrates with ALTCHA's [Anti-Spam solution](https://altcha.org/anti-spam) to allow checking submitted form data for potential spam.
-
-The Spam Filter API analyzes various signals in the submitted data to determine if it exhibits characteristics of spam. This non-invasive filtering helps reduce spam submissions without frustrating legitimate users.
-
-### Spam Filter Configuration
-
-The Spam Filter can be enabled with default configuration by setting the `spamfilter` option to `true`, or `ipAddress` to verify only the IP address and the time zone, or it can be customized using the following configuration schema:
-
-```ts
-interface SpamFilter {
-  blockedCountries?: string[];
-  classifier?: string;
-  disableRules?: string[];
-  email?: string | false;
-  expectedCountries?: string[];
-  expectedLanguages?: string[];
-  fields?: string[] | false;
-  ipAddress?: string | false;
-  text?: string | string[];
-  timeZone?: string | false;
-}
-```
-
-SpamFilter configuration options:
-
-- **blockedCountries** - An array of country codes (ISO 3166 alpha-2) that you want to block.
-- **classifier** - Enforce a specific classifier.
-- **disableRules** - An array of rules to disable.
-- **email** - The name of the input field for the user's email. Disable email checking with `false`.
-- **expectedCountries** - An array of expected countries as 2-letter codes (ISO 3166-1 alpha-2).
-- **expectedLanguages** - An array of expected languages as 2-letter codes (ISO 639 alpha-2).
-- **fields** - An array of input names to send to the spam filter.
-- **ipAddress** - The user's IP is detected automatically but can be overridden or disabled with `false`.
-- **text** - The text to classify. An array of strings can also be submitted.
-- **timeZone** - The user's timezone is detected automatically but can be overridden or disabled with `false`.
-
-To include the email field into `fields` (for easier server-side verification), configure the list of input names using the `spamfilter.fields: string[]` option.
-
-### Exclude Inputs from Spam Checking
-
-By default, all text inputs and textareas within the parent form are spam-checked. To exclude a specific input, add the `data-no-spamfilter` attribute. Alternatively, explicitly list the checked fields using the `fields` config option.
-
-## Contributing
 See [Contributing Guide](https://github.com/altcha-org/altcha/blob/main/CONTRIBUTING.md) and please follow our [Code of Conduct](https://github.com/altcha-org/altcha/blob/main/CODE_OF_CONDUCT.md).
 
 ## Sponsorship  
 
-This project is sponsored by [BAUSW.com - Digital Construction Site Diary](https://bausw.com/digital-construction-diary/), promoting transparency and trust in construction projects with real-time documentation.
+This project is sponsored by [BAUSW.com - Digital Construction Site Diary](https://bausw.com/digital-construction-diary/), promoting transparency and trust in construction projects with real-time documentation.  
 
-## License
+## License  
 
-MIT
-
+**MIT**  

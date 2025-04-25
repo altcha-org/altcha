@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
   error: "सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।",
   expired: "सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।",
-  extraCheck: "सत्यापन आवश्यक है!",
+  verificationRequired: "सत्यापन आवश्यक है!",
   footer: 'द्वारा संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org पर जाएं">ALTCHA</a>',
   getAudioChallenge: "ऑडियो चुनौती प्राप्त करें",
   label: "मैं रोबोट नहीं हूँ",

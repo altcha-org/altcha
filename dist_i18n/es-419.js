@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
   error: "Falló la verificación. Por favor vuelve a intentarlo más tarde.",
   expired: "La verificación expiró. Por favor inténtalo de nuevo.",
-  extraCheck: "¡Verificación requerida!",
+  verificationRequired: "¡Verificación requerida!",
   footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obtener un reto de audio",
   label: "No soy un robot",

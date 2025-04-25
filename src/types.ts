@@ -13,6 +13,7 @@ export interface Configure {
   blockspam?: boolean;
   challenge?: Challenge | string;
   challengeurl?: string;
+  credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
   customfetch?: string | CustomFetchFunction;
   debug?: boolean;
   delay?: number;
@@ -22,7 +23,7 @@ export interface Configure {
   floatingoffset?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
-  locale?: string;
+  language?: string;
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;

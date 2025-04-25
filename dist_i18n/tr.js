@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
   error: "Doğrulama başarısız oldu. Lütfen daha sonra tekrar deneyin.",
   expired: "Doğrulama süresi doldu. Lütfen tekrar deneyin.",
-  extraCheck: "Doğrulama gerekli!",
+  verificationRequired: "Doğrulama gerekli!",
   footer: `ALTCHA tarafından korunuyor <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org'yu ziyaret edin">ALTCHA</a>`,
   getAudioChallenge: "Sesli doğrulama al",
   label: "Ben robot değilim",

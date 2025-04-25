@@ -4,7 +4,7 @@ export const i18n = {
   enterCodeAria: 'तुम्ही ऐकत असलेला कोड टाका. ऑडिओ प्ले करण्यासाठी स्पेस दाबा.',
   error: 'पुष्टीकरण अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.',
   expired: 'पुष्टीकरण कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.',
-  extraCheck: 'पडताळणी आवश्यक आहे!',
+  verificationRequired: 'पडताळणी आवश्यक आहे!',
   footer:
     'द्वारे संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org भेट द्या">ALTCHA</a>',
   getAudioChallenge: 'ऑडिओ चॅलेंज मिळवा',

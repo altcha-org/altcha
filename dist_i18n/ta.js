@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "நீங்கள் கேட்கும் குறியீட்டை உள்ளிடவும். ஆடியோவை இயக்க Space ஐ அழுத்தவும்.",
   error: "சரிபார்ப்பு தோல்வி. பிறகு மீண்டும் முயற்சிக்கவும்.",
   expired: "சரிபார்ப்பு காலாவதியானது. மீண்டும் முயற்சிக்கவும்.",
-  extraCheck: "சரிபார்ப்பு தேவை!",
+  verificationRequired: "சரிபார்ப்பு தேவை!",
   footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org ஐ பார்வையிடவும்">ALTCHA</a>',
   getAudioChallenge: "ஒலி சவாலை பெறவும்",
   label: "நான் ரோபோடான அல்ல",

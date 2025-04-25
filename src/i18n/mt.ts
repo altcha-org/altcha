@@ -1,10 +1,11 @@
 export const i18n = {
   ariaLinkLabel: 'Żur Altcha.org',
   enterCode: 'Idħol il-kodiċi',
-  enterCodeAria: 'Idħol il-kodiċi li tisma\'. Agħfas Spazju biex tindaqq l-awdjo.',
+  enterCodeAria:
+    "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
   error: 'Il-verifika falliet. Erġa’ pprova aktar tard.',
   expired: 'Il-verifika skadiet. Erġa’ pprova.',
-  extraCheck: 'Verifika meħtieġa!',
+  verificationRequired: 'Verifika meħtieġa!',
   footer:
     'Protett minn <a href="https://altcha.org/" target="_blank" aria-label="Żur Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'Ikseb sfida bl-awdjo',

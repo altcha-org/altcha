@@ -187,6 +187,7 @@
         floating
         oncleartext={(ev) => console.log('Event: cleartext:', ev.detail)}
       >
+        <!-- svelte-ignore a11y_invalid_attribute -->
         <a href="#">(click to reveal)</a>
       </altcha-widget>
     </div>

@@ -4,7 +4,7 @@ const e = {
   enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
   error: "Preverjanje ni uspelo. Poskusite znova kasneje.",
   expired: "Preverjanje je poteklo. Poskusite znova.",
-  extraCheck: "Potrebna je preveritev!",
+  verificationRequired: "Potrebna je preveritev!",
   footer: 'Zaščiteno z <a href="https://altcha.org/" target="_blank" aria-label="Obiščite Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Pridobite zvočni izziv",
   label: "Nisem robot",

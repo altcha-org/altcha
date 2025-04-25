@@ -4,7 +4,7 @@ export const i18n = {
   enterCodeAria: 'ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง',
   error: 'การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง',
   expired: 'การตรวจสอบหมดอายุ กรุณาลองใหม่',
-  extraCheck: 'จำเป็นต้องตรวจสอบ!',
+  verificationRequired: 'จำเป็นต้องตรวจสอบ!',
   footer:
     'ป้องกันโดย <a href="https://altcha.org/" target="_blank" aria-label="เยี่ยมชม Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'รับการท้าทายเสียง',

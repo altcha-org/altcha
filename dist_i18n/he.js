@@ -1,10 +1,10 @@
-const a = {
+const e = {
   ariaLinkLabel: "בקר באתר Altcha.org",
   enterCode: "הזן קוד",
   enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
   error: "האימות נכשל. נסה שוב מאוחר יותר.",
   expired: "תוקף האימות פג. נסה שוב.",
-  extraCheck: "נדרש אימות!",
+  verificationRequired: "נדרש אימות!",
   footer: 'מוגן על ידי <a href="https://altcha.org/" target="_blank" aria-label="בקר באתר Altcha.org">ALTCHA</a>',
   getAudioChallenge: "קבל אתגר שמע",
   label: "אני לא רובוט",
@@ -16,7 +16,7 @@ const a = {
   waitAlert: "מבצע אימות... אנא המתן."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.he = a;
+globalThis.altchaI18n.he = e;
 export {
-  a as i18n
+  e as i18n
 };

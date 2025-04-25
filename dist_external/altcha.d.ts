@@ -25,6 +25,7 @@ declare global {
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;
+    credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
     customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
     debug?: boolean;
     delay?: number;
@@ -36,7 +37,7 @@ declare global {
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
-    locale?: string;
+    language?: string;
     maxnumber?: number;
     mockerror?: boolean;
     name?: string;
@@ -50,6 +51,7 @@ declare global {
     onuploadprogress?: (ev: CustomEvent) => void;
     plugins?: string;
     refetchonexpire?: boolean;
+    /** @deprecated */
     spamfilter?: boolean | 'ipAddress';
     strings?: string;
     test?: boolean | number;

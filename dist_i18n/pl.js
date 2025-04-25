@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
   error: "Weryfikacja nie powiodła się. Spróbuj ponownie później.",
   expired: "Weryfikacja wygasła. Spróbuj ponownie.",
-  extraCheck: "Wymagana weryfikacja!",
+  verificationRequired: "Wymagana weryfikacja!",
   footer: 'Chronione przez <a href="https://altcha.org/" target="_blank" aria-label="Odwiedź Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Pobierz zadanie dźwiękowe",
   label: "Nie jestem robotem",

@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "输入您听到的代码。按空格键播放音频。",
   error: "验证失败。稍后再试。",
   expired: "验证已过期。请重试。",
-  extraCheck: "需要验证！",
+  verificationRequired: "需要验证！",
   footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="访问 Altcha.org">ALTCHA</a> 保护',
   getAudioChallenge: "获取音频挑战",
   label: "我不是机器人",
@@ -23,7 +23,7 @@ const e = {
   enterCodeAria: "輸入您聽到的代碼。按空格鍵播放音頻。",
   error: "驗證失敗。稍後再試。",
   expired: "驗證已過期。請重試。",
-  extraCheck: "需要驗證！",
+  verificationRequired: "需要驗證！",
   footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="訪問 Altcha.org">ALTCHA</a> 保護',
   getAudioChallenge: "獲取音頻挑戰",
   label: "我不是機器人",
@@ -36,13 +36,13 @@ const e = {
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
 globalThis.altchaI18n["zh-tw"] = e;
-const l = {
+const i = {
   ariaLinkLabel: "Altcha.orgを訪問",
   enterCode: "コードを入力",
   enterCodeAria: "聞こえるコードを入力してください。スペースキーを押して音声を再生します。",
   error: "認証に失敗しました。後でもう一度試してください。",
   expired: "認証が期限切れです。再試行してください。",
-  extraCheck: "認証が必要です！",
+  verificationRequired: "認証が必要です！",
   footer: '保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
   getAudioChallenge: "音声チャレンジを取得",
   label: "ロボットじゃない",
@@ -54,14 +54,14 @@ const l = {
   waitAlert: "確認中...少々お待ちください。"
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ja = l;
-const r = {
+globalThis.altchaI18n.ja = i;
+const l = {
   ariaLinkLabel: "Altcha.org 방문하기",
   enterCode: "코드 입력",
   enterCodeAria: "들리는 코드를 입력하세요. 스페이스 바를 눌러 오디오를 재생합니다.",
   error: "인증 실패. 나중에 다시 시도해주세요.",
   expired: "인증이 만료되었습니다. 다시 시도해주세요.",
-  extraCheck: "인증이 필요합니다!",
+  verificationRequired: "인증이 필요합니다!",
   footer: 'ALTCHA에서 보호됨 <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org 방문하기">ALTCHA</a>',
   getAudioChallenge: "오디오 챌린지 받기",
   label: "저는 로봇이 아닙니다",
@@ -73,14 +73,14 @@ const r = {
   waitAlert: "확인 중... 잠시만 기다려주세요."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ko = r;
-const i = {
+globalThis.altchaI18n.ko = l;
+const r = {
   ariaLinkLabel: "Altcha.org पर जाएं",
   enterCode: "कोड दर्ज करेंं",
   enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
   error: "सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।",
   expired: "सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।",
-  extraCheck: "सत्यापन आवश्यक है!",
+  verificationRequired: "सत्यापन आवश्यक है!",
   footer: 'द्वारा संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org पर जाएं">ALTCHA</a>',
   getAudioChallenge: "ऑडियो चुनौती प्राप्त करें",
   label: "मैं रोबोट नहीं हूँ",
@@ -92,14 +92,14 @@ const i = {
   waitAlert: "सत्यापित किया जा रहा है... कृपया प्रतीक्षा करें।"
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.hi = i;
+globalThis.altchaI18n.hi = r;
 const t = {
   ariaLinkLabel: "Altcha.org পরিদর্শন করুন",
   enterCode: "কোড লিখুন",
   enterCodeAria: "আপনি যে কোড শুনতে পান তা লিখুন। অডিও প্লে করতে স্পেস বাটন টিপুন।",
   error: "যাচাইকরণ ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।",
   expired: "যাচাইকরণ সময়সীমা শেষ হয়েছে। আবার চেষ্টা করুন।",
-  extraCheck: "যাচাই প্রয়োজন!",
+  verificationRequired: "যাচাই প্রয়োজন!",
   footer: 'দ্বারা সুরক্ষিত <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org পরিদর্শন করুন">ALTCHA</a>',
   getAudioChallenge: "অডিও চ্যালেঞ্জ নিন",
   label: "আমি রোবট নই",
@@ -118,7 +118,7 @@ const o = {
   enterCodeAria: "तुम्ही ऐकत असलेला कोड टाका. ऑडिओ प्ले करण्यासाठी स्पेस दाबा.",
   error: "पुष्टीकरण अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.",
   expired: "पुष्टीकरण कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.",
-  extraCheck: "पडताळणी आवश्यक आहे!",
+  verificationRequired: "पडताळणी आवश्यक आहे!",
   footer: 'द्वारे संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org भेट द्या">ALTCHA</a>',
   getAudioChallenge: "ऑडिओ चॅलेंज मिळवा",
   label: "मी रोबोट नाही",
@@ -137,7 +137,7 @@ const n = {
   enterCodeAria: "మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.",
   error: "చెకింగ్ విఫలమైంది. దయచేసి మరల ప్రయత్నించండి.",
   expired: "చెకింగ్ కాలం ముగిసింది. దయచేసి మరల ప్రయత్నించండి.",
-  extraCheck: "ధృవీకరణ అవసరం!",
+  verificationRequired: "ధృవీకరణ అవసరం!",
   footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org సందర్శించండి">ALTCHA</a>',
   getAudioChallenge: "ఆడియో ఛాలెంజ్ పొందండి",
   label: "నేను రోబోట్ కాదు",
@@ -156,7 +156,7 @@ const h = {
   enterCodeAria: "நீங்கள் கேட்கும் குறியீட்டை உள்ளிடவும். ஆடியோவை இயக்க Space ஐ அழுத்தவும்.",
   error: "சரிபார்ப்பு தோல்வி. பிறகு மீண்டும் முயற்சிக்கவும்.",
   expired: "சரிபார்ப்பு காலாவதியானது. மீண்டும் முயற்சிக்கவும்.",
-  extraCheck: "சரிபார்ப்பு தேவை!",
+  verificationRequired: "சரிபார்ப்பு தேவை!",
   footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org ஐ பார்வையிடவும்">ALTCHA</a>',
   getAudioChallenge: "ஒலி சவாலை பெறவும்",
   label: "நான் ரோபோடான அல்ல",
@@ -175,7 +175,7 @@ const g = {
   enterCodeAria: "جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔",
   error: "توثیق ناکام ہو گئی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
   expired: "توثیق کی مدت ختم ہو گئی ہے۔ براہ کرم دوبارہ کوشش کریں۔",
-  extraCheck: "تصدیق ضروری ہے!",
+  verificationRequired: "تصدیق ضروری ہے!",
   footer: 'کے ذریعے محفوظ <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org پر جائیں">ALTCHA</a>',
   getAudioChallenge: "آڈیو چیلنج حاصل کریں",
   label: "میں روبوٹ نہیں ہوں",
@@ -194,7 +194,7 @@ const c = {
   enterCodeAria: "Masukkan kode yang Anda dengar. Tekan Spasi untuk memutar audio.",
   error: "Verifikasi gagal. Coba lagi nanti.",
   expired: "Verifikasi telah kedaluwarsa. Coba lagi.",
-  extraCheck: "Verifikasi diperlukan!",
+  verificationRequired: "Verifikasi diperlukan!",
   footer: 'Dilindungi oleh <a href="https://altcha.org/" target="_blank" aria-label="Kunjungi Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Dapatkan tantangan audio",
   label: "Saya bukan robot",
@@ -207,13 +207,13 @@ const c = {
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
 globalThis.altchaI18n.id = c;
-const b = {
+const d = {
   ariaLinkLabel: "เยี่ยมชม Altcha.org",
   enterCode: "ป้อนรหัส",
   enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
   error: "การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง",
   expired: "การตรวจสอบหมดอายุ กรุณาลองใหม่",
-  extraCheck: "จำเป็นต้องตรวจสอบ!",
+  verificationRequired: "จำเป็นต้องตรวจสอบ!",
   footer: 'ป้องกันโดย <a href="https://altcha.org/" target="_blank" aria-label="เยี่ยมชม Altcha.org">ALTCHA</a>',
   getAudioChallenge: "รับการท้าทายเสียง",
   label: "ฉันไม่ใช่บอท",
@@ -225,14 +225,14 @@ const b = {
   waitAlert: "กำลังตรวจสอบ... กรุณารอ"
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.th = b;
-const d = {
+globalThis.altchaI18n.th = d;
+const b = {
   ariaLinkLabel: "Truy cập Altcha.org",
   enterCode: "Nhập mã",
   enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
   error: "Xác minh thất bại. Vui lòng thử lại sau.",
   expired: "Xác minh đã hết hạn. Vui lòng thử lại.",
-  extraCheck: "Yêu cầu xác minh!",
+  verificationRequired: "Yêu cầu xác minh!",
   footer: 'Được bảo vệ bởi <a href="https://altcha.org/" target="_blank" aria-label="Truy cập Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Nhận thử thách âm thanh",
   label: "Tôi không phải là robot",
@@ -244,14 +244,14 @@ const d = {
   waitAlert: "Đang xác minh... vui lòng chờ."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.vi = d;
+globalThis.altchaI18n.vi = b;
 const f = {
   ariaLinkLabel: "زور Altcha.org",
   enterCode: "أدخل الرمز",
   enterCodeAria: "أدخل الرمز الذي تسمعه. اضغط على المسافة لتشغيل الصوت.",
   error: "فشل التحقق. حاول مرة أخرى لاحقاً.",
   expired: "انتهت صلاحية التحقق. حاول مرة أخرى.",
-  extraCheck: "مطلوب التحقق!",
+  verificationRequired: "مطلوب التحقق!",
   footer: 'محمي بواسطة <a href="https://altcha.org/" target="_blank" aria-label="زور Altcha.org">ALTCHA</a>',
   getAudioChallenge: "احصل على تحدي صوتي",
   label: "أنا لست روبوتاً",
@@ -270,7 +270,7 @@ const A = {
   enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
   error: "האימות נכשל. נסה שוב מאוחר יותר.",
   expired: "תוקף האימות פג. נסה שוב.",
-  extraCheck: "נדרש אימות!",
+  verificationRequired: "נדרש אימות!",
   footer: 'מוגן על ידי <a href="https://altcha.org/" target="_blank" aria-label="בקר באתר Altcha.org">ALTCHA</a>',
   getAudioChallenge: "קבל אתגר שמע",
   label: "אני לא רובוט",
@@ -289,7 +289,7 @@ const s = {
   enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
   error: "Doğrulama başarısız oldu. Lütfen daha sonra tekrar deneyin.",
   expired: "Doğrulama süresi doldu. Lütfen tekrar deneyin.",
-  extraCheck: "Doğrulama gerekli!",
+  verificationRequired: "Doğrulama gerekli!",
   footer: `ALTCHA tarafından korunuyor <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org'yu ziyaret edin">ALTCHA</a>`,
   getAudioChallenge: "Sesli doğrulama al",
   label: "Ben robot değilim",

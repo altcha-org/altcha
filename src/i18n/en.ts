@@ -4,7 +4,6 @@ export const i18n = {
   enterCodeAria: 'Enter code you hear. Press Space to play audio.',
   error: 'Verification failed. Try again later.',
   expired: 'Verification expired. Try again.',
-  extraCheck: 'Verification required!',
   footer:
     'Protected by <a href="https://altcha.org/" target="_blank" aria-label="Visit Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'Get an audio challenge',
@@ -12,6 +11,7 @@ export const i18n = {
   loading: 'Loading...',
   reload: 'Reload',
   verify: 'Verify',
+  verificationRequired: 'Verification required!',
   verified: 'Verified',
   verifying: 'Verifying...',
   waitAlert: 'Verifying... please wait.',

@@ -1,10 +1,11 @@
 export const i18n = {
   ariaLinkLabel: 'Altcha.org సందర్శించండి',
   enterCode: 'కోడ్‌ని నమోదు చేయండి',
-  enterCodeAria: 'మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.',
+  enterCodeAria:
+    'మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.',
   error: 'చెకింగ్ విఫలమైంది. దయచేసి మరల ప్రయత్నించండి.',
   expired: 'చెకింగ్ కాలం ముగిసింది. దయచేసి మరల ప్రయత్నించండి.',
-  extraCheck: 'ధృవీకరణ అవసరం!',
+  verificationRequired: 'ధృవీకరణ అవసరం!',
   footer:
     'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org సందర్శించండి">ALTCHA</a>',
   getAudioChallenge: 'ఆడియో ఛాలెంజ్ పొందండి',

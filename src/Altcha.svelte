@@ -73,6 +73,7 @@
     blockspam?: boolean | undefined;
     challengeurl?: string | undefined;
     challengejson?: string | undefined;
+    credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
     customfetch?: string | CustomFetchFunction | undefined;
     debug?: boolean;
     delay?: number;
@@ -84,7 +85,7 @@
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
-    locale?: string | undefined;
+    language?: string | undefined;
     name?: string;
     maxnumber?: number;
     mockerror?: boolean;
@@ -105,6 +106,7 @@
     blockspam = undefined,
     challengeurl = undefined,
     challengejson = undefined,
+    credentials = undefined,
     customfetch = undefined,
     debug = false,
     delay = 0,
@@ -116,7 +118,7 @@
     hidefooter = false,
     hidelogo = false,
     id = undefined,
-    locale = undefined,
+    language = undefined,
     name = 'altcha',
     maxnumber = 1e6,
     mockerror = false,
@@ -155,7 +157,7 @@
     ...getI18nStrings(),
     ...parsedStrings,
   });
-  const widgetId = $derived(id || `${name}_checkbox`);
+  const widgetId = $derived(id || `${name}_checkbox_${Math.round(Math.random() * 1e8)}`);
 
   let checked: boolean = $state(false);
   let codeChallenge: {
@@ -331,6 +333,7 @@
         }
       }
       const init: RequestInit = {
+        credentials: typeof credentials === 'boolean' ? 'include' : credentials,
         headers:
           spamfilter !== false
             ? {
@@ -392,7 +395,7 @@
   /**
    * Get internalization strings based on the language preferences provided
    */
-  function getI18nStrings(languages: string[] = [locale || '', document.documentElement.lang || '', ...navigator.languages]) {
+  function getI18nStrings(languages: string[] = [language || '', document.documentElement.lang || '', ...navigator.languages]) {
     const codes = Object.keys(globalThis.altchaI18n).map((code) => code.toLowerCase());
     const lang = languages.reduce((acc, lang) => {
       lang = lang.toLowerCase();
@@ -1093,8 +1096,8 @@
     if (options.hidelogo !== undefined) {
       hidelogo = !!options.hidelogo;
     }
-    if (options.locale !== undefined) {
-      strings = getI18nStrings([options.locale]);
+    if (options.language !== undefined) {
+      strings = getI18nStrings([options.language]);
     }
     if (options.maxnumber !== undefined) {
       maxnumber = +options.maxnumber;
@@ -1406,7 +1409,7 @@
       {:else if currentState === State.VERIFYING}
         {@html _strings.verifying}
       {:else if currentState === State.CODE}
-        {@html _strings.extraCheck}
+        {@html _strings.verificationRequired}
       {:else}
         {@html _strings.label}
       {/if}
@@ -1453,7 +1456,7 @@
     <div
       class="altcha-code-challenge"
       role="dialog"
-      aria-label={_strings.extraCheck}
+      aria-label={_strings.verificationRequired}
     >
       <div class="altcha-code-challenge-arrow"></div>
 

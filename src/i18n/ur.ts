@@ -1,10 +1,11 @@
 export const i18n = {
   ariaLinkLabel: 'Altcha.org پر جائیں',
   enterCode: 'کوڈ درج کریں',
-  enterCodeAria: 'جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔',
+  enterCodeAria:
+    'جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔',
   error: 'توثیق ناکام ہو گئی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔',
   expired: 'توثیق کی مدت ختم ہو گئی ہے۔ براہ کرم دوبارہ کوشش کریں۔',
-  extraCheck: 'تصدیق ضروری ہے!',
+  verificationRequired: 'تصدیق ضروری ہے!',
   footer:
     'کے ذریعے محفوظ <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org پر جائیں">ALTCHA</a>',
   getAudioChallenge: 'آڈیو چیلنج حاصل کریں',

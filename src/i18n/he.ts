@@ -4,11 +4,11 @@ export const i18n = {
   enterCodeAria: 'הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.',
   error: 'האימות נכשל. נסה שוב מאוחר יותר.',
   expired: 'תוקף האימות פג. נסה שוב.',
-  extraCheck: 'נדרש אימות!',
+  verificationRequired: 'נדרש אימות!',
   footer:
     'מוגן על ידי <a href="https://altcha.org/" target="_blank" aria-label="בקר באתר Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'קבל אתגר שמע',
-  label: "אני לא רובוט",
+  label: 'אני לא רובוט',
   loading: 'טוען...',
   reload: 'טען מחדש',
   verify: 'אמת',

@@ -17,7 +17,7 @@ import './id.ts';
 import './th.ts';
 import './vi.ts';
 
-// Middle East 
+// Middle East
 import './ar.ts';
 import './he.ts';
 import './tr.ts';

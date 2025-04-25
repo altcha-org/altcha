@@ -4,7 +4,7 @@ const e = {
   enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
   error: "Échec de la vérification. Essayez à nouveau plus tard.",
   expired: "La vérification a expiré. Essayez à nouveau.",
-  extraCheck: "Vérification requise !",
+  verificationRequired: "Vérification requise !",
   footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obtenir un défi audio",
   label: "Je ne suis pas un robot",
@@ -23,7 +23,7 @@ const a = {
   enterCodeAria: "Geben Sie den Code ein, den Sie hören. Drücken Sie die Leertaste, um die Audio abzuspielen.",
   error: "Überprüfung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
   expired: "Überprüfung abgelaufen. Bitte versuchen Sie es erneut.",
-  extraCheck: "Überprüfung erforderlich!",
+  verificationRequired: "Überprüfung erforderlich!",
   footer: 'Geschützt durch <a href="https://altcha.org/" target="_blank" aria-label="Besuche Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Audio-Herausforderung anfordern",
   label: "Ich bin kein Roboter",
@@ -42,7 +42,7 @@ const i = {
   enterCodeAria: "Voer de code in die je hoort. Druk op Spatie om de audio af te spelen.",
   error: "Verificatie mislukt. Probeer het later opnieuw.",
   expired: "Verificatie verlopen. Probeer het opnieuw.",
-  extraCheck: "Verificatie vereist!",
+  verificationRequired: "Verificatie vereist!",
   footer: 'Beschermd door <a href="https://altcha.org/" target="_blank" aria-label="Bezoek Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Audio-uitdaging ontvangen",
   label: "Ik ben geen robot",
@@ -61,7 +61,7 @@ const r = {
   enterCodeAria: "Cuir isteach an cód a chloiseann tú. Brúigh Spás chun an fuaime a sheinm.",
   error: "Theip ar an bhfíorú. Bain triail eile as níos déanaí.",
   expired: "Tá an fíorú as feidhm. Bain triail eile as.",
-  extraCheck: "Fíorú riachtanach!",
+  verificationRequired: "Fíorú riachtanach!",
   footer: 'Cosanta ag <a href="https://altcha.org/" target="_blank" aria-label="Tabhair cuairt ar Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Faigh dúshlán fuaime",
   label: "Níl mé i mo róbat",
@@ -80,7 +80,7 @@ const t = {
   enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
-  extraCheck: "Verifica richiesta!",
+  verificationRequired: "Verifica richiesta!",
   footer: 'Protetto da <a href="https://altcha.org/" target="_blank" aria-label="Visita Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Ottieni una sfida audio",
   label: "Non sono un robot",
@@ -99,7 +99,7 @@ const o = {
   enterCodeAria: "Introduza o código que ouve. Prima Espaço para reproduzir o áudio.",
   error: "A verificação falhou. Por favor, tente novamente mais tarde.",
   expired: "Verificação expirada. Por favor, tente novamente.",
-  extraCheck: "Verificação necessária!",
+  verificationRequired: "Verificação necessária!",
   footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obter desafio de áudio",
   label: "Não sou um robô",
@@ -118,7 +118,7 @@ const l = {
   enterCodeAria: "Introduce el código que escuchas. Pulsa Espacio para reproducir el audio.",
   error: "Falló la verificación. Por favor intente nuevamente más tarde.",
   expired: "Verificación expirada. Por favor intente nuevamente.",
-  extraCheck: "¡Verificación requerida!",
+  verificationRequired: "¡Verificación requerida!",
   footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obtener un desafío de audio",
   label: "No soy un robot",
@@ -137,7 +137,7 @@ const n = {
   enterCodeAria: "Sartu entzun duzun kodea. Sakatu Espazioa audioa erreproduzitzeko.",
   error: "Egiaztatzeak huts egin du. Saiatu berriro geroago.",
   expired: "Egiaztatzea iraungi da. Saiatu berriro.",
-  extraCheck: "Egiaztatzea beharrezkoa da!",
+  verificationRequired: "Egiaztatzea beharrezkoa da!",
   footer: '<a href="https://altcha.org/" target="_blank" aria-label="Bisitatu Altcha.org">ALTCHA</a>k babestuta',
   getAudioChallenge: "Jaso audio-erronka bat",
   label: "Ez naiz robot bat",
@@ -156,26 +156,26 @@ const d = {
   enterCodeAria: "Enter code you hear. Press Space to play audio.",
   error: "Verification failed. Try again later.",
   expired: "Verification expired. Try again.",
-  extraCheck: "Verification required!",
   footer: 'Protected by <a href="https://altcha.org/" target="_blank" aria-label="Visit Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
   label: "I'm not a robot",
   loading: "Loading...",
   reload: "Reload",
   verify: "Verify",
+  verificationRequired: "Verification required!",
   verified: "Verified",
   verifying: "Verifying...",
   waitAlert: "Verifying... please wait."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
 globalThis.altchaI18n.en = d;
-const h = {
+const g = {
   ariaLinkLabel: "Besøg Altcha.org",
   enterCode: "Indtast kode",
   enterCodeAria: "Indtast den kode, du hører. Tryk på mellemrumstasten for at afspille lyd.",
   error: "Verificering mislykkedes. Prøv venligst igen senere.",
   expired: "Verificering udløbet. Prøv venligst igen.",
-  extraCheck: "Verificering kræves!",
+  verificationRequired: "Verificering kræves!",
   footer: 'Beskyttet af <a href="https://altcha.org/" target="_blank" aria-label="Besøg Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Hent lydudfordring",
   label: "Jeg er ikke en robot",
@@ -187,14 +187,14 @@ const h = {
   waitAlert: "Verificerer... vent venligst."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.da = h;
-const g = {
+globalThis.altchaI18n.da = g;
+const s = {
   ariaLinkLabel: "Besök Altcha.org",
   enterCode: "Ange kod",
   enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
   error: "Verifiering misslyckades. Försök igen senare.",
   expired: "Verifieringen har gått ut. Försök igen.",
-  extraCheck: "Verifiering krävs!",
+  verificationRequired: "Verifiering krävs!",
   footer: 'Skyddad av <a href="https://altcha.org/" target="_blank" aria-label="Besök Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Få ljudutmaning",
   label: "Jag är inte en robot",
@@ -206,14 +206,14 @@ const g = {
   waitAlert: "Verifierar... vänligen vänta."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.sv = g;
-const s = {
+globalThis.altchaI18n.sv = s;
+const c = {
   ariaLinkLabel: "Vieraile sivulla Altcha.org",
   enterCode: "Syötä koodi",
   enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
   error: "Varmennus epäonnistui. Yritä myöhemmin uudelleen.",
   expired: "Varmennus vanhentui. Yritä uudelleen.",
-  extraCheck: "Vahvistus vaaditaan!",
+  verificationRequired: "Vahvistus vaaditaan!",
   footer: 'Suojattu <a href="https://altcha.org/" target="_blank" aria-label="Vieraile sivulla Altcha.org">ALTCHA</a>:lla',
   getAudioChallenge: "Hae äänitehtävä",
   label: "En ole robotti",
@@ -225,14 +225,14 @@ const s = {
   waitAlert: "Vahvistetaan... odota hetki."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.fi = s;
-const c = {
+globalThis.altchaI18n.fi = c;
+const h = {
   ariaLinkLabel: "Külasta Altcha.org",
   enterCode: "Sisesta kood",
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
   error: "Kinnitamine ebaõnnestus. Proovi hiljem uuesti.",
   expired: "Kinnitamine aegus. Proovi uuesti.",
-  extraCheck: "Kontroll on vajalik!",
+  verificationRequired: "Kontroll on vajalik!",
   footer: 'Kaitstud <a href="https://altcha.org/" target="_blank" aria-label="Külasta Altcha.org">ALTCHA</a> poolt',
   getAudioChallenge: "Hangi heliülesanne",
   label: "Ma ei ole robot",
@@ -244,14 +244,14 @@ const c = {
   waitAlert: "Kinnitamine... palun oota."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.et = c;
+globalThis.altchaI18n.et = h;
 const f = {
   ariaLinkLabel: "Apsilankykite Altcha.org",
   enterCode: "Įveskite kodą",
   enterCodeAria: "Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.",
   error: "Patvirtinimas nepavyko. Bandykite vėliau.",
   expired: "Patvirtinimo laikas baigėsi. Bandykite dar kartą.",
-  extraCheck: "Reikalingas patvirtinimas!",
+  verificationRequired: "Reikalingas patvirtinimas!",
   footer: 'Apsaugota <a href="https://altcha.org/" target="_blank" aria-label="Apsilankykite Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Gauti garso užduotį",
   label: "Aš nesu robotas",
@@ -270,7 +270,7 @@ const b = {
   enterCodeAria: "Ievadiet dzirdamo kodu. Nospiediet atstarpes taustiņu, lai atskaņotu audio.",
   error: "Verifikācija neizdevās. Mēģiniet vēlāk vēlreiz.",
   expired: "Verifikācijas laiks ir beidzies. Mēģiniet vēlreiz.",
-  extraCheck: "Nepieciešama verifikācija!",
+  verificationRequired: "Nepieciešama verifikācija!",
   footer: 'Aizsargāts ar <a href="https://altcha.org/" target="_blank" aria-label="Apmeklējiet Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Saņemt audio izaicinājumu",
   label: "Es neesmu robots",
@@ -289,7 +289,7 @@ const u = {
   enterCodeAria: "Zadejte kód, který slyšíte. Stisknutím mezerníku přehrajete zvuk.",
   error: "Ověření selhalo. Zkuste to prosím později.",
   expired: "Ověření vypršelo. Zkuste to prosím znovu.",
-  extraCheck: "Vyžaduje se ověření!",
+  verificationRequired: "Vyžaduje se ověření!",
   footer: 'Chráněno pomocí <a href="https://altcha.org/" target="_blank" aria-label="Navštivte Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Získat audio výzvu",
   label: "Nejsem robot",
@@ -302,13 +302,13 @@ const u = {
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
 globalThis.altchaI18n.cs = u;
-const k = {
+const v = {
   ariaLinkLabel: "Odwiedź Altcha.org",
   enterCode: "Wprowadź kod",
   enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
   error: "Weryfikacja nie powiodła się. Spróbuj ponownie później.",
   expired: "Weryfikacja wygasła. Spróbuj ponownie.",
-  extraCheck: "Wymagana weryfikacja!",
+  verificationRequired: "Wymagana weryfikacja!",
   footer: 'Chronione przez <a href="https://altcha.org/" target="_blank" aria-label="Odwiedź Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Pobierz zadanie dźwiękowe",
   label: "Nie jestem robotem",
@@ -320,14 +320,14 @@ const k = {
   waitAlert: "Trwa weryfikacja... proszę czekać."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.pl = k;
-const v = {
+globalThis.altchaI18n.pl = v;
+const k = {
   ariaLinkLabel: "Látogass el az Altcha.org oldalra",
   enterCode: "Írja be a kódot",
   enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
   error: "A hitelesítés nem sikerült. Próbáld meg később újra.",
   expired: "A hitelesítés lejárt. Próbáld újra.",
-  extraCheck: "Ellenőrzés szükséges!",
+  verificationRequired: "Ellenőrzés szükséges!",
   footer: 'Védve a következő által: <a href="https://altcha.org/" target="_blank" aria-label="Látogass el az Altcha.org oldalra">ALTCHA</a>',
   getAudioChallenge: "Hangalapú kihívás kérése",
   label: "Nem vagyok robot",
@@ -339,14 +339,14 @@ const v = {
   waitAlert: "Ellenőrzés folyamatban... kérlek várj."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.hu = v;
+globalThis.altchaI18n.hu = k;
 const p = {
   ariaLinkLabel: "Navštívte Altcha.org",
   enterCode: "Zadajte kód",
   enterCodeAria: "Zadajte kód, ktorý počujete. Stlačením medzerníka prehráte zvuk.",
   error: "Verifikácia zlyhala. Skúste to znova neskôr.",
   expired: "Verifikácia vypršala. Skúste to znova.",
-  extraCheck: "Vyžaduje sa overenie!",
+  verificationRequired: "Vyžaduje sa overenie!",
   footer: 'Chránené <a href="https://altcha.org/" target="_blank" aria-label="Navštívte Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Získať audio výzvu",
   label: "Nie som robot",
@@ -365,7 +365,7 @@ const A = {
   enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
   error: "Preverjanje ni uspelo. Poskusite znova kasneje.",
   expired: "Preverjanje je poteklo. Poskusite znova.",
-  extraCheck: "Potrebna je preveritev!",
+  verificationRequired: "Potrebna je preveritev!",
   footer: 'Zaščiteno z <a href="https://altcha.org/" target="_blank" aria-label="Obiščite Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Pridobite zvočni izziv",
   label: "Nisem robot",
@@ -378,13 +378,13 @@ const A = {
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
 globalThis.altchaI18n.sl = A;
-const C = {
+const y = {
   ariaLinkLabel: "Posjetite Altcha.org",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite razmaknicu za reprodukciju zvuka.",
   error: "Provjera nije uspjela. Molimo pokušajte kasnije.",
   expired: "Provjera je istekla. Molimo pokušajte ponovo.",
-  extraCheck: "Potrebna je provjera!",
+  verificationRequired: "Potrebna je provjera!",
   footer: 'Zaštićeno od strane <a href="https://altcha.org/" target="_blank" aria-label="Posjetite Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Audio provjera",
   label: "Ja nisam robot",
@@ -396,14 +396,14 @@ const C = {
   waitAlert: "Provjera je u tijeku... molimo pričekajte."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.hr = C;
-const y = {
+globalThis.altchaI18n.hr = y;
+const j = {
   ariaLinkLabel: "Vizitează Altcha.org",
   enterCode: "Introduceți codul",
   enterCodeAria: "Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.",
   error: "Verificarea a eșuat. Încearcă din nou mai târziu.",
   expired: "Verificarea a expirat. Încearcă din nou.",
-  extraCheck: "Verificare necesară!",
+  verificationRequired: "Verificare necesară!",
   footer: 'Protejat de <a href="https://altcha.org/" target="_blank" aria-label="Vizitează Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obține o provocare audio",
   label: "Nu sunt un robot",
@@ -415,14 +415,14 @@ const y = {
   waitAlert: "Se verifică... te rugăm să aștepți."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ro = y;
-const j = {
+globalThis.altchaI18n.ro = j;
+const T = {
   ariaLinkLabel: "Посетете Altcha.org",
   enterCode: "Въведете код",
   enterCodeAria: "Въведете кода, който чувате. Натиснете Space за възпроизвеждане на аудио.",
   error: "Проверката неуспешна. Моля, опитайте по-късно.",
   expired: "Времето за проверка изтече. Моля, опитайте отново.",
-  extraCheck: "Изисква се проверка!",
+  verificationRequired: "Изисква се проверка!",
   footer: 'Защитено от <a href="https://altcha.org/" target="_blank" aria-label="Посетете Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Аудио проверка",
   label: "Аз не съм робот",
@@ -434,14 +434,14 @@ const j = {
   waitAlert: "Проверката е в процес... моля изчакайте."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.bg = j;
-const T = {
+globalThis.altchaI18n.bg = T;
+const C = {
   ariaLinkLabel: "Επισκεφθείτε το Altcha.org",
   enterCode: "Εισαγάγετε κωδικό",
   enterCodeAria: "Εισαγάγετε τον κωδικό που ακούτε. Πατήστε Space για να παίξετε τον ήχο.",
   error: "Η επαλήθευση απέτυχε. Δοκιμάστε ξανά αργότερα.",
   expired: "Η επαλήθευση έληξε. Δοκιμάστε ξανά.",
-  extraCheck: "Απαιτείται έλεγχος!",
+  verificationRequired: "Απαιτείται έλεγχος!",
   footer: 'Προστατεύεται από το <a href="https://altcha.org/" target="_blank" aria-label="Επισκεφθείτε το Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Λήψη ηχητικής δοκιμασίας",
   label: "Δεν είμαι ρομπότ",
@@ -453,14 +453,14 @@ const T = {
   waitAlert: "Γίνεται επαλήθευση... παρακαλώ περιμένετε."
 };
 typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.el = T;
+globalThis.altchaI18n.el = C;
 const I = {
   ariaLinkLabel: "Перейти на Altcha.org",
   enterCode: "Введите код",
   enterCodeAria: "Введите код, который слышите. Нажмите пробел для воспроизведения аудио.",
   error: "Ошибка верификации. Попробуйте позже.",
   expired: "Срок действия верификации истек. Попробуйте снова.",
-  extraCheck: "Требуется проверка!",
+  verificationRequired: "Требуется проверка!",
   footer: 'Защищено <a href="https://altcha.org/" target="_blank" aria-label="Перейти на Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Получить аудио задачу",
   label: "Я не робот",
@@ -479,7 +479,7 @@ const z = {
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
-  extraCheck: "Verifika meħtieġa!",
+  verificationRequired: "Verifika meħtieġa!",
   footer: 'Protett minn <a href="https://altcha.org/" target="_blank" aria-label="Żur Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Ikseb sfida bl-awdjo",
   label: "M’inix robot",

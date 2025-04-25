@@ -1,10 +1,11 @@
 export const i18n = {
   ariaLinkLabel: 'Vizitează Altcha.org',
   enterCode: 'Introduceți codul',
-  enterCodeAria: 'Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.',
+  enterCodeAria:
+    'Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.',
   error: 'Verificarea a eșuat. Încearcă din nou mai târziu.',
   expired: 'Verificarea a expirat. Încearcă din nou.',
-  extraCheck: 'Verificare necesară!',
+  verificationRequired: 'Verificare necesară!',
   footer:
     'Protejat de <a href="https://altcha.org/" target="_blank" aria-label="Vizitează Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'Obține o provocare audio',

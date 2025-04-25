@@ -4,7 +4,7 @@ const a = {
   enterCodeAria: "Введіть код, який ви чуєте. Натисніть пробіл, щоб відтворити аудіо.",
   error: "Перевірка не вдалася. Спробуйте пізніше.",
   expired: "Перевірка прострочена. Спробуйте знову.",
-  extraCheck: "Потрібна перевірка!",
+  verificationRequired: "Потрібна перевірка!",
   footer: 'Захищено <a href="https://altcha.org/" target="_blank" aria-label="Відвідати Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Отримати аудіо-челлендж",
   label: "Я не робот",

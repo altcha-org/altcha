@@ -1,4 +1,4 @@
-// import './en.ts';    // English is imported by default 
+// import './en.ts';    // English is imported by default
 
 // North America
 import './fr-ca.ts';

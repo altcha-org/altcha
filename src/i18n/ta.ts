@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'சரிபார்க்கப்படுகிறது... தயவுசெய்து காத்திருக்கவும்.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ta'] = i18n;
+globalThis.altchaI18n.register('ta', i18n);

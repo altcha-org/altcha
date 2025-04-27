@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: '確認中...少々お待ちください。',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ja'] = i18n;
+globalThis.altchaI18n.register('ja', i18n);

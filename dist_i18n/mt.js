@@ -15,8 +15,7 @@ const a = {
   verifying: "Verifika għaddejja...",
   waitAlert: "Verifika għaddejja... stenna ftit."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.mt = a;
+globalThis.altchaI18n.register("mt", a);
 export {
   a as i18n
 };

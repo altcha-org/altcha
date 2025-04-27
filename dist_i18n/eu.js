@@ -15,8 +15,7 @@ const a = {
   verifying: "Egiaztatzen...",
   waitAlert: "Egiaztatzen... itxaron mesedez."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.eu = a;
+globalThis.altchaI18n.register("eu", a);
 export {
   a as i18n
 };

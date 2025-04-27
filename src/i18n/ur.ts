@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'توثیق ہو رہی ہے... براہ کرم انتظار کریں۔',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ur'] = i18n;
+globalThis.altchaI18n.register('ur', i18n);

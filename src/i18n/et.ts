@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'Kinnitamine... palun oota.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['et'] = i18n;
+globalThis.altchaI18n.register('et', i18n);

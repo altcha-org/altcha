@@ -15,8 +15,7 @@ const e = {
   verifying: "Se verifică...",
   waitAlert: "Se verifică... te rugăm să aștepți."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ro = e;
+globalThis.altchaI18n.register("ro", e);
 export {
   e as i18n
 };

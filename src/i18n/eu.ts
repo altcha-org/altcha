@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Egiaztatzen... itxaron mesedez.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['eu'] = i18n;
+globalThis.altchaI18n.register('eu', i18n);

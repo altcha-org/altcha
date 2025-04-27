@@ -15,8 +15,7 @@ const e = {
   verifying: "מאמת...",
   waitAlert: "מבצע אימות... אנא המתן."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.he = e;
+globalThis.altchaI18n.register("he", e);
 export {
   e as i18n
 };

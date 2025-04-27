@@ -1934,6 +1934,12 @@ async function ji(e, t = "", r = 1e6, o = 0) {
   };
 }
 var k = /* @__PURE__ */ ((e) => (e.CODE = "code", e.ERROR = "error", e.VERIFIED = "verified", e.VERIFYING = "verifying", e.UNVERIFIED = "unverified", e.EXPIRED = "expired", e))(k || {}), X = /* @__PURE__ */ ((e) => (e.ERROR = "error", e.LOADING = "loading", e.PLAYING = "playing", e.PAUSED = "paused", e.READY = "ready", e))(X || {});
+globalThis.altchaPlugins = globalThis.altchaPlugins || [];
+globalThis.altchaI18n = globalThis.altchaI18n || {
+  register: (e, t) => {
+    globalThis.altchaI18n[e] = t;
+  }
+};
 const qi = {
   ariaLinkLabel: "Visit Altcha.org",
   enterCode: "Enter code",
@@ -1951,8 +1957,7 @@ const qi = {
   verifying: "Verifying...",
   waitAlert: "Verifying... please wait."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.en = qi;
+globalThis.altchaI18n.register("en", qi);
 const br = (e, t) => {
   let r = /* @__PURE__ */ Yl(() => $l(t == null ? void 0 : t(), 24));
   var o = Gi();
@@ -2012,7 +2017,7 @@ function ua(e, t) {
     Ro(), a(M) && (a(M).removeEventListener("submit", Hr), a(M).removeEventListener("reset", Yr), a(M).removeEventListener("focusin", Br), w(M, null)), ke && (clearTimeout(ke), ke = null), document.removeEventListener("click", jr), document.removeEventListener("scroll", qr), window.removeEventListener("resize", Zr);
   }), yo(() => {
     var n;
-    S("mounted", "1.4.2"), S("workers", it()), No(), S("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), fe() && S("using test mode"), _() && cr(_()), r() !== void 0 && S("auto", r()), h() !== void 0 && Xr(h()), w(M, F((n = a(Q)) == null ? void 0 : n.closest("form"))), a(M) && (a(M).addEventListener("submit", Hr, { capture: !0 }), a(M).addEventListener("reset", Yr), (r() === "onfocus" || C() === "focus") && a(M).addEventListener("focusin", Br)), r() === "onload" && (V() ? kt() : Se()), a(ir) && (T() || O()) && S("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    S("mounted", "2.0.0-beta.1"), S("workers", it()), No(), S("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), fe() && S("using test mode"), _() && cr(_()), r() !== void 0 && S("auto", r()), h() !== void 0 && Xr(h()), w(M, F((n = a(Q)) == null ? void 0 : n.closest("form"))), a(M) && (a(M).addEventListener("submit", Hr, { capture: !0 }), a(M).addEventListener("reset", Yr), (r() === "onfocus" || C() === "focus") && a(M).addEventListener("focusin", Br)), r() === "onload" && (V() ? kt() : Se()), a(ir) && (T() || O()) && S("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       Ve("load");
     });
   });
@@ -2945,8 +2950,6 @@ customElements.define("altcha-widget", Pi(
   !1
 ));
 globalThis.altchaCreateWorker = (e) => e ? new Worker(new URL(e)) : new dl();
-globalThis.altchaPlugins = globalThis.altchaPlugins || [];
-globalThis.altchaI18n = globalThis.altchaI18n || {};
 export {
   ua as Altcha
 };

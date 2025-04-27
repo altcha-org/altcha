@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: '正在驗證... 請稍等。',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['zh-tw'] = i18n;
+globalThis.altchaI18n.register('zh-tw', i18n);

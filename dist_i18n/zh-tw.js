@@ -1,4 +1,4 @@
-const a = {
+const e = {
   ariaLinkLabel: "訪問 Altcha.org",
   enterCode: "輸入代碼",
   enterCodeAria: "輸入您聽到的代碼。按空格鍵播放音頻。",
@@ -15,8 +15,7 @@ const a = {
   verifying: "正在驗證...",
   waitAlert: "正在驗證... 請稍等。"
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n["zh-tw"] = a;
+globalThis.altchaI18n.register("zh-tw", e);
 export {
-  a as i18n
+  e as i18n
 };

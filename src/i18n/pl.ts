@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Trwa weryfikacja... proszę czekać.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['pl'] = i18n;
+globalThis.altchaI18n.register('pl', i18n);

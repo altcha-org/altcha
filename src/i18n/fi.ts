@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Vahvistetaan... odota hetki.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['fi'] = i18n;
+globalThis.altchaI18n.register('fi', i18n);

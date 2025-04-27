@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'جارٍ التحقق... يرجى الانتظار.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ar'] = i18n;
+globalThis.altchaI18n.register('ar', i18n);

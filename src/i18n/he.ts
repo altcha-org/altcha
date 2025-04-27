@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'מבצע אימות... אנא המתן.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['he'] = i18n;
+globalThis.altchaI18n.register('he', i18n);

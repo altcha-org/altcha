@@ -15,8 +15,7 @@ const a = {
   verifying: "Fíorú ar siúl...",
   waitAlert: "Fíorú ar siúl... fan go fóill."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ga = a;
+globalThis.altchaI18n.register("ga", a);
 export {
   a as i18n
 };

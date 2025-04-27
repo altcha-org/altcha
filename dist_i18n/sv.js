@@ -15,8 +15,7 @@ const e = {
   verifying: "Verifierar...",
   waitAlert: "Verifierar... vänligen vänta."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.sv = e;
+globalThis.altchaI18n.register("sv", e);
 export {
   e as i18n
 };

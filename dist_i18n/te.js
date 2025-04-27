@@ -15,8 +15,7 @@ const e = {
   verifying: "ధ్రువీకరణ జరుగుతుంది...",
   waitAlert: "ధ్రువీకరణ జరుగుతుంది... దయచేసి వేచి ఉండండి."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.te = e;
+globalThis.altchaI18n.register("te", e);
 export {
   e as i18n
 };

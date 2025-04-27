@@ -1,4 +1,4 @@
-const h = {
+const i = {
   ariaLinkLabel: "Truy cập Altcha.org",
   enterCode: "Nhập mã",
   enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
@@ -15,8 +15,7 @@ const h = {
   verifying: "Đang xác minh...",
   waitAlert: "Đang xác minh... vui lòng chờ."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.vi = h;
+globalThis.altchaI18n.register("vi", i);
 export {
-  h as i18n
+  i as i18n
 };

@@ -15,8 +15,7 @@ const a = {
   verifying: "Vahvistetaan...",
   waitAlert: "Vahvistetaan... odota hetki."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.fi = a;
+globalThis.altchaI18n.register("fi", a);
 export {
   a as i18n
 };

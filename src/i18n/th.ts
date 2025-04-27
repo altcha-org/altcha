@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'กำลังตรวจสอบ... กรุณารอ',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['th'] = i18n;
+globalThis.altchaI18n.register('th', i18n);

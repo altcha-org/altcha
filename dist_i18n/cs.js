@@ -15,8 +15,7 @@ const e = {
   verifying: "Ověřování...",
   waitAlert: "Probíhá ověření... prosím počkejte."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.cs = e;
+globalThis.altchaI18n.register("cs", e);
 export {
   e as i18n
 };

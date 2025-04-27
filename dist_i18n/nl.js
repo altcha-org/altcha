@@ -15,8 +15,7 @@ const e = {
   verifying: "Bezig met verifiëren...",
   waitAlert: "Bezig met verifiëren... even geduld a.u.b."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.nl = e;
+globalThis.altchaI18n.register("nl", e);
 export {
   e as i18n
 };

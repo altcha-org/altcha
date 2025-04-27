@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: '확인 중... 잠시만 기다려주세요.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ko'] = i18n;
+globalThis.altchaI18n.register('ko', i18n);

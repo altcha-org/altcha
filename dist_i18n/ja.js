@@ -1,4 +1,4 @@
-const a = {
+const e = {
   ariaLinkLabel: "Altcha.orgを訪問",
   enterCode: "コードを入力",
   enterCodeAria: "聞こえるコードを入力してください。スペースキーを押して音声を再生します。",
@@ -15,8 +15,7 @@ const a = {
   verifying: "確認中...",
   waitAlert: "確認中...少々お待ちください。"
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.ja = a;
+globalThis.altchaI18n.register("ja", e);
 export {
-  a as i18n
+  e as i18n
 };

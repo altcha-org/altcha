@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'Đang xác minh... vui lòng chờ.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['vi'] = i18n;
+globalThis.altchaI18n.register('vi', i18n);

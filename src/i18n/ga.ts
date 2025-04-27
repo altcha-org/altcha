@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Fíorú ar siúl... fan go fóill.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ga'] = i18n;
+globalThis.altchaI18n.register('ga', i18n);

@@ -15,9 +15,8 @@ const e = {
   verifying: "Vérification en cours...",
   waitAlert: "Vérification en cours... veuillez patienter."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n["fr-ca"] = e;
-const a = {
+globalThis.altchaI18n.register("fr-ca", e);
+const r = {
   ariaLinkLabel: "Visitar Altcha.org",
   enterCode: "Ingresa el código",
   enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
@@ -34,9 +33,8 @@ const a = {
   verifying: "Verificando...",
   waitAlert: "Verificando... por favor espera."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n["es-419"] = a;
-const r = {
+globalThis.altchaI18n.register("es-419", r);
+const a = {
   ariaLinkLabel: "Visitar Altcha.org",
   enterCode: "Digite o código",
   enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
@@ -53,5 +51,4 @@ const r = {
   verifying: "Verificando...",
   waitAlert: "Verificando... por favor aguarde."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n["pt-br"] = r;
+globalThis.altchaI18n.register("pt-br", a);

@@ -1,4 +1,4 @@
-const a = {
+const e = {
   ariaLinkLabel: "Посетете Altcha.org",
   enterCode: "Въведете код",
   enterCodeAria: "Въведете кода, който чувате. Натиснете Space за възпроизвеждане на аудио.",
@@ -15,8 +15,7 @@ const a = {
   verifying: "Проверява се...",
   waitAlert: "Проверката е в процес... моля изчакайте."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.bg = a;
+globalThis.altchaI18n.register("bg", e);
 export {
-  a as i18n
+  e as i18n
 };

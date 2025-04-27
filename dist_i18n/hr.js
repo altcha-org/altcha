@@ -15,8 +15,7 @@ const e = {
   verifying: "Provjeravanje...",
   waitAlert: "Provjera je u tijeku... molimo pričekajte."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.hr = e;
+globalThis.altchaI18n.register("hr", e);
 export {
   e as i18n
 };

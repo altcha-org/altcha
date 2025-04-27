@@ -15,8 +15,7 @@ const a = {
   verifying: "Doğrulama yapılıyor...",
   waitAlert: "Doğrulama yapılıyor... lütfen bekleyin."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.tr = a;
+globalThis.altchaI18n.register("tr", a);
 export {
   a as i18n
 };

@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Se verifică... te rugăm să aștepți.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['ro'] = i18n;
+globalThis.altchaI18n.register('ro', i18n);

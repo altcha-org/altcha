@@ -17,8 +17,4 @@ export const i18n = {
   waitAlert: 'पुष्टीकरण करत आहे... कृपया थोडा वेळ थांबा.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['mr'] = i18n;
+globalThis.altchaI18n.register('mr', i18n);

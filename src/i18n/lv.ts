@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Notiek verifikācija... lūdzu, uzgaidiet.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['lv'] = i18n;
+globalThis.altchaI18n.register('lv', i18n);

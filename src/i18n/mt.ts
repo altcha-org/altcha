@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Verifika għaddejja... stenna ftit.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['mt'] = i18n;
+globalThis.altchaI18n.register('mt', i18n);

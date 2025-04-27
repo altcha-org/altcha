@@ -1,4 +1,4 @@
-const a = {
+const e = {
   ariaLinkLabel: "Külasta Altcha.org",
   enterCode: "Sisesta kood",
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
@@ -15,8 +15,7 @@ const a = {
   verifying: "Kinnitamine...",
   waitAlert: "Kinnitamine... palun oota."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.et = a;
+globalThis.altchaI18n.register("et", e);
 export {
-  a as i18n
+  e as i18n
 };

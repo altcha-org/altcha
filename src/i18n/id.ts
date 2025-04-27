@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Memverifikasi... harap tunggu.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['id'] = i18n;
+globalThis.altchaI18n.register('id', i18n);

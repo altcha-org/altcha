@@ -15,8 +15,7 @@ const e = {
   verifying: "Preverjanje...",
   waitAlert: "Preverjanje... prosim počakajte."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.sl = e;
+globalThis.altchaI18n.register("sl", e);
 export {
   e as i18n
 };

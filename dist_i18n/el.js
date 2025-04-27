@@ -15,8 +15,7 @@ const e = {
   verifying: "Γίνεται επαλήθευση...",
   waitAlert: "Γίνεται επαλήθευση... παρακαλώ περιμένετε."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.el = e;
+globalThis.altchaI18n.register("el", e);
 export {
   e as i18n
 };

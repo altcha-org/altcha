@@ -15,8 +15,7 @@ const a = {
   verifying: "Memverifikasi...",
   waitAlert: "Memverifikasi... harap tunggu."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.id = a;
+globalThis.altchaI18n.register("id", a);
 export {
   a as i18n
 };

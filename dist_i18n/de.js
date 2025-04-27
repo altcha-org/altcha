@@ -15,8 +15,7 @@ const e = {
   verifying: "Wird überprüft...",
   waitAlert: "Überprüfung läuft... bitte warten."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.de = e;
+globalThis.altchaI18n.register("de", e);
 export {
   e as i18n
 };

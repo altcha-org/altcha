@@ -18,8 +18,4 @@ export const i18n = {
   waitAlert: 'Tikrinama... prašome palaukti.',
 };
 
-if (typeof globalThis.altchaI18n !== 'object') {
-  globalThis.altchaI18n = {};
-}
-
-globalThis.altchaI18n['lt'] = i18n;
+globalThis.altchaI18n.register('lt', i18n);

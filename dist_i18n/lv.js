@@ -15,8 +15,7 @@ const i = {
   verifying: "Notiek verifikācija...",
   waitAlert: "Notiek verifikācija... lūdzu, uzgaidiet."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.lv = i;
+globalThis.altchaI18n.register("lv", i);
 export {
   i as i18n
 };

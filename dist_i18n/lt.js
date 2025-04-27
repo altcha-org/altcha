@@ -15,8 +15,7 @@ const a = {
   verifying: "Tikrinama...",
   waitAlert: "Tikrinama... prašome palaukti."
 };
-typeof globalThis.altchaI18n != "object" && (globalThis.altchaI18n = {});
-globalThis.altchaI18n.lt = a;
+globalThis.altchaI18n.register("lt", a);
 export {
   a as i18n
 };

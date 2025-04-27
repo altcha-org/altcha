@@ -66,6 +66,7 @@
     type CustomFetchFunction,
     AudioState,
   } from './types';
+  import './globals';
   import './i18n/en';
 
   interface Props {

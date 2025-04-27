@@ -208,7 +208,7 @@ Enable plugins per widget:
 ### Available Plugins  
 
 - **obfuscation**: Secure sensitive data (emails, phone numbers).  
-- **upload**: File uploads.  
+- **upload**: File uploads with ALTCHA Sentinel or a custom backend.
 
 ## Programmatic Configuration
 

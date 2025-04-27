@@ -8,11 +8,9 @@
 
   import './Altcha.svelte';
   import type Altcha from './Altcha.svelte';
-  
+
   globalThis.altchaCreateWorker = (url?: string) => new InlineWorker();
-  globalThis.altchaPlugins = globalThis.altchaPlugins || [];
-
-
+  
   const success = location.hash.includes('success');
   const failure = location.hash.includes('failure');
   const params = new URLSearchParams(location.search);
@@ -146,7 +144,6 @@
     <altcha-widget
       bind:this={altcha}
       debug
-      name="upload"
       plugins="upload"
       {challengeurl}
       {mockerror}

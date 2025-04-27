@@ -82,7 +82,15 @@ export class PluginUpload extends Plugin {
         return next();
       }
     };
-    await next();
+    try {
+      await next();
+    } catch (error) {
+      this.context.log('upload failed', error);
+      this.context.dispatch('uploaderror', {
+        error
+      });
+      return false;
+    }
     if (this.pendingFiles.length === 0) {
       this.#addFormFields();
       this.elForm?.requestSubmit();
@@ -176,7 +184,12 @@ export class PluginUpload extends Plugin {
     if (this.elForm) {
       const action = this.elForm.getAttribute('action');
       const uploadUrl = this.elForm.getAttribute('data-upload-url');
-      return uploadUrl || action + '/file';
+      if (uploadUrl) {
+        return uploadUrl;
+      }
+      const actionUrl = new URL(action || location.origin);
+      actionUrl.pathname = actionUrl.pathname + '/file';
+      return actionUrl.toString();
     }
     return null;
   }
@@ -204,6 +217,12 @@ export class PluginUpload extends Plugin {
    * @param {SubmitEvent} ev - The submit event.
    */
   #onFormSubmit(ev: SubmitEvent) {
+    const target = ev.target as HTMLFormElement | null;
+    const isCodeChallengeForm = target?.hasAttribute('data-code-challenge-form');
+    if (isCodeChallengeForm) {
+      // Submit event from the code-challenge form -> don't handle
+      return;
+    }
     if (this.pendingFiles.length) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -363,6 +382,7 @@ export class PluginUpload extends Plugin {
     body: Uint8Array<ArrayBufferLike> | ArrayBuffer | File,
     headers: Record<string, string> = {}
   ) {
+    url = new URL(url, this.elForm?.getAttribute('action') || location.origin).toString();
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       handle.controller.signal.addEventListener('abort', () => {
@@ -376,7 +396,11 @@ export class PluginUpload extends Plugin {
         reject(new Error('Upload failed.'));
       });
       xhr.addEventListener('load', () => {
-        resolve(void 0);
+        if (xhr.status >= 400) {
+          reject(new Error(`Server responded with ${xhr.status}`));
+        } else {
+          resolve(void 0);
+        }
       });
       xhr.open('PUT', url);
       for (const key in headers) {

@@ -117,7 +117,7 @@ ALTCHA is optimized for performance:
 
 | Distribution      | Size (GZIPped) |  
 |-------------------|----------------|  
-| ALTCHA (v2.x)     | 26 kB          |  
+| ALTCHA (v2.x)     | 26+ kB         |  
 | hCaptcha          | 48+ kB         |  
 | reCAPTCHA         | 270+ kB        |  
 
@@ -141,6 +141,7 @@ Additional options:
 - **customfetch**: A custom `fetch` function for retrieving the challenge.  
   Accepts `url: string` and `init: RequestInit` as arguments and must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response).  
 - **delay**: Artificial delay in milliseconds before verification (defaults to 0).
+- **disableautofocus**: If true, prevents the code-challenge input from automatically receiving focus on render (defaults to `false`).
 - **expire**: Challenge expiration duration in milliseconds.
 - **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
 - **floatinganchor**: CSS selector of the "anchor" to which the floating UI will be attached (defaults to the `button[type="submit"]` in the related form).
@@ -176,7 +177,7 @@ import 'altcha';
 import 'altcha/i18n/all'; // All languages
 // Or import specific languages:
 import 'altcha/i18n/de';
-import 'altcha/i18n/fr';
+import 'altcha/i18n/fr-fr';
 ```
 
 The widget auto-detects language from `<html lang="...">` or `navigator.languages`. Override with the `language` attribute:  
@@ -250,6 +251,7 @@ export interface Configure {
   customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
   debug?: boolean;
   delay?: number;
+  disableautofocus?: boolean;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;

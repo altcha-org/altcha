@@ -12,6 +12,9 @@
       delay: {
         type: 'Number',
       },
+      disableautofocus: {
+        type: 'Boolean',
+      },
       expire: {
         type: 'Number',
       },
@@ -71,6 +74,7 @@
 
   interface Props {
     auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit' | undefined;
+    /** @deprecated */
     blockspam?: boolean | undefined;
     challengeurl?: string | undefined;
     challengejson?: string | undefined;
@@ -78,6 +82,7 @@
     customfetch?: string | CustomFetchFunction | undefined;
     debug?: boolean;
     delay?: number;
+    disableautofocus?: boolean;
     expire?: number | undefined;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean | undefined;
     floatinganchor?: string | undefined;
@@ -94,6 +99,7 @@
     plugins?: string | undefined;
     refetchonexpire?: boolean;
     sentinel?: Sentinel;
+    /** @deprecated */
     spamfilter?: boolean | 'ipAddress' | SpamFilter;
     strings?: string | undefined;
     test?: boolean | number;
@@ -111,6 +117,7 @@
     customfetch = undefined,
     debug = false,
     delay = 0,
+    disableautofocus = false,
     expire = undefined,
     floating = undefined,
     floatinganchor = undefined,
@@ -1331,7 +1338,7 @@
         if (!solution || (data && 'challenge' in data && !('clearText' in solution))) {
           if (solution?.number !== undefined && 'challenge' in data) {
             if (verifyurl && 'codeChallenge' in data) {
-              if (document.activeElement?.tagName === 'INPUT') {
+              if (document.activeElement?.tagName === 'INPUT' && disableautofocus === false) {
                 // blur the checkbox to make the code challenge input autofocus work
                 (document.activeElement as HTMLInputElement).blur();
               }
@@ -1496,7 +1503,7 @@
           aria-busy={codeChallengeAudioState === AudioState.LOADING}
           disabled={codeChallengeSubmitting}
           required
-          autofocus
+          autofocus={!disableautofocus}
           onkeydown={onCodeChallengeInputKeyDown}
         />
 

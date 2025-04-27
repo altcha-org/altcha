@@ -24,6 +24,7 @@ declare global {
 
   interface AltchaWidgetOptions {
     auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
+    /** @deprecated */
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;
@@ -31,6 +32,7 @@ declare global {
     customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
     debug?: boolean;
     delay?: number;
+    disableautofocus?: boolean;
     expire?: number;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
     floatinganchor?: string;

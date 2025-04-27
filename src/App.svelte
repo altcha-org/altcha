@@ -3,7 +3,6 @@
   import InlineWorker from './worker?worker&inline';
   
   import './plugins/obfuscation';
-  import './plugins/analytics';
   import './plugins/upload';
 
   import './Altcha.svelte';

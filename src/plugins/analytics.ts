@@ -5,6 +5,8 @@ import type { PluginContext } from '../types';
 /**
  * PluginAnalytics is a plugin for tracking user interaction data within a form.
  * It monitors form submissions, changes, and user interactions to collect analytics data.
+ * 
+ * @deprecated
  */
 export class PluginAnalytics extends Plugin {
   static pluginName = 'analytics';

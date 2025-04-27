@@ -1,15 +1,23 @@
 export interface Strings {
+  ariaLinkLabel: string;
+  enterCode: string;
+  enterCodeAria: string;
   error: string;
   expired: string;
   footer: string;
+  getAudioChallenge: string;
   label: string;
+  loading: string;
+  reload: string;
   verified: string;
+  verificationRequired: string;
   verifying: string;
   waitAlert: string;
 }
 
 export interface Configure {
   auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
+  /** @deprecated */
   blockspam?: boolean;
   challenge?: Challenge | string;
   challengeurl?: string;
@@ -17,6 +25,7 @@ export interface Configure {
   customfetch?: string | CustomFetchFunction;
   debug?: boolean;
   delay?: number;
+  disableautofocus?: boolean;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;

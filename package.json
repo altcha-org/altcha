@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "GDPR compliant, self-hosted CAPTCHA alternative.",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",

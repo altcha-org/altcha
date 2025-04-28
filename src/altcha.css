@@ -91,7 +91,7 @@
 }
 
 .altcha-code-challenge-input:focus {
-  outline: 2px solid rgba(0, 0, 250, 0.2);
+  outline: 2px solid color-mix(in srgb, var(--altcha-color-active, #1D1DC9) 20%, transparent);
 }
 
 .altcha-code-challenge-input:disabled {
@@ -143,7 +143,7 @@
 
 .altcha-code-challenge-verify {
   align-items: center;
-  background: blue;
+  background: var(--altcha-color-active, #1D1DC9);
   border: 0;
   border-radius: 3px;
   color: white;

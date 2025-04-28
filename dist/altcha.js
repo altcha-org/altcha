@@ -1935,7 +1935,7 @@ function sa(e, t) {
       waitAlert: "Verifying... please wait.",
       ...d(fr)
     };
-  }), ur = /* @__PURE__ */ Pe(() => O() || `${q()}_checkbox`);
+  }), ur = /* @__PURE__ */ Pe(() => `${O() || q()}_checkbox`);
   let je = We(!1), C = We(ae(y.UNVERIFIED)), j = We(void 0), it = We(null), Ve = null, w = null, Be = We(null), fe = null, xe = [], Le = We(null);
   qt(() => {
     ti(d(Be));

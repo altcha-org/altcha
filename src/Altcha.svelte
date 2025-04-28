@@ -157,7 +157,7 @@
     waitAlert: 'Verifying... please wait.',
     ...parsedStrings,
   });
-  const widgetId = $derived(id || `${name}_checkbox`);
+  const widgetId = $derived(`${id || name}_checkbox`);
 
   let checked: boolean = $state(false);
   let currentState: State = $state(State.UNVERIFIED);

@@ -7,6 +7,7 @@
 
   import './Altcha.svelte';
   import type Altcha from './Altcha.svelte';
+  import { State } from './types';
 
   globalThis.altchaCreateWorker = (url?: string) => new InlineWorker();
   
@@ -20,6 +21,7 @@
   let mockerror: boolean = $state(false);
 
   let altcha: Altcha = $state()!;
+  let altchaUpload: Altcha = $state()!;
   let altchaObfuscated: Altcha = $state()!;
   
   let uploadProgress: {
@@ -141,7 +143,7 @@
     </div>
 
     <altcha-widget
-      bind:this={altcha}
+      bind:this={altchaUpload}
       debug
       plugins="upload"
       {challengeurl}

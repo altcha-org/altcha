@@ -375,7 +375,7 @@
         try {
           const config = JSON.parse(configHeader);
           if (config && typeof config === 'object') {
-            if (config.verifyurl) {
+            if (config.verifyurl && !config.verifyurl.startsWith('javascript:')) {
               config.verifyurl = getServerUrl(config.verifyurl);
             }
             configure(config);
@@ -594,10 +594,23 @@
     ev.stopPropagation();
     if (codeChallenge) {
       const data = new FormData(ev.target as HTMLFormElement);
+      const code = String(data.get('code'));
+      if (verifyurl?.startsWith('javascript:')) {
+        const functionName = verifyurl.replace(/^javascript:/, '');
+        log(`calling ${functionName} function instead of verifyurl`);
+        if (!(functionName in globalThis)) {
+          throw new Error(`Global function "${functionName}" is undefined.`);
+        }
+        return globalThis[functionName as keyof typeof globalThis]({
+          challenge: codeChallenge.challenge,
+          code,
+          solution: codeChallenge.solution,
+        });
+      }
       codeChallengeSubmitting = true;
       requestSentinelVerification(
         createAltchaPayload(codeChallenge.challenge, codeChallenge.solution),
-        String(data.get('code')),
+        code,
       ).then(({ reason, verified }) => {
         if (!verified) {
           reset();

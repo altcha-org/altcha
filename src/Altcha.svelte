@@ -165,7 +165,7 @@
     ...getI18nStrings(),
     ...parsedStrings,
   });
-  const widgetId = $derived(id || `${name}_checkbox_${Math.round(Math.random() * 1e8)}`);
+  const widgetId = $derived(`${id || name}_checkbox_${Math.round(Math.random() * 1e8)}`);
 
   let checked: boolean = $state(false);
   let codeChallenge: {

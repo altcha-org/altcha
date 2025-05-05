@@ -1984,7 +1984,7 @@ function ao(e, t) {
   }), sr = /* @__PURE__ */ Ye(() => a() ? Kr(a()) : void 0), Ci = /* @__PURE__ */ Ye(() => lt() ? Kr(lt()) : {}), L = /* @__PURE__ */ Ye(() => ({
     ...jr(),
     ...o(Ci)
-  })), Vr = /* @__PURE__ */ Ye(() => ie() || `${fe()}_checkbox_${Math.round(Math.random() * 1e8)}`);
+  })), Vr = /* @__PURE__ */ Ye(() => `${ie() || fe()}_checkbox_${Math.round(Math.random() * 1e8)}`);
   let yt = oe(!1), q = oe(null), R = oe(V(x.UNVERIFIED)), te = oe(void 0), xt = oe(null), je = oe(null), ur = oe(null), ot = oe(null), M = oe(null), Xe = oe(null), Ee = null, Y = oe(null), Qe = oe(!1), Ue = [], fr = oe(!1), $e = oe(null);
   xr(() => {
     Fi(o(Xe));
@@ -1994,7 +1994,7 @@ function ao(e, t) {
     Ai(), o(M) && (o(M).removeEventListener("submit", Gr), o(M).removeEventListener("reset", Zr), o(M).removeEventListener("focusin", Yr), w(M, null)), Ee && (clearTimeout(Ee), Ee = null), document.removeEventListener("click", Br), document.removeEventListener("scroll", Hr), window.removeEventListener("resize", Jr);
   }), bi(() => {
     var n;
-    $("mounted", "2.0.0-beta.4"), $("workers", at()), $i(), $("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), he() && $("using test mode"), v() && cr(v()), r() !== void 0 && $("auto", r()), h() !== void 0 && Qr(h()), w(M, V((n = o(te)) == null ? void 0 : n.closest("form"))), o(M) && (o(M).addEventListener("submit", Gr, { capture: !0 }), o(M).addEventListener("reset", Zr), (r() === "onfocus" || D() === "focus") && o(M).addEventListener("focusin", Yr)), r() === "onload" && (Q() ? Et() : Ne()), o(or) && (F() || ue()) && $("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    $("mounted", "2.0.0-beta.5"), $("workers", at()), $i(), $("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), he() && $("using test mode"), v() && cr(v()), r() !== void 0 && $("auto", r()), h() !== void 0 && Qr(h()), w(M, V((n = o(te)) == null ? void 0 : n.closest("form"))), o(M) && (o(M).addEventListener("submit", Gr, { capture: !0 }), o(M).addEventListener("reset", Zr), (r() === "onfocus" || D() === "focus") && o(M).addEventListener("focusin", Yr)), r() === "onload" && (Q() ? Et() : Ne()), o(or) && (F() || ue()) && $("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       Me("load");
     });
   });

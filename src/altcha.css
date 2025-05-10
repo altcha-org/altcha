@@ -99,6 +99,7 @@
 }
 
 .altcha-code-challenge-image {
+  background-color: white;
   border: 1px solid currentColor;
   border-radius: 3px;
   box-sizing: border-box;
@@ -109,9 +110,10 @@
 
 .altcha-code-challenge-audio,
 .altcha-code-challenge-reload {
-  background: #efefef;
+  background: color-mix(in srgb, var(--altcha-color-text, currentColor) 10%, transparent);
   border: 0;
   border-radius: 3px;
+  color: var(--altcha-color-text, currentColor);
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -309,20 +309,6 @@
         throw new Error(`Attribute challengeurl not set.`);
       }
       log('fetching challenge from', challengeurl);
-      let customFetch: CustomFetchFunction | null = null;
-      let resp: Response | null = null;
-      if (customfetch) {
-        log('using customfetch');
-        if (typeof customfetch === 'string') {
-          customFetch =
-            globalThis[customfetch as keyof typeof globalThis] || null;
-          if (!customFetch) {
-            throw new Error(`Custom fetch function not found: ${customfetch}`);
-          }
-        } else {
-          customFetch = customfetch;
-        }
-      }
       const init: RequestInit = {
         headers:
           spamfilter !== false
@@ -331,13 +317,9 @@
               }
             : {},
       };
-      if (customFetch) {
-        resp = await customFetch(challengeurl, init);
-        if (!resp || resp instanceof Response === false) {
-          throw new Error(`Custom fetch function did not return a response.`);
-        }
-      } else {
-        resp = await fetch(challengeurl, init);
+      const resp = await getFetchFunction()(challengeurl, init);
+      if (!resp || resp instanceof Response === false) {
+        throw new Error(`Fetch function did not return a response.`);
       }
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
@@ -357,13 +339,17 @@
         try {
           const config = JSON.parse(configHeader);
           if (config && typeof config === 'object') {
-            if (config.verifyurl) {
-              config.verifyurl = new URL(
-                config.verifyurl,
-                new URL(challengeurl)
-              ).toString();
+            if ('sentinel' in config) {
+              alert('This version of the widget is not compatible with Sentinel. Upgrade to version 2.x.x.');
+            } else {
+              if (config.verifyurl) {
+                config.verifyurl = new URL(
+                  config.verifyurl,
+                  new URL(challengeurl)
+                ).toString();
+              }
+              configure(config);
             }
-            configure(config);
           }
         } catch (err) {
           log('unable to configure from X-Altcha-Config', err);
@@ -383,6 +369,26 @@
         : 'input[type="email"]:not([data-no-spamfilter])'
     ) as HTMLInputElement;
     return elInput?.value?.slice(elInput.value.indexOf('@')) || void 1;
+  }
+
+  /**
+   * Get the custom `fetch` function if configured or return the default one.
+   */
+  function getFetchFunction() {
+    let fetchFunction: CustomFetchFunction = fetch;
+    if (customfetch) {
+      log('using customfetch');
+      if (typeof customfetch === 'string') {
+        fetchFunction =
+          globalThis[customfetch as keyof typeof globalThis] || null;
+        if (!fetchFunction) {
+          throw new Error(`Custom fetch function not found: ${customfetch}`);
+        }
+      } else {
+        fetchFunction = customfetch;
+      }
+    }
+    return fetchFunction;
   }
 
   /**
@@ -667,13 +673,16 @@
       body.timeZone =
         timeZone === false ? undefined : timeZone || getTimeZone();
     }
-    const resp = await fetch(verifyurl, {
+    const resp = await getFetchFunction()(verifyurl, {
       body: JSON.stringify(body),
       headers: {
         'content-type': 'application/json',
       },
       method: 'POST',
     });
+    if (!resp || resp instanceof Response === false) {
+      throw new Error(`Fetch function did not return a response.`);
+    }
     if (resp.status !== 200) {
       throw new Error(`Server responded with ${resp.status}.`);
     }

@@ -475,11 +475,18 @@
   /**
    * Get the full URL based on the origin uri of the challengeurl.
    */
-  function getServerUrl(uri: string) {
+  function getServerUrl(uri: string, params?: Record<string, string | undefined | null>) {
     const baseUrl = new URL(challengeurl || location.origin);
     const result = new URL(uri, baseUrl);
     if (!result.search) {
       result.search = baseUrl.search;
+    }
+    if (params) {
+      for (const key in params) {
+        if (params[key] !== undefined && params[key] !== null) {
+          result.searchParams.set(key, params[key]);
+        }
+      }
     }
     return result.toString();
   }
@@ -1580,7 +1587,9 @@
           onended={onAudioEnded}
         >
           <source
-            src={getServerUrl(codeChallenge.challenge.codeChallenge.audio)}
+            src={getServerUrl(codeChallenge.challenge.codeChallenge.audio, {
+              language,
+            })}
             onerror={onAudioError}
           />
         </audio>

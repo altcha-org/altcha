@@ -238,8 +238,10 @@
 
 .altcha-checkbox-verifying input {
   appearance: none;
-  pointer-events: none;
+  border: 0;
   height: 0;
+  padding: 0;
+  pointer-events: none;
   width: 0;
 }
 

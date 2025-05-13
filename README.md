@@ -20,11 +20,11 @@ For more details, visit [altcha.org](https://altcha.org).
 
 ## What’s New in v2  
 
-Version 2 introduces enhanced accessibility, expanded language support (42+ languages), and integration with **ALTCHA Sentinel**—a self-hosted anti-spam solution for websites, apps, and services.  
+Version 2 introduces enhanced accessibility, expanded language support, and integration with **ALTCHA Sentinel**—a self-hosted anti-spam solution for websites, apps, and services.  
 
 ### Key Improvements in v2  
 
-- **Built-in Internationalization (i18n)** for 42+ languages  
+- **Built-in Internationalization (i18n)** for 48+ languages  
 - **Improved RTL (right-to-left) language support**  
 - **Enhanced WCAG accessibility**  
 - **Support for accessible code challenges** (image + audio options)  
@@ -170,7 +170,7 @@ Development / Testing options:
 
 ## Internationalization (i18n)  
 
-ALTCHA supports **42+ languages**. Import translations from `altcha/i18n/*`:  
+ALTCHA supports **48+ languages**. Import translations from `altcha/i18n/*`:  
 
 ```js
 import 'altcha';

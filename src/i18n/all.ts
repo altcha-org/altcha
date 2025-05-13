@@ -1,8 +1,11 @@
 // import './en.ts';    // English is imported by default
 
 // European Languages
+import './af.ts'; // Afrikaans
 import './ar.ts'; // Arabic
 import './bg.ts'; // Bulgarian
+import './bs.ts'; // Bosnian
+import './ca.ts'; // Catalan
 import './cs.ts'; // Czech
 import './da.ts'; // Danish
 import './de.ts'; // German
@@ -17,10 +20,12 @@ import './fr-fr.ts'; // European French
 import './ga.ts'; // Irish
 import './hr.ts'; // Croatian
 import './hu.ts'; // Hungarian
+import './is.ts'; // Icelandic
 import './it.ts'; // Italian
 import './lt.ts'; // Lithuanian
 import './lv.ts'; // Latvian
 import './mt.ts'; // Maltese
+import './nb.ts'; // Norwegian Bokmål
 import './nl.ts'; // Dutch
 import './pl.ts'; // Polish
 import './pt-pt.ts'; // European Portuguese
@@ -29,6 +34,7 @@ import './ro.ts'; // Romanian
 import './ru.ts'; // Russian
 import './sk.ts'; // Slovak
 import './sl.ts'; // Slovenian
+import './sr.ts'; // Serbian
 import './sv.ts'; // Swedish
 import './tr.ts'; // Turkish
 import './uk.ts'; // Ukrainian

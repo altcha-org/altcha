@@ -1286,7 +1286,3 @@
     <div bind:this={elAnchorArrow} class="altcha-anchor-arrow"></div>
   {/if}
 </div>
-
-<style lang="scss" global>
-  @use './altcha.css';
-</style>

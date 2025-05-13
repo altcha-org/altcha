@@ -8,7 +8,6 @@ export default defineConfig({
     svelte({
       compilerOptions: {
         customElement: true,
-        css: 'injected',
       },
     }),
   ],

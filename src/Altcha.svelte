@@ -725,11 +725,7 @@
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
-          if (submitter && ['INPUT', 'BUTTON'].includes(submitter.tagName) && submitter.getAttribute('name')) {
-            submitter.click();
-          } else {
-            elForm?.requestSubmit();
-          }
+          requestSubmit(submitter);
         });
       } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
@@ -911,6 +907,23 @@
     }
     dispatch('sentinelverification', json);
     return json;
+  }
+
+  /**
+   * Request form submit with a fallback for iOS <16 which does not support requestSubmit
+   */
+  function requestSubmit(submitter?: HTMLElement | null) {
+    if (elForm && 'requestSubmit' in elForm) {
+      elForm.requestSubmit(submitter);
+    // @ts-ignore
+    } else if (elForm?.reportValidity()) {
+      if (submitter) {
+        submitter.click();
+      } else {
+        // @ts-ignore
+        elForm.submit();
+      }
+    }
   }
 
   /**

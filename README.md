@@ -117,11 +117,11 @@ ALTCHA is optimized for performance:
 
 | Distribution      | Size (GZIPped) |  
 |-------------------|----------------|  
-| ALTCHA (v2.x)     | 26+ kB         |  
+| ALTCHA (v2.x)     | 28+ kB         |  
 | hCaptcha          | 48+ kB         |  
 | reCAPTCHA         | 270+ kB        |  
 
-When GZIPped, it totals about 26 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
+When GZIPped, it totals about 28 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
 
 ## Content Security Policy (CSP)  
 

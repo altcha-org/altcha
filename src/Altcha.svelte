@@ -566,7 +566,7 @@
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
-          elForm?.requestSubmit();
+          requestSubmit();
         });
       } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
@@ -693,6 +693,19 @@
     dispatch('serververification', json);
     if (blockspam && json.classification === 'BAD') {
       throw new Error('SpamFilter returned negative classification.');
+    }
+  }
+
+  /**
+   * Request form submit with a fallback for iOS <16 which does not support requestSubmit
+   */
+  function requestSubmit() {
+    if (elForm && 'requestSubmit' in elForm) {
+      elForm.requestSubmit();
+    // @ts-ignore
+    } else if (elForm?.reportValidity()) {
+      // @ts-ignore
+      elForm.submit();
     }
   }
 

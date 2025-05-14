@@ -1657,7 +1657,3 @@
     /></svg
   >
 {/snippet}
-
-<style lang="scss" global>
-  @use './altcha.css';
-</style>

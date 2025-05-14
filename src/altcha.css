@@ -219,7 +219,7 @@
   opacity: 1;
 }
 
-.altcha-footer :global(a) {
+.altcha-footer a {
   color: currentColor;
 }
 

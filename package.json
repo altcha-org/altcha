@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "Privacy-first CAPTCHA widget, compliant with global regulations (GDPR/HIPAA/CCPA/LGDP/PIPL) and WCAG accessible. No tracking, self-verifying.",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",
@@ -86,13 +86,14 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/csso": "^5.0.4",
     "@types/node": "^20.16.3",
     "@types/react": "^19.0.12",
+    "csso": "^5.0.5",
     "husky": "^9.1.5",
     "prettier": "3.2.5",
     "prettier-plugin-svelte": "^3.2.6",
     "rimraf": "^6.0.1",
-    "rollup-plugin-css-only": "^4.5.2",
     "sass": "^1.77.8",
     "svelte": "^5.22.6",
     "svelte-check": "^4.0.0",

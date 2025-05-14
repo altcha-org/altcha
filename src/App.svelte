@@ -5,6 +5,7 @@
   import './plugins/obfuscation';
   import './plugins/upload';
 
+  import './altcha.css';
   import './Altcha.svelte';
   import type Altcha from './Altcha.svelte';
   import { State } from './types';

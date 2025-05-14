@@ -226,8 +226,18 @@
 .altcha-checkbox {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 24px;
+  position: relative;
   width: 24px;
+}
+
+.altcha-checkbox .altcha-spinner {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .altcha-checkbox input {
@@ -238,11 +248,8 @@
 
 .altcha-checkbox-verifying input {
   appearance: none;
-  border: 0;
-  height: 0;
-  padding: 0;
+  opacity: 0;
   pointer-events: none;
-  width: 0;
 }
 
 .altcha-spinner {

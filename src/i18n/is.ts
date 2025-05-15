@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Heimsækja Altcha.org',
   enterCode: 'Sláðu inn kóða',
@@ -17,4 +19,4 @@ export const i18n = {
   waitAlert: 'Að staðfesta... vinsamlegast bíða.',
 };
 
-globalThis.altchaI18n.register('is', i18n);
+globalThis.altchaI18n.set('is', i18n);

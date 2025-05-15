@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Tabhair cuairt ar Altcha.org',
   enterCode: 'Iontráil cód',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Fíorú ar siúl... fan go fóill.',
 };
 
-globalThis.altchaI18n.register('ga', i18n);
+globalThis.altchaI18n.set('ga', i18n);

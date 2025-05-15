@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Altcha.org 방문하기',
   enterCode: '코드 입력',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: '확인 중... 잠시만 기다려주세요.',
 };
 
-globalThis.altchaI18n.register('ko', i18n);
+globalThis.altchaI18n.set('ko', i18n);

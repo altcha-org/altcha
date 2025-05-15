@@ -142,6 +142,8 @@
     workerurl = undefined,
   }: Props = $props();
 
+  const { altchaI18n } = globalThis;
+  const altchaI18nStore = altchaI18n.store;
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
   const website = 'https://altcha.org/';
   const dispatch = <T,>(event: string, detail?: T) => {
@@ -162,7 +164,7 @@
   );
   const parsedStrings = $derived(strings ? parseJsonAttribute(strings) : {});
   const _strings = $derived({
-    ...getI18nStrings(),
+    ...getI18nStrings($altchaI18nStore),
     ...parsedStrings,
   });
   const widgetId = $derived(`${id || name}_checkbox_${Math.round(Math.random() * 1e8)}`);
@@ -405,13 +407,13 @@
   /**
    * Get internalization strings based on the language preferences provided
    */
-  function getI18nStrings(languages: string[] = [language || '', document.documentElement.lang || '', ...navigator.languages]) {
-    const codes = Object.keys(globalThis.altchaI18n).map((code) => code.toLowerCase());
+  function getI18nStrings(i18n: Record<string, any>, languages: string[] = [language || '', document.documentElement.lang || '', ...navigator.languages]) {
+    const codes = Object.keys(i18n).map((code) => code.toLowerCase());
     const lang = languages.reduce((acc, lang) => {
       lang = lang.toLowerCase();
-      return acc || (globalThis.altchaI18n[lang] ? lang : null) || codes.find((code) => lang.split('-')[0] === code.split('-')[0]) || null;
+      return acc || (i18n[lang] ? lang : null) || codes.find((code) => lang.split('-')[0] === code.split('-')[0]) || null;
     }, null as string | null);
-    return globalThis.altchaI18n[lang || 'en'];
+    return i18n[lang || 'en'];
   }
 
   /**
@@ -1154,7 +1156,7 @@
       hidelogo = !!options.hidelogo;
     }
     if (options.language !== undefined) {
-      strings = getI18nStrings([options.language]);
+      strings = getI18nStrings($altchaI18nStore, [options.language]);
     }
     if (options.maxnumber !== undefined) {
       maxnumber = +options.maxnumber;

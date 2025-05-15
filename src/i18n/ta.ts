@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Altcha.org ஐ பார்வையிடவும்',
   enterCode: 'குறியீட்டை உள்ளிடவும்',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'சரிபார்க்கப்படுகிறது... தயவுசெய்து காத்திருக்கவும்.',
 };
 
-globalThis.altchaI18n.register('ta', i18n);
+globalThis.altchaI18n.set('ta', i18n);

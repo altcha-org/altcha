@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Żur Altcha.org',
   enterCode: 'Idħol il-kodiċi',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Verifika għaddejja... stenna ftit.',
 };
 
-globalThis.altchaI18n.register('mt', i18n);
+globalThis.altchaI18n.set('mt', i18n);

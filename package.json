@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "Privacy-first CAPTCHA widget, compliant with global regulations (GDPR/HIPAA/CCPA/LGDP/PIPL) and WCAG accessible. No tracking, self-verifying.",
-  "version": "2.0.0-beta.11",
+  "version": "2.0.0-beta.12",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",
@@ -56,13 +56,17 @@
       "import": "./dist_plugins/upload.js",
       "require": "./dist_plugins/upload.umd.cjs"
     },
-    "./altcha.ext": {
+    "./external": {
       "import": "./dist_external/altcha.js",
       "require": "./dist_external/altcha.umd.cjs"
     },
     "./worker": {
       "import": "./dist_external/worker.js",
       "require": "./dist_external/worker.js"
+    },
+    "./i18n": {
+      "import": "./dist/altcha.i18n.js",
+      "require": "./dist/altcha.i18n.umd.cjs"
     },
     "./i18n/*": {
       "import": "./dist_i18n/*.js",
@@ -72,7 +76,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:bundle && npm run build:external && npm run build:plugins && npm run build:i18n",
-    "build:bundle": "rimraf dist && vite build && cp src/declarations.d.ts dist/altcha.d.ts",
+    "build:bundle": "rimraf dist && vite build && vite build -c vite.bundle-i18n.config.ts && cp src/declarations.d.ts dist/altcha.d.ts && cp src/declarations.d.ts dist/altcha.i18n.d.ts",
     "build:external": "rimraf dist_external && vite build -c vite.external.config.ts && cp src/declarations.d.ts dist_external/altcha.d.ts",
     "build:plugins": "rimraf dist_plugins && find src/plugins -type f -name '*.ts' | xargs -I {} vite build -c vite.plugins.config.ts -- {}",
     "build:i18n": "rimraf dist_i18n && find src/i18n -type f -name '*.ts' | xargs -I {} vite build -c vite.i18n.config.ts -- {}",

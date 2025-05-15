@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: '訪問 Altcha.org',
   enterCode: '輸入代碼',
@@ -17,4 +19,4 @@ export const i18n = {
   waitAlert: '正在驗證... 請稍等。',
 };
 
-globalThis.altchaI18n.register('zh-tw', i18n);
+globalThis.altchaI18n.set('zh-tw', i18n);

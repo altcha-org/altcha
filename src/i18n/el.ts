@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Επισκεφθείτε το Altcha.org',
   enterCode: 'Εισαγάγετε κωδικό',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Γίνεται επαλήθευση... παρακαλώ περιμένετε.',
 };
 
-globalThis.altchaI18n.register('el', i18n);
+globalThis.altchaI18n.set('el', i18n);

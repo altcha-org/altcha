@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Látogass el az Altcha.org oldalra',
   enterCode: 'Írja be a kódot',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Ellenőrzés folyamatban... kérlek várj.',
 };
 
-globalThis.altchaI18n.register('hu', i18n);
+globalThis.altchaI18n.set('hu', i18n);

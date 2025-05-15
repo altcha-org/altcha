@@ -189,7 +189,7 @@
 }
 
 .altcha-logo {
-  color: currentColor;
+  color: currentColor !important;
   opacity: 0.7;
 }
 

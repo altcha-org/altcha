@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Visita Altcha.org',
   enterCode: 'Inserisci il codice',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Verifica in corso... attendere.',
 };
 
-globalThis.altchaI18n.register('it', i18n);
+globalThis.altchaI18n.set('it', i18n);

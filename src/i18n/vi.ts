@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Truy cập Altcha.org',
   enterCode: 'Nhập mã',
@@ -17,4 +19,4 @@ export const i18n = {
   waitAlert: 'Đang xác minh... vui lòng chờ.',
 };
 
-globalThis.altchaI18n.register('vi', i18n);
+globalThis.altchaI18n.set('vi', i18n);

@@ -8,7 +8,6 @@
   import './altcha.css';
   import './Altcha.svelte';
   import type Altcha from './Altcha.svelte';
-  import { State } from './types';
 
   globalThis.altchaCreateWorker = (url?: string) => new InlineWorker();
   
@@ -109,6 +108,7 @@
       {challengeurl}
       {mockerror}
       {test}
+      language="de"
       onstatechange={(ev) => console.log('Event: statechange:', ev)}
       onverified={(ev) => console.log('Event: verified:', ev)}
       onserververification={(ev) =>

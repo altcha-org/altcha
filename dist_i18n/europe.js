@@ -1,4 +1,77 @@
-const a = {
+const l = () => {
+};
+function v(e, a) {
+  return e != e ? a == a : e !== a || e !== null && typeof e == "object" || typeof e == "function";
+}
+let g = !1;
+function k(e) {
+  var a = g;
+  try {
+    return g = !0, e();
+  } finally {
+    g = a;
+  }
+}
+function b(e, a, r) {
+  if (e == null)
+    return a(void 0), l;
+  const t = k(
+    () => e.subscribe(
+      a,
+      // @ts-expect-error
+      r
+    )
+  );
+  return t.unsubscribe ? () => t.unsubscribe() : t;
+}
+const n = [];
+function A(e, a = l) {
+  let r = null;
+  const t = /* @__PURE__ */ new Set();
+  function d(o) {
+    if (v(e, o) && (e = o, r)) {
+      const s = !n.length;
+      for (const i of t)
+        i[1](), n.push(i, e);
+      if (s) {
+        for (let i = 0; i < n.length; i += 2)
+          n[i][0](n[i + 1]);
+        n.length = 0;
+      }
+    }
+  }
+  function f(o) {
+    d(o(
+      /** @type {T} */
+      e
+    ));
+  }
+  function h(o, s = l) {
+    const i = [o, s];
+    return t.add(i), t.size === 1 && (r = a(d, f) || l), o(
+      /** @type {T} */
+      e
+    ), () => {
+      t.delete(i), t.size === 0 && r && (r(), r = null);
+    };
+  }
+  return { set: d, update: f, subscribe: h };
+}
+function c(e) {
+  let a;
+  return b(e, (r) => a = r)(), a;
+}
+globalThis.altchaPlugins = globalThis.altchaPlugins || [];
+globalThis.altchaI18n = globalThis.altchaI18n || {
+  get: (e) => c(globalThis.altchaI18n.store)[e],
+  set: (e, a) => {
+    Object.assign(c(globalThis.altchaI18n.store), {
+      [e]: a
+    }), globalThis.altchaI18n.store.set(c(globalThis.altchaI18n.store));
+  },
+  store: A({})
+};
+const p = {
   ariaLinkLabel: "Visita Altcha.org",
   enterCode: "Introdueix el codi",
   enterCodeAria: "Introdueix el codi que escoltes. Prem Espai per reproduir l’àudio.",
@@ -15,8 +88,8 @@ const a = {
   verifying: "Verificant...",
   waitAlert: "Verificant... si us plau, espera."
 };
-globalThis.altchaI18n.register("ca", a);
-const i = {
+globalThis.altchaI18n.set("ca", p);
+const j = {
   ariaLinkLabel: "Visitez Altcha.org",
   enterCode: "Entrez le code",
   enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
@@ -25,7 +98,7 @@ const i = {
   verificationRequired: "Vérification requise !",
   footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
   getAudioChallenge: "Obtenir un défi audio",
-  label: "Je ne suis pas un robot",
+  label: "Pas un robot",
   loading: "Chargement...",
   reload: "Recharger",
   verify: "Vérifier",
@@ -33,8 +106,8 @@ const i = {
   verifying: "Vérification en cours...",
   waitAlert: "Vérification en cours... veuillez patienter."
 };
-globalThis.altchaI18n.register("fr-fr", i);
-const r = {
+globalThis.altchaI18n.set("fr-fr", j);
+const C = {
   ariaLinkLabel: "Besuche Altcha.org",
   enterCode: "Code eingeben",
   enterCodeAria: "Geben Sie den Code ein, den Sie hören. Drücken Sie die Leertaste, um die Audio abzuspielen.",
@@ -51,8 +124,8 @@ const r = {
   verifying: "Wird überprüft...",
   waitAlert: "Überprüfung läuft... bitte warten."
 };
-globalThis.altchaI18n.register("de", r);
-const t = {
+globalThis.altchaI18n.set("de", C);
+const y = {
   ariaLinkLabel: "Bezoek Altcha.org",
   enterCode: "Voer code in",
   enterCodeAria: "Voer de code in die je hoort. Druk op Spatie om de audio af te spelen.",
@@ -69,8 +142,8 @@ const t = {
   verifying: "Bezig met verifiëren...",
   waitAlert: "Bezig met verifiëren... even geduld a.u.b."
 };
-globalThis.altchaI18n.register("nl", t);
-const o = {
+globalThis.altchaI18n.set("nl", y);
+const V = {
   ariaLinkLabel: "Tabhair cuairt ar Altcha.org",
   enterCode: "Iontráil cód",
   enterCodeAria: "Cuir isteach an cód a chloiseann tú. Brúigh Spás chun an fuaime a sheinm.",
@@ -87,8 +160,8 @@ const o = {
   verifying: "Fíorú ar siúl...",
   waitAlert: "Fíorú ar siúl... fan go fóill."
 };
-globalThis.altchaI18n.register("ga", o);
-const n = {
+globalThis.altchaI18n.set("ga", V);
+const m = {
   ariaLinkLabel: "Visita Altcha.org",
   enterCode: "Inserisci il codice",
   enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
@@ -105,8 +178,8 @@ const n = {
   verifying: "Verifica in corso...",
   waitAlert: "Verifica in corso... attendere."
 };
-globalThis.altchaI18n.register("it", n);
-const l = {
+globalThis.altchaI18n.set("it", m);
+const L = {
   ariaLinkLabel: "Visitar Altcha.org",
   enterCode: "Introduza o código",
   enterCodeAria: "Introduza o código que ouve. Prima Espaço para reproduzir o áudio.",
@@ -123,8 +196,8 @@ const l = {
   verifying: "A verificar...",
   waitAlert: "A verificar... por favor aguarde."
 };
-globalThis.altchaI18n.register("pt-pt", l);
-const d = {
+globalThis.altchaI18n.set("pt-pt", L);
+const z = {
   ariaLinkLabel: "Visitar Altcha.org",
   enterCode: "Introduce el código",
   enterCodeAria: "Introduce el código que escuchas. Pulsa Espacio para reproducir el audio.",
@@ -141,8 +214,8 @@ const d = {
   verifying: "Verificando...",
   waitAlert: "Verificando... por favor espere."
 };
-globalThis.altchaI18n.register("es-es", d);
-const s = {
+globalThis.altchaI18n.set("es-es", z);
+const T = {
   ariaLinkLabel: "Bisitatu Altcha.org",
   enterCode: "Sartu kodea",
   enterCodeAria: "Sartu entzun duzun kodea. Sakatu Espazioa audioa erreproduzitzeko.",
@@ -159,8 +232,8 @@ const s = {
   verifying: "Egiaztatzen...",
   waitAlert: "Egiaztatzen... itxaron mesedez."
 };
-globalThis.altchaI18n.register("eu", s);
-const g = {
+globalThis.altchaI18n.set("eu", T);
+const P = {
   ariaLinkLabel: "Visit Altcha.org",
   enterCode: "Enter code",
   enterCodeAria: "Enter code you hear. Press Space to play audio.",
@@ -177,8 +250,8 @@ const g = {
   verifying: "Verifying...",
   waitAlert: "Verifying... please wait."
 };
-globalThis.altchaI18n.register("en", g);
-const c = {
+globalThis.altchaI18n.set("en", P);
+const I = {
   ariaLinkLabel: "Besøg Altcha.org",
   enterCode: "Indtast kode",
   enterCodeAria: "Indtast den kode, du hører. Tryk på mellemrumstasten for at afspille lyd.",
@@ -195,8 +268,8 @@ const c = {
   verifying: "Verificerer...",
   waitAlert: "Verificerer... vent venligst."
 };
-globalThis.altchaI18n.register("da", c);
-const f = {
+globalThis.altchaI18n.set("da", I);
+const w = {
   ariaLinkLabel: "Besök Altcha.org",
   enterCode: "Ange kod",
   enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
@@ -213,8 +286,8 @@ const f = {
   verifying: "Verifierar...",
   waitAlert: "Verifierar... vänligen vänta."
 };
-globalThis.altchaI18n.register("sv", f);
-const u = {
+globalThis.altchaI18n.set("sv", w);
+const S = {
   ariaLinkLabel: "Vieraile sivulla Altcha.org",
   enterCode: "Syötä koodi",
   enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
@@ -231,8 +304,8 @@ const u = {
   verifying: "Vahvistetaan...",
   waitAlert: "Vahvistetaan... odota hetki."
 };
-globalThis.altchaI18n.register("fi", u);
-const h = {
+globalThis.altchaI18n.set("fi", S);
+const q = {
   ariaLinkLabel: "Külasta Altcha.org",
   enterCode: "Sisesta kood",
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
@@ -249,8 +322,8 @@ const h = {
   verifying: "Kinnitamine...",
   waitAlert: "Kinnitamine... palun oota."
 };
-globalThis.altchaI18n.register("et", h);
-const e = {
+globalThis.altchaI18n.set("et", q);
+const u = {
   ariaLinkLabel: "Besøk Altcha.org",
   enterCode: "Skriv inn kode",
   enterCodeAria: "Skriv inn koden du hører. Trykk på Space for å spille av lyden.",
@@ -267,9 +340,9 @@ const e = {
   verifying: "Verifiserer...",
   waitAlert: "Verifiserer... vennligst vent."
 };
-globalThis.altchaI18n.register("nb", e);
-globalThis.altchaI18n.register("no", e);
-const v = {
+globalThis.altchaI18n.set("nb", u);
+globalThis.altchaI18n.set("no", u);
+const x = {
   ariaLinkLabel: "Heimsækja Altcha.org",
   enterCode: "Sláðu inn kóða",
   enterCodeAria: "Sláðu inn kóðann sem þú heyrir. Ýttu á Space til að spila hljóðið.",
@@ -286,8 +359,8 @@ const v = {
   verifying: "Að staðfesta...",
   waitAlert: "Að staðfesta... vinsamlegast bíða."
 };
-globalThis.altchaI18n.register("is", v);
-const k = {
+globalThis.altchaI18n.set("is", x);
+const R = {
   ariaLinkLabel: "Apsilankykite Altcha.org",
   enterCode: "Įveskite kodą",
   enterCodeAria: "Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.",
@@ -304,8 +377,8 @@ const k = {
   verifying: "Tikrinama...",
   waitAlert: "Tikrinama... prašome palaukti."
 };
-globalThis.altchaI18n.register("lt", k);
-const b = {
+globalThis.altchaI18n.set("lt", R);
+const H = {
   ariaLinkLabel: "Apmeklējiet Altcha.org",
   enterCode: "Ievadiet kodu",
   enterCodeAria: "Ievadiet dzirdamo kodu. Nospiediet atstarpes taustiņu, lai atskaņotu audio.",
@@ -322,8 +395,8 @@ const b = {
   verifying: "Notiek verifikācija...",
   waitAlert: "Notiek verifikācija... lūdzu, uzgaidiet."
 };
-globalThis.altchaI18n.register("lv", b);
-const A = {
+globalThis.altchaI18n.set("lv", H);
+const _ = {
   ariaLinkLabel: "Posjetite Altcha.org",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
@@ -340,8 +413,8 @@ const A = {
   verifying: "Verifikacija u toku...",
   waitAlert: "Verifikacija u toku... molimo vas da sačekate."
 };
-globalThis.altchaI18n.register("bs", A);
-const p = {
+globalThis.altchaI18n.set("bs", _);
+const $ = {
   ariaLinkLabel: "Navštivte Altcha.org",
   enterCode: "Zadejte kód",
   enterCodeAria: "Zadejte kód, který slyšíte. Stisknutím mezerníku přehrajete zvuk.",
@@ -358,8 +431,8 @@ const p = {
   verifying: "Ověřování...",
   waitAlert: "Probíhá ověření... prosím počkejte."
 };
-globalThis.altchaI18n.register("cs", p);
-const j = {
+globalThis.altchaI18n.set("cs", $);
+const E = {
   ariaLinkLabel: "Odwiedź Altcha.org",
   enterCode: "Wprowadź kod",
   enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
@@ -376,8 +449,8 @@ const j = {
   verifying: "Weryfikacja...",
   waitAlert: "Trwa weryfikacja... proszę czekać."
 };
-globalThis.altchaI18n.register("pl", j);
-const C = {
+globalThis.altchaI18n.set("pl", E);
+const B = {
   ariaLinkLabel: "Látogass el az Altcha.org oldalra",
   enterCode: "Írja be a kódot",
   enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
@@ -394,8 +467,8 @@ const C = {
   verifying: "Ellenőrzés folyamatban...",
   waitAlert: "Ellenőrzés folyamatban... kérlek várj."
 };
-globalThis.altchaI18n.register("hu", C);
-const V = {
+globalThis.altchaI18n.set("hu", B);
+const N = {
   ariaLinkLabel: "Navštívte Altcha.org",
   enterCode: "Zadajte kód",
   enterCodeAria: "Zadajte kód, ktorý počujete. Stlačením medzerníka prehráte zvuk.",
@@ -412,8 +485,8 @@ const V = {
   verifying: "Prebieha verifikácia...",
   waitAlert: "Prebieha verifikácia... prosím čakajte."
 };
-globalThis.altchaI18n.register("sk", V);
-const y = {
+globalThis.altchaI18n.set("sk", N);
+const O = {
   ariaLinkLabel: "Obiščite Altcha.org",
   enterCode: "Vnesite kodo",
   enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
@@ -430,8 +503,8 @@ const y = {
   verifying: "Preverjanje...",
   waitAlert: "Preverjanje... prosim počakajte."
 };
-globalThis.altchaI18n.register("sl", y);
-const m = {
+globalThis.altchaI18n.set("sl", O);
+const Z = {
   ariaLinkLabel: "Posjetite Altcha.org",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite razmaknicu za reprodukciju zvuka.",
@@ -448,8 +521,8 @@ const m = {
   verifying: "Provjeravanje...",
   waitAlert: "Provjera je u tijeku... molimo pričekajte."
 };
-globalThis.altchaI18n.register("hr", m);
-const L = {
+globalThis.altchaI18n.set("hr", Z);
+const K = {
   ariaLinkLabel: "Vizitează Altcha.org",
   enterCode: "Introduceți codul",
   enterCodeAria: "Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.",
@@ -466,8 +539,8 @@ const L = {
   verifying: "Se verifică...",
   waitAlert: "Se verifică... te rugăm să aștepți."
 };
-globalThis.altchaI18n.register("ro", L);
-const z = {
+globalThis.altchaI18n.set("ro", K);
+const F = {
   ariaLinkLabel: "Посетете Altcha.org",
   enterCode: "Въведете код",
   enterCodeAria: "Въведете кода, който чувате. Натиснете Space за възпроизвеждане на аудио.",
@@ -484,8 +557,8 @@ const z = {
   verifying: "Проверява се...",
   waitAlert: "Проверката е в процес... моля изчакайте."
 };
-globalThis.altchaI18n.register("bg", z);
-const T = {
+globalThis.altchaI18n.set("bg", F);
+const U = {
   ariaLinkLabel: "Επισκεφθείτε το Altcha.org",
   enterCode: "Εισαγάγετε κωδικό",
   enterCodeAria: "Εισαγάγετε τον κωδικό που ακούτε. Πατήστε Space για να παίξετε τον ήχο.",
@@ -502,8 +575,8 @@ const T = {
   verifying: "Γίνεται επαλήθευση...",
   waitAlert: "Γίνεται επαλήθευση... παρακαλώ περιμένετε."
 };
-globalThis.altchaI18n.register("el", T);
-const P = {
+globalThis.altchaI18n.set("el", U);
+const G = {
   ariaLinkLabel: "Posetite Altcha.org",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
@@ -520,8 +593,8 @@ const P = {
   verifying: "Verifikacija u toku...",
   waitAlert: "Verifikacija u toku... molimo vas da sačekate."
 };
-globalThis.altchaI18n.register("sr", P);
-const w = {
+globalThis.altchaI18n.set("sr", G);
+const W = {
   ariaLinkLabel: "Перейти на Altcha.org",
   enterCode: "Введите код",
   enterCodeAria: "Введите код, который слышите. Нажмите пробел для воспроизведения аудио.",
@@ -538,8 +611,8 @@ const w = {
   verifying: "Идет проверка...",
   waitAlert: "Идет проверка... Пожалуйста, подождите."
 };
-globalThis.altchaI18n.register("ru", w);
-const I = {
+globalThis.altchaI18n.set("ru", W);
+const M = {
   ariaLinkLabel: "Besoek Altcha.org",
   enterCode: "Voer kode in",
   enterCodeAria: "Voer die kode in wat jy hoor. Druk Spasie om die klank af te speel.",
@@ -556,8 +629,8 @@ const I = {
   verifying: "Verifieer...",
   waitAlert: "Verifieer... wag asseblief."
 };
-globalThis.altchaI18n.register("af", I);
-const S = {
+globalThis.altchaI18n.set("af", M);
+const D = {
   ariaLinkLabel: "Żur Altcha.org",
   enterCode: "Idħol il-kodiċi",
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
@@ -574,4 +647,4 @@ const S = {
   verifying: "Verifika għaddejja...",
   waitAlert: "Verifika għaddejja... stenna ftit."
 };
-globalThis.altchaI18n.register("mt", S);
+globalThis.altchaI18n.set("mt", D);

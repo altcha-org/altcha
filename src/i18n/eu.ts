@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Bisitatu Altcha.org',
   enterCode: 'Sartu kodea',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Egiaztatzen... itxaron mesedez.',
 };
 
-globalThis.altchaI18n.register('eu', i18n);
+globalThis.altchaI18n.set('eu', i18n);

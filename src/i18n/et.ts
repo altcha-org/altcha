@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Külasta Altcha.org',
   enterCode: 'Sisesta kood',
@@ -17,4 +19,4 @@ export const i18n = {
   waitAlert: 'Kinnitamine... palun oota.',
 };
 
-globalThis.altchaI18n.register('et', i18n);
+globalThis.altchaI18n.set('et', i18n);

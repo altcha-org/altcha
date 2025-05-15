@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Obiščite Altcha.org',
   enterCode: 'Vnesite kodo',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Preverjanje... prosim počakajte.',
 };
 
-globalThis.altchaI18n.register('sl', i18n);
+globalThis.altchaI18n.set('sl', i18n);

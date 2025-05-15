@@ -1,3 +1,5 @@
+import '../globals';
+
 export const i18n = {
   ariaLinkLabel: 'Visitez Altcha.org',
   enterCode: 'Entrez le code',
@@ -9,7 +11,7 @@ export const i18n = {
   footer:
     'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
   getAudioChallenge: 'Obtenir un défi audio',
-  label: 'Je ne suis pas un robot',
+  label: 'Pas un robot',
   loading: 'Chargement...',
   reload: 'Recharger',
   verify: 'Vérifier',
@@ -18,4 +20,4 @@ export const i18n = {
   waitAlert: 'Vérification en cours... veuillez patienter.',
 };
 
-globalThis.altchaI18n.register('fr-ca', i18n);
+globalThis.altchaI18n.set('fr-ca', i18n);

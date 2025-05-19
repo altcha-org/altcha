@@ -5,7 +5,7 @@ ALTCHA is a self-hosted, privacy-first security solution that protects your webs
 ALTCHA is fully compliant with:
 
 - **Global privacy regulations**: GDPR, HIPAA, CCPA, PIPEDA/CPPA, LGPD, DPDPA, and PIPL
-- **Accessibility standards**: [WCAG 2.2 AA-level](https://altcha.org/docs/wcag/) and the [European Accessibility Act](https://altcha.org/docs/european-accessibility-act-2025/)
+- **Accessibility standards**: [WCAG 2.2 AA-level](https://altcha.org/docs/v2/compliance/wcag/) and the [European Accessibility Act](https://altcha.org/docs/v2/compliance/european-accessibility-act-2025/)
 
 For more details, visit [altcha.org](https://altcha.org).
 

@@ -1,3 +1,4 @@
+import type { Writable } from 'svelte/store';
 export {};
 
 declare module 'altcha';
@@ -5,6 +6,11 @@ declare module 'altcha';
 declare global {
   var altchaCreateWorker: (url?: string) => Worker;
   var altchaPlugins: any[];
+  var altchaI18n: {
+    get: (language: string) => Record<string, string>;
+    set: (language: string, translation: Record<string, string>) => void;
+    store: Writable<Record<string, Record<string, string>>>;
+  };
 
   type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';
 
@@ -21,12 +27,15 @@ declare global {
 
   interface AltchaWidgetOptions {
     auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
+    /** @deprecated */
     blockspam?: boolean;
     challengeurl?: string;
     challengejson?: string;
+    credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
     customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
     debug?: boolean;
     delay?: number;
+    disableautofocus?: boolean;
     expire?: number;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
     floatinganchor?: string;
@@ -35,6 +44,7 @@ declare global {
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
+    language?: string;
     maxnumber?: number;
     mockerror?: boolean;
     name?: string;
@@ -48,6 +58,7 @@ declare global {
     onuploadprogress?: (ev: CustomEvent) => void;
     plugins?: string;
     refetchonexpire?: boolean;
+    /** @deprecated */
     spamfilter?: boolean | 'ipAddress';
     strings?: string;
     test?: boolean | number;

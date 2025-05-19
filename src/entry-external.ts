@@ -3,6 +3,5 @@ import './worker?worker';
 import Altcha from './Altcha.svelte';
 
 globalThis.altchaCreateWorker = (url?: string) => new Worker(new URL(url || './worker.js', import.meta.url));
-globalThis.altchaPlugins = globalThis.altchaPlugins || [];
 
 export { Altcha };

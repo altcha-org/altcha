@@ -1,32 +1,45 @@
 export interface Strings {
+  ariaLinkLabel: string;
+  enterCode: string;
+  enterCodeAria: string;
   error: string;
   expired: string;
   footer: string;
+  getAudioChallenge: string;
   label: string;
+  loading: string;
+  reload: string;
   verified: string;
+  verificationRequired: string;
   verifying: string;
   waitAlert: string;
 }
 
 export interface Configure {
   auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
+  /** @deprecated */
   blockspam?: boolean;
   challenge?: Challenge | string;
   challengeurl?: string;
+  credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
   customfetch?: string | CustomFetchFunction;
   debug?: boolean;
   delay?: number;
+  disableautofocus?: boolean;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
   floatingoffset?: number;
   hidefooter?: boolean;
   hidelogo?: boolean;
+  language?: string;
   maxnumber?: number;
   mockerror?: boolean;
   name?: string;
   obfuscated?: string;
   refetchonexpire?: boolean;
+  sentinel?: Sentinel;
+  /** @deprecated */
   spamfilter?: boolean | 'ipAddress' | SpamFilter;
   strings?: Partial<Strings> | string;
   test?: boolean | number | 'delay';
@@ -35,6 +48,7 @@ export interface Configure {
   workerurl?: string;
 }
 
+/** @deprecated */
 export interface SpamFilter {
   blockedCountries?: string[];
   classifier?: string;
@@ -46,6 +60,11 @@ export interface SpamFilter {
   ipAddress?: string | false;
   text?: string | string[];
   timeZone?: string | false;
+}
+
+export interface Sentinel {
+  fields?: boolean;
+  timeZone?: boolean;
 }
 
 export interface ServerVerificationPayload {
@@ -62,6 +81,26 @@ export interface ServerVerificationPayload {
   timeZone?: string;
 }
 
+export interface SentinelVerificationPayload {
+  code?: string;
+  email?: string;
+  fields?: Record<string, string>;
+  ipAddress?: string;
+  payload: string;
+  text?: string | string[];
+  timeZone?: string;
+}
+
+export interface SentinelVerificationResponse {
+  algorithm: Algorithm;
+  apiKey: string;
+  reason?: string;
+  score: number;
+  signature: string;
+  verificationData: string;
+  verified: boolean;
+}
+
 export interface Solution {
   number: number;
   took: number;
@@ -69,6 +108,11 @@ export interface Solution {
 }
 
 export interface Challenge {
+  codeChallenge?: {
+    audio?: string;
+    image: string;
+    length?: number;
+  };
   algorithm: string;
   challenge: string;
   maxnumber?: number;
@@ -119,11 +163,20 @@ export interface PluginContext {
 }
 
 export enum State {
+  CODE = 'code',
   ERROR = 'error',
   VERIFIED = 'verified',
   VERIFYING = 'verifying',
   UNVERIFIED = 'unverified',
   EXPIRED = 'expired',
+}
+
+export enum AudioState {
+  ERROR = 'error',
+  LOADING = 'loading',
+  PLAYING = 'playing',
+  PAUSED = 'paused',
+  READY = 'ready',
 }
 
 export type CustomFetchFunction = (url: string, init?: RequestInit) => Promise<Response>;

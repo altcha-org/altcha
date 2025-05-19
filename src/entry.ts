@@ -12,7 +12,8 @@ function injectGlobalCss(css: string, id: string = '__altcha-css') {
 }
 
 globalThis.altchaCreateWorker = (url?: string) => url ? new Worker(new URL(url)) : new InlineWorker();
-globalThis.altchaPlugins = globalThis.altchaPlugins || [];
+
+injectGlobalCss(globalCss);
 
 injectGlobalCss(globalCss);
 

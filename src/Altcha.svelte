@@ -12,6 +12,9 @@
       delay: {
         type: 'Number',
       },
+      disableautofocus: {
+        type: 'Boolean',
+      },
       expire: {
         type: 'Number',
       },
@@ -51,29 +54,35 @@
     getTimeZone,
     clarifyData,
   } from './helpers';
-  import { State } from './types';
+  import { State, type Sentinel, type SentinelVerificationPayload, type SentinelVerificationResponse } from './types';
   import type { Plugin } from './plugin';
-  import type {
-    Configure,
-    Payload,
-    Challenge,
-    Solution,
-    SpamFilter,
-    ServerVerificationPayload,
-    Obfuscated,
-    ClarifySolution,
-    PluginContext,
-    CustomFetchFunction,
+  import {
+    type Configure,
+    type Payload,
+    type Challenge,
+    type Solution,
+    type SpamFilter,
+    type ServerVerificationPayload,
+    type Obfuscated,
+    type ClarifySolution,
+    type PluginContext,
+    type CustomFetchFunction,
+    AudioState,
   } from './types';
+  import './globals';
+  import './i18n/en';
 
   interface Props {
     auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit' | undefined;
+    /** @deprecated */
     blockspam?: boolean | undefined;
     challengeurl?: string | undefined;
     challengejson?: string | undefined;
+    credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
     customfetch?: string | CustomFetchFunction | undefined;
     debug?: boolean;
     delay?: number;
+    disableautofocus?: boolean;
     expire?: number | undefined;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean | undefined;
     floatinganchor?: string | undefined;
@@ -82,12 +91,15 @@
     hidefooter?: boolean;
     hidelogo?: boolean;
     id?: string;
+    language?: string | undefined;
     name?: string;
     maxnumber?: number;
     mockerror?: boolean;
     obfuscated?: string | undefined;
     plugins?: string | undefined;
     refetchonexpire?: boolean;
+    sentinel?: Sentinel;
+    /** @deprecated */
     spamfilter?: boolean | 'ipAddress' | SpamFilter;
     strings?: string | undefined;
     test?: boolean | number;
@@ -101,9 +113,11 @@
     blockspam = undefined,
     challengeurl = undefined,
     challengejson = undefined,
+    credentials = undefined,
     customfetch = undefined,
     debug = false,
     delay = 0,
+    disableautofocus = false,
     expire = undefined,
     floating = undefined,
     floatinganchor = undefined,
@@ -112,12 +126,14 @@
     hidefooter = false,
     hidelogo = false,
     id = undefined,
+    language = undefined,
     name = 'altcha',
     maxnumber = 1e6,
     mockerror = false,
     obfuscated = undefined,
     plugins = undefined,
     refetchonexpire = true,
+    sentinel = undefined,
     spamfilter = false,
     strings = undefined,
     test = false,
@@ -126,8 +142,9 @@
     workerurl = undefined,
   }: Props = $props();
 
+  const { altchaI18n } = globalThis;
+  const altchaI18nStore = altchaI18n.store;
   const allowedAlgs = ['SHA-256', 'SHA-384', 'SHA-512'];
-  const ariaLinkLabel = 'Visit Altcha.org';
   const website = 'https://altcha.org/';
   const dispatch = <T,>(event: string, detail?: T) => {
     $host().dispatchEvent(
@@ -147,27 +164,29 @@
   );
   const parsedStrings = $derived(strings ? parseJsonAttribute(strings) : {});
   const _strings = $derived({
-    ariaLinkLabel,
-    error: 'Verification failed. Try again later.',
-    expired: 'Verification expired. Try again.',
-    footer: `Protected by <a href="${website}" target="_blank" aria-label="${parsedStrings?.ariaLinkLabel || ariaLinkLabel}">ALTCHA</a>`,
-    label: "I'm not a robot",
-    verified: 'Verified',
-    verifying: 'Verifying...',
-    waitAlert: 'Verifying... please wait.',
+    ...getI18nStrings($altchaI18nStore),
     ...parsedStrings,
   });
-  const widgetId = $derived(`${id || name}_checkbox`);
+  const widgetId = $derived(`${id || name}_checkbox_${Math.round(Math.random() * 1e8)}`);
 
   let checked: boolean = $state(false);
+  let codeChallenge: {
+    challenge: Challenge;
+    solution: Solution;
+  } | null = $state(null);
   let currentState: State = $state(State.UNVERIFIED);
   let el: HTMLElement = $state()!;
   let elAnchorArrow: HTMLElement | null = $state(null);
-  let elFloatingAnchor: HTMLElement | null = null;
-  let elForm: HTMLFormElement | null = null;
+  let elAudio: HTMLAudioElement | null = $state(null);
+  let elCheckbox: HTMLInputElement | null = $state(null)
+  let elFloatingAnchor: HTMLElement | null = $state(null);
+  let elForm: HTMLFormElement | null = $state(null);
   let error: string | null = $state(null);
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
+  let codeChallengeAudioState: AudioState | null = $state(null);
+  let codeChallengeSubmitting: boolean = $state(false);
   let loadedPlugins: Plugin[] = [];
+  let playCodeChallengeAudio: boolean = $state(false);
   let payload: string | null = $state(null);
 
   $effect(() => {
@@ -310,6 +329,7 @@
       }
       log('fetching challenge from', challengeurl);
       const init: RequestInit = {
+        credentials: typeof credentials === 'boolean' ? 'include' : credentials,
         headers:
           spamfilter !== false
             ? {
@@ -319,7 +339,7 @@
       };
       const resp = await getFetchFunction()(challengeurl, init);
       if (!resp || resp instanceof Response === false) {
-        throw new Error(`Fetch function did not return a response.`);
+        throw new Error(`Custom fetch function did not return a response.`);
       }
       if (resp.status !== 200) {
         throw new Error(`Server responded with ${resp.status}.`);
@@ -339,16 +359,8 @@
         try {
           const config = JSON.parse(configHeader);
           if (config && typeof config === 'object') {
-            if ('sentinel' in config) {
-              alert('This version of the widget is not compatible with Sentinel. Upgrade to version 2.x.x.');
-            } else {
-              if (config.verifyurl) {
-                config.verifyurl = new URL(
-                  config.verifyurl,
-                  new URL(challengeurl)
-                ).toString();
-              }
-              configure(config);
+            if (config.verifyurl && !config.verifyurl.startsWith('javascript:')) {
+              config.verifyurl = getServerUrl(config.verifyurl);
             }
           }
         } catch (err) {
@@ -374,7 +386,7 @@
   /**
    * Get the custom `fetch` function if configured or return the default one.
    */
-  function getFetchFunction() {
+   function getFetchFunction() {
     let fetchFunction: CustomFetchFunction = fetch;
     if (customfetch) {
       log('using customfetch');
@@ -389,6 +401,18 @@
       }
     }
     return fetchFunction;
+  }
+
+  /**
+   * Get internalization strings based on the language preferences provided
+   */
+  function getI18nStrings(i18n: Record<string, any>, languages: string[] = [language || '', document.documentElement.lang || '', ...navigator.languages]) {
+    const codes = Object.keys(i18n).map((code) => code.toLowerCase());
+    const lang = languages.reduce((acc, lang) => {
+      lang = lang.toLowerCase();
+      return acc || (i18n[lang] ? lang : null) || codes.find((code) => lang.split('-')[0] === code.split('-')[0]) || null;
+    }, null as string | null);
+    return i18n[lang || 'en'];
   }
 
   /**
@@ -452,6 +476,25 @@
   }
 
   /**
+   * Get the full URL based on the origin uri of the challengeurl.
+   */
+  function getServerUrl(uri: string, params?: Record<string, string | undefined | null>) {
+    const baseUrl = new URL(challengeurl || location.origin);
+    const result = new URL(uri, baseUrl);
+    if (!result.search) {
+      result.search = baseUrl.search;
+    }
+    if (params) {
+      for (const key in params) {
+        if (params[key] !== undefined && params[key] !== null) {
+          result.searchParams.set(key, params[key]);
+        }
+      }
+    }
+    return result.toString();
+  }
+
+  /**
    * Loads the registered plugins.
    */
   function loadPlugins() {
@@ -493,10 +536,120 @@
   }
 
   /**
+   * Handles the `ended` event on the audio element
+   */
+  function onAudioEnded() {
+    codeChallengeAudioState = AudioState.PAUSED;
+  }
+
+  /**
+   * Handles the `error` event on the audio element
+   */
+  function onAudioError(ev: Event) {
+    codeChallengeAudioState = AudioState.ERROR;
+  }
+
+  /**
+   * Handles the `canplay` event on the audio element
+   */
+  function onAudioCanPlay() {
+    codeChallengeAudioState = AudioState.READY;
+  }
+
+  /**
+   * Handles the `loadstart` event on the audio element
+   */
+  function onAudioLoadStart() {
+    codeChallengeAudioState = AudioState.LOADING;
+  }
+
+  /**
+   * Handles the `playing` event on the audio element
+   */
+  function onAudioPlaying() {
+    codeChallengeAudioState = AudioState.PLAYING;
+  }
+
+  /**
+   * Handles the `pause` event on the audio element
+   */
+  function onAudioPause() {
+    codeChallengeAudioState = AudioState.PAUSED;
+  }
+
+  /**
+   * Handles the `keydown` event in the code-challenge input (Space to play audio)
+   */
+  function onCodeChallengeInputKeyDown(ev: KeyboardEvent) {
+    if (ev.code === 'Space') {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      onPlayCodeChallengeAudio();
+    }
+  }
+
+  /**
+   * Handles "reload" button for the code challenge and forces re-verification
+   */
+  function onCodeChallengeReload(ev: Event) {
+    ev.preventDefault();
+    verify();
+  }
+
+  /**
+   * Handles the submit event of the code-challenge form
+   */
+  function onCodeChallengeSubmit(ev: SubmitEvent) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (codeChallenge) {
+      const data = new FormData(ev.target as HTMLFormElement);
+      const code = String(data.get('code'));
+      if (verifyurl?.startsWith('javascript:')) {
+        const functionName = verifyurl.replace(/^javascript:/, '');
+        log(`calling ${functionName} function instead of verifyurl`);
+        if (!(functionName in globalThis)) {
+          throw new Error(`Global function "${functionName}" is undefined.`);
+        }
+        return globalThis[functionName as keyof typeof globalThis]({
+          challenge: codeChallenge.challenge,
+          code,
+          solution: codeChallenge.solution,
+        });
+      }
+      codeChallengeSubmitting = true;
+      requestSentinelVerification(
+        createAltchaPayload(codeChallenge.challenge, codeChallenge.solution),
+        code,
+      ).then(({ reason, verified }) => {
+        if (!verified) {
+          reset();
+          error = reason || 'Verification failed';
+        } else { 
+          codeChallenge = null;
+          setState(State.VERIFIED);
+          log('verified');
+          tick().then(() => {
+            // Focus the checkbox for better accessibility
+            elCheckbox?.focus();
+            dispatch('verified', { payload });
+          });
+        }
+      }).catch((err) => {
+        codeChallenge = null;
+        setState(State.ERROR, err);
+        log('sentinel verification failed:', err);
+      }).finally(() => {
+        codeChallengeSubmitting = false;
+      });
+    }
+  }
+
+  /**
    * Called when the checkbox is checked or unchecked.
    */
   function onCheckedChange() {
-    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED].includes(currentState)) {
+    if ([State.UNVERIFIED, State.ERROR, State.EXPIRED, State.CODE].includes(currentState)) {
       if (spamfilter !== false && elForm?.reportValidity() === false) {
         checked = false;
       } else if (obfuscated) {
@@ -561,12 +714,19 @@
    * Handles the form submission event.
    */
   function onFormSubmit(ev: SubmitEvent) {
+    const target = ev.target as HTMLFormElement | null;
+    const submitter = ev.submitter as HTMLElement | null;
+    const isCodeChallengeForm = target?.hasAttribute('data-code-challenge-form');
+    if (isCodeChallengeForm) {
+      // Submit event from the code-challenge form -> don't handle
+      return;
+    }
     if (elForm && auto === 'onsubmit') {
       if (currentState === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
-          requestSubmit();
+          requestSubmit(submitter);
         });
       } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
@@ -600,6 +760,26 @@
   function onInvalid() {
     if (currentState === State.VERIFYING && _strings.waitAlert) {
       alert(_strings.waitAlert);
+    }
+  }
+
+  /**
+   * Plays the audio challenge.
+   */
+  function onPlayCodeChallengeAudio() {
+    if (elAudio) {
+      if (!elAudio.paused) {
+        elAudio.pause();
+      } else {
+        elAudio.currentTime = 0;
+        elAudio.play();
+      }
+    } else {
+      playCodeChallengeAudio = true;
+      // required for safari
+      requestAnimationFrame(() => {
+        elAudio?.play();
+      });
     }
   }
 
@@ -681,7 +861,7 @@
       method: 'POST',
     });
     if (!resp || resp instanceof Response === false) {
-      throw new Error(`Fetch function did not return a response.`);
+      throw new Error(`Custom fetch function did not return a response.`);
     }
     if (resp.status !== 200) {
       throw new Error(`Server responded with ${resp.status}.`);
@@ -697,15 +877,56 @@
   }
 
   /**
+   * Calls the Sentinel verification endpoint.
+   */
+  async function requestSentinelVerification(verificationPayload: string, code?: string): Promise<SentinelVerificationResponse> {
+    if (!verifyurl) {
+      throw new Error('Attribute verifyurl not set.');
+    }
+    log('requesting sentinel verification from', verifyurl);
+    const body: SentinelVerificationPayload = {
+      code,
+      payload: verificationPayload,
+    };
+    if (sentinel) {
+      body.fields = sentinel.fields ? getTextFields() : undefined;
+      body.timeZone = sentinel.timeZone ? getTimeZone() : undefined;
+    }
+    const resp = await fetch(verifyurl, {
+      body: JSON.stringify(body),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
+    });
+    if (!resp || resp instanceof Response === false) {
+      throw new Error(`Fetch function did not return a response.`);
+    }
+    if (resp.status !== 200) {
+      throw new Error(`Server responded with ${resp.status}.`);
+    }
+    const json = await resp.json();
+    if (json?.payload) {
+      payload = json.payload;
+    }
+    dispatch('sentinelverification', json);
+    return json;
+  }
+
+  /**
    * Request form submit with a fallback for iOS <16 which does not support requestSubmit
    */
-  function requestSubmit() {
+  function requestSubmit(submitter?: HTMLElement | null) {
     if (elForm && 'requestSubmit' in elForm) {
-      elForm.requestSubmit();
+      elForm.requestSubmit(submitter);
     // @ts-ignore
     } else if (elForm?.reportValidity()) {
-      // @ts-ignore
-      elForm.submit();
+      if (submitter) {
+        submitter.click();
+      } else {
+        // @ts-ignore
+        elForm.submit();
+      }
     }
   }
 
@@ -936,6 +1157,9 @@
     if (options.hidelogo !== undefined) {
       hidelogo = !!options.hidelogo;
     }
+    if (options.language !== undefined) {
+      strings = getI18nStrings($altchaI18nStore, [options.language]);
+    }
     if (options.maxnumber !== undefined) {
       maxnumber = +options.maxnumber;
     }
@@ -947,6 +1171,9 @@
     }
     if (options.refetchonexpire !== undefined) {
       refetchonexpire = !!options.refetchonexpire;
+    }
+    if (options.sentinel !== undefined &&  typeof options.sentinel === 'object') {
+      sentinel = options.sentinel;
     }
     if (options.spamfilter !== undefined) {
       spamfilter =
@@ -1104,6 +1331,9 @@
     }
     checked = false;
     payload = null;
+    codeChallenge = null;
+    playCodeChallengeAudio = false;
+    codeChallengeAudioState = null;
     setState(newState, err);
   }
 
@@ -1149,7 +1379,22 @@
         log('solution', solution);
         if (!solution || (data && 'challenge' in data && !('clearText' in solution))) {
           if (solution?.number !== undefined && 'challenge' in data) {
-            if (verifyurl) {
+            if (verifyurl && 'codeChallenge' in data) {
+              if (document.activeElement?.tagName === 'INPUT' && disableautofocus === false) {
+                // blur the checkbox to make the code challenge input autofocus work
+                (document.activeElement as HTMLInputElement).blur();
+              }
+              codeChallenge = {
+                challenge: data,
+                solution,
+              };
+
+            } else if (verifyurl && sentinel !== undefined) {
+              return requestSentinelVerification(
+                createAltchaPayload(data, solution)
+              ) as Promise<unknown>;
+
+            } else if (verifyurl) {
               return requestServerVerification(
                 createAltchaPayload(data, solution)
               );
@@ -1166,11 +1411,19 @@
         }
       })
       .then(() => {
-        setState(State.VERIFIED);
-        log('verified');
-        tick().then(() => {
-          dispatch('verified', { payload });
-        });
+        if (codeChallenge) {
+          setState(State.CODE);
+          tick().then(() => {
+            dispatch('code', { codeChallenge });
+          });
+
+        } else {
+          setState(State.VERIFIED);
+          log('verified');
+          tick().then(() => {
+            dispatch('verified', { payload });
+          });
+        }
       })
       .catch((err) => {
         log(err);
@@ -1188,29 +1441,15 @@
   data-floating={floating}
 >
   <div class="altcha-main">
-    {#if currentState === State.VERIFYING}
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        ><path
-          d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
-          fill="currentColor"
-          opacity=".25"
-        /><path
-          d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"
-          fill="currentColor"
-          class="altcha-spinner"
-        /></svg
-      >
-    {/if}
-
     <div
       class="altcha-checkbox"
-      class:altcha-hidden={currentState === State.VERIFYING}
+      class:altcha-checkbox-verifying={currentState === State.VERIFYING}
     >
+      {#if currentState === State.VERIFYING}
+        {@render spinner()}
+      {/if}
       <input
+        bind:this={elCheckbox}
         type="checkbox"
         id={widgetId}
         required={auto !== 'onsubmit' && (!floating || auto !== 'off')}
@@ -1220,16 +1459,24 @@
       />
     </div>
 
-    <div class="altcha-label">
+    <label
+      class="altcha-label"
+      for={widgetId}
+    >
       {#if currentState === State.VERIFIED}
-        <span role="status" aria-live="polite">{@html _strings.verified}</span>
-        <input type="hidden" {name} value={payload} />
+        {@html _strings.verified}
       {:else if currentState === State.VERIFYING}
-        <span role="status" aria-live="polite">{@html _strings.verifying}</span>
+        {@html _strings.verifying}
+      {:else if currentState === State.CODE}
+        {@html _strings.verificationRequired}
       {:else}
-        <label for={widgetId}>{@html _strings.label}</label>
+        {@html _strings.label}
       {/if}
-    </div>
+    </label>
+
+    {#if currentState === State.VERIFIED}
+      <input type="hidden" {name} value={payload} />
+    {/if}
 
     {#if hidelogo !== true || isFreeSaaS}
       <div>
@@ -1238,6 +1485,7 @@
           target="_blank"
           class="altcha-logo"
           aria-label={_strings.ariaLinkLabel}
+          aria-hidden="true"
         >
           <svg
             width="22"
@@ -1262,6 +1510,114 @@
         </a>
       </div>
     {/if}
+
+    {#if codeChallenge?.challenge.codeChallenge}
+    <div
+      class="altcha-code-challenge"
+      role="dialog"
+      aria-label={_strings.verificationRequired}
+    >
+      <div class="altcha-code-challenge-arrow"></div>
+
+      <form
+        data-code-challenge-form="1"
+        onsubmitcapture={onCodeChallengeSubmit}
+      >
+        <img class="altcha-code-challenge-image" src={codeChallenge.challenge.codeChallenge.image} alt="" />
+
+        <!-- svelte-ignore a11y_autofocus -->
+        <input
+          type="text"
+          autocomplete="off"
+          name="code"
+          minlength={codeChallenge.challenge.codeChallenge.length || 1}
+          maxlength={codeChallenge.challenge.codeChallenge.length}
+          class="altcha-code-challenge-input"
+          placeholder={_strings.enterCode}
+          aria-label={
+            codeChallengeAudioState === AudioState.LOADING
+            ? _strings.loading
+            : codeChallengeAudioState === AudioState.PLAYING ? '' : _strings.enterCodeAria
+          }
+          aria-live={codeChallengeAudioState ? 'assertive' : 'polite'}
+          aria-busy={codeChallengeAudioState === AudioState.LOADING}
+          disabled={codeChallengeSubmitting}
+          required
+          autofocus={!disableautofocus}
+          onkeydown={onCodeChallengeInputKeyDown}
+        />
+
+        <div class="altcha-code-challenge-buttons">
+          <div  class="altcha-code-challenge-buttons-left">
+            {#if codeChallenge.challenge.codeChallenge.audio}
+            <button
+              type="button"
+              title={_strings.getAudioChallenge}
+              class="altcha-code-challenge-audio"
+              disabled={codeChallengeAudioState === AudioState.LOADING || codeChallengeAudioState === AudioState.ERROR || codeChallengeSubmitting}
+              aria-label={codeChallengeAudioState === AudioState.LOADING ? _strings.loading : _strings.getAudioChallenge}
+              onclick={onPlayCodeChallengeAudio}
+            >
+              {#if codeChallengeAudioState === AudioState.LOADING}
+                {@render spinner(20)}
+              {:else if codeChallengeAudioState === AudioState.ERROR}
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.8659 3.00017L22.3922 19.5002C22.6684 19.9785 22.5045 20.5901 22.0262 20.8662C21.8742 20.954 21.7017 21.0002 21.5262 21.0002H2.47363C1.92135 21.0002 1.47363 20.5525 1.47363 20.0002C1.47363 19.8246 1.51984 19.6522 1.60761 19.5002L11.1339 3.00017C11.41 2.52187 12.0216 2.358 12.4999 2.63414C12.6519 2.72191 12.7782 2.84815 12.8659 3.00017ZM10.9999 16.0002V18.0002H12.9999V16.0002H10.9999ZM10.9999 9.00017V14.0002H12.9999V9.00017H10.9999Z"></path></svg>
+              {:else if codeChallengeAudioState === AudioState.PLAYING}
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15 7C15 6.44772 15.4477 6 16 6C16.5523 6 17 6.44772 17 7V17C17 17.5523 16.5523 18 16 18C15.4477 18 15 17.5523 15 17V7ZM7 7C7 6.44772 7.44772 6 8 6C8.55228 6 9 6.44772 9 7V17C9 17.5523 8.55228 18 8 18C7.44772 18 7 17.5523 7 17V7Z"></path></svg>
+              {:else}
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12H7C8.10457 12 9 12.8954 9 14V19C9 20.1046 8.10457 21 7 21H4C2.89543 21 2 20.1046 2 19V12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12V19C22 20.1046 21.1046 21 20 21H17C15.8954 21 15 20.1046 15 19V14C15 12.8954 15.8954 12 17 12H20C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12Z"></path></svg>
+              {/if}
+            </button>
+            {/if}
+
+            <button
+              type="button"
+              aria-label={_strings.reload}
+              title={_strings.reload}
+              class="altcha-code-challenge-reload"
+              disabled={codeChallengeSubmitting}
+              onclick={onCodeChallengeReload}
+            >
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2V4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 9.25022 5.38734 6.82447 7.50024 5.38451L7.5 8H9.5V2L3.5 2V4L5.99918 3.99989C3.57075 5.82434 2 8.72873 2 12Z"></path></svg>
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            class="altcha-code-challenge-verify"
+            disabled={codeChallengeSubmitting}
+            aria-label={_strings.verify}
+          >
+            {#if codeChallengeSubmitting}
+              {@render spinner(16)}
+            {/if}
+            {_strings.verify}
+          </button>
+        </div>
+
+        {#if codeChallenge.challenge.codeChallenge.audio && playCodeChallengeAudio}
+        <audio
+          bind:this={elAudio}
+          hidden
+          autoplay
+          onloadstart={onAudioLoadStart}
+          oncanplay={onAudioCanPlay}
+          onpause={onAudioPause}
+          onplaying={onAudioPlaying}
+          onended={onAudioEnded}
+        >
+          <source
+            src={getServerUrl(codeChallenge.challenge.codeChallenge.audio, {
+              language,
+            })}
+            onerror={onAudioError}
+          />
+        </audio>
+        {/if}
+      </form>
+    </div>
+    {/if}
+
   </div>
 
   {#if error || currentState === State.EXPIRED}
@@ -1274,6 +1630,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -1299,3 +1656,21 @@
     <div bind:this={elAnchorArrow} class="altcha-anchor-arrow"></div>
   {/if}
 </div>
+
+{#snippet spinner(size: number = 24)}
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    class="altcha-spinner"
+    ><path
+      d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
+      fill="currentColor"
+      opacity=".25"
+    /><path
+      d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"
+      fill="currentColor"
+    /></svg
+  >
+{/snippet}

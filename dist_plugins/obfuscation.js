@@ -1,9 +1,9 @@
-var D = Object.defineProperty;
+var N = Object.defineProperty;
 var B = (t) => {
   throw TypeError(t);
 };
-var V = (t, e, i) => e in t ? D(t, e, { enumerable: !0, configurable: !0, writable: !0, value: i }) : t[e] = i;
-var f = (t, e, i) => V(t, typeof e != "symbol" ? e + "" : e, i), b = (t, e, i) => e.has(t) || B("Cannot " + i);
+var O = (t, e, i) => e in t ? N(t, e, { enumerable: !0, configurable: !0, writable: !0, value: i }) : t[e] = i;
+var f = (t, e, i) => O(t, typeof e != "symbol" ? e + "" : e, i), b = (t, e, i) => e.has(t) || B("Cannot " + i);
 var p = (t, e, i) => (b(t, e, "read from private field"), i ? i.call(t) : e.get(t)), g = (t, e, i) => e.has(t) ? B("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i);
 var E = (t, e, i) => (b(t, e, "access private method"), i);
 class y {
@@ -51,7 +51,7 @@ class y {
  * A distinct name of the plugin. Every plugin must have it's own name.
  */
 f(y, "pluginName");
-var l = /* @__PURE__ */ ((t) => (t.ERROR = "error", t.VERIFIED = "verified", t.VERIFYING = "verifying", t.UNVERIFIED = "unverified", t.EXPIRED = "expired", t))(l || {}), r, a, I, x;
+var l = /* @__PURE__ */ ((t) => (t.CODE = "code", t.ERROR = "error", t.VERIFIED = "verified", t.VERIFYING = "verifying", t.UNVERIFIED = "unverified", t.EXPIRED = "expired", t))(l || {}), r, a, I, x;
 class v extends y {
   /**
    * Creates an instance of PluginObfuscation.
@@ -85,21 +85,21 @@ class v extends y {
       getFloatingAnchor: n,
       setFloatingAnchor: o,
       reset: d,
-      solve: P,
+      solve: C,
       setState: m
-    } = this.context, { delay: C, floating: F, maxnumber: T, obfuscated: R } = s();
+    } = this.context, { delay: P, floating: F, maxnumber: T, obfuscated: R } = s();
     if (this.elButton && !n() && o(this.elButton), !R) {
       m(l.ERROR);
       return;
     }
-    d(l.VERIFYING), await new Promise((h) => setTimeout(h, C || 0));
-    const [k, N] = R.split("?");
-    let c = new URLSearchParams(N || "").get("key") || void 0;
+    d(l.VERIFYING), await new Promise((h) => setTimeout(h, P || 0));
+    const [k, D] = R.split("?");
+    let c = new URLSearchParams(D || "").get("key") || void 0;
     if (c) {
       const h = c.match(/^\(prompt:?(.*)\)$/);
       h && (c = prompt(h[1] || "Enter Key:") || void 0);
     }
-    const { solution: u } = await P({
+    const { solution: u } = await C({
       obfuscated: k,
       key: c,
       maxnumber: T

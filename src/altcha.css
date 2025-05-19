@@ -8,7 +8,6 @@
   flex-direction: column;
   max-width: var(--altcha-max-width, 260px);
   position: relative;
-  text-align: left;
 }
 
 .altcha:focus-within {
@@ -61,19 +60,137 @@
   display: flex;
   gap: 0.4rem;
   padding: 0.7rem;
+  position: relative;
+}
+
+.altcha-code-challenge {
+  background: var(--altcha-color-base, white);
+  border: 1px solid var(--altcha-color-border-focus, currentColor);
+  border-radius: var(--altcha-border-radius, 3px);
+  filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.2));
+  padding: 0.5rem;
+  position: absolute;
+  top: 2.5rem;
+  z-index: 9999999;
+}
+
+.altcha-code-challenge > form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.altcha-code-challenge-input {
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  box-sizing: border-box;
+  outline: none;
+  font-size: 16px;
+  padding: 0.35rem;
+  width: 220px;
+}
+
+.altcha-code-challenge-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--altcha-color-active, #1D1DC9) 20%, transparent);
+}
+
+.altcha-code-challenge-input:disabled {
+  opacity: 0.7;
+}
+
+.altcha-code-challenge-image {
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  box-sizing: border-box;
+  object-fit: contain;
+  height: 50px;
+  width: 220px;
+}
+
+.altcha-code-challenge-audio,
+.altcha-code-challenge-reload {
+  background: color-mix(in srgb, var(--altcha-color-text, currentColor) 10%, transparent);
+  border: 0;
+  border-radius: 3px;
+  color: var(--altcha-color-text, currentColor);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+.altcha-code-challenge-audio:disabled,
+.altcha-code-challenge-reload:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.altcha-code-challenge-audio > *,
+.altcha-code-challenge-reload > * {
+  height: 20px;
+  width: 20px;
+}
+
+.altcha-code-challenge-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.altcha-code-challenge-buttons-left {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.altcha-code-challenge-verify {
+  align-items: center;
+  background: var(--altcha-color-active, #1D1DC9);
+  border: 0;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  font-size: 100%;
+  padding: 0.35rem 1rem;
+}
+
+.altcha-code-challenge-verify:disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.altcha-code-challenge-arrow {
+  border: 6px solid transparent;
+  border-bottom-color: var(--altcha-color-border, currentColor);
+  content: '';
+  height: 0;
+  left: 0.15rem;
+  position: absolute;
+  top: -12px;
+  width: 0;
+}
+
+.altcha[data-floating="top"] .altcha-code-challenge {
+  top: -150px;
+}
+
+.altcha[data-floating="top"] .altcha-code-challenge-arrow {
+  border-bottom-color: transparent;
+  border-top-color: var(--altcha-color-border, currentColor);
+  bottom: -12px;
+  top: auto;
 }
 
 .altcha-label {
+  cursor: pointer;
   flex-grow: 1;
 }
 
-.altcha-label label {
-  cursor: pointer;
-}
-
 .altcha-logo {
-  color: currentColor;
-  opacity: 0.3;
+  color: currentColor !important;
+  opacity: 0.7;
 }
 
 .altcha-logo:hover {
@@ -93,17 +210,13 @@
   background-color: var(--altcha-color-footer-bg, transparent);
   display: flex;
   font-size: 0.75rem;
-  opacity: 0.4;
+  opacity: 0.7;
+  justify-content: end;
   padding: 0.2rem 0.7rem;
-  text-align: right;
 }
 
 .altcha-footer:hover {
   opacity: 1;
-}
-
-.altcha-footer > *:first-child {
-  flex-grow: 1;
 }
 
 .altcha-footer a {
@@ -113,8 +226,18 @@
 .altcha-checkbox {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 24px;
+  position: relative;
   width: 24px;
+}
+
+.altcha-checkbox .altcha-spinner {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .altcha-checkbox input {
@@ -123,8 +246,10 @@
   margin: 0;
 }
 
-.altcha-hidden {
-  display: none;
+.altcha-checkbox-verifying input {
+  appearance: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .altcha-spinner {

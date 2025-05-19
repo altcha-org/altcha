@@ -1,55 +1,63 @@
-# Security Policy
+# Security Vulnerability Disclosure Policy
 
-## Supported Versions
+We take security seriously and value the contributions of the security community. If you believe you have found a vulnerability in our services or software, we encourage you to report it responsibly so we can address it promptly.
 
-Security updates are available for all versions.
+### Reporting a Vulnerability
 
-## Reporting a Vulnerability
+Please email your findings to published [security contacts](https://altcha.org/contact#reporting-security-issues).
+To ensure confidentiality, we recommend encrypting your report using our [PGP key](https://altcha.org/pgp/security-public-key.asc).
 
-If you discover a vulnerability, please report it responsibly to our security email: `c2VjdXJpdHlAYWx0Y2hhLm9yZwo=`.
+Your report should include the following, where possible:
 
-When reporting a vulnerability, please include the following details to help us quickly assess the issue:
+* A clear description of the vulnerability.
+* A working proof of concept or detailed steps to reproduce the issue.
+* Any relevant logs, screenshots, or code snippets that support your findings.
 
-- Detailed steps to reproduce or a proof-of-concept
-- Any relevant tools and their versions used
-- Tool output and any logs or screenshots that may help
+We will acknowledge receipt of your report within 5 business days, and keep you informed about the progress of our investigation.
 
-**PGP Public Key**: To ensure secure communication, please use our PGP public key when sending sensitive information:
+### In-Scope
 
-```
------BEGIN PGP PUBLIC KEY BLOCK-----
+We welcome reports that:
 
-xjMEZtI2nxYJKwYBBAHaRw8BAQdA/RsvtqhwBMzb2lVbYgJ8jfbtOSW6X1Ju
-eJGrTnc/w7rNKXNlY3VyaXR5QGFsdGNoYS5vcmcgPHNlY3VyaXR5QGFsdGNo
-YS5vcmc+wowEEBYKAD4FgmbSNp8ECwkHCAmQQ77nSDCYPoIDFQgKBBYAAgEC
-GQECmwMCHgEWIQTjdfm4rd39SCeb0WpDvudIMJg+ggAAQBYA/AhHznOMm5zg
-L5NVtbEaVzjlGQgq935Ieg7i0ts/ulvSAQCifZduBr9W2Rlev2x4MIaN8PBY
-eq/UQjyDIoi3s+bBAM44BGbSNp8SCisGAQQBl1UBBQEBB0DMbZpWAHLF9W2y
-sFoTHPv0/9wBmd5HQHDFo30pYv6GGAMBCAfCeAQYFgoAKgWCZtI2nwmQQ77n
-SDCYPoICmwwWIQTjdfm4rd39SCeb0WpDvudIMJg+ggAAB2gA/RCLvMElWMP3
-Xb/GVjlYMKM+lP/+Vp6pEPp+oCfb5gg+AP9sTajrdA2GBv6Sc28/GZcbGEX2
-OlJjTSxs11Oj8es+Bg==
-=kb//
------END PGP PUBLIC KEY BLOCK-----
-```
+* Demonstrate a real security risk (e.g., XSS, CSRF, SSRF, authentication bypass, privilege escalation, remote code execution, etc.).
+* Affect our software, services, or infrastructure directly under our control.
+* Include a valid proof of concept demonstrating how the vulnerability can be exploited.
 
-## Vulnerability Disclosure Process
+### Out-of-Scope
 
-- **Acknowledgment**: We will acknowledge receipt of your report within 48 hours.
-- **Assessment**: We will assess the vulnerability and determine the impact and priority.
-- **Resolution**: If the vulnerability is confirmed, we will work on a fix and inform you when it’s resolved.
-- **Disclosure**: We follow responsible disclosure. Once a fix is available, we will coordinate with you to disclose the vulnerability to the public.
+The following issues are generally not eligible for rewards, but we still welcome these reports as they help us improve overall security hygiene:
 
-## Scope
+* Reports from automated tools or scanners that lack actionable proof of exploitability.
+* Security recommendations or best practices such as missing HTTP security headers, TLS configurations, DNS records, or server banners.
+* Denial of service attacks that rely on large volumes of traffic.
+* Rate limiting, CAPTCHA strength, or content/spam flooding.
+* Clickjacking on pages without sensitive actions.
+* Bugs that require root/jailbroken devices or outdated browsers.
+* Issues in third-party services or libraries not managed by us.
 
-### In-Scope for Reporting:
-- ALTCHA Widget and any associated open-source code.
-- ALTCHA SaaS platform and related services.
+While these may not be considered critical security vulnerabilities, we still care and may address them internally where appropriate. Your feedback helps us maintain a stronger security posture.
 
-### Out-of-Scope:
-- Any third-party services or software not managed by ALTCHA.
-- Automated tool or scan reports.
-- Distributed Denial of Service (DDoS) attacks that require large volumes of data.
-- Provisioning or usability issues.
-- Flooding of feedback, comments, messages, etc.
-- Issues related to networking protocols or industry standards.
+### Rewards
+
+We may offer a discretionary reward (bounty) for valid, impactful reports that:
+
+* Are submitted responsibly and in good faith.
+* Are not the result of automated scanning.
+* Include a clear demonstration of how the issue can be exploited in practice.
+
+We do not offer rewards for:
+
+* Reports generated solely through automated tools.
+* Vulnerabilities lacking a proof of concept.
+* Low-risk issues or theoretical attacks.
+
+Reward amounts are determined at our discretion based on severity, impact, and quality of the report.
+
+### Responsible Disclosure Guidelines
+
+* Please do not publicly disclose vulnerabilities before we have had a chance to fix them.
+* Do not access, modify, or delete data that does not belong to you.
+* Avoid actions that could degrade or disrupt our services during testing.
+* Only test systems that are clearly part of our infrastructure.
+
+We thank you for helping us keep our services safe and secure.

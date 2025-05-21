@@ -359,7 +359,7 @@
         try {
           const config = JSON.parse(configHeader);
           if (config && typeof config === 'object') {
-            if (config.verifyurl && !config.verifyurl.startsWith('javascript:')) {
+            if (config.verifyurl && !config.verifyurl.startsWith('fn:')) {
               config.verifyurl = getServerUrl(config.verifyurl);
             }
           }
@@ -605,8 +605,8 @@
     if (codeChallenge) {
       const data = new FormData(ev.target as HTMLFormElement);
       const code = String(data.get('code'));
-      if (verifyurl?.startsWith('javascript:')) {
-        const functionName = verifyurl.replace(/^javascript:/, '');
+      if (verifyurl?.startsWith('fn:')) {
+        const functionName = verifyurl.replace(/^fn:/, '');
         log(`calling ${functionName} function instead of verifyurl`);
         if (!(functionName in globalThis)) {
           throw new Error(`Global function "${functionName}" is undefined.`);

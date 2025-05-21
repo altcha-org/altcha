@@ -2157,7 +2157,7 @@ function Ia(e, t) {
       if (b)
         try {
           const I = JSON.parse(b);
-          I && typeof I == "object" && I.verifyurl && !I.verifyurl.startsWith("javascript:") && (I.verifyurl = en(I.verifyurl));
+          I && typeof I == "object" && I.verifyurl && !I.verifyurl.startsWith("fn:") && (I.verifyurl = en(I.verifyurl));
         } catch (I) {
           x("unable to configure from X-Altcha-Config", I);
         }
@@ -2278,8 +2278,8 @@ function Ia(e, t) {
     var f;
     if (n.preventDefault(), n.stopPropagation(), a(B)) {
       const v = new FormData(n.target), b = String(v.get("code"));
-      if ((f = te()) != null && f.startsWith("javascript:")) {
-        const _ = te().replace(/^javascript:/, "");
+      if ((f = te()) != null && f.startsWith("fn:")) {
+        const _ = te().replace(/^fn:/, "");
         if (x(`calling ${_} function instead of verifyurl`), !(_ in globalThis))
           throw new Error(`Global function "${_}" is undefined.`);
         return globalThis[_]({

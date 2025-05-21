@@ -169,6 +169,7 @@ Additional options:
 - **name**: Name of the hidden field containing the payload (defaults to "altcha").
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
 - **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
+- **verifyurl**: URL for server-side verification requests. This option is automatically configured with Sentinel. Override this setting only if using a custom server implementation. Supports `fn:function_name` format to call a global JS function instead.
 - **workers**: Number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max value `16`).
 - **workerurl**: URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
 

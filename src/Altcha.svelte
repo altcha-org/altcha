@@ -362,6 +362,7 @@
             if (config.verifyurl && !config.verifyurl.startsWith('fn:')) {
               config.verifyurl = getServerUrl(config.verifyurl);
             }
+            configure(config);
           }
         } catch (err) {
           log('unable to configure from X-Altcha-Config', err);

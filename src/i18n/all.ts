@@ -4,6 +4,7 @@
 import './af.ts'; // Afrikaans
 import './ar.ts'; // Arabic
 import './bg.ts'; // Bulgarian
+import './be.ts'; // Belarusian
 import './bs.ts'; // Bosnian
 import './ca.ts'; // Catalan
 import './cs.ts'; // Czech

@@ -21,6 +21,7 @@ import './lt.ts';
 import './lv.ts';
 
 // Central & Eastern Europe
+import './be.ts';
 import './bs.ts';
 import './cs.ts';
 import './pl.ts';

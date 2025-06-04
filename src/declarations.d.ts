@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 export {};
 
 declare module 'altcha';
@@ -9,7 +8,11 @@ declare global {
   var altchaI18n: {
     get: (language: string) => Record<string, string>;
     set: (language: string, translation: Record<string, string>) => void;
-    store: Writable<Record<string, Record<string, string>>>;
+    store: {
+      set(this: void, value: Record<string, Record<string, string>>): void;
+      update(this: void, updater: (value: Record<string, Record<string, string>>) => Record<string, Record<string, string>>): void;
+      subscribe(this: void, run: (value: Record<string, Record<string, string>>) => void, invalidate?: () => void): () => void;
+    };
   };
 
   type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';

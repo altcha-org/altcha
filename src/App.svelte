@@ -193,9 +193,12 @@
 </main>
 
 <style lang="scss">
+  :global(html) {
+    font-family: sans-serif;
+  }
+
   main {
     display: flex;
-    font-family: sans-serif;
     flex-direction: column;
     gap: 1rem;
     margin: 6rem auto;

@@ -167,6 +167,8 @@ Additional options:
 - **language**: The ISO alpha-2 code of the language to use (the language file be imported from `altcha/i18n/*`).
 - **maxnumber**: Max number to iterate to (defaults to 1,000,000).
 - **name**: Name of the hidden field containing the payload (defaults to "altcha").
+- **overlay**: Enables overlay UI mode (automatically sets `auto="onsubmit"`).
+- **overlaycontent**: CSS selector of the HTML element to display in the overlay modal before the widget.
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
 - **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - **verifyurl**: URL for server-side verification requests. This option is automatically configured with Sentinel. Override this setting only if using a custom server implementation. Supports `fn:function_name` format to call a global JS function instead.
@@ -313,6 +315,7 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   obfuscated?: string;
+  overlay?: boolean;
   refetchonexpire?: boolean;
   spamfilter?: boolean | 'ipAddress' | SpamFilter; // deprecated
   strings?: {

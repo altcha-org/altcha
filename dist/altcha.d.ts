@@ -59,6 +59,8 @@ declare global {
     onserververification?: (ev: CustomEvent) => void;
     onupload?: (ev: CustomEvent) => void;
     onuploadprogress?: (ev: CustomEvent) => void;
+    overlay?: boolean;
+    overlaycontent?: string;
     plugins?: string;
     refetchonexpire?: boolean;
     /** @deprecated */

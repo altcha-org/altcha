@@ -37,6 +37,8 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   obfuscated?: string;
+  overlay?: boolean;
+  overlaycontent?: string;
   refetchonexpire?: boolean;
   sentinel?: Sentinel;
   /** @deprecated */

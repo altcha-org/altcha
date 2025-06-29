@@ -2688,7 +2688,7 @@ const Hl = {
   verificationRequired: "認証が必要です！",
   footer: '保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
   getAudioChallenge: "音声チャレンジを取得",
-  label: "ロボットじゃない",
+  label: "私はロボットではありません",
   loading: "読み込み中...",
   reload: "再読み込み",
   verify: "確認",
@@ -3060,7 +3060,7 @@ function Cs(e, t) {
     Gi(), l(S) && (l(S).removeEventListener("submit", ia), l(S).removeEventListener("reset", na), l(S).removeEventListener("focusin", aa), y(S, null)), Le && (clearTimeout(Le), Le = null), document.removeEventListener("click", ta), document.removeEventListener("scroll", ra), window.removeEventListener("resize", sa);
   }), Ni(() => {
     var a;
-    I("mounted", "2.0.3"), I("workers", lt()), Ji(), I("plugins", qe.length ? qe.map((f) => f.constructor.pluginName).join(", ") : "none"), ge() && I("using test mode"), V() && pr(V()), n() !== void 0 && I("auto", n()), _() !== void 0 && ca(_()), y(S, (a = l(re)) == null ? void 0 : a.closest("form"), !0), l(S) && (l(S).addEventListener("submit", ia, { capture: !0 }), l(S).addEventListener("reset", na), (n() === "onfocus" || K() === "focus") && l(S).addEventListener("focusin", aa)), n() === "onload" && (ze() ? Lt() : je()), l(hr) && (ee() || J()) && I("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    I("mounted", "2.0.4"), I("workers", lt()), Ji(), I("plugins", qe.length ? qe.map((f) => f.constructor.pluginName).join(", ") : "none"), ge() && I("using test mode"), V() && pr(V()), n() !== void 0 && I("auto", n()), _() !== void 0 && ca(_()), y(S, (a = l(re)) == null ? void 0 : a.closest("form"), !0), l(S) && (l(S).addEventListener("submit", ia, { capture: !0 }), l(S).addEventListener("reset", na), (n() === "onfocus" || K() === "focus") && l(S).addEventListener("focusin", aa)), n() === "onload" && (ze() ? Lt() : je()), l(hr) && (ee() || J()) && I("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       Ne("load");
     });
   });

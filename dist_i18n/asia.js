@@ -116,7 +116,7 @@ const y = {
   verificationRequired: "認証が必要です！",
   footer: '保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
   getAudioChallenge: "音声チャレンジを取得",
-  label: "ロボットじゃない",
+  label: "私はロボットではありません",
   loading: "読み込み中...",
   reload: "再読み込み",
   verify: "確認",

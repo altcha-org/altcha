@@ -181,6 +181,7 @@
   let elCheckbox: HTMLInputElement | null = $state(null)
   let elFloatingAnchor: HTMLElement | null = $state(null);
   let elForm: HTMLFormElement | null = $state(null);
+  let elSubmitter: HTMLElement | null = $state(null);
   let error: string | null = $state(null);
   let expireTimeout: ReturnType<typeof setTimeout> | null = null;
   let codeChallengeAudioState: AudioState | null = $state(null);
@@ -199,6 +200,7 @@
 
   onDestroy(() => {
     destroyPlugins();
+    elSubmitter = null;
     if (elForm) {
       elForm.removeEventListener('submit', onFormSubmit);
       elForm.removeEventListener('reset', onFormReset);
@@ -634,6 +636,9 @@
             // Focus the checkbox for better accessibility
             elCheckbox?.focus();
             dispatch('verified', { payload });
+            if (auto === 'onsubmit') {
+              requestSubmit(elSubmitter);
+            }
           });
         }
       }).catch((err) => {
@@ -716,18 +721,18 @@
    */
   function onFormSubmit(ev: SubmitEvent) {
     const target = ev.target as HTMLFormElement | null;
-    const submitter = ev.submitter as HTMLElement | null;
     const isCodeChallengeForm = target?.hasAttribute('data-code-challenge-form');
     if (isCodeChallengeForm) {
       // Submit event from the code-challenge form -> don't handle
       return;
     }
+    elSubmitter = ev.submitter as HTMLElement | null;
     if (elForm && auto === 'onsubmit') {
       if (currentState === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
         verify().then(() => {
-          requestSubmit(submitter);
+          requestSubmit(elSubmitter);
         });
       } else if (currentState !== State.VERIFIED) {
         ev.preventDefault();
@@ -1381,8 +1386,8 @@
         if (!solution || (data && 'challenge' in data && !('clearText' in solution))) {
           if (solution?.number !== undefined && 'challenge' in data) {
             if (verifyurl && 'codeChallenge' in data) {
-              if (document.activeElement?.tagName === 'INPUT' && disableautofocus === false) {
-                // blur the checkbox to make the code challenge input autofocus work
+              if (['INPUT', 'BUTTON', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName || '') && disableautofocus === false) {
+                // blur the forms inputs to make the code challenge input autofocus work
                 (document.activeElement as HTMLInputElement).blur();
               }
               codeChallenge = {

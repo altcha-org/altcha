@@ -24,10 +24,11 @@ Version 2 introduces enhanced accessibility, expanded language support, and inte
 
 ### Key Improvements in v2
 
-- **Built-in Internationalization (i18n)** for 48+ languages
+- **Built-in Internationalization (i18n)** for 50+ languages
 - **Improved RTL (right-to-left) language support**
 - **Enhanced WCAG accessibility**
 - **Support for accessible code challenges** (image + audio options)
+- **Overlay UI**
 
 ### Migrating from v1
 
@@ -130,12 +131,13 @@ ALTCHA is optimized for performance:
 
 | Distribution                 | Size (GZIPped) |
 | ---------------------------- | -------------- |
-| ALTCHA                       | 29+ kB         |
-| ALTCHA with all translations | 42+ kB         |
-| hCaptcha                     | 48+ kB         |
-| reCAPTCHA                    | 270+ kB        |
+| ALTCHA                       | 30 kB          |
+| ALTCHA with all translations | 44 kB          |
+| Cloudflare Turnstile         | 85+ kB         |
+| hCaptcha                     | 250+ kB        |
+| reCAPTCHA                    | 300+ kB        |
 
-When GZIPped, it totals about 29 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
+When GZIPped, it totals about 30 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
 
 ## Content Security Policy (CSP)
 
@@ -167,6 +169,8 @@ Additional options:
 - **language**: The ISO alpha-2 code of the language to use (the language file be imported from `altcha/i18n/*`).
 - **maxnumber**: Max number to iterate to (defaults to 1,000,000).
 - **name**: Name of the hidden field containing the payload (defaults to "altcha").
+- **overlay**: Enables overlay UI mode (automatically sets `auto="onsubmit"`).
+- **overlaycontent**: CSS selector of the HTML element to display in the overlay modal before the widget.
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
 - **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - **verifyurl**: URL for server-side verification requests. This option is automatically configured with Sentinel. Override this setting only if using a custom server implementation. Supports `fn:function_name` format to call a global JS function instead.
@@ -185,7 +189,7 @@ Development / Testing options:
 
 ## Internationalization (i18n)
 
-ALTCHA supports **48+ languages**. You can import individual language translations or a bundle that includes all of them.
+ALTCHA supports **50+ languages**. You can import individual language translations or a bundle that includes all of them.
 
 ### Importing Translations
 
@@ -313,6 +317,7 @@ export interface Configure {
   mockerror?: boolean;
   name?: string;
   obfuscated?: string;
+  overlay?: boolean;
   refetchonexpire?: boolean;
   spamfilter?: boolean | 'ipAddress' | SpamFilter; // deprecated
   strings?: {
@@ -337,6 +342,19 @@ export interface Configure {
   workerurl?: string;
 }
 ```
+
+## Methods
+
+- `configure(options)` - Configures the widget with the given options. See Configuration options above.
+- `getConfiguration()` - Returns the current configuration.
+- `getState()` - Returns the current `state` of the widget.
+- `show()` - Displays the widget (used in floating or overlay mode).
+- `hide()` - Hides the widget (used in floating or overlay mode).
+- `reset(state?, err?)` - Resets the internal `state`, optionally with an error.
+- `setState(state, err?)` - Manually sets the specified `state`, optionally with an error.
+- `setFloatingAnchor(element)` - Sets the anchor element for the floating UI.
+- `verify()` - Initiates the verification process.s a "mock" challenge within the widget, bypassing the request to `challengeurl`.
+
 
 ## Events
 

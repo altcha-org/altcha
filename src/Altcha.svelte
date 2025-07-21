@@ -96,6 +96,8 @@
     maxnumber?: number;
     mockerror?: boolean;
     obfuscated?: string | undefined;
+    overlay?: boolean | undefined;
+    overlaycontent?: string | undefined;
     plugins?: string | undefined;
     refetchonexpire?: boolean;
     sentinel?: Sentinel;
@@ -131,6 +133,8 @@
     maxnumber = 1e6,
     mockerror = false,
     obfuscated = undefined,
+    overlay = undefined,
+    overlaycontent = undefined,
     plugins = undefined,
     refetchonexpire = true,
     sentinel = undefined,
@@ -178,6 +182,7 @@
   let el: HTMLElement = $state()!;
   let elAnchorArrow: HTMLElement | null = $state(null);
   let elAudio: HTMLAudioElement | null = $state(null);
+  let elBackdrop: HTMLElement | null = $state(null);
   let elCheckbox: HTMLInputElement | null = $state(null)
   let elFloatingAnchor: HTMLElement | null = $state(null);
   let elForm: HTMLFormElement | null = $state(null);
@@ -249,6 +254,9 @@
       if (auto === 'onfocus' || floatingpersist === 'focus') {
         elForm.addEventListener('focusin', onFormFocusIn);
       }
+    }
+    if (overlay) {
+      setOverlay(true);
     }
     if (auto === 'onload') {
       if (obfuscated) {
@@ -638,6 +646,8 @@
             dispatch('verified', { payload });
             if (auto === 'onsubmit') {
               requestSubmit(elSubmitter);
+            } else if (overlay) {
+              hide();
             }
           });
         }
@@ -728,6 +738,8 @@
     }
     elSubmitter = ev.submitter as HTMLElement | null;
     if (elForm && auto === 'onsubmit') {
+      // allows the code challenge input to be auto-focused
+      elSubmitter?.blur();
       if (currentState === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -804,6 +816,13 @@
       });
     }
     checked = currentState === State.VERIFIED;
+    if (overlay && elBackdrop) {
+      if (currentState !== State.UNVERIFIED) {
+        show();
+      } else {
+        hide();
+      }
+    }
   }
 
   /**
@@ -976,6 +995,46 @@
       window.addEventListener('resize', onWindowResize);
     } else if (auto === 'onsubmit') {
       auto = undefined;
+    }
+  }
+
+  /**
+   * Set overlay UI mode.
+   */
+  function setOverlay(enabled: boolean) {
+    log('overlay', enabled);
+    overlay = enabled;
+    if (enabled) {
+      if (!auto) {
+        auto = 'onsubmit';
+      }
+      if (elBackdrop && el.parentElement) {
+        elBackdrop.replaceWith(el.parentElement);
+      }
+      if (el?.parentElement?.parentElement) {
+        elBackdrop = document.createElement('div');
+        el.parentElement.parentElement.appendChild(elBackdrop);
+        const elOverlay = document.createElement('div');
+        const elClose = document.createElement('button');
+        elClose.type = 'button';
+        elClose.innerHTML = '&times;';
+        elClose.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          reset();
+        });
+        elBackdrop.classList.add('altcha-overlay-backdrop');
+        elClose.classList.add('altcha-overlay-close-button');
+        elOverlay.classList.add('altcha-overlay');
+        elBackdrop.append(elOverlay);
+        elOverlay.append(elClose);
+        if (overlaycontent) {
+          elOverlay.append(...document.querySelectorAll(overlaycontent));
+        }
+        elOverlay.append(el.parentElement);
+      }
+    } else if (elBackdrop && el.parentElement) {
+      elBackdrop.replaceWith(el.parentElement);
+      el.style.display = 'block';
     }
   }
 
@@ -1175,6 +1234,12 @@
     if (options.name !== undefined) {
       name = options.name;
     }
+    if (options.overlaycontent !== undefined) {
+      overlaycontent = options.overlaycontent;
+    }
+    if (options.overlay !== undefined) {
+      setOverlay(options.overlay);
+    }
     if (options.refetchonexpire !== undefined) {
       refetchonexpire = !!options.refetchonexpire;
     }
@@ -1227,6 +1292,7 @@
       maxnumber,
       mockerror,
       obfuscated,
+      overlay,
       refetchonexpire,
       spamfilter,
       strings: _strings,
@@ -1265,6 +1331,9 @@
    */
   export function hide() {
     el.style.display = 'none';
+    if (overlay && elBackdrop) {
+      elBackdrop.style.display = 'none';
+    }
   }
 
   /**
@@ -1367,6 +1436,9 @@
     if (floating) {
       repositionFloating();
     }
+    if (overlay && elBackdrop) {
+      elBackdrop.style.display = 'flex';
+    }
   }
 
   /**
@@ -1428,6 +1500,11 @@
           log('verified');
           tick().then(() => {
             dispatch('verified', { payload });
+            if (auto === 'onsubmit') {
+              requestSubmit(elSubmitter);
+            } else if (overlay) {
+              hide();
+            }
           });
         }
       })
@@ -1445,6 +1522,7 @@
   class="altcha"
   data-state={currentState}
   data-floating={floating}
+  data-overlay={overlay}
 >
   <div class="altcha-main">
     <div

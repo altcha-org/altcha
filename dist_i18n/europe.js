@@ -631,6 +631,42 @@ const M = {
 };
 globalThis.altchaI18n.set("ru", M);
 const D = {
+  ariaLinkLabel: "Posjetite Altcha.org",
+  enterCode: "Unesite kod",
+  enterCodeAria: "Unesite kod koji čujete. Pritisnite Space za puštanje zvuka.",
+  error: "Verifikacija nije uspjela. Pokušajte ponovo kasnije.",
+  expired: "Verifikacija je istekla. Pokušajte ponovo.",
+  footer: 'Zaštićeno putem <a href="https://altcha.org/" target="_blank" aria-label="Posjetite Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Preuzmi audio izazov",
+  label: "Nijesam robot",
+  loading: "Učitavanje...",
+  reload: "Ponovo učitaj",
+  verify: "Verifikuj",
+  verificationRequired: "Potrebna je verifikacija!",
+  verified: "Verifikovano",
+  verifying: "Verifikacija u toku...",
+  waitAlert: "Verifikujem... molimo sačekajte."
+};
+globalThis.altchaI18n.set("me", D);
+const J = {
+  ariaLinkLabel: "Посетете го Altcha.org",
+  enterCode: "Внесете код",
+  enterCodeAria: "Внесете го кодот што го слушате. Притиснете Space за да ја пуштите аудио снимката.",
+  error: "Проверката не успеа. Обидете се подоцна.",
+  expired: "Проверката истече. Обидете се повторно.",
+  footer: 'Заштитено со <a href="https://altcha.org/" target="_blank" aria-label="Посетете го Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "Земете аудио предизвик",
+  label: "Јас не сум робот",
+  loading: "Се вчитува...",
+  reload: "Превчитај",
+  verify: "Провери",
+  verificationRequired: "Потребна е проверка!",
+  verified: "Потврдено",
+  verifying: "Се проверува...",
+  waitAlert: "Се проверува... ве молиме почекајте."
+};
+globalThis.altchaI18n.set("mk", J);
+const Y = {
   ariaLinkLabel: "Besoek Altcha.org",
   enterCode: "Voer kode in",
   enterCodeAria: "Voer die kode in wat jy hoor. Druk Spasie om die klank af te speel.",
@@ -647,8 +683,8 @@ const D = {
   verifying: "Verifieer...",
   waitAlert: "Verifieer... wag asseblief."
 };
-globalThis.altchaI18n.set("af", D);
-const J = {
+globalThis.altchaI18n.set("af", Y);
+const Q = {
   ariaLinkLabel: "Żur Altcha.org",
   enterCode: "Idħol il-kodiċi",
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
@@ -665,4 +701,4 @@ const J = {
   verifying: "Verifika għaddejja...",
   waitAlert: "Verifika għaddejja... stenna ftit."
 };
-globalThis.altchaI18n.set("mt", J);
+globalThis.altchaI18n.set("mt", Q);

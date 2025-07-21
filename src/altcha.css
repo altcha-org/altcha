@@ -257,6 +257,59 @@
   transform-origin: center;
 }
 
+.altcha-overlay {
+  --altcha-color-base: #fff;
+  --altcha-color-text: #000;
+
+  animation: overlay-slidein 0.5s forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  left: 50%;
+  width: 260px;
+  opacity: 0;
+  position: fixed;
+  top: 45%;
+  transform: translate(-50%, -50%);
+}
+
+.altcha-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 99999999;
+}
+
+.altcha-overlay-close-button {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: currentColor;
+  font-size: 130%;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+@media (max-height: 450px) {
+  .altcha-overlay {
+    top: 10% !important;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes overlay-slidein {
+  100% {
+    opacity: 1;
+    top: 50%;
+  }
+}
+
 @keyframes altcha-spinner {
   100% {
     transform: rotate(360deg);

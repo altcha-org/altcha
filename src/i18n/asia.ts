@@ -21,3 +21,11 @@ import './vi.ts';
 import './ar.ts';
 import './he.ts';
 import './tr.ts';
+
+// Western Asia
+import './az.ts';
+import './hy.ts';
+import './ka.ts';
+
+// Central Asia
+import './tk.ts';

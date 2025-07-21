@@ -327,7 +327,9 @@ q = function(e) {
  */
 O = function(e) {
   const i = e.target;
-  i != null && i.hasAttribute("data-code-challenge-form") || this.pendingFiles.length && (e.preventDefault(), e.stopPropagation(), this.uploadPendingFiles());
+  i != null && i.hasAttribute(
+    "data-code-challenge-form"
+  ) || this.pendingFiles.length && (e.preventDefault(), e.stopPropagation(), this.uploadPendingFiles());
 }, A = async function(e, i) {
   const r = u(this, c, H).call(this);
   if (!r)
@@ -413,7 +415,10 @@ O = function(e) {
   return !0;
 }, G = async function(e, i, r, o = {}) {
   var a;
-  return e = new URL(e, ((a = this.elForm) == null ? void 0 : a.getAttribute("action")) || location.origin).toString(), new Promise((s, l) => {
+  return e = new URL(
+    e,
+    ((a = this.elForm) == null ? void 0 : a.getAttribute("action")) || location.origin
+  ).toString(), new Promise((s, l) => {
     const d = new XMLHttpRequest();
     i.controller.signal.addEventListener("abort", () => {
       d.abort();

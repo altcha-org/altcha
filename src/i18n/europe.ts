@@ -34,6 +34,8 @@ import './bg.ts';
 import './el.ts';
 import './sr.ts';
 import './ru.ts';
+import './me.ts';
+import './mk.ts';
 
 // Southern Europe
 import './af.ts';

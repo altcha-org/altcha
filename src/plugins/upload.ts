@@ -87,7 +87,7 @@ export class PluginUpload extends Plugin {
     } catch (error) {
       this.context.log('upload failed', error);
       this.context.dispatch('uploaderror', {
-        error
+        error,
       });
       return false;
     }
@@ -218,7 +218,9 @@ export class PluginUpload extends Plugin {
    */
   #onFormSubmit(ev: SubmitEvent) {
     const target = ev.target as HTMLFormElement | null;
-    const isCodeChallengeForm = target?.hasAttribute('data-code-challenge-form');
+    const isCodeChallengeForm = target?.hasAttribute(
+      'data-code-challenge-form'
+    );
     if (isCodeChallengeForm) {
       // Submit event from the code-challenge form -> don't handle
       return;
@@ -382,7 +384,10 @@ export class PluginUpload extends Plugin {
     body: Uint8Array<ArrayBufferLike> | ArrayBuffer | File,
     headers: Record<string, string> = {}
   ) {
-    url = new URL(url, this.elForm?.getAttribute('action') || location.origin).toString();
+    url = new URL(
+      url,
+      this.elForm?.getAttribute('action') || location.origin
+    ).toString();
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       handle.controller.signal.addEventListener('abort', () => {

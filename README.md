@@ -132,7 +132,7 @@ ALTCHA is optimized for performance:
 | Distribution                 | Size (GZIPped) |
 | ---------------------------- | -------------- |
 | ALTCHA                       | 30 kB          |
-| ALTCHA with all translations | 44 kB          |
+| ALTCHA with all translations | 46 kB          |
 | Cloudflare Turnstile         | 85+ kB         |
 | hCaptcha                     | 250+ kB        |
 | reCAPTCHA                    | 300+ kB        |

@@ -2103,7 +2103,7 @@ function Na(e, t) {
     el(), y(ht, null), o(D) && (o(D).removeEventListener("submit", dn), o(D).removeEventListener("reset", vn), o(D).removeEventListener("focusin", cn), y(D, null)), ke && (clearTimeout(ke), ke = null), document.removeEventListener("click", un), document.removeEventListener("scroll", fn), window.removeEventListener("resize", _n);
   }), Yi(() => {
     var n;
-    $("mounted", "2.1.0"), $("workers", dt()), il(), $("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), ge() && $("using test mode"), x() && Rr(x()), l() !== void 0 && $("auto", l()), E() !== void 0 && pn(E()), y(D, (n = o(V)) == null ? void 0 : n.closest("form"), !0), o(D) && (o(D).addEventListener("submit", dn, { capture: !0 }), o(D).addEventListener("reset", vn), (l() === "onfocus" || X() === "focus") && o(D).addEventListener("focusin", cn)), pe() && wn(!0), l() === "onload" && (Ve() ? Dt() : Pe()), o(Er) && (te() || z()) && $("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    $("mounted", "2.2.0-beta.2"), $("workers", dt()), il(), $("plugins", Ue.length ? Ue.map((u) => u.constructor.pluginName).join(", ") : "none"), ge() && $("using test mode"), x() && Rr(x()), l() !== void 0 && $("auto", l()), E() !== void 0 && pn(E()), y(D, (n = o(V)) == null ? void 0 : n.closest("form"), !0), o(D) && (o(D).addEventListener("submit", dn, { capture: !0 }), o(D).addEventListener("reset", vn), (l() === "onfocus" || X() === "focus") && o(D).addEventListener("focusin", cn)), pe() && wn(!0), l() === "onload" && (Ve() ? Dt() : Pe()), o(Er) && (te() || z()) && $("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       Me("load");
     });
   });
@@ -2439,14 +2439,11 @@ function Na(e, t) {
     let u = null, g = null;
     if ("Worker" in window) {
       try {
-        u = gl(n, n.maxNumber || n.maxnumber || ye()), y(Ke, u.controller, !0);
-        try {
-          g = await u.promise;
-        } finally {
-          y(Ke, null);
-        }
+        u = gl(n, n.maxNumber || n.maxnumber || ye()), y(Ke, u.controller, !0), g = await u.promise;
       } catch (_) {
         $(_);
+      } finally {
+        y(Ke, null);
       }
       if (g === null || (g == null ? void 0 : g.number) !== void 0 || "obfuscated" in n)
         return { data: n, solution: g };
@@ -2458,6 +2455,8 @@ function Na(e, t) {
     u = ua(n.challenge, n.salt, n.algorithm, n.maxNumber || n.maxnumber || ye()), y(Ke, u.controller, !0);
     try {
       g = await u.promise;
+    } catch (_) {
+      $(_);
     } finally {
       y(Ke, null);
     }

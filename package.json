@@ -1,7 +1,7 @@
 {
   "name": "altcha",
   "description": "Privacy-first CAPTCHA widget, compliant with global regulations (GDPR/HIPAA/CCPA/LGDP/DPDPA/PIPL) and WCAG accessible. No tracking, self-verifying.",
-  "version": "2.1.0",
+  "version": "2.2.0-beta.2",
   "license": "MIT",
   "author": {
     "name": "Daniel Regeci",

@@ -1073,6 +1073,9 @@
     }
   }
 
+  /**
+   * Solve the challenge provided as parameter. Automaticaly detects web-worker support.
+   */
   async function solve(data: Challenge | Obfuscated): Promise<{
     data: Challenge | Obfuscated;
     solution: Solution | ClarifySolution | null;
@@ -1083,13 +1086,11 @@
       try {
         ret = solveChallengeWorkers(data, data.maxNumber || data.maxnumber || maxnumber);
         abortController = ret.controller;
-        try {
-          solution = await ret.promise;
-        } finally {
-          abortController = null;
-        }
+        solution = await ret.promise;
       } catch (err) {
         log(err);
+      } finally {
+        abortController = null;
       }
       if (solution === null || solution?.number !== undefined || 'obfuscated' in data) {
         return {
@@ -1118,6 +1119,8 @@
     abortController = ret.controller;
     try {
       solution = await ret.promise;
+    } catch (err) {
+      log(err);
     } finally {
       abortController = null;
     }
@@ -1127,6 +1130,9 @@
     };
   }
 
+  /**
+   * Solve the provided challenge using web-workers with given `concurrency`
+   */
   function solveChallengeWorkers(
     challenge: Challenge | Obfuscated,
     max: number = typeof test === 'number' ? test : (challenge.maxNumber || challenge.maxnumber || maxnumber),

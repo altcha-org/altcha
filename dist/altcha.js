@@ -2126,7 +2126,7 @@ function Fl(e, t) {
     io(), b(vt, null), a(N) && (a(N).removeEventListener("submit", dn), a(N).removeEventListener("reset", hn), a(N).removeEventListener("focusin", cn), b(N, null)), Ie && (clearTimeout(Ie), Ie = null), document.removeEventListener("click", un), document.removeEventListener("scroll", fn), window.removeEventListener("resize", pn);
   }), Yi(() => {
     var n;
-    R("mounted", "2.1.0"), R("workers", dt()), so(), R("plugins", je.length ? je.map((u) => u.constructor.pluginName).join(", ") : "none"), ge() && R("using test mode"), $() && Ar($()), o() !== void 0 && R("auto", o()), E() !== void 0 && yn(E()), b(N, (n = a(M)) == null ? void 0 : n.closest("form"), !0), a(N) && (a(N).addEventListener("submit", dn, { capture: !0 }), a(N).addEventListener("reset", hn), (o() === "onfocus" || K() === "focus") && a(N).addEventListener("focusin", cn)), ye() && wn(!0), o() === "onload" && (Me() ? Nt() : Pe()), a(Er) && (te() || X()) && R("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
+    R("mounted", "2.2.0-beta.2"), R("workers", dt()), so(), R("plugins", je.length ? je.map((u) => u.constructor.pluginName).join(", ") : "none"), ge() && R("using test mode"), $() && Ar($()), o() !== void 0 && R("auto", o()), E() !== void 0 && yn(E()), b(N, (n = a(M)) == null ? void 0 : n.closest("form"), !0), a(N) && (a(N).addEventListener("submit", dn, { capture: !0 }), a(N).addEventListener("reset", hn), (o() === "onfocus" || K() === "focus") && a(N).addEventListener("focusin", cn)), ye() && wn(!0), o() === "onload" && (Me() ? Nt() : Pe()), a(Er) && (te() || X()) && R("Attributes hidefooter and hidelogo ignored because usage with free API Keys requires attribution."), requestAnimationFrame(() => {
       Ve("load");
     });
   });
@@ -2462,14 +2462,11 @@ function Fl(e, t) {
     let u = null, g = null;
     if ("Worker" in window) {
       try {
-        u = yo(n, n.maxNumber || n.maxnumber || be()), b(Je, u.controller, !0);
-        try {
-          g = await u.promise;
-        } finally {
-          b(Je, null);
-        }
+        u = yo(n, n.maxNumber || n.maxnumber || be()), b(Je, u.controller, !0), g = await u.promise;
       } catch (p) {
         R(p);
+      } finally {
+        b(Je, null);
       }
       if (g === null || (g == null ? void 0 : g.number) !== void 0 || "obfuscated" in n)
         return { data: n, solution: g };
@@ -2481,6 +2478,8 @@ function Fl(e, t) {
     u = vl(n.challenge, n.salt, n.algorithm, n.maxNumber || n.maxnumber || be()), b(Je, u.controller, !0);
     try {
       g = await u.promise;
+    } catch (p) {
+      R(p);
     } finally {
       b(Je, null);
     }

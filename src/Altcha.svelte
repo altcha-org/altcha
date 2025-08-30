@@ -173,6 +173,7 @@
   });
   const widgetId = $derived(`${id || name}_checkbox_${Math.round(Math.random() * 1e8)}`);
 
+  let abortController: AbortController | null = $state(null);
   let checked: boolean = $state(false);
   let codeChallenge: {
     challenge: Challenge;
@@ -322,6 +323,7 @@
       throw new Error('Mocked error.');
     } else if (parsedChallengeJson) {
       log('using provided json data');
+      processSaltParams(parsedChallengeJson.salt);
       return parsedChallengeJson;
     } else if (test) {
       log('generating test challenge', { test });
@@ -356,15 +358,7 @@
       }
       const configHeader = resp.headers.get('X-Altcha-Config');
       const json = await resp.json();
-      const params = new URLSearchParams(json.salt.split('?')?.[1]);
-      const expires = params.get('expires') || params.get('expire');
-      if (expires) {
-        const date = new Date(+expires * 1000);
-        const diff = !isNaN(date.getTime()) ? date.getTime() - Date.now() : 0;
-        if (diff > 0) {
-          setExpire(diff);
-        }
-      }
+      processSaltParams(json.salt);
       if (configHeader) {
         try {
           const config = JSON.parse(configHeader);
@@ -842,6 +836,24 @@
   }
 
   /**
+   * Process additional `salt` parameters such as `expire`
+   */
+  function processSaltParams(salt: string) {
+    const params = new URLSearchParams(salt.split('?')?.[1]);
+    const expires = params.get('expires') || params.get('expire');
+    if (expires) {
+      const date = new Date(+expires * 1000);
+      const diff = !isNaN(date.getTime()) ? date.getTime() - Date.now() : 0;
+      if (diff > 0) {
+        setExpire(diff);
+      }
+    } else if (expireTimeout) {
+      clearTimeout(expireTimeout);
+      expireTimeout = null;
+    }
+  }
+
+  /**
    * Classifies the data using the Spam Filter and sets the payload.
    */
   async function requestServerVerification(verificationPayload: string) {
@@ -1065,14 +1077,21 @@
     data: Challenge | Obfuscated;
     solution: Solution | ClarifySolution | null;
   }> {
-    let solution: Solution | ClarifySolution | null = null;
+    let ret: ReturnType<typeof solveChallenge> | ClarifySolution | null = null;
+    let solution: Solution | null = null;
     if ('Worker' in window) {
       try {
-        solution = await solveWorkers(data, data.maxNumber || data.maxnumber || maxnumber);
+        ret = solveChallengeWorkers(data, data.maxNumber || data.maxnumber || maxnumber);
+        abortController = ret.controller;
+        try {
+          solution = await ret.promise;
+        } finally {
+          abortController = null;
+        }
       } catch (err) {
         log(err);
       }
-      if (solution?.number !== undefined || 'obfuscated' in data) {
+      if (solution === null || solution?.number !== undefined || 'obfuscated' in data) {
         return {
           data,
           solution,
@@ -1090,55 +1109,72 @@
         solution: await solution.promise,
       };
     }
+    ret = solveChallenge(
+      data.challenge,
+      data.salt,
+      data.algorithm,
+      data.maxNumber || data.maxnumber || maxnumber
+    );
+    abortController = ret.controller;
+    try {
+      solution = await ret.promise;
+    } finally {
+      abortController = null;
+    }
     return {
       data,
-      solution: await solveChallenge(
-        data.challenge,
-        data.salt,
-        data.algorithm,
-        data.maxNumber || data.maxnumber || maxnumber
-      ).promise,
+      solution,
     };
   }
 
-  async function solveWorkers(
+  function solveChallengeWorkers(
     challenge: Challenge | Obfuscated,
     max: number = typeof test === 'number' ? test : (challenge.maxNumber || challenge.maxnumber || maxnumber),
     concurrency: number = Math.ceil(workers)
-  ): Promise<Solution | null> {
+  ):{ promise: Promise<Solution | null>; controller: AbortController } {
+    const controller = new AbortController();
     const workersInstances: Worker[] = [];
     concurrency = Math.min(16, max, Math.max(1, concurrency));
     for (let i = 0; i < concurrency; i++) {
       workersInstances.push(altchaCreateWorker(workerurl));
     }
     const step = Math.ceil(max / concurrency);
-    const solutions = await Promise.all(
-      workersInstances.map((worker, i) => {
-        const start = i * step;
-        return new Promise((resolve) => {
-          worker.addEventListener('message', (message: MessageEvent) => {
-            if (message.data) {
-              for (const w of workersInstances) {
-                if (w !== worker) {
-                  w.postMessage({ type: 'abort' });
+    const fn = async () => {
+      const solutions = await Promise.all(
+        workersInstances.map((worker, i) => {
+          const start = i * step;
+          controller.signal.addEventListener('abort', () => {
+            worker.postMessage({ type: 'abort' });
+          });
+          return new Promise((resolve) => {
+            worker.addEventListener('message', (message: MessageEvent) => {
+              if (message.data) {
+                for (const w of workersInstances) {
+                  if (w !== worker) {
+                    w.postMessage({ type: 'abort' });
+                  }
                 }
               }
-            }
-            resolve(message.data);
-          });
-          worker.postMessage({
-            payload: challenge,
-            max: start + step,
-            start,
-            type: 'work',
-          });
-        }) as Promise<Solution | null>;
-      })
-    );
-    for (const worker of workersInstances) {
-      worker.terminate();
-    }
-    return solutions.find((solution) => !!solution) || null;
+              resolve(message.data);
+            });
+            worker.postMessage({
+              payload: challenge,
+              max: start + step,
+              start,
+              type: 'work',
+            });
+          }) as Promise<Solution | null>;
+        })
+      );
+      for (const worker of workersInstances) {
+        worker.terminate();
+      }
+      return solutions.find((solution) => !!solution) || null;
+    };
+    return {
+      promise: fn(),
+      controller,
+    };
   }
 
   /**
@@ -1400,9 +1436,9 @@
     newState: State = State.UNVERIFIED,
     err: string | null = null
   ) {
-    if (expireTimeout) {
-      clearTimeout(expireTimeout);
-      expireTimeout = null;
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
     }
     checked = false;
     payload = null;
@@ -1480,7 +1516,7 @@
               payload = createAltchaPayload(data, solution);
               log('payload', payload);
             }
-          } else {
+          } else if (currentState !== State.EXPIRED) {
             log(
               "Unable to find a solution. Ensure that the 'maxnumber' attribute is greater than the randomly generated number."
             );
@@ -1495,7 +1531,7 @@
             dispatch('code', { codeChallenge });
           });
 
-        } else {
+        } else if (payload) {
           setState(State.VERIFIED);
           log('verified');
           tick().then(() => {

@@ -176,10 +176,10 @@ export async function clarifyData(
         const decryptedData = await crypto.subtle.decrypt(
           {
             name: algorithm,
-            iv: numberToUint8Array(n),
+            iv: numberToUint8Array(n) as BufferSource,
           },
           cryptoKey,
-          encryptedData,
+          encryptedData as BufferSource,
         );
         if (decryptedData) {
           return {

@@ -1,6 +1,6 @@
 const o = () => {
 };
-function u(e, a) {
+function f(e, a) {
   return e != e ? a == a : e !== a || e !== null && typeof e == "object" || typeof e == "function";
 }
 let h = !1;
@@ -12,62 +12,62 @@ function b(e) {
     h = a;
   }
 }
-function A(e, a, i) {
+function A(e, a, r) {
   if (e == null)
     return a(void 0), o;
-  const l = b(
+  const t = b(
     () => e.subscribe(
       a,
       // @ts-expect-error
-      i
+      r
     )
   );
-  return l.unsubscribe ? () => l.unsubscribe() : l;
+  return t.unsubscribe ? () => t.unsubscribe() : t;
 }
 const n = [];
 function y(e, a = o) {
-  let i = null;
-  const l = /* @__PURE__ */ new Set();
-  function d(t) {
-    if (u(e, t) && (e = t, i)) {
+  let r = null;
+  const t = /* @__PURE__ */ new Set();
+  function d(l) {
+    if (f(e, l) && (e = l, r)) {
       const g = !n.length;
-      for (const r of l)
-        r[1](), n.push(r, e);
+      for (const i of t)
+        i[1](), n.push(i, e);
       if (g) {
-        for (let r = 0; r < n.length; r += 2)
-          n[r][0](n[r + 1]);
+        for (let i = 0; i < n.length; i += 2)
+          n[i][0](n[i + 1]);
         n.length = 0;
       }
     }
   }
-  function s(t) {
-    d(t(
+  function c(l) {
+    d(l(
       /** @type {T} */
       e
     ));
   }
-  function f(t, g = o) {
-    const r = [t, g];
-    return l.add(r), l.size === 1 && (i = a(d, s) || o), t(
+  function u(l, g = o) {
+    const i = [l, g];
+    return t.add(i), t.size === 1 && (r = a(d, c) || o), l(
       /** @type {T} */
       e
     ), () => {
-      l.delete(r), l.size === 0 && i && (i(), i = null);
+      t.delete(i), t.size === 0 && r && (r(), r = null);
     };
   }
-  return { set: d, update: s, subscribe: f };
+  return { set: d, update: c, subscribe: u };
 }
-function c(e) {
+function s(e) {
   let a;
-  return A(e, (i) => a = i)(), a;
+  return A(e, (r) => a = r)(), a;
 }
 globalThis.altchaPlugins = globalThis.altchaPlugins || [];
 globalThis.altchaI18n = globalThis.altchaI18n || {
-  get: (e) => c(globalThis.altchaI18n.store)[e],
+  get: (e) => s(globalThis.altchaI18n.store)[e],
   set: (e, a) => {
-    Object.assign(c(globalThis.altchaI18n.store), {
+    Object.assign(s(globalThis.altchaI18n.store), {
       [e]: a
-    }), globalThis.altchaI18n.store.set(c(globalThis.altchaI18n.store));
+    }), globalThis.altchaI18n.store.set(s(globalThis.altchaI18n.store));
   },
   store: y({})
 };
@@ -125,7 +125,7 @@ const C = {
   waitAlert: "確認中...少々お待ちください。"
 };
 globalThis.altchaI18n.set("ja", C);
-const p = {
+const T = {
   ariaLinkLabel: "Altcha.org 방문하기",
   enterCode: "코드 입력",
   enterCodeAria: "들리는 코드를 입력하세요. 스페이스 바를 눌러 오디오를 재생합니다.",
@@ -142,8 +142,8 @@ const p = {
   verifying: "확인 중...",
   waitAlert: "확인 중... 잠시만 기다려주세요."
 };
-globalThis.altchaI18n.set("ko", p);
-const L = {
+globalThis.altchaI18n.set("ko", T);
+const p = {
   ariaLinkLabel: "Altcha.org पर जाएं",
   enterCode: "कोड दर्ज करेंं",
   enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
@@ -160,8 +160,8 @@ const L = {
   verifying: "सत्यापित कर रहे हैं...",
   waitAlert: "सत्यापित किया जा रहा है... कृपया प्रतीक्षा करें।"
 };
-globalThis.altchaI18n.set("hi", L);
-const T = {
+globalThis.altchaI18n.set("hi", p);
+const L = {
   ariaLinkLabel: "Altcha.org পরিদর্শন করুন",
   enterCode: "কোড লিখুন",
   enterCodeAria: "আপনি যে কোড শুনতে পান তা লিখুন। অডিও প্লে করতে স্পেস বাটন টিপুন।",
@@ -178,7 +178,7 @@ const T = {
   verifying: "যাচাই করা হচ্ছে...",
   waitAlert: "যাচাই করা হচ্ছে... দয়া করে অপেক্ষা করুন।"
 };
-globalThis.altchaI18n.set("bn", T);
+globalThis.altchaI18n.set("bn", L);
 const m = {
   ariaLinkLabel: "Altcha.org भेट द्या",
   enterCode: "कोड टाकाा",
@@ -324,6 +324,24 @@ const z = {
 };
 globalThis.altchaI18n.set("ar", z);
 const R = {
+  ariaLinkLabel: "بازدید از Altcha.org",
+  enterCode: "کد را وارد کنید",
+  enterCodeAria: "کدی که می‌شنوید را وارد کنید. برای پخش صدا Space را فشار دهید.",
+  error: "احراز هویت ناموفق بود. بعداً دوباره تلاش کنید.",
+  expired: "احراز هویت منقضی شد. دوباره تلاش کنید.",
+  footer: 'محافظت شده توسط <a href="https://altcha.org/" target="_blank" aria-label="بازدید از Altcha.org">ALTCHA</a>',
+  getAudioChallenge: "دریافت چالش صوتی",
+  label: "من ربات نیستم",
+  loading: "در حال بارگذاری...",
+  reload: "بارگذاری مجدد",
+  verify: "تایید",
+  verificationRequired: "احراز هویت لازم است!",
+  verified: "تایید شد",
+  verifying: "در حال تایید...",
+  waitAlert: "در حال تایید... لطفا منتظر بمانید."
+};
+globalThis.altchaI18n.set("fa", R);
+const $ = {
   ariaLinkLabel: "בקר באתר Altcha.org",
   enterCode: "הזן קוד",
   enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
@@ -340,8 +358,8 @@ const R = {
   verifying: "מאמת...",
   waitAlert: "מבצע אימות... אנא המתן."
 };
-globalThis.altchaI18n.set("he", R);
-const $ = {
+globalThis.altchaI18n.set("he", $);
+const S = {
   ariaLinkLabel: "Altcha.org'yu ziyaret edin",
   enterCode: "Kodu girin",
   enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
@@ -358,8 +376,8 @@ const $ = {
   verifying: "Doğrulama yapılıyor...",
   waitAlert: "Doğrulama yapılıyor... lütfen bekleyin."
 };
-globalThis.altchaI18n.set("tr", $);
-const S = {
+globalThis.altchaI18n.set("tr", S);
+const B = {
   ariaLinkLabel: "Altcha.org saytına daxil olun",
   enterCode: "Kodu daxil edin",
   enterCodeAria: "Eşitdiyiniz kodu daxil edin. Səsi dinləmək üçün Boşluq düyməsinə basın.",
@@ -376,7 +394,7 @@ const S = {
   verifying: "Təsdiqlənir...",
   waitAlert: "Təsdiqlənir... zəhmət olmasa gözləyin."
 };
-globalThis.altchaI18n.set("az", S);
+globalThis.altchaI18n.set("az", B);
 const D = {
   ariaLinkLabel: "Այցելեք Altcha.org",
   enterCode: "Մուտքագրեք կոդը",
@@ -395,7 +413,7 @@ const D = {
   waitAlert: "Հաստատվում է... խնդրում ենք սպասել։"
 };
 globalThis.altchaI18n.set("hy", D);
-const B = {
+const M = {
   ariaLinkLabel: "ეწვიეთ Altcha.org-ს",
   enterCode: "შეიყვანეთ კოდი",
   enterCodeAria: "შეიყვანეთ კოდი, რომელსაც გაიგონებთ. აუდიოს მოსასმენად დააჭირეთ Space-ს.",
@@ -412,8 +430,26 @@ const B = {
   verifying: "დადასტურება მიმდინარეობს...",
   waitAlert: "დადასტურება მიმდინარეობს... გთხოვთ, დაიცადეთ."
 };
-globalThis.altchaI18n.set("ka", B);
-const M = {
+globalThis.altchaI18n.set("ka", M);
+const j = {
+  ariaLinkLabel: "Altcha.org сайтына кіру",
+  enterCode: "Кодты енгізіңіз",
+  enterCodeAria: "Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.",
+  error: "Тексеру сәтсіз аяқталды. Кейінірек қайталаңыз.",
+  expired: "Тексеру мерзімі аяқталды. Қайталаңыз.",
+  footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org сайтына кіру">ALTCHA</a> қорғайды',
+  getAudioChallenge: "Аудио сынақ алу",
+  label: "Мен робот емеспін",
+  loading: "Жүктелуде...",
+  reload: "Қайта жүктеу",
+  verify: "Тексеру",
+  verificationRequired: "Тексеру талап етіледі!",
+  verified: "Тексерілді",
+  verifying: "Тексеруде...",
+  waitAlert: "Тексерілуде... күте тұрыңыз."
+};
+globalThis.altchaI18n.set("kk", j);
+const K = {
   ariaLinkLabel: "Altcha.org sahypasyna giriň",
   enterCode: "Kody giriziň",
   enterCodeAria: "Eşiden kodyňyzy giriziň. Sesli görkezmäni diňlemek üçin Space basyň.",
@@ -430,4 +466,22 @@ const M = {
   verifying: "Barlanýar...",
   waitAlert: "Barlanýar... garaşyň."
 };
-globalThis.altchaI18n.set("tk", M);
+globalThis.altchaI18n.set("tk", K);
+const Y = {
+  ariaLinkLabel: "Altcha.org saytiga tashrif buyuring",
+  enterCode: "Kodni kiriting",
+  enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
+  error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
+  expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
+  footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org saytiga tashrif buyuring">ALTCHA</a> tomonidan himoyalangan',
+  getAudioChallenge: "Audio sinovni olish",
+  label: "Men robot emasman",
+  loading: "Yuklanmoqda...",
+  reload: "Qayta yuklash",
+  verify: "Tekshirish",
+  verificationRequired: "Tekshiruv talab qilinadi!",
+  verified: "Tekshirildi",
+  verifying: "Tekshirilmoqda...",
+  waitAlert: "Tekshirilmoqda... iltimos kuting."
+};
+globalThis.altchaI18n.set("uz", Y);

@@ -2,6 +2,7 @@
 import './ca.ts';
 import './fr-fr.ts';
 import './de.ts';
+import './lb.ts';
 import './nl.ts';
 import './ga.ts';
 import './it.ts';
@@ -36,6 +37,7 @@ import './sr.ts';
 import './ru.ts';
 import './me.ts';
 import './mk.ts';
+import './sq.ts';
 
 // Southern Europe
 import './af.ts';

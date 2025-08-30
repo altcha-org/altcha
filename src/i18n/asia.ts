@@ -19,6 +19,7 @@ import './vi.ts';
 
 // Middle East
 import './ar.ts';
+import './fa.ts';
 import './he.ts';
 import './tr.ts';
 
@@ -28,4 +29,6 @@ import './hy.ts';
 import './ka.ts';
 
 // Central Asia
+import './kk.ts';
 import './tk.ts';
+import './uz.ts';

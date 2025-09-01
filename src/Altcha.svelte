@@ -1542,9 +1542,7 @@
           log('verified');
           tick().then(() => {
             dispatch('verified', { payload });
-            if (auto === 'onsubmit') {
-              requestSubmit(elSubmitter);
-            } else if (overlay) {
+            if (overlay) {
               hide();
             }
           });

@@ -10,23 +10,40 @@ declare global {
     set: (language: string, translation: Record<string, string>) => void;
     store: {
       set(this: void, value: Record<string, Record<string, string>>): void;
-      update(this: void, updater: (value: Record<string, Record<string, string>>) => Record<string, Record<string, string>>): void;
-      subscribe(this: void, run: (value: Record<string, Record<string, string>>) => void, invalidate?: () => void): () => void;
+      update(
+        this: void,
+        updater: (
+          value: Record<string, Record<string, string>>
+        ) => Record<string, Record<string, string>>
+      ): void;
+      subscribe(
+        this: void,
+        run: (value: Record<string, Record<string, string>>) => void,
+        invalidate?: () => void
+      ): () => void;
     };
   };
 
-  type AltchaState = 'error' | 'expired' | 'verified' | 'verifying' | 'unverified';
+  type AltchaState =
+    | 'error'
+    | 'expired'
+    | 'verified'
+    | 'verifying'
+    | 'unverified';
 
-  interface AltchaStateChangeEvent extends CustomEvent<{
-    payload?: string;
-    state: AltchaState;
-  }> {}
+  interface AltchaStateChangeEvent
+    extends CustomEvent<{
+      payload?: string;
+      state: AltchaState;
+    }> {}
 
-  interface AltchaVerifiedEvent extends CustomEvent<{
-    payload: string;
-  }> {}
+  interface AltchaVerifiedEvent
+    extends CustomEvent<{
+      payload: string;
+    }> {}
 
-  interface AltchaServerVerificationEvent extends CustomEvent<Record<string, unknown>> {}
+  interface AltchaServerVerificationEvent
+    extends CustomEvent<Record<string, unknown>> {}
 
   interface AltchaWidgetOptions {
     auto?: 'off' | 'onfocus' | 'onload' | 'onsubmit';
@@ -35,10 +52,13 @@ declare global {
     challengeurl?: string;
     challengejson?: string;
     credentials?: 'omit' | 'same-origin' | 'include' | boolean | undefined;
-    customfetch?: string | ((url: string, init?: RequestInit) => Promise<Response>);
+    customfetch?:
+      | string
+      | ((url: string, init?: RequestInit) => Promise<Response>);
     debug?: boolean;
     delay?: number;
     disableautofocus?: boolean;
+    disablerefetchonexpire?: boolean;
     expire?: number;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean;
     floatinganchor?: string;
@@ -62,6 +82,7 @@ declare global {
     overlay?: boolean;
     overlaycontent?: string;
     plugins?: string;
+    /** @deprecated Use `disablerefetchonexpire` instead. */
     refetchonexpire?: boolean;
     /** @deprecated */
     spamfilter?: boolean | 'ipAddress';
@@ -82,14 +103,13 @@ declare global {
     hide: () => void;
     repositionFloating: (viewportOffset?: number) => void;
     reset: (newState?: AltchaState, err?: string | null) => void;
-    setFloatingAnchor: (el: HTMLElement) => void; 
-    setState: (newState: AltchaState, err?: string | null) => void; 
+    setFloatingAnchor: (el: HTMLElement) => void;
+    setState: (newState: AltchaState, err?: string | null) => void;
     show: () => void;
     verify: () => Promise<void>;
   }
 
-  interface AltchaWidget extends AltchaWidgetOptions {
-  }
+  interface AltchaWidget extends AltchaWidgetOptions {}
 
   interface AltchaWidgetCSSProperties extends Partial<CSSStyleDeclaration> {
     '--altcha-border-width'?: string;
@@ -138,7 +158,7 @@ declare global {
   }
 }
 
-declare module "react" {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'altcha-widget': AltchaWidgetReact;
@@ -146,7 +166,7 @@ declare module "react" {
   }
 }
 
-declare module "react/jsx-runtime" {
+declare module 'react/jsx-runtime' {
   namespace JSX {
     interface IntrinsicElements {
       'altcha-widget': AltchaWidgetReact;
@@ -154,7 +174,7 @@ declare module "react/jsx-runtime" {
   }
 }
 
-declare module "react/jsx-dev-runtime" {
+declare module 'react/jsx-dev-runtime' {
   namespace JSX {
     interface IntrinsicElements {
       'altcha-widget': AltchaWidgetReact;

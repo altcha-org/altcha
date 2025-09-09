@@ -158,6 +158,7 @@ Additional options:
   Accepts `url: string` and `init: RequestInit` as arguments and must return a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 - **delay**: Artificial delay in milliseconds before verification (defaults to 0).
 - **disableautofocus**: If true, prevents the code-challenge input from automatically receiving focus on render (defaults to `false`).
+- **disablerefetchonexpire**: Whether to disable automatic re-fetch and re-validation when the challenge expires (defaults to `false`).
 - **expire**: Challenge expiration duration in milliseconds.
 - **floating**: Enable floating UI (possible values: `auto`, `top`, `bottom`).
 - **floatinganchor**: CSS selector of the "anchor" to which the floating UI will be attached (defaults to the `button[type="submit"]` in the related form).
@@ -172,7 +173,6 @@ Additional options:
 - **overlay**: Enables overlay UI mode (automatically sets `auto="onsubmit"`).
 - **overlaycontent**: CSS selector of the HTML element to display in the overlay modal before the widget.
 - **strings**: JSON-encoded translation strings. Refer to [customization](https://altcha.org/docs/widget-customization).
-- **refetchonexpire**: Automatically re-fetch and re-validate when the challenge expires (defaults to true).
 - **verifyurl**: URL for server-side verification requests. This option is automatically configured with Sentinel. Override this setting only if using a custom server implementation. Supports `fn:function_name` format to call a global JS function instead.
 - **workers**: Number of workers to utilize for PoW (defaults to `navigator.hardwareConcurrency || 8`, max value `16`).
 - **workerurl**: URL of the Worker script (defaults to `./worker.js`, only works with `external` build).
@@ -306,6 +306,7 @@ export interface Configure {
   debug?: boolean;
   delay?: number;
   disableautofocus?: boolean;
+  disablerefetchonexpire?: boolean;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
@@ -318,7 +319,7 @@ export interface Configure {
   name?: string;
   obfuscated?: string;
   overlay?: boolean;
-  refetchonexpire?: boolean;
+  refetchonexpire?: boolean; // deprecated, use disablerefetchonexpire 
   spamfilter?: boolean | 'ipAddress' | SpamFilter; // deprecated
   strings?: {
     ariaLinkLabel: strin;

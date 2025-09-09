@@ -26,6 +26,7 @@ export interface Configure {
   debug?: boolean;
   delay?: number;
   disableautofocus?: boolean;
+  disablerefetchonexpire?: boolean;
   expire?: number;
   floating?: 'auto' | 'top' | 'bottom';
   floatinganchor?: string;
@@ -39,6 +40,7 @@ export interface Configure {
   obfuscated?: string;
   overlay?: boolean;
   overlaycontent?: string;
+  /** @deprecated Use `disablerefetchonexpire` instead. */
   refetchonexpire?: boolean;
   sentinel?: Sentinel;
   /** @deprecated */
@@ -181,4 +183,7 @@ export enum AudioState {
   READY = 'ready',
 }
 
-export type CustomFetchFunction = (url: string, init?: RequestInit) => Promise<Response>;
+export type CustomFetchFunction = (
+  url: string,
+  init?: RequestInit
+) => Promise<Response>;

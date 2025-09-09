@@ -15,6 +15,9 @@
       disableautofocus: {
         type: 'Boolean',
       },
+      disablerefetchonexpire: {
+        type: 'Boolean',
+      },
       expire: {
         type: 'Number',
       },
@@ -33,6 +36,7 @@
       mockerror: {
         type: 'Boolean',
       },
+      // deprecated
       refetchonexpire: {
         type: 'Boolean',
       },
@@ -83,6 +87,7 @@
     debug?: boolean;
     delay?: number;
     disableautofocus?: boolean;
+    disablerefetchonexpire?: boolean;
     expire?: number | undefined;
     floating?: 'auto' | 'top' | 'bottom' | 'false' | '' | boolean | undefined;
     floatinganchor?: string | undefined;
@@ -99,6 +104,7 @@
     overlay?: boolean | undefined;
     overlaycontent?: string | undefined;
     plugins?: string | undefined;
+    /** @deprecated Use `disablerefetchonexpire` instead. */
     refetchonexpire?: boolean;
     sentinel?: Sentinel;
     /** @deprecated */
@@ -120,6 +126,8 @@
     debug = false,
     delay = 0,
     disableautofocus = false,
+    refetchonexpire = true,
+    disablerefetchonexpire = !refetchonexpire,
     expire = undefined,
     floating = undefined,
     floatinganchor = undefined,
@@ -136,7 +144,6 @@
     overlay = undefined,
     overlaycontent = undefined,
     plugins = undefined,
-    refetchonexpire = true,
     sentinel = undefined,
     spamfilter = false,
     strings = undefined,
@@ -306,7 +313,7 @@
    * Sets the state to EXPIRED or re-fetches the challenge if `refetchonexpire` is enabled.
    */
   function expireChallenge() {
-    if (challengeurl && refetchonexpire && currentState === State.VERIFIED) {
+    if (challengeurl && !disablerefetchonexpire && currentState === State.VERIFIED) {
       // re-fetch challenge and verify again
       verify();
     } else {
@@ -1283,7 +1290,10 @@
       setOverlay(options.overlay);
     }
     if (options.refetchonexpire !== undefined) {
-      refetchonexpire = !!options.refetchonexpire;
+      disablerefetchonexpire = !options.refetchonexpire;
+    }
+    if (options.disablerefetchonexpire !== undefined) {
+      disablerefetchonexpire = !options.disablerefetchonexpire;
     }
     if (options.sentinel !== undefined &&  typeof options.sentinel === 'object') {
       sentinel = options.sentinel;
@@ -1324,6 +1334,8 @@
       challengeurl,
       debug,
       delay,
+      disableautofocus,
+      disablerefetchonexpire,
       expire,
       floating: floating as Configure['floating'],
       floatinganchor,
@@ -1335,7 +1347,7 @@
       mockerror,
       obfuscated,
       overlay,
-      refetchonexpire,
+      refetchonexpire: !disablerefetchonexpire,
       spamfilter,
       strings: _strings,
       test,

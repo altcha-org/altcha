@@ -936,7 +936,7 @@
       body.fields = sentinel.fields ? getTextFields() : undefined;
       body.timeZone = sentinel.timeZone ? getTimeZone() : undefined;
     }
-    const resp = await fetch(verifyurl, {
+    const resp = await getFetchFunction()(verifyurl, {
       body: JSON.stringify(body),
       headers: {
         'content-type': 'application/json',

@@ -1,167 +1,163 @@
-var J = Object.defineProperty;
-var v = (t) => {
-  throw TypeError(t);
+const u = {
+  generateKey: v,
+  exportKey: S,
+  importKey: x,
+  decrypt: C,
+  encrypt: L
 };
-var X = (t, n, e) => n in t ? J(t, n, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[n] = e;
-var p = (t, n, e) => X(t, typeof n != "symbol" ? n + "" : n, e), S = (t, n, e) => n.has(t) || v("Cannot " + e);
-var f = (t, n, e) => (S(t, n, "read from private field"), e ? e.call(t) : n.get(t)), w = (t, n, e) => n.has(t) ? v("Cannot add the same private member more than once") : n instanceof WeakSet ? n.add(t) : n.set(t, e);
-var u = (t, n, e) => (S(t, n, "access private method"), e);
-const E = {
-  generateKey: Q,
-  exportKey: W,
-  importKey: Z,
-  decrypt: te,
-  encrypt: ee
-};
-async function Q(t = 256) {
+async function v(n = 256) {
   return crypto.subtle.generateKey({
     name: "AES-GCM",
-    length: t
+    length: n
   }, !0, ["encrypt", "decrypt"]);
 }
-async function W(t) {
-  return new Uint8Array(await crypto.subtle.exportKey("raw", t));
+async function S(n) {
+  return new Uint8Array(await crypto.subtle.exportKey("raw", n));
 }
-async function Z(t) {
-  return crypto.subtle.importKey("raw", t, {
+async function x(n) {
+  return crypto.subtle.importKey("raw", n, {
     name: "AES-GCM"
   }, !0, ["encrypt", "decrypt"]);
 }
-async function ee(t, n, e = 16) {
-  const i = crypto.getRandomValues(new Uint8Array(e));
+async function L(n, e, t = 16) {
+  const r = crypto.getRandomValues(new Uint8Array(t));
   return {
     encrypted: new Uint8Array(await crypto.subtle.encrypt({
       name: "AES-GCM",
-      iv: i
-    }, t, n)),
-    iv: i
+      iv: r
+    }, n, e)),
+    iv: r
   };
 }
-async function te(t, n, e) {
+async function C(n, e, t) {
   return new Uint8Array(await crypto.subtle.decrypt({
     name: "AES-GCM",
-    iv: e
-  }, t, n));
+    iv: t
+  }, n, e));
 }
-function ne(t, n = !1) {
-  return n && (t = t.replace(/_/g, "/").replace(/-/g, "+") + "=".repeat(3 - (3 + t.length) % 4)), Uint8Array.from(atob(t), (e) => e.charCodeAt(0));
+function I(n, e = !1) {
+  return e && (n = n.replace(/_/g, "/").replace(/-/g, "+") + "=".repeat(3 - (3 + n.length) % 4)), Uint8Array.from(atob(n), (t) => t.charCodeAt(0));
 }
-function x(t, n = !1) {
-  const e = btoa(String.fromCharCode(...t));
-  return n ? e.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") : e;
+function h(n, e = !1) {
+  const t = btoa(String.fromCharCode(...n));
+  return e ? t.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") : t;
 }
-function L(t, n = 80) {
-  let e = "";
-  for (; t.length > 0; )
-    e += t.slice(0, n) + `
-`, t = t.slice(n);
-  return e;
+function f(n, e = 80) {
+  let t = "";
+  for (; n.length > 0; )
+    t += n.slice(0, e) + `
+`, n = n.slice(e);
+  return t;
 }
-function C(t) {
-  return ne(t.split(/\r?\n/).filter((n) => !n.startsWith("-----")).join(""));
+function g(n) {
+  return I(n.split(/\r?\n/).filter((e) => !e.startsWith("-----")).join(""));
 }
-const h = "RSA-OAEP", b = "SHA-256", re = 2048, ie = new Uint8Array([1, 0, 1]), se = {
-  generateKeyPair: oe,
-  encrypt: ae,
-  decrypt: ce,
-  exportPrivateKey: I,
-  exportPrivateKeyPem: pe,
-  exportPublicKey: F,
-  exportPublicKeyPem: le,
-  exportPublicKeyFromPrivateKey: de,
-  importPrivateKey: T,
-  importPrivateKeyPem: ue,
-  importPublicKey: N,
-  importPublicKeyPem: z
+const l = "RSA-OAEP", p = "SHA-256", N = 2048, z = new Uint8Array([1, 0, 1]), T = {
+  generateKeyPair: _,
+  encrypt: R,
+  decrypt: j,
+  exportPrivateKey: m,
+  exportPrivateKeyPem: H,
+  exportPublicKey: d,
+  exportPublicKeyPem: k,
+  exportPublicKeyFromPrivateKey: O,
+  importPrivateKey: E,
+  importPrivateKeyPem: q,
+  importPublicKey: w,
+  importPublicKeyPem: b
 };
-async function oe() {
+async function _() {
   return crypto.subtle.generateKey({
-    name: h,
-    modulusLength: re,
-    publicExponent: ie,
-    hash: b
+    name: l,
+    modulusLength: N,
+    publicExponent: z,
+    hash: p
   }, !0, ["encrypt", "decrypt"]);
 }
-async function ae(t, n) {
+async function R(n, e) {
   return new Uint8Array(await crypto.subtle.encrypt({
-    name: h
-  }, t, n));
+    name: l
+  }, n, e));
 }
-async function ce(t, n) {
+async function j(n, e) {
   return new Uint8Array(await crypto.subtle.decrypt({
-    name: h
-  }, t, n));
+    name: l
+  }, n, e));
 }
-async function F(t) {
-  return new Uint8Array(await crypto.subtle.exportKey("spki", t));
+async function d(n) {
+  return new Uint8Array(await crypto.subtle.exportKey("spki", n));
 }
-async function I(t) {
-  return new Uint8Array(await crypto.subtle.exportKey("pkcs8", t));
+async function m(n) {
+  return new Uint8Array(await crypto.subtle.exportKey("pkcs8", n));
 }
-async function le(t) {
+async function k(n) {
   return `-----BEGIN PUBLIC KEY-----
-` + L(x(await F(t)), 64) + "-----END PUBLIC KEY-----";
+` + f(h(await d(n)), 64) + "-----END PUBLIC KEY-----";
 }
-async function pe(t) {
+async function H(n) {
   return `-----BEGIN PRIVATE KEY-----
-` + L(x(await I(t)), 64) + "-----END PRIVATE KEY-----";
+` + f(h(await m(n)), 64) + "-----END PRIVATE KEY-----";
 }
-async function N(t) {
-  return crypto.subtle.importKey("spki", t, {
-    name: h,
-    hash: b
+async function w(n) {
+  return crypto.subtle.importKey("spki", n, {
+    name: l,
+    hash: p
   }, !0, ["encrypt"]);
 }
-async function z(t) {
-  return N(C(t));
+async function b(n) {
+  return w(g(n));
 }
-async function T(t) {
-  return crypto.subtle.importKey("pkcs8", t, {
-    name: h,
-    hash: b
+async function E(n) {
+  return crypto.subtle.importKey("pkcs8", n, {
+    name: l,
+    hash: p
   }, !0, ["decrypt"]);
 }
-async function ue(t) {
-  return T(C(t));
+async function q(n) {
+  return E(g(n));
 }
-async function de(t) {
-  const n = await crypto.subtle.exportKey("jwk", t);
-  delete n.d, delete n.dp, delete n.dq, delete n.q, delete n.qi, n.key_ops = ["encrypt"];
-  const e = await crypto.subtle.importKey("jwk", n, {
-    name: h,
-    hash: b
+async function O(n) {
+  const e = await crypto.subtle.exportKey("jwk", n);
+  delete e.d, delete e.dp, delete e.dq, delete e.q, delete e.qi, e.key_ops = ["encrypt"];
+  const t = await crypto.subtle.importKey("jwk", e, {
+    name: l,
+    hash: p
   }, !0, ["encrypt"]);
-  return F(e);
+  return d(t);
 }
-const ye = new Uint8Array([1, 0, 1]), he = 256, fe = 16;
-async function me(t, n, e = {}) {
-  const { aesIVLength: i = fe, aesKeyLength: r = he } = e, o = await E.generateKey(r), { encrypted: a, iv: s } = await E.encrypt(o, n, i), l = await se.encrypt(t, await E.exportKey(o));
+const $ = new Uint8Array([1, 0, 1]), B = 256, G = 16;
+async function M(n, e, t = {}) {
+  const { aesIVLength: r = G, aesKeyLength: i = B } = t, s = await u.generateKey(i), { encrypted: o, iv: a } = await u.encrypt(s, e, r), c = await T.encrypt(n, await u.exportKey(s));
   return new Uint8Array([
-    ...ye,
-    ...new Uint8Array([l.length]),
-    ...new Uint8Array([s.length]),
-    ...l,
-    ...s,
-    ...a
+    ...$,
+    ...new Uint8Array([c.length]),
+    ...new Uint8Array([a.length]),
+    ...c,
+    ...a,
+    ...o
   ]);
 }
-class P {
+class U {
   /**
    * Constructs a new instance of the Plugin.
    * 
    * @param {PluginContext} context - The context provided to the plugin, containing necessary configurations and dependencies.
    */
-  constructor(n) {
-    this.context = n;
+  constructor(e) {
+    this.context = e;
   }
+  /**
+   * A distinct name of the plugin. Every plugin must have it's own name.
+   */
+  static pluginName;
   /**
    * Registers a plugin class in the global `altchaPlugins` array.
    * Ensures the plugin is added only once.
    * 
    * @param {new(context: PluginContext) => Plugin} cls - The plugin class to register.
    */
-  static register(n) {
-    typeof globalThis.altchaPlugins != "object" && (globalThis.altchaPlugins = []), globalThis.altchaPlugins.includes(n) || globalThis.altchaPlugins.push(n);
+  static register(e) {
+    typeof globalThis.altchaPlugins != "object" && (globalThis.altchaPlugins = []), globalThis.altchaPlugins.includes(e) || globalThis.altchaPlugins.push(e);
   }
   /**
    * Clean up resources when the plugin is destroyed.
@@ -175,7 +171,7 @@ class P {
    * 
    * @param {string | null} err - The error message or `null` if there's no error.
    */
-  onErrorChange(n) {
+  onErrorChange(e) {
   }
   /**
    * Callback triggered when the plugin state changes.
@@ -183,29 +179,23 @@ class P {
    * 
    * @param {State} state - The new state of the plugin.
    */
-  onStateChange(n) {
+  onStateChange(e) {
   }
 }
-/**
- * A distinct name of the plugin. Every plugin must have it's own name.
- */
-p(P, "pluginName");
-var m, g, c, R, j, k, U, H, q, O, A, $, B, G;
-class _ extends P {
+class Y extends U {
+  static pluginName = "upload";
+  pendingFiles = [];
+  uploadHandles = [];
+  elForm;
+  #e = this.#c.bind(this);
+  #t = this.#l.bind(this);
   /**
    * Constructor initializes the plugin, setting up event listeners on the form.
    *
    * @param {PluginContext} context - Plugin context providing access to the element, configuration, and utility methods.
    */
   constructor(e) {
-    super(e);
-    w(this, c);
-    p(this, "pendingFiles", []);
-    p(this, "uploadHandles", []);
-    p(this, "elForm");
-    w(this, m, u(this, c, q).bind(this));
-    w(this, g, u(this, c, O).bind(this));
-    this.elForm = this.context.el.closest("form"), this.elForm && (this.elForm.addEventListener("change", f(this, m)), this.elForm.addEventListener("submit", f(this, g), {
+    super(e), this.elForm = this.context.el.closest("form"), this.elForm && (this.elForm.addEventListener("change", this.#e), this.elForm.addEventListener("submit", this.#t, {
       capture: !0
     }));
   }
@@ -215,245 +205,283 @@ class _ extends P {
    * @param {string} fieldName - The field name associated with the file input.
    * @param {File} file - The file to be uploaded.
    */
-  addFile(e, i) {
-    this.pendingFiles.find(([r, o]) => r === e && o === i) || this.pendingFiles.push([e, i]);
+  addFile(e, t) {
+    this.pendingFiles.find(([r, i]) => r === e && i === t) || this.pendingFiles.push([e, t]);
   }
   /**
    * Cleans up event listeners and other resources when the plugin is destroyed.
    */
   destroy() {
-    this.elForm && (this.elForm.removeEventListener("change", f(this, m)), this.elForm.removeEventListener("submit", f(this, g)));
+    this.elForm && (this.elForm.removeEventListener("change", this.#e), this.elForm.removeEventListener("submit", this.#t));
   }
   /**
    * Uploads all pending files in the list.
    */
   async uploadPendingFiles() {
-    var i;
     const e = async () => {
-      const r = this.pendingFiles[0];
-      if (r && await u(this, c, A).call(this, u(this, c, j).call(this, r)), this.pendingFiles.length)
+      const t = this.pendingFiles[0];
+      if (t && await this.#r(this.#s(t)), this.pendingFiles.length)
         return e();
     };
     try {
       await e();
-    } catch (r) {
-      return this.context.log("upload failed", r), this.context.dispatch("uploaderror", {
-        error: r
+    } catch (t) {
+      return this.context.log("upload failed", t), this.context.dispatch("uploaderror", {
+        error: t
       }), !1;
     }
-    this.pendingFiles.length === 0 && (u(this, c, R).call(this), (i = this.elForm) == null || i.requestSubmit());
+    this.pendingFiles.length === 0 && (this.#i(), this.elForm?.requestSubmit());
+  }
+  /**
+   * Adds hidden input fields to the form containing the file IDs of uploaded files.
+   */
+  #i() {
+    const e = this.uploadHandles.reduce(
+      (t, r) => (t[r.fieldName] || (t[r.fieldName] = []), r.fileId && t[r.fieldName].push(r.fileId), t),
+      {}
+    );
+    for (const t in e) {
+      const r = document.createElement("input");
+      r.name = t, r.type = "hidden", r.value = e[t].join(","), this.elForm?.querySelector(`[name="${t}"]`)?.setAttribute("disabled", "disabled"), this.elForm?.appendChild(r);
+    }
+  }
+  /**
+   * Creates an upload handle for the specified pending file.
+   *
+   * @param {[string, File]} pendingFile - The field name and file to be uploaded.
+   * @returns {UploadHandle} The created upload handle.
+   * @throws Will throw an error if the upload handle cannot be created.
+   */
+  #s(e) {
+    const t = this.pendingFiles.findIndex(
+      ([i, s]) => i === e[0] && s === e[1]
+    );
+    if (t < 0)
+      throw new Error("Cannot create upload handle.");
+    const r = new D(e[0], e[1]);
+    return this.uploadHandles.push(r), this.pendingFiles.splice(t, 1), this.#o(r), this.#n(), r;
+  }
+  /**
+   * Dispatches a custom event when a file upload starts.
+   *
+   * @param {UploadHandle} handle - The upload handle associated with the file upload.
+   */
+  #o(e) {
+    this.context.dispatch("upload", { handle: e });
+  }
+  /**
+   * Dispatches a custom event to track the progress of ongoing file uploads.
+   */
+  #n() {
+    const e = this.pendingFiles.reduce((r, [i, s]) => r + s.size, 0) + this.uploadHandles.reduce((r, { uploadSize: i }) => r + i, 0), t = this.uploadHandles.reduce(
+      (r, { loaded: i }) => r + i,
+      0
+    );
+    this.context.dispatch("uploadprogress", {
+      bytesLoaded: t,
+      bytesTotal: e,
+      pendingFiles: this.pendingFiles,
+      uploadHandles: this.uploadHandles
+    });
+  }
+  /**
+   * Retrieves the upload URL from the form's attributes.
+   *
+   * @returns {string | null} The upload URL, or null if not found.
+   */
+  #a() {
+    if (this.elForm) {
+      const e = this.elForm.getAttribute("action"), t = this.elForm.getAttribute("data-upload-url");
+      if (t)
+        return t;
+      const r = new URL(e || location.origin);
+      return r.pathname = r.pathname + "/file", r.toString();
+    }
+    return null;
+  }
+  /**
+   * Handles the form's change event, adding files to the pending files list.
+   *
+   * @param {Event} ev - The change event.
+   */
+  #c(e) {
+    const t = e.target;
+    if (t && t.type === "file") {
+      const r = t.files;
+      if (r?.length)
+        for (const i of r)
+          this.addFile(t.name, i);
+    }
+  }
+  /**
+   * Handles the form's submit event, preventing submission until all pending files are uploaded.
+   *
+   * @param {SubmitEvent} ev - The submit event.
+   */
+  #l(e) {
+    e.target?.hasAttribute(
+      "data-code-challenge-form"
+    ) || this.pendingFiles.length && (e.preventDefault(), e.stopPropagation(), this.uploadPendingFiles());
+  }
+  /**
+   * Uploads a single file, handling encryption and ALTCHA challenges if necessary.
+   *
+   * @param {UploadHandle} handle - The upload handle associated with the file.
+   * @param {string} [altchaPayload] - The ALTCHA payload, if available.
+   * @returns {Promise<unknown>} A promise that resolves when the upload is complete.
+   * @throws Will throw an error if the upload fails or if an ALTCHA challenge cannot be solved.
+   */
+  async #r(e, t) {
+    const r = this.#a();
+    if (!r)
+      throw new Error("Upload url not specified.");
+    const i = {
+      "content-type": "application/json"
+    };
+    t && (i.authorization = "Altcha payload=" + t);
+    const s = await fetch(r, {
+      body: JSON.stringify({
+        name: e.file.name || "file",
+        size: e.file.size,
+        type: e.file.type || "application/octet-stream"
+      }),
+      credentials: "include",
+      headers: i,
+      method: "POST"
+    });
+    if (s.status === 401)
+      return this.#p(s, e);
+    if (s.status !== 200)
+      throw new Error(`Unexpected server response ${s.status}.`);
+    const o = await s.json();
+    let a = e.file;
+    if (o.encrypted && o.encryptionPublicKey) {
+      const c = await b(o.encryptionPublicKey), P = await new Response(
+        new ReadableStream({
+          async start(y) {
+            const A = e.file.stream().getReader();
+            for (; ; ) {
+              const { done: F, value: K } = await A.read();
+              if (F)
+                break;
+              y.enqueue(K);
+            }
+            y.close();
+          }
+        })
+      ).arrayBuffer();
+      a = await M(c, new Uint8Array(P));
+    }
+    return e.uploadSize = a instanceof Uint8Array ? a.byteLength : e.file.size, await this.#d(o.uploadUrl, e, a, {
+      "content-type": e.file.type || "application/octet-stream"
+    }), o.finalizeUrl && await this.#u(o.finalizeUrl, e.uploadSize), e.fileId = o.fileId, e.resolve({
+      encrypted: o.encrypted,
+      fileId: o.fileId
+    }), e.promise;
+  }
+  /**
+   * Handles ALTCHA challenges during file upload, solving the challenge and retrying the upload.
+   *
+   * @param {Response} resp - The response from the server containing the ALTCHA challenge.
+   * @param {UploadHandle} handle - The upload handle associated with the file.
+   * @returns {Promise<unknown>} A promise that resolves when the challenge is solved and the upload is complete.
+   * @throws Will throw an error if the challenge cannot be solved.
+   */
+  async #p(e, t) {
+    try {
+      const i = e.headers.get("www-authenticate")?.match(/challenge=(.*),/)?.[1];
+      if (!i)
+        throw new Error(
+          "Unable to retrieve altcha challenge from www-authenticate header."
+        );
+      const s = JSON.parse(i);
+      if (s && "challenge" in s) {
+        const { solution: o } = await this.context.solve(s);
+        if (o && "number" in o)
+          return this.#r(
+            t,
+            btoa(
+              JSON.stringify({
+                ...s,
+                number: o.number
+              })
+            )
+          );
+        throw new Error("Invalid challenge solution.");
+      }
+    } catch (r) {
+      throw this.context.log(r), new Error("Unable to solve altcha challenge for upload.");
+    }
+  }
+  /**
+   * Finalizes the file upload by sending a request to the server.
+   *
+   * @param {string} finalizeUrl - The URL to finalize the upload.
+   * @param {number} uploadSize - The size of the uploaded file.
+   */
+  async #u(e, t) {
+    const r = await fetch(e, {
+      body: JSON.stringify({
+        uploadedBytes: t
+      }),
+      headers: {
+        "content-type": "application/json"
+      },
+      method: "POST"
+    });
+    if (r.status > 204)
+      throw new Error(`Unexpected server response ${r.status}.`);
+    return !0;
+  }
+  /**
+   * Uploads the file's contents to the server using the PUT method.
+   *
+   * @param {string} url - The URL to upload the file to.
+   * @param {UploadHandle} handle - The upload handle associated with the file.
+   * @param {Uint8Array | File} body - The file's contents.
+   * @param {Record<string, string>} headers - Additional headers for the upload request.
+   */
+  async #d(e, t, r, i = {}) {
+    return e = new URL(
+      e,
+      this.elForm?.getAttribute("action") || location.origin
+    ).toString(), new Promise((s, o) => {
+      const a = new XMLHttpRequest();
+      t.controller.signal.addEventListener("abort", () => {
+        a.abort();
+      }), a.upload.addEventListener("progress", (c) => {
+        t.setProgress(c.loaded), this.#n();
+      }), a.addEventListener("error", (c) => {
+        o(new Error("Upload failed."));
+      }), a.addEventListener("load", () => {
+        a.status >= 400 ? o(new Error(`Server responded with ${a.status}`)) : s(void 0);
+      }), a.open("PUT", e);
+      for (const c in i)
+        a.setRequestHeader(c, i[c]);
+      a.send(r);
+    });
   }
 }
-m = new WeakMap(), g = new WeakMap(), c = new WeakSet(), /**
- * Adds hidden input fields to the form containing the file IDs of uploaded files.
- */
-R = function() {
-  var i, r, o;
-  const e = this.uploadHandles.reduce(
-    (a, s) => (a[s.fieldName] || (a[s.fieldName] = []), s.fileId && a[s.fieldName].push(s.fileId), a),
-    {}
-  );
-  for (const a in e) {
-    const s = document.createElement("input");
-    s.name = a, s.type = "hidden", s.value = e[a].join(","), (r = (i = this.elForm) == null ? void 0 : i.querySelector(`[name="${a}"]`)) == null || r.setAttribute("disabled", "disabled"), (o = this.elForm) == null || o.appendChild(s);
-  }
-}, /**
- * Creates an upload handle for the specified pending file.
- *
- * @param {[string, File]} pendingFile - The field name and file to be uploaded.
- * @returns {UploadHandle} The created upload handle.
- * @throws Will throw an error if the upload handle cannot be created.
- */
-j = function(e) {
-  const i = this.pendingFiles.findIndex(
-    ([o, a]) => o === e[0] && a === e[1]
-  );
-  if (i < 0)
-    throw new Error("Cannot create upload handle.");
-  const r = new ge(e[0], e[1]);
-  return this.uploadHandles.push(r), this.pendingFiles.splice(i, 1), u(this, c, k).call(this, r), u(this, c, U).call(this), r;
-}, /**
- * Dispatches a custom event when a file upload starts.
- *
- * @param {UploadHandle} handle - The upload handle associated with the file upload.
- */
-k = function(e) {
-  this.context.dispatch("upload", { handle: e });
-}, /**
- * Dispatches a custom event to track the progress of ongoing file uploads.
- */
-U = function() {
-  const e = this.pendingFiles.reduce((r, [o, a]) => r + a.size, 0) + this.uploadHandles.reduce((r, { uploadSize: o }) => r + o, 0), i = this.uploadHandles.reduce(
-    (r, { loaded: o }) => r + o,
-    0
-  );
-  this.context.dispatch("uploadprogress", {
-    bytesLoaded: i,
-    bytesTotal: e,
-    pendingFiles: this.pendingFiles,
-    uploadHandles: this.uploadHandles
-  });
-}, /**
- * Retrieves the upload URL from the form's attributes.
- *
- * @returns {string | null} The upload URL, or null if not found.
- */
-H = function() {
-  if (this.elForm) {
-    const e = this.elForm.getAttribute("action"), i = this.elForm.getAttribute("data-upload-url");
-    if (i)
-      return i;
-    const r = new URL(e || location.origin);
-    return r.pathname = r.pathname + "/file", r.toString();
-  }
-  return null;
-}, /**
- * Handles the form's change event, adding files to the pending files list.
- *
- * @param {Event} ev - The change event.
- */
-q = function(e) {
-  const i = e.target;
-  if (i && i.type === "file") {
-    const r = i.files;
-    if (r != null && r.length)
-      for (const o of r)
-        this.addFile(i.name, o);
-  }
-}, /**
- * Handles the form's submit event, preventing submission until all pending files are uploaded.
- *
- * @param {SubmitEvent} ev - The submit event.
- */
-O = function(e) {
-  const i = e.target;
-  i != null && i.hasAttribute(
-    "data-code-challenge-form"
-  ) || this.pendingFiles.length && (e.preventDefault(), e.stopPropagation(), this.uploadPendingFiles());
-}, A = async function(e, i) {
-  const r = u(this, c, H).call(this);
-  if (!r)
-    throw new Error("Upload url not specified.");
-  const o = {
-    "content-type": "application/json"
-  };
-  i && (o.authorization = "Altcha payload=" + i);
-  const a = await fetch(r, {
-    body: JSON.stringify({
-      name: e.file.name || "file",
-      size: e.file.size,
-      type: e.file.type || "application/octet-stream"
-    }),
-    credentials: "include",
-    headers: o,
-    method: "POST"
-  });
-  if (a.status === 401)
-    return u(this, c, $).call(this, a, e);
-  if (a.status !== 200)
-    throw new Error(`Unexpected server response ${a.status}.`);
-  const s = await a.json();
-  let l = e.file;
-  if (s.encrypted && s.encryptionPublicKey) {
-    const d = await z(s.encryptionPublicKey), M = await new Response(
-      new ReadableStream({
-        async start(K) {
-          const Y = e.file.stream().getReader();
-          for (; ; ) {
-            const { done: D, value: V } = await Y.read();
-            if (D)
-              break;
-            K.enqueue(V);
-          }
-          K.close();
-        }
-      })
-    ).arrayBuffer();
-    l = await me(d, new Uint8Array(M));
-  }
-  return e.uploadSize = l instanceof Uint8Array ? l.byteLength : e.file.size, await u(this, c, G).call(this, s.uploadUrl, e, l, {
-    "content-type": e.file.type || "application/octet-stream"
-  }), s.finalizeUrl && await u(this, c, B).call(this, s.finalizeUrl, e.uploadSize), e.fileId = s.fileId, e.resolve({
-    encrypted: s.encrypted,
-    fileId: s.fileId
-  }), e.promise;
-}, $ = async function(e, i) {
-  var r;
-  try {
-    const o = e.headers.get("www-authenticate"), a = (r = o == null ? void 0 : o.match(/challenge=(.*),/)) == null ? void 0 : r[1];
-    if (!a)
-      throw new Error(
-        "Unable to retrieve altcha challenge from www-authenticate header."
-      );
-    const s = JSON.parse(a);
-    if (s && "challenge" in s) {
-      const { solution: l } = await this.context.solve(s);
-      if (l && "number" in l)
-        return u(this, c, A).call(this, i, btoa(
-          JSON.stringify({
-            ...s,
-            number: l.number
-          })
-        ));
-      throw new Error("Invalid challenge solution.");
-    }
-  } catch (o) {
-    throw this.context.log(o), new Error("Unable to solve altcha challenge for upload.");
-  }
-}, B = async function(e, i) {
-  const r = await fetch(e, {
-    body: JSON.stringify({
-      uploadedBytes: i
-    }),
-    headers: {
-      "content-type": "application/json"
-    },
-    method: "POST"
-  });
-  if (r.status > 204)
-    throw new Error(`Unexpected server response ${r.status}.`);
-  return !0;
-}, G = async function(e, i, r, o = {}) {
-  var a;
-  return e = new URL(
-    e,
-    ((a = this.elForm) == null ? void 0 : a.getAttribute("action")) || location.origin
-  ).toString(), new Promise((s, l) => {
-    const d = new XMLHttpRequest();
-    i.controller.signal.addEventListener("abort", () => {
-      d.abort();
-    }), d.upload.addEventListener("progress", (y) => {
-      i.setProgress(y.loaded), u(this, c, U).call(this);
-    }), d.addEventListener("error", (y) => {
-      l(new Error("Upload failed."));
-    }), d.addEventListener("load", () => {
-      d.status >= 400 ? l(new Error(`Server responded with ${d.status}`)) : s(void 0);
-    }), d.open("PUT", e);
-    for (const y in o)
-      d.setRequestHeader(y, o[y]);
-    d.send(r);
-  });
-}, p(_, "pluginName", "upload");
-class ge {
+class D {
   /**
    * Creates an instance of UploadHandle.
    *
    * @param {string} fieldName - The name of the field associated with the file upload.
    * @param {File} file - The file to be uploaded.
    */
-  constructor(n, e) {
-    p(this, "controller", new AbortController());
-    p(this, "promise");
-    p(this, "fileId");
-    p(this, "loaded", 0);
-    p(this, "progress", 0);
-    p(this, "uploadSize", 0);
-    p(this, "resolve");
-    p(this, "reject");
-    this.fieldName = n, this.file = e, this.uploadSize = this.file.size, this.promise = new Promise((i, r) => {
-      this.resolve = i, this.reject = r;
+  constructor(e, t) {
+    this.fieldName = e, this.file = t, this.uploadSize = this.file.size, this.promise = new Promise((r, i) => {
+      this.resolve = r, this.reject = i;
     });
   }
+  controller = new AbortController();
+  promise;
+  fileId;
+  loaded = 0;
+  progress = 0;
+  uploadSize = 0;
+  resolve;
+  reject;
   /**
    * Aborts the file upload by invoking the AbortController's abort method.
    */
@@ -465,11 +493,11 @@ class ge {
    *
    * @param {number} loaded - The number of bytes that have been uploaded.
    */
-  setProgress(n) {
-    this.loaded = n, this.progress = this.file.size && n ? Math.min(1, n / this.file.size) : 0;
+  setProgress(e) {
+    this.loaded = e, this.progress = this.file.size && e ? Math.min(1, e / this.file.size) : 0;
   }
 }
-P.register(_);
+U.register(Y);
 export {
-  _ as PluginUpload
+  Y as PluginUpload
 };

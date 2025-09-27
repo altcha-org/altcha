@@ -1,18 +1,11 @@
-var y = Object.defineProperty;
-var p = (s) => {
-  throw TypeError(s);
-};
-var C = (s, t, e) => t in s ? y(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var l = (s, t, e) => C(s, typeof t != "symbol" ? t + "" : t, e), F = (s, t, e) => t.has(s) || p("Cannot " + e);
-var i = (s, t, e) => (F(s, t, "read from private field"), e ? e.call(s) : t.get(s)), r = (s, t, e) => t.has(s) ? p("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(s) : t.set(s, e), T = (s, t, e, n) => (F(s, t, "write to private field"), n ? n.call(s, e) : t.set(s, e), e), E = (s, t, e) => (F(s, t, "access private method"), e);
 new TextEncoder();
-function L() {
+function r() {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch {
   }
 }
-class v {
+class n {
   /**
    * Constructs a new instance of the Plugin.
    * 
@@ -21,6 +14,10 @@ class v {
   constructor(t) {
     this.context = t;
   }
+  /**
+   * A distinct name of the plugin. Every plugin must have it's own name.
+   */
+  static pluginName;
   /**
    * Registers a plugin class in the global `altchaPlugins` array.
    * Ensures the plugin is added only once.
@@ -53,64 +50,54 @@ class v {
   onStateChange(t) {
   }
 }
-/**
- * A distinct name of the plugin. Every plugin must have it's own name.
- */
-l(v, "pluginName");
-var o, a, m, f, w;
-class A extends v {
+class a extends n {
+  static pluginName = "analytics";
+  // HTML form element associated with the plugin
+  #t;
+  // Session instance for tracking analytics data
+  #e;
+  // Bound method for form submission handling
+  #i = this.#s.bind(this);
   /**
    * Creates an instance of PluginAnalytics.
    *
    * @param {PluginContext} context - The context object containing plugin configurations.
    */
-  constructor(e) {
-    super(e);
-    r(this, f);
-    // HTML form element associated with the plugin
-    r(this, o);
-    // Session instance for tracking analytics data
-    r(this, a);
-    // Bound method for form submission handling
-    r(this, m, E(this, f, w).bind(this));
-    if (T(this, o, this.context.el.closest("form")), i(this, o)) {
-      let n = i(this, o).getAttribute("data-beacon-url");
-      const h = i(this, o).getAttribute("action");
-      !n && h && (n = h + "/beacon"), i(this, o).addEventListener("submit", i(this, m)), T(this, a, new N(i(this, o), n));
+  constructor(t) {
+    if (super(t), this.#t = this.context.el.closest("form"), this.#t) {
+      let e = this.#t.getAttribute("data-beacon-url");
+      const i = this.#t.getAttribute("action");
+      !e && i && (e = i + "/beacon"), this.#t.addEventListener("submit", this.#i), this.#e = new h(this.#t, e);
     }
   }
   /**
    * Destroys the plugin instance, removing event listeners and cleaning up the session.
    */
   destroy() {
-    var e, n;
-    (e = i(this, o)) == null || e.removeEventListener("submit", i(this, m)), (n = i(this, a)) == null || n.destroy();
+    this.#t?.removeEventListener("submit", this.#i), this.#e?.destroy();
   }
   /**
    * Tracks errors by forwarding them to the session instance.
    *
    * @param {string | null} err - The error message, or `null` if no error exists.
    */
-  onErrorChange(e) {
-    var n;
-    (n = i(this, a)) == null || n.trackError(e);
+  onErrorChange(t) {
+    this.#e?.trackError(t);
+  }
+  /**
+   * Handles form submission events, appending session data to the form if applicable.
+   */
+  #s() {
+    if (this.#e && !this.#e.submitTime) {
+      this.#e.end();
+      const t = this.#e.dataAsBase64();
+      this.context.dispatch("session", t);
+      const e = document.createElement("input");
+      e.type = "hidden", e.name = "__session", e.value = t, this.#t?.appendChild(e);
+    }
   }
 }
-o = new WeakMap(), a = new WeakMap(), m = new WeakMap(), f = new WeakSet(), /**
- * Handles form submission events, appending session data to the form if applicable.
- */
-w = function() {
-  var e;
-  if (i(this, a) && !i(this, a).submitTime) {
-    i(this, a).end();
-    const n = i(this, a).dataAsBase64();
-    this.context.dispatch("session", n);
-    const h = document.createElement("input");
-    h.type = "hidden", h.name = "__session", h.value = n, (e = i(this, o)) == null || e.appendChild(h);
-  }
-}, l(A, "pluginName", "analytics");
-var c, u, d, g, b;
-class N {
+class h {
   /**
    * Creates a new Session instance.
    *
@@ -118,43 +105,43 @@ class N {
    * @param {string | null} [beaconUrl=null] - The URL to send analytics data to.
    */
   constructor(t, e = null) {
-    // Error message associated with the session
-    l(this, "error", null);
-    // Timestamp when the form was loaded
-    l(this, "loadTime", Date.now());
-    // Timestamp when the form was submitted
-    l(this, "submitTime", null);
-    // Timestamp when the user started interacting with the form
-    l(this, "startTime", null);
-    // Minimum time in milliseconds required to consider the form "viewed"
-    l(this, "viewTimeThresholdMs", 1500);
-    // Tracks the number of changes made to each form field
-    r(this, c, {});
-    // Name of the last input field focused by the user
-    r(this, u, null);
-    // Bound method for handling form change events
-    r(this, d, this.onFormChange.bind(this));
-    // Bound method for handling form focus events
-    r(this, g, this.onFormFocus.bind(this));
-    // Bound method for handling the unload event
-    r(this, b, this.onUnload.bind(this));
-    this.elForm = t, this.beaconUrl = e, window.addEventListener("unload", i(this, b)), this.elForm.addEventListener("change", i(this, d)), this.elForm.addEventListener("focusin", i(this, g));
+    this.elForm = t, this.beaconUrl = e, window.addEventListener("unload", this.#n), this.elForm.addEventListener("change", this.#i), this.elForm.addEventListener("focusin", this.#s);
   }
+  // Error message associated with the session
+  error = null;
+  // Timestamp when the form was loaded
+  loadTime = Date.now();
+  // Timestamp when the form was submitted
+  submitTime = null;
+  // Timestamp when the user started interacting with the form
+  startTime = null;
+  // Minimum time in milliseconds required to consider the form "viewed"
+  viewTimeThresholdMs = 1500;
+  // Tracks the number of changes made to each form field
+  #t = {};
+  // Name of the last input field focused by the user
+  #e = null;
+  // Bound method for handling form change events
+  #i = this.onFormChange.bind(this);
+  // Bound method for handling form focus events
+  #s = this.onFormFocus.bind(this);
+  // Bound method for handling the unload event
+  #n = this.onUnload.bind(this);
   /**
    * Collects and returns analytics data about the form interaction.
    *
    * @returns {Record<string, unknown>} - An object containing analytics data.
    */
   data() {
-    const t = Object.entries(i(this, c));
+    const t = Object.entries(this.#t);
     return {
-      correction: t.length && t.filter(([e, n]) => n > 1).length / t.length || 0,
-      dropoff: !this.submitTime && !this.error && i(this, u) ? i(this, u) : null,
+      correction: t.length && t.filter(([e, i]) => i > 1).length / t.length || 0,
+      dropoff: !this.submitTime && !this.error && this.#e ? this.#e : null,
       error: this.error,
       mobile: this.isMobile(),
       start: this.startTime,
       submit: this.submitTime,
-      tz: L()
+      tz: r()
     };
   }
   /**
@@ -174,7 +161,7 @@ class N {
    * Destroys the session, removing event listeners.
    */
   destroy() {
-    window.removeEventListener("unload", i(this, b)), this.elForm.removeEventListener("change", i(this, d)), this.elForm.removeEventListener("focusin", i(this, g));
+    window.removeEventListener("unload", this.#n), this.elForm.removeEventListener("change", this.#i), this.elForm.removeEventListener("focusin", this.#s);
   }
   /**
    * Marks the session as ended by recording the submission time.
@@ -190,8 +177,8 @@ class N {
    * @returns {string} - The field name, truncated to `maxLength` if necessary.
    */
   getFieldName(t, e = 40) {
-    const n = t.getAttribute("data-group-label"), h = t.getAttribute("name") || t.getAttribute("aria-label");
-    return ((n ? n + ": " : "") + h).slice(0, e);
+    const i = t.getAttribute("data-group-label"), o = t.getAttribute("name") || t.getAttribute("aria-label");
+    return ((i ? i + ": " : "") + o).slice(0, e);
   }
   /**
    * Determines if the current device is a mobile device.
@@ -237,8 +224,8 @@ class N {
   onFormFocus(t) {
     const e = t.target;
     if (this.startTime || this.start(), e && this.isInput(e)) {
-      const n = this.getFieldName(e);
-      n && T(this, u, n);
+      const i = this.getFieldName(e);
+      i && (this.#e = i);
     }
   }
   /**
@@ -280,11 +267,10 @@ class N {
    * @param {string} name - The name of the form field.
    */
   trackFieldChange(t) {
-    i(this, c)[t] = (i(this, c)[t] || 0) + 1;
+    this.#t[t] = (this.#t[t] || 0) + 1;
   }
 }
-c = new WeakMap(), u = new WeakMap(), d = new WeakMap(), g = new WeakMap(), b = new WeakMap();
-v.register(A);
+n.register(a);
 export {
-  A as PluginAnalytics
+  a as PluginAnalytics
 };

@@ -31,7 +31,7 @@ export default defineConfig({
     generateDTs(),
   ],
   build: {
-    target: 'modules',
+    target: 'baseline-widely-available',
     outDir: 'dist_i18n',
     minify: 'esbuild',
     emptyOutDir: false,

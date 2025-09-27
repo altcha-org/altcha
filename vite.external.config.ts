@@ -12,7 +12,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    target: 'modules',
+    target: 'baseline-widely-available',
     lib: {
       entry: 'src/entry-external.ts',
       name: 'altcha',
@@ -31,8 +31,5 @@ export default defineConfig({
         entryFileNames: '[name].js',
       },
     },
-  },
-  test: {
-    setupFiles: ['./tests/setup.ts'],
   },
 });

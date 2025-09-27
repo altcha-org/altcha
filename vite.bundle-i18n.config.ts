@@ -27,7 +27,7 @@ export default defineConfig({
   ],
   build: {
     emptyOutDir: false,
-    target: 'modules',
+    target: 'baseline-widely-available',
     lib: {
       entry: 'src/entry-i18n.ts',
       name: 'altcha-i18n',
@@ -48,8 +48,5 @@ export default defineConfig({
         entryFileNames: '[name].js',
       },
     },
-  },
-  test: {
-    setupFiles: ['./tests/setup.ts'],
   },
 });

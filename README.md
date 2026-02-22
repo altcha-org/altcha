@@ -22,7 +22,7 @@ Want to see it in action? Visit the official ALTCHA Playground to experiment wit
 - **Accessible Code Challenges**: Provides "Enter code from image" fallbacks with built-in **audio support** for visually impaired users.
 - **Privacy by Design**: Fully **GDPR compliant** and cookie-free—no tracking, no fingerprinting, and no data collection.
 - **Universal Accessibility**: Engineered to exceed **WCAG 2.2 AA** standards, ensuring compliance with the **European Accessibility Act (EAA)**.
-- **Lightweight**: Minimal footprint and zero dependencies, optimized for rapid page loads and high-performance environments.
+- **Lightweight**: Minimal footprint, optimized for rapid page loads and high-performance environments.
 - **100% Self-Hosted**: Maintain full sovereignty over your infrastructure with no reliance on third-party API availability.
 
 ## What’s New in v3
@@ -34,7 +34,7 @@ Want to see it in action? Visit the official ALTCHA Playground to experiment wit
 
 ### Migrating from v2
 
-See [MIGRATION-v2.md](/MIGRATION-v2.md).
+See [MIGRATION-v2.md](https://github.com/altcha-org/altcha/blob/v3/MIGRATION-v2.md).
 
 ## Examples
 

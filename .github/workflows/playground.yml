@@ -1,0 +1,9 @@
+name: Deploy Playground
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This workflow runs from the v3 branch. Select v3 from the branch dropdown."

@@ -1,0 +1,4 @@
+npm run check
+npm run lint
+npm run build
+git add dist

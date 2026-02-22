@@ -1,0 +1,727 @@
+:root {
+	--altcha-border-color: var(--altcha-color-neutral);
+	--altcha-border-width: 1px;
+	--altcha-border-radius: 6px;
+	--altcha-color-base: light-dark(oklch(100% 0.00011 271.152), oklch(20.904% 0.00002 271.152));
+	--altcha-color-base-content: light-dark(
+		oklch(20.904% 0.00002 271.152),
+		oklch(100% 0.00011 271.152)
+	);
+	--altcha-color-error: oklch(51.284% 0.20527 28.678);
+	--altcha-color-error-content: oklch(100% 0.00011 271.152);
+	--altcha-color-neutral: light-dark(oklch(83.591% 0.0001 271.152), oklch(46.04% 0.00005 271.152));
+	--altcha-color-neutral-content: light-dark(
+		oklch(46.76% 0.00005 271.152),
+		oklch(100% 0.00011 271.152)
+	);
+	--altcha-color-primary: oklch(40.279% 0.2449 268.131);
+	--altcha-color-primary-content: oklch(100% 0.00011 271.152);
+	--altcha-color-success: oklch(55.748% 0.18968 142.511);
+	--altcha-color-success-content: oklch(100% 0.00011 271.152);
+	--altcha-checkbox-border-color: var(--altcha-color-neutral);
+	--altcha-checkbox-border-radius: 5px;
+	--altcha-checkbox-border-width: var(--altcha-border-width);
+	--altcha-checkbox-outline: 2px solid var(--altcha-checkbox-outline-color);
+	--altcha-checkbox-outline-color: light-dark(
+		color-mix(in srgb, var(--altcha-color-primary) 20%, transparent),
+		color-mix(in srgb, var(--altcha-color-primary) 60%, transparent)
+	);
+	--altcha-checkbox-outline-offset: 2px;
+	--altcha-checkbox-size: 22px;
+	--altcha-checkbox-transition-duration: var(--altcha-transition-duration);
+	--altcha-input-background-color: var(--altcha-color-base);
+	--altcha-input-border-radius: 3px;
+	--altcha-input-border-width: 1px;
+	--altcha-input-color: var(--altcha-color-base-content);
+	--altcha-max-width: 320px;
+	--altcha-padding: 0.75rem;
+	--altcha-popover-arrow-size: 6px;
+	--altcha-popover-color: var(--altcha-border-color);
+	--altcha-shadow: drop-shadow(3px 3px 6px oklch(0% 0 0 / 0.2));
+	--altcha-spinner-color: var(--altcha-color-base-content);
+	--altcha-switch-background-color: var(--altcha-color-neutral);
+	--altcha-switch-border-radius: calc(infinity * 1px);
+	--altcha-switch-height: var(--altcha-checkbox-size);
+	--altcha-switch-padding: 0.25rem;
+	--altcha-switch-width: calc(var(--altcha-checkbox-size) * 1.75);
+	--altcha-switch-toggle-border-radius: 100%;
+	--altcha-switch-toggle-color: var(--altcha-color-neutral-content);
+	--altcha-switch-toggle-size: calc(
+		var(--altcha-switch-height) - calc(var(--altcha-switch-padding) * 2)
+	);
+	--altcha-transition-duration: 0.6s;
+	--altcha-z-index: 99999999;
+	--altcha-z-index-popover: 999999999;
+}
+
+.altcha {
+	all: revert-layer;
+	display: none;
+	font-family: inherit;
+	font-size: inherit;
+	position: relative;
+
+	&[data-visible] {
+		display: block;
+	}
+
+	&-popover,
+	&-popover * {
+		all: revert-layer;
+		box-sizing: border-box;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: 1.25;
+	}
+
+	& * {
+		all: revert-layer;
+		box-sizing: border-box;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: 1.25;
+	}
+
+	& a,
+	&-popover a {
+		color: currentColor;
+		text-decoration: none;
+
+		&:hover {
+			color: currentColor;
+		}
+	}
+
+	&-main {
+		align-items: start;
+		background-color: var(--altcha-color-base);
+		border: var(--altcha-border-width, 1px) solid var(--altcha-border-color);
+		border-radius: var(--altcha-border-radius, 0);
+		color: var(--altcha-color-base-content);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		justify-content: space-between;
+		padding: var(--altcha-padding);
+		max-width: var(--altcha-max-width, 100%);
+
+		& > * {
+			display: flex;
+			width: 100%;
+
+			&:first-child {
+				flex-grow: 1;
+			}
+		}
+	}
+
+	&-checkbox-wrap {
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		flex-grow: 1;
+		gap: 0.5rem;
+
+		& > * {
+			display: flex;
+		}
+	}
+
+	&-logo {
+		opacity: 0.7;
+	}
+
+	&-footer {
+		align-items: center;
+		display: flex;
+		flex-grow: 1;
+		gap: 0.5rem;
+		justify-content: flex-end;
+		font-size: 0.7rem;
+		opacity: 0.7;
+	}
+
+	&-error {
+		font-size: 0.85rem;
+	}
+
+	&-button {
+		align-items: center;
+		background: var(--altcha-color-primary);
+		border: var(--altcha-input-border-width) solid var(--altcha-color-primary);
+		border-radius: var(--altcha-input-border-radius);
+		color: var(--altcha-color-primary-content);
+		cursor: pointer;
+		display: flex;
+		font-size: 0.9rem;
+		gap: 0.5rem;
+		padding: 0.35rem;
+
+		&:focus {
+			border-color: var(--altcha-color-primary);
+			outline: var(--altcha-checkbox-outline);
+			outline-offset: var(--altcha-checkbox-outline-offset);
+		}
+	}
+
+	&-button > &-spinner,
+	&-button > svg {
+		height: 20px;
+		width: 20px;
+	}
+
+	&-button-secondary {
+		background: transparent;
+		border-color: var(--altcha-color-neutral);
+		color: var(--altcha-color-neutral-content);
+	}
+
+	&-input {
+		background: var(--altcha-input-background-color);
+		border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);
+		border-radius: var(--altcha-input-border-radius);
+		color: var(--altcha-input-color);
+		flex-grow: 1;
+		font-size: 1rem;
+		min-width: 0;
+		padding: 0.25rem;
+		width: auto;
+
+		&:focus {
+			border-color: var(--altcha-color-primary);
+			outline: var(--altcha-checkbox-outline);
+			outline-offset: var(--altcha-checkbox-outline-offset);
+		}
+	}
+
+	&-spinner {
+		animation: altcha-rotate 0.6s linear infinite;
+		border-radius: 100%;
+		border: var(--altcha-checkbox-border-width) solid var(--altcha-spinner-color);
+		border-bottom-color: transparent;
+		border-right-color: transparent;
+		opacity: 0.5;
+	}
+
+	&-popover {
+		background-color: var(--altcha-color-base);
+		border: var(--altcha-border-width) solid var(--altcha-border-color);
+		border-radius: var(--altcha-border-radius);
+		color: var(--altcha-color-base-content);
+		filter: var(--altcha-shadow);
+		position: absolute;
+		left: calc(var(--altcha-padding) / 2);
+		max-width: calc(var(--altcha-max-width) - var(--altcha-padding));
+		top: calc(
+			var(--altcha-padding) + var(--altcha-checkbox-size) + var(--altcha-popover-arrow-size)
+		);
+		z-index: var(--altcha-z-index-popover);
+
+		&-arrow {
+			border: var(--altcha-popover-arrow-size) solid transparent;
+			border-bottom-color: var(--altcha-popover-color);
+			content: '';
+			height: 0;
+			left: calc(var(--altcha-checkbox-size) / 2);
+			position: absolute;
+			top: calc(var(--altcha-popover-arrow-size) * -2);
+			width: 0;
+		}
+
+		&-content {
+			max-height: 100dvh;
+			overflow: auto;
+			padding: var(--altcha-padding);
+		}
+
+		&[data-top='true'][data-display='standard'] {
+			bottom: calc(100% - (var(--altcha-padding) - var(--altcha-popover-arrow-size)));
+			top: auto;
+		}
+
+		&[data-top='true'][data-display='standard'] &-arrow {
+			border-bottom-color: transparent;
+			border-top-color: var(--altcha-popover-color);
+			bottom: calc(var(--altcha-popover-arrow-size) * -2);
+			top: auto;
+		}
+
+		&[data-variant='error'] {
+			--altcha-popover-color: var(--altcha-color-error);
+			background-color: var(--altcha-color-error);
+			border-color: var(--altcha-color-error);
+			color: var(--altcha-color-error-content);
+		}
+
+		&[data-variant='error'] &-content {
+			padding: calc(var(--altcha-padding) / 1.5) var(--altcha-padding);
+		}
+
+		&[data-display='overlay'] {
+			animation: altcha-overlay-slidein 0.5s forwards;
+			left: 50%;
+			position: fixed;
+			top: 45%;
+			transform: translate(-50%, -50%);
+			width: var(--altcha-max-width);
+			z-index: var(--altcha-z-index);
+		}
+
+		&[data-display='bottomsheet'] {
+			animation: altcha-bottomsheet-slideup 0.5s forwards;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			border-bottom: 0;
+			bottom: -100%;
+			left: 50%;
+			position: fixed;
+			top: auto;
+			transform: translate(-50%, 0);
+			width: var(--altcha-max-width);
+			z-index: var(--altcha-z-index);
+		}
+
+		&[data-display='bottomsheet'] &-content {
+			padding-bottom: calc(var(--altcha-padding) * 2);
+		}
+
+		&-backdrop {
+			background: var(--altcha-color-base-content);
+			bottom: 0;
+			left: 0;
+			opacity: 0.1;
+			position: fixed;
+			right: 0;
+			top: 0;
+			transition: opacity 0.5s;
+			z-index: var(--altcha-z-index);
+		}
+
+		&-close {
+			color: var(--altcha-color-base-content);
+			cursor: pointer;
+			display: inline-block;
+			font-size: 1rem;
+			height: 1.25rem;
+			line-height: 0.95;
+			position: absolute;
+			right: 0;
+			text-align: center;
+			text-shadow: 0 0 1px var(--altcha-color-base);
+			top: -1.5rem;
+			width: 1.25rem;
+			z-index: var(--altcha-z-index);
+		}
+	}
+
+	&-popover[data-display='bottomsheet'] &-footer,
+	&-popover[data-display='overlay'] &-footer {
+		align-items: center;
+		justify-content: center;
+		padding-top: 1rem;
+		gap: 0.5rem;
+
+		& svg {
+			height: 18px;
+			width: 18px;
+			vertical-align: middle;
+		}
+	}
+
+	&-code-challenge {
+		& > form {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		&-title {
+			font-weight: 600;
+		}
+
+		&-text {
+			font-size: 0.85rem;
+		}
+
+		&-image {
+			background: white;
+			border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);
+			border-radius: var(--altcha-input-border-radius);
+			object-fit: contain;
+			height: 50px;
+		}
+
+		&-row {
+			display: flex;
+			gap: 0.5rem;
+		}
+
+		&-buttons {
+			align-items: center;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			margin-top: var(--altcha-padding);
+			justify-content: space-between;
+
+			& button {
+				justify-content: center;
+				width: 100%;
+			}
+		}
+	}
+
+	&-checkbox {
+		cursor: pointer;
+		height: var(--altcha-checkbox-size);
+		position: relative;
+		width: var(--altcha-checkbox-size);
+
+		& input {
+			appearance: none;
+			background: var(--altcha-input-background-color);
+			border: var(--altcha-checkbox-border-width, 2px) solid var(--altcha-checkbox-border-color);
+			border-radius: var(--altcha-checkbox-border-radius);
+			height: var(--altcha-checkbox-size);
+			left: 0;
+			margin: 0;
+			outline: none;
+			padding: 0;
+			position: absolute;
+			top: 0;
+			width: var(--altcha-checkbox-size);
+
+			&:before {
+				border-radius: var(--altcha-checkbox-border-radius);
+				content: '';
+				width: 100%;
+				height: 100%;
+				background: var(--altcha-color-neutral);
+				display: block;
+				transform: scale(0);
+			}
+
+			&:focus {
+				outline: var(--altcha-checkbox-outline);
+				outline-offset: var(--altcha-checkbox-outline-offset);
+			}
+
+			&:checked {
+				background-color: var(--altcha-color-success);
+				border-color: var(--altcha-color-success);
+			}
+
+			&:checked::before {
+				background-color: var(--altcha-color-success);
+				opacity: 0;
+				transform: scale(2.2);
+				transition: all var(--altcha-checkbox-transition-duration) ease;
+				transition-delay: 0.1s;
+			}
+		}
+
+		& svg {
+			--altcha-radio-svg-size: calc(var(--altcha-checkbox-size) * 0.5);
+			--altcha-radio-svg-offset: calc(var(--altcha-checkbox-size) * 0.25);
+
+			fill: none;
+			left: var(--altcha-radio-svg-offset);
+			height: var(--altcha-radio-svg-size);
+			opacity: 0;
+			position: absolute;
+			stroke: currentColor;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-dasharray: 16px;
+			stroke-dashoffset: 16px;
+			top: var(--altcha-radio-svg-offset);
+			transform: translate3d(0, 0, 0);
+			width: var(--altcha-radio-svg-size);
+		}
+
+		& input:checked + svg {
+			color: var(--altcha-color-success-content);
+			opacity: 1;
+			stroke-dashoffset: 0;
+			transition: all var(--altcha-checkbox-transition-duration) ease;
+			transition-delay: 0.1s;
+		}
+
+		&-spinner {
+			display: none;
+			left: 0;
+			height: var(--altcha-checkbox-size);
+			position: absolute;
+			top: 0;
+			width: var(--altcha-checkbox-size);
+		}
+
+		&[data-loading='true'] input {
+			appearance: none;
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		&[data-loading='true'] &-spinner {
+			display: block;
+		}
+	}
+
+	&-checkbox-native {
+		height: var(--altcha-checkbox-size);
+		position: relative;
+		width: var(--altcha-checkbox-size);
+
+		& input {
+			height: var(--altcha-checkbox-size);
+			margin: 0;
+			width: var(--altcha-checkbox-size);
+
+			&:focus {
+				outline: var(--altcha-checkbox-outline);
+				outline-offset: var(--altcha-checkbox-outline-offset);
+			}
+		}
+
+		&-spinner {
+			display: none;
+			left: 0;
+			height: var(--altcha-checkbox-size);
+			position: absolute;
+			top: 0;
+			width: var(--altcha-checkbox-size);
+		}
+
+		&[data-loading='true'] input {
+			appearance: none;
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		&[data-loading='true'] &-spinner {
+			display: block;
+		}
+	}
+
+	&-switch {
+		align-items: center;
+		border-radius: var(--altcha-switch-border-radius);
+		background-color: var(--altcha-switch-background-color);
+		cursor: pointer;
+		display: flex;
+		height: var(--altcha-switch-height);
+		padding: var(--altcha-switch-padding);
+		position: relative;
+		width: var(--altcha-switch-width);
+
+		&:focus-within {
+			outline: var(--altcha-checkbox-outline);
+			outline-offset: var(--altcha-checkbox-outline-offset);
+		}
+
+		& input {
+			appearance: none;
+			height: 100%;
+			left: 0;
+			opacity: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
+
+		&-toggle {
+			align-items: center;
+			background-color: var(--altcha-switch-toggle-color);
+			border-radius: var(--altcha-switch-toggle-border-radius);
+			display: flex;
+			height: var(--altcha-switch-toggle-size);
+			justify-content: center;
+			left: var(--altcha-switch-padding);
+			position: absolute;
+			transition:
+				width 150ms ease-out,
+				left 150ms ease-out;
+			width: var(--altcha-switch-toggle-size);
+		}
+
+		&-spinner {
+			display: none;
+			height: var(--altcha-switch-toggle-size);
+			width: var(--altcha-switch-toggle-size);
+		}
+
+		&[data-loading='true'] {
+			pointer-events: none;
+		}
+
+		&[data-loading='true'] &-spinner {
+			display: block;
+		}
+
+		&[data-loading='true'] &-toggle {
+			background-color: transparent;
+			left: calc(50% - (var(--altcha-switch-toggle-size) / 2));
+		}
+
+		[data-state='verified'] & {
+			--altcha-switch-background-color: var(--altcha-color-success);
+
+			&-toggle {
+				background-color: var(--altcha-color-success-content);
+				left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));
+			}
+		}
+
+		[dir='rtl'] &-toggle {
+			left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));
+		}
+
+		[dir='rtl'][data-state='verified'] &-toggle {
+			left: var(--altcha-switch-padding);
+		}
+	}
+
+	&-floating-arrow {
+		border: 6px solid transparent;
+		border-bottom-color: var(--altcha-border-color);
+		content: '';
+		height: 0;
+		left: 12px;
+		position: absolute;
+		top: -12px;
+		width: 0;
+	}
+
+	&-overlay-backdrop {
+		bottom: 0;
+		left: 0;
+		position: fixed;
+		right: 0;
+		top: 0;
+		transition: opacity var(--altcha-transition-duration);
+		z-index: var(--altcha-z-index);
+	}
+
+	&-overlay-close {
+		display: inline-block;
+		color: currentColor;
+		cursor: pointer;
+		font-size: 1rem;
+		height: 1rem;
+		line-height: 0.85;
+		position: absolute;
+		right: 0;
+		text-align: center;
+		text-shadow: 0 0 1px var(--altcha-color-base);
+		top: -1.5rem;
+		width: 1rem;
+		z-index: var(--altcha-z-index);
+	}
+
+	&[data-display='overlay'] {
+		animation: altcha-overlay-slidein var(--altcha-transition-duration) forwards;
+		filter: var(--altcha-shadow);
+		left: 50%;
+		opacity: 0;
+		position: fixed;
+		top: 45%;
+		transform: translate(-50%, -50%);
+		z-index: var(--altcha-z-index);
+	}
+
+	&[data-display='overlay'] &-main {
+		width: var(--altcha-max-width);
+	}
+
+	&[data-display='floating'] {
+		display: none;
+		filter: var(--altcha-shadow);
+		left: var(--altcha-floating-left, -100%);
+		position: fixed;
+		top: var(--altcha-floating-top, -100%);
+		z-index: var(--altcha-z-index);
+	}
+
+	&[data-display='floating'] &-main {
+		width: var(--altcha-max-width);
+	}
+
+	&[data-display='floating'][data-placement='top'] &-floating-arrow {
+		border-bottom-color: transparent;
+		border-top-color: var(--altcha-border-color);
+		bottom: -12px;
+		top: auto;
+	}
+
+	&[data-display='floating'][data-visible] {
+		display: flex;
+	}
+
+	&[data-display='bar'] {
+		bottom: -100%;
+		filter: var(--altcha-shadow);
+		left: 0;
+		position: fixed;
+		right: 0;
+		transition:
+			bottom var(--altcha-transition-duration),
+			top var(--altcha-transition-duration);
+		z-index: var(--altcha-z-index);
+	}
+
+	&[data-display='bar'] &-main {
+		align-items: center;
+		border-radius: 0;
+		border-width: var(--altcha-border-width) 0 0 0;
+		flex-direction: row;
+		max-width: 100% !important;
+
+		& > * {
+			width: auto;
+		}
+	}
+
+	&[data-display='bar'][data-placement='top'] {
+		bottom: auto;
+		top: -100%;
+	}
+
+	&[data-display='bar'][data-placement='top'] &-main {
+		border-width: 0 0 var(--altcha-border-width) 0;
+	}
+
+	&[data-display='bar'][data-placement='bottom']:not([data-state='unverified']) {
+		bottom: 0;
+	}
+
+	&[data-display='bar'][data-placement='top']:not([data-state='unverified']) {
+		top: 0;
+	}
+
+	&[data-display='invisible'] {
+		display: none;
+	}
+}
+
+@keyframes altcha-rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes altcha-bottomsheet-slideup {
+	100% {
+		bottom: 0;
+	}
+}
+
+@keyframes altcha-overlay-slidein {
+	100% {
+		opacity: 1;
+		top: 50%;
+	}
+}

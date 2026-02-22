@@ -1,0 +1,19 @@
+[data-altcha-theme='aqua'],
+altcha-widget[theme='aqua'] {
+	--altcha-checkbox-border-width: 1.5px;
+	--altcha-color-base: oklch(36.993% 0.14552 265.614);
+	--altcha-color-base-content: oklch(96.183% 0.0235 227.909);
+	--altcha-color-neutral: oklch(46.768% 0.15756 266.404);
+	--altcha-color-neutral-content: var(--altcha-color-base-content);
+	--altcha-color-primary: oklch(60.683% 0.10883 309.763);
+	--altcha-color-primary-content: oklch(96.014% 0.0162 293.609);
+	--altcha-border-color: light-dark(oklch(27.079% 0.14584 265.379), oklch(46.768% 0.15756 266.404));
+	--altcha-input-background-color: light-dark(
+		oklch(100% 0.00011 271.152),
+		oklch(25.197% 0.00003 271.152)
+	);
+	--altcha-input-color: light-dark(oklch(27.079% 0.14584 265.379), oklch(96.014% 0.0162 293.609));
+	--altcha-switch-background-color: var(--altcha-input-background-color);
+	--altcha-checkbox-border-color: var(--altcha-color-neutral);
+	--altcha-spinner-color: var(--altcha-color-base-content);
+}

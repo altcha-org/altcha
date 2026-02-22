@@ -1,0 +1,24 @@
+[data-altcha-theme='cyberpunk'],
+altcha-widget[theme='cyberpunk'] {
+	--altcha-border-color: var(--altcha-color-neutral);
+	--altcha-border-width: 2px;
+	--altcha-border-radius: 12px;
+	--altcha-color-base: oklch(94.343% 0.17917 104.914);
+	--altcha-color-base-content: oklch(23.042% 0.0647 269.34);
+	--altcha-color-neutral: var(--altcha-color-base-content);
+	--altcha-color-neutral-content: var(--altcha-color-base-content);
+	--altcha-color-primary: oklch(69.603% 0.26545 340.482);
+	--altcha-color-success: oklch(90.486% 0.15061 195.382);
+	--altcha-color-success-content: var(--altcha-color-base-content);
+	--altcha-checkbox-border-color: var(--altcha-color-neutral);
+	--altcha-checkbox-border-width: var(--altcha-border-width);
+	--altcha-input-background-color: light-dark(
+		oklch(86.286% 0.16763 104.933),
+		oklch(86.286% 0.16763 104.933)
+	);
+	--altcha-input-color: var(--altcha-color-base-content);
+	--altcha-switch-background-color: var(--altcha-input-background-color);
+	--altcha-switch-toggle-color: var(--altcha-color-neutral);
+	--altcha-popover-color: var(--altcha-border-color);
+	--altcha-spinner-color: var(--altcha-color-base-content);
+}

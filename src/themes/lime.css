@@ -1,0 +1,13 @@
+[data-altcha-theme='lime'],
+altcha-widget[theme='lime'] {
+	--altcha-color-base: oklch(98.65% 0.019 123.003);
+	--altcha-color-base-content: oklch(27.44% 0.01383 131.799);
+	--altcha-color-primary: oklch(77.94% 0.17114 110.922);
+	--altcha-color-primary-content: var(--altcha-color-base-content);
+	--altcha-color-primary-content: var(--altcha-color-base-content);
+	--altcha-color-neutral: oklch(76.243% 0.05879 130.835);
+	--altcha-color-neutral-content: var(--altcha-color-base-content);
+	--altcha-border-color: light-dark(oklch(76.243% 0.05879 130.835), oklch(98.884% 0.01122 128.94));
+	--altcha-input-background-color: oklch(100% 0.00011 271.152);
+	--altcha-input-color: var(--altcha-color-base-content);
+}

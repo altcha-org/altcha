@@ -1,0 +1,15 @@
+[data-altcha-theme='business'],
+altcha-widget[theme='business'] {
+	--altcha-border-radius: 6px;
+	--altcha-border-width: 0;
+	--altcha-checkbox-border-width: 1.5px;
+	--altcha-color-base: light-dark(oklch(95.099% 0.00637 255.746), oklch(32.438% 0.02298 264.201));
+	--altcha-color-base-content: light-dark(
+		oklch(32.438% 0.02298 264.201),
+		oklch(95.099% 0.00637 255.746)
+	);
+	--altcha-input-background-color: light-dark(
+		oklch(100% 0.00011 271.152),
+		oklch(25.197% 0.00003 271.152)
+	);
+}

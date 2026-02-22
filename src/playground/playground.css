@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@plugin 'daisyui';
+
+@layer {
+	.input {
+		&:has(> input[disabled]),
+		&:is(:disabled, [disabled]),
+		fieldset:disabled & {
+			background-color: var(--color-base-300);
+			border-color: var(--color-base-300);
+		}
+	}
+}

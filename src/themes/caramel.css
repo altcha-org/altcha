@@ -1,0 +1,19 @@
+[data-altcha-theme='caramel'],
+altcha-widget[theme='caramel'] {
+	--altcha-border-width: 2px;
+	--altcha-border-radius: 12px;
+	--altcha-border-color: var(--altcha-color-base-content);
+	--altcha-color-base: light-dark(oklch(98.156% 0.01623 79.28), oklch(32.376% 0.03463 80.678));
+	--altcha-color-base-content: light-dark(
+		oklch(39.904% 0.12205 38.479),
+		oklch(85.594% 0.05829 42.379)
+	);
+	--altcha-checkbox-border-color: var(--altcha-color-base-content);
+	--altcha-checkbox-border-width: var(--altcha-border-width);
+	--altcha-input-background-color: light-dark(
+		oklch(100% 0.00011 271.152),
+		oklch(25.197% 0.00003 271.152)
+	);
+	--altcha-checkbox-border-radius: 50%;
+	--altcha-popover-color: var(--altcha-border-color);
+}

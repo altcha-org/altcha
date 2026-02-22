@@ -1,0 +1,27 @@
+(function(factory) {
+  typeof define === "function" && define.amd ? define(factory) : factory();
+})((function() {
+  "use strict";
+  const i18n = {
+    ariaLinkLabel: "Obiščite Altcha.org",
+    enterCode: "Vnesite kodo",
+    enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
+    error: "Preverjanje ni uspelo. Poskusite znova kasneje.",
+    expired: "Preverjanje je poteklo. Poskusite znova.",
+    footer: 'Zaščiteno z <a href="https://altcha.org/" target="_blank" aria-label="Obiščite Altcha.org">ALTCHA</a>',
+    getAudioChallenge: "Pridobite zvočni izziv",
+    label: "Nisem robot",
+    loading: "Nalagam...",
+    reload: "Ponovno naloži",
+    verify: "Preveri",
+    verificationRequired: "Potrebna je preveritev!",
+    verified: "Preverjeno",
+    verifying: "Preverjanje...",
+    waitAlert: "Preverjanje... prosim počakajte.",
+    cancel: "Preklic",
+    enterCodeFromImage: "Za nadaljevanje, prosimo, vnesite kodo s slike spodaj."
+  };
+  if ("$altcha" in globalThis) {
+    globalThis.$altcha.i18n.set("sl", i18n);
+  }
+}));

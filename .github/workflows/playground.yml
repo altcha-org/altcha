@@ -1,0 +1,25 @@
+name: Deploy Playground
+
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Install & Build
+        run: |
+          npm install
+          npm run build:playground
+
+      - name: Deploy to Bunny.net
+        uses: ayeressian/bunnycdn-storage-deploy@v2.4.0
+        with:
+          source: 'dist_playground'
+          destination: ''
+          storageZoneName: '${{ secrets.BUNNY_STORAGE_ZONE_NAME }}'
+          storagePassword: '${{ secrets.BUNNY_STORAGE_PASSWORD }}'
+          upload: 'true'
+          remove: 'true'

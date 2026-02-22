@@ -9,6 +9,13 @@ ALTCHA is fully compliant with:
 
 For more details, visit [altcha.org](https://altcha.org).
 
+> [!TIP]
+> **ALTCHA Widget v3 (Beta)**
+> 
+> Faster verification via native browser performance and Argon2/Scrypt protection. Now with improved TypeScript support, seamless SSR, and flexible display modes.
+>
+> [Learn More](https://altcha.org/docs/v2/widget-v3/)
+
 > [!NOTE]
 > **Breaking change (v2.3.0)**
 >

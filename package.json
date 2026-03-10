@@ -95,7 +95,7 @@
     "sass": "^1.77.8",
     "svelte": "^5.28.6",
     "svelte-check": "^4.0.0",
-    "testcafe": "^3.7.2",
+    "testcafe": "^3.7.4",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
     "vite": "^7.1.7",
@@ -110,6 +110,7 @@
   },
   "overrides": {
     "tmp": "0.2.5",
-    "minimatch": "10.2.2"
+    "minimatch": "10.2.4",
+    "underscore": "1.13.8"
   }
 }

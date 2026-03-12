@@ -10,4 +10,5 @@ altcha-widget[theme='lime'] {
 	--altcha-border-color: light-dark(oklch(76.243% 0.05879 130.835), oklch(98.884% 0.01122 128.94));
 	--altcha-input-background-color: oklch(100% 0.00011 271.152);
 	--altcha-input-color: var(--altcha-color-base-content);
+	--altcha-spinner-color: var(--altcha-color-base-content);
 }

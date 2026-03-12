@@ -1,15 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import {
 	PasswordBuffer,
-	bufferToHex,
-	canonicalJSON,
-	concatBuffers,
 	createChallenge,
-	hexToBuffer,
 	signChallenge,
 	solveChallenge,
 	verifySolution
 } from '../src/pow';
+import { bufferToHex, canonicalJSON, concatBuffers, hexToBuffer } from '../src/helpers';
 import * as pbkdf2 from '../src/algorithms/pbkdf2';
 import { Challenge, CreateChallengeOptions, HmacAlgorithm, Solution } from '../src/types';
 
@@ -264,8 +261,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: true,
-				solutionVerified: true,
+				invalidSignature: false,
+				invalidSolution: false,
 				time: expect.any(Number),
 				verified: true
 			});
@@ -284,8 +281,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: true,
-				solutionVerified: true,
+				invalidSignature: false,
+				invalidSolution: false,
 				time: expect.any(Number),
 				verified: true
 			});
@@ -302,8 +299,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: false,
-				solutionVerified: null,
+				invalidSignature: true,
+				invalidSolution: null,
 				time: expect.any(Number),
 				verified: false
 			});
@@ -323,8 +320,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: true,
-				solutionVerified: false,
+				invalidSignature: false,
+				invalidSolution: true,
 				time: expect.any(Number),
 				verified: false
 			});
@@ -346,8 +343,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: true,
-				signatureVerified: null,
-				solutionVerified: null,
+				invalidSignature: null,
+				invalidSolution: null,
 				time: expect.any(Number),
 				verified: false
 			});
@@ -370,8 +367,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: false,
-				solutionVerified: null,
+				invalidSignature: true,
+				invalidSolution: null,
 				time: expect.any(Number),
 				verified: false
 			});
@@ -399,8 +396,8 @@ describe('pow', () => {
 			});
 			expect(result).toEqual({
 				expired: false,
-				signatureVerified: true,
-				solutionVerified: false,
+				invalidSignature: false,
+				invalidSolution: true,
 				time: expect.any(Number),
 				verified: false
 			});

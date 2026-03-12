@@ -314,6 +314,21 @@
 		}
 	}
 
+	[dir='rtl'] &-popover {
+		left: auto;
+		right: calc(var(--altcha-padding) / 2);
+
+		&-arrow {
+			left: auto;
+			right: calc(var(--altcha-checkbox-size) / 2);
+		}
+
+		&-close {
+			left: 0;
+			right: auto;
+		}
+	}
+
 	&-popover[data-display='bottomsheet'] &-footer,
 	&-popover[data-display='overlay'] &-footer {
 		align-items: center;

@@ -72,17 +72,17 @@ ALTCHA PoW v2 supports two effort modes that define how client work is determine
 
 ### Deterministic Effort Mode (Recommended)
 
-In **deterministic effort mode**, the server precisely defines the exact amount of work the client must perform. Unlike the probabilistic method, the server precomputes a target derived key for a specific `counter` value. It then exposes a portion of this key as the `keyPrefix`, accompanied by a `keySignature` (an HMAC signature of the whole derived key), which allows for efficient server-side verification.
+In **deterministic effort mode**, the server precisely defines the exact amount of work the client must perform. The server precomputes a target derived key for a specific `counter` value. It then exposes a portion of this key as the `keyPrefix`, accompanied by a `keySignature` (an HMAC signature of the whole derived key), which allows for efficient server-side verification.
 
 To ensure the client genuinely performs the computation, the target `counter` is randomly selected within an integer range for every challenge. This prevents attackers from bypassing the work through pre-computed lookups or biased search patterns.
 
 The client must find the exact counter corresponding to that prefix, forcing a fixed number of KDF executions.
 
-- **Difficulty Model:** Predictable
+- **Difficulty Model:** Predictable  
   The client performs a fixed (server-defined) amount of work.
-- **Client Cost:** Fixed
+- **Client Cost:** Fixed  
   Solving time is consistent and predictable, ensuring a uniform user experience.
-- **Server Cost:** Low (Verification) / Moderate (Generation)
+- **Server Cost:** Low (Verification) / Moderate (Generation)  
   One KDF execution is required during challenge generation, but verification is very fast.
 
 **Use cases:**
@@ -101,11 +101,11 @@ Challenge generation in this mode should be protected (e.g., via rate-limiting) 
 
 In **probabilistic effort mode**, the server defines difficulty probabilistically using the `keyPrefix` parameter. The client repeatedly derives keys with increasing `counter` values until the output matches a prefix, such as `00`.
 
-- **Difficulty Model:** Probabilistic
+- **Difficulty Model:** Probabilistic  
   The expected number of iterations is fixed, but the exact number required varies per challenge.
-- **Client Cost:** Variable
+- **Client Cost:** Variable  
   Average solving time is predictable, but individual challenges may complete significantly faster or slower (luck-based).
-- **Server Cost:** Low (Generation) / Moderate (Verification)
+- **Server Cost:** Low (Generation) / Moderate (Verification)  
   Server generation is very fast, while one KDF execution is required to verify the solution.
 
 **Use cases:**

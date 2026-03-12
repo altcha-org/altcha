@@ -10,6 +10,7 @@ Version 3 is a complete rewrite of the widget, featuring a redesigned proof-of-w
 - `floating` and `overlay` have been removed in favor of a unified `display` attribute.
 - Only a limited set of configuration options can be provided via HTML attributes. Use the programmatic API for advanced configuration.
 - CSS structure and custom properties have been refactored. If you applied custom styles or variables, update them accordingly.
+- The obfuscation plugin now uses a different algorithm. Previously generated obfuscated data must be regenerated.
 
 ## Client
 
@@ -134,6 +135,14 @@ Example:
 import type {} from 'altcha/types/react'; // or /svelte, /jsx
 import type { WidgetAttributes, Challenge } from 'altcha/types';
 ```
+
+## Obfuscation
+
+The obfuscation plugin is now included in the main `altcha` package. The `@altcha/plugins` package should not be used, as it is intended only for v2.
+
+The data obfuscation algorithm has changed, so any previously generated obfuscated values must be regenerated using the built-in functions provided by the plugin.
+
+For implementation details, see the [README](/README.md#data-obfuscation).
 
 ## Server
 

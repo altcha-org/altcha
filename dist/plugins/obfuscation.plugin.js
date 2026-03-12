@@ -14,6 +14,45 @@ class BasePlugin {
   async onVerify(value) {
   }
 }
+function bufferStartsWith(buffer, prefix) {
+  if (prefix.length > buffer.length) {
+    return false;
+  }
+  for (let i = 0; i < prefix.length; i++) {
+    if (buffer[i] !== prefix[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+function bufferToHex(buffer) {
+  return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+function concatBuffers(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+}
+function hexToBuffer(hex) {
+  if (hex.length % 2 !== 0) {
+    throw new Error(`Hex string must have an even length. Got: ${hex}`);
+  }
+  const buffer = new ArrayBuffer(hex.length / 2);
+  const view = new DataView(buffer);
+  for (let i = 0; i < hex.length; i += 2) {
+    const byteString = hex.substring(i, i + 2);
+    const byteValue = parseInt(byteString, 16);
+    view.setUint8(i / 2, byteValue);
+  }
+  return new Uint8Array(buffer);
+}
+async function delay(ms) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+function timeDuration(start) {
+  return Math.floor((performance.now() - start) * 10) / 10;
+}
 var State = /* @__PURE__ */ ((State2) => {
   State2["CODE"] = "code";
   State2["ERROR"] = "error";
@@ -48,28 +87,6 @@ class PasswordBuffer {
     return this.buffer;
   }
 }
-function bufferToHex(buffer) {
-  return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-function concatBuffers(a, b) {
-  const out = new Uint8Array(a.length + b.length);
-  out.set(a, 0);
-  out.set(b, a.length);
-  return out;
-}
-function hexToBuffer(hex) {
-  if (hex.length % 2 !== 0) {
-    throw new Error(`Hex string must have an even length. Got: ${hex}`);
-  }
-  const buffer = new ArrayBuffer(hex.length / 2);
-  const view = new DataView(buffer);
-  for (let i = 0; i < hex.length; i += 2) {
-    const byteString = hex.substring(i, i + 2);
-    const byteValue = parseInt(byteString, 16);
-    view.setUint8(i / 2, byteValue);
-  }
-  return new Uint8Array(buffer);
-}
 async function solveChallenge(options) {
   const {
     challenge,
@@ -80,7 +97,7 @@ async function solveChallenge(options) {
     deriveKey,
     timeout = 9e4
   } = options;
-  let { nonce, keyPrefix, salt } = challenge.parameters;
+  const { nonce, keyPrefix, salt } = challenge.parameters;
   const nonceBuf = hexToBuffer(nonce);
   const saltBuf = hexToBuffer(salt);
   const keyPrefixBuf = keyPrefix.length % 2 === 0 ? hexToBuffer(keyPrefix) : null;
@@ -115,7 +132,7 @@ async function solveChallenge(options) {
   };
 }
 async function solveChallengeWorkers(options) {
-  let {
+  const {
     challenge,
     concurrency = navigator.hardwareConcurrency,
     controller = new AbortController(),
@@ -123,14 +140,14 @@ async function solveChallengeWorkers(options) {
     onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
     counterMode
   } = options;
-  concurrency = Math.min(16, Math.max(1, concurrency));
+  const workersConcurrency = Math.min(16, Math.max(1, concurrency));
   const workersInstances = [];
   const terminate = () => {
     for (const worker of workersInstances) {
       worker.terminate();
     }
   };
-  for (let i = 0; i < concurrency; i++) {
+  for (let i = 0; i < workersConcurrency; i++) {
     workersInstances.push(await createWorker(challenge.parameters.algorithm));
   }
   let solution = null;
@@ -161,18 +178,18 @@ async function solveChallengeWorkers(options) {
             challenge,
             counterMode,
             counterStart: i,
-            counterStep: concurrency,
+            counterStep: workersConcurrency,
             type: "work"
           });
         });
       })
     );
   } catch (err) {
-    const isOOM = !!err?.message?.includes("Out of memory");
+    const isOOM = err instanceof Error && !!err?.message?.includes("Out of memory");
     if (isOOM) {
-      if (!!onOutOfMemory) {
+      if (onOutOfMemory) {
         terminate();
-        const retryConcurrency = onOutOfMemory(concurrency);
+        const retryConcurrency = onOutOfMemory(workersConcurrency);
         if (retryConcurrency) {
           return solveChallengeWorkers({
             ...options,
@@ -192,23 +209,6 @@ async function solveChallengeWorkers(options) {
     return null;
   }
   return solution || null;
-}
-function bufferStartsWith(buffer, prefix) {
-  if (prefix.length > buffer.length) {
-    return false;
-  }
-  for (let i = 0; i < prefix.length; i++) {
-    if (buffer[i] !== prefix[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-async function delay(ms) {
-  await new Promise((resolve) => setTimeout(resolve, ms));
-}
-function timeDuration(start) {
-  return Math.floor((performance.now() - start) * 10) / 10;
 }
 async function deobfuscate(obfuscatedData, options = {}) {
   const { concurrency = navigator.hardwareConcurrency, deriveKey: deriveKey2 } = options;

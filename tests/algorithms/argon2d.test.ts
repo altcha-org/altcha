@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { deriveKey } from '../../src/algorithms/argon2id';
-import { bufferToHex, hexToBuffer, PasswordBuffer } from '../../src/pow';
+import { PasswordBuffer } from '../../src/pow';
+import { bufferToHex, hexToBuffer } from '../../src/helpers';
 import { ChallengeParameters } from '../../src/types';
 
 describe('ARGON2ID', () => {
@@ -10,12 +11,13 @@ describe('ARGON2ID', () => {
 		algorithm: 'ARGON2ID',
 		cost: 1,
 		keyLength: 32,
+		memoryCost: 16384,
 		nonce,
 		salt,
 		keyPrefix: ''
 	};
 
-	test('should return a derived key (cost: 1)', async () => {
+	test('should return a derived key (cost: 1, memoryCost: 16384)', async () => {
 		const password = new PasswordBuffer(hexToBuffer(nonce), 'uint32');
 		password.setCounter(123);
 		const result = await deriveKey(parameters, hexToBuffer(salt), password.buffer);
@@ -24,7 +26,7 @@ describe('ARGON2ID', () => {
 		);
 	});
 
-	test('should return a derived key (cost: 2)', async () => {
+	test('should return a derived key (cost: 2, memoryCost: 16384)', async () => {
 		const password = new PasswordBuffer(hexToBuffer(nonce), 'uint32');
 		password.setCounter(123);
 		const result = await deriveKey(

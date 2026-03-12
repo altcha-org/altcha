@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { deriveKey } from '../../src/algorithms/scrypt';
-import { bufferToHex, hexToBuffer, PasswordBuffer } from '../../src/pow';
+import { PasswordBuffer } from '../../src/pow';
+import { bufferToHex, hexToBuffer } from '../../src/helpers';
 import { ChallengeParameters } from '../../src/types';
 
 describe('SCRYPT', () => {
@@ -8,35 +9,36 @@ describe('SCRYPT', () => {
 	const salt = '5e00d5d152e1a5db7d44fb6404a40a5e';
 	const parameters: ChallengeParameters = {
 		algorithm: 'SCRYPT',
-		cost: 2,
+		cost: 16384,
 		keyLength: 32,
+		memoryCost: 8,
 		nonce,
 		salt,
 		keyPrefix: ''
 	};
 
-	test('should return a derived key (cost: 2)', async () => {
+	test('should return a derived key (cost: 16384, memoryCost: 8)', async () => {
 		const password = new PasswordBuffer(hexToBuffer(nonce), 'uint32');
 		password.setCounter(123);
 		const result = await deriveKey(parameters, hexToBuffer(salt), password.buffer);
 		expect(bufferToHex(result.derivedKey)).toEqual(
-			'04a0a1bf845a8174d65b4cf36d956f3606efb479dfbe02a6695d580be4ba2fcd'
+			'1cc78d75577b791a65ba2b27894aec3c6af99b64155e79f50f4725fd43341070'
 		);
 	});
 
-	test('should return a derived key (cost: 4)', async () => {
+	test('should return a derived key (cost: 32768, memoryCost: 8)', async () => {
 		const password = new PasswordBuffer(hexToBuffer(nonce), 'uint32');
 		password.setCounter(123);
 		const result = await deriveKey(
 			{
 				...parameters,
-				cost: 4
+				cost: 32768
 			},
 			hexToBuffer(salt),
 			password.buffer
 		);
 		expect(bufferToHex(result.derivedKey)).toEqual(
-			'4fc35af70e7f3af0d83bf989e25ba131c2f944165135cee6aaf78f2ca85fea1d'
+			'6597973da7e41352ed98dd86fefa6568d7762ad8f42f06830d54700d452763da'
 		);
 	});
 });

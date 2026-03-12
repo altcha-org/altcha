@@ -1,11 +1,24 @@
 import {
+	bufferStartsWith,
+	bufferToHex,
+	canonicalJSON,
+	concatBuffers,
+	constantTimeEqual,
+	delay,
+	hexToBuffer,
+	hmac,
+	sortKeys,
+	timeDuration
+} from './helpers';
+import {
 	type CreateChallengeOptions,
 	type Challenge,
 	type ChallengeParameters,
+	type DeriveKeyFunctionResult,
 	type SolveChallengeOptions,
 	type Solution,
 	type VerifySolutionOptions,
-	type DeriveKeyFunctionResult,
+	type VerifySolutionResult,
 	HmacAlgorithm
 } from './types';
 
@@ -43,13 +56,6 @@ export class PasswordBuffer {
 		this.dataView.setUint32(this.nonce.length, n, false);
 		return this.buffer;
 	}
-}
-
-/** Converts a byte buffer to a lowercase hex string. */
-export function bufferToHex(buffer: Uint8Array | ArrayBuffer) {
-	return Array.from(new Uint8Array(buffer))
-		.map((b) => b.toString(16).padStart(2, '0'))
-		.join('');
 }
 
 /**
@@ -119,34 +125,6 @@ export async function createChallenge(options: CreateChallengeOptions): Promise<
 	);
 }
 
-/** Returns a canonical (sorted-key) JSON string for consistent hashing/signing. */
-export function canonicalJSON(obj: unknown): string {
-	return JSON.stringify(sortKeys(obj));
-}
-
-/** Concatenates two Uint8Arrays into a new buffer. */
-export function concatBuffers(a: Uint8Array, b: Uint8Array) {
-	const out = new Uint8Array(a.length + b.length);
-	out.set(a, 0);
-	out.set(b, a.length);
-	return out;
-}
-
-/** Converts a hex string to a Uint8Array. Throws if the string has odd length. */
-export function hexToBuffer(hex: string): Uint8Array {
-	if (hex.length % 2 !== 0) {
-		throw new Error(`Hex string must have an even length. Got: ${hex}`);
-	}
-	const buffer = new ArrayBuffer(hex.length / 2);
-	const view = new DataView(buffer);
-	for (let i = 0; i < hex.length; i += 2) {
-		const byteString = hex.substring(i, i + 2);
-		const byteValue = parseInt(byteString, 16);
-		view.setUint8(i / 2, byteValue);
-	}
-	return new Uint8Array(buffer);
-}
-
 /**
  * Solves a challenge by brute-forcing counter values until the derived key
  * starts with the required prefix. Returns the solution or null on timeout/abort.
@@ -161,7 +139,7 @@ export async function solveChallenge(options: SolveChallengeOptions): Promise<So
 		deriveKey,
 		timeout = 90_000
 	} = options;
-	let { nonce, keyPrefix, salt } = challenge.parameters;
+	const { nonce, keyPrefix, salt } = challenge.parameters;
 	const nonceBuf = hexToBuffer(nonce);
 	const saltBuf = hexToBuffer(salt);
 	const keyPrefixBuf = keyPrefix.length % 2 === 0 ? hexToBuffer(keyPrefix) : null;
@@ -218,7 +196,7 @@ export async function solveChallengeWorkers(
 		onOutOfMemory?: (concurrency: number) => number | void;
 	}
 ) {
-	let {
+	const {
 		challenge,
 		concurrency = navigator.hardwareConcurrency,
 		controller = new AbortController(),
@@ -226,14 +204,14 @@ export async function solveChallengeWorkers(
 		onOutOfMemory = (c) => (c > 1 ? Math.floor(c / 2) : 0),
 		counterMode
 	} = options;
-	concurrency = Math.min(16, Math.max(1, concurrency));
+	const workersConcurrency = Math.min(16, Math.max(1, concurrency));
 	const workersInstances: Worker[] = [];
 	const terminate = () => {
 		for (const worker of workersInstances) {
 			worker.terminate();
 		}
 	};
-	for (let i = 0; i < concurrency; i++) {
+	for (let i = 0; i < workersConcurrency; i++) {
 		workersInstances.push(await createWorker(challenge.parameters.algorithm));
 	}
 	let solution: Solution | null = null;
@@ -267,19 +245,19 @@ export async function solveChallengeWorkers(
 						challenge,
 						counterMode,
 						counterStart: i,
-						counterStep: concurrency,
+						counterStep: workersConcurrency,
 						type: 'work'
 					});
 				}) as Promise<Solution | null>;
 			})
 		);
-	} catch (err: any) {
+	} catch (err: unknown) {
 		// On OOM, retry with fewer workers if the callback allows it.
-		const isOOM = !!err?.message?.includes('Out of memory');
+		const isOOM = err instanceof Error && !!err?.message?.includes('Out of memory');
 		if (isOOM) {
-			if (!!onOutOfMemory) {
+			if (onOutOfMemory) {
 				terminate();
-				const retryConcurrency = onOutOfMemory(concurrency);
+				const retryConcurrency = onOutOfMemory(workersConcurrency);
 				if (retryConcurrency) {
 					return solveChallengeWorkers({
 						...options,
@@ -313,12 +291,14 @@ export async function signChallenge(
 	hmacKeySignatureSecret?: string
 ) {
 	if (derivedKey && hmacKeySignatureSecret) {
-		parameters.keySignature = await hmac(algorithm, derivedKey, hmacKeySignatureSecret);
+		parameters.keySignature = bufferToHex(
+			await hmac(algorithm, derivedKey, hmacKeySignatureSecret)
+		);
 	}
 	parameters = sortKeys(parameters);
 	return {
 		parameters,
-		signature: await hmac(algorithm, JSON.stringify(parameters), hmacSignatureSecret)
+		signature: bufferToHex(await hmac(algorithm, JSON.stringify(parameters), hmacSignatureSecret))
 	};
 }
 
@@ -331,13 +311,9 @@ export async function signChallenge(
  * 3. Whether the challenge signature is valid (tamper check).
  * 4. Whether the derived key matches — either via key signature or by re-deriving.
  */
-export async function verifySolution(options: VerifySolutionOptions): Promise<{
-	expired: boolean;
-	signatureVerified: boolean | null;
-	solutionVerified: boolean | null;
-	time: number;
-	verified: boolean;
-}> {
+export async function verifySolution(
+	options: VerifySolutionOptions
+): Promise<VerifySolutionResult> {
 	const {
 		challenge,
 		counterMode,
@@ -353,8 +329,8 @@ export async function verifySolution(options: VerifySolutionOptions): Promise<{
 	if (challenge.parameters.expiresAt && challenge.parameters.expiresAt < Date.now() / 1_000) {
 		return {
 			expired: true,
-			signatureVerified: null,
-			solutionVerified: null,
+			invalidSignature: null,
+			invalidSolution: null,
 			time: timeDuration(start),
 			verified: false
 		};
@@ -364,25 +340,23 @@ export async function verifySolution(options: VerifySolutionOptions): Promise<{
 	if (!challenge.signature) {
 		return {
 			expired: false,
-			signatureVerified: false,
-			solutionVerified: null,
+			invalidSignature: true,
+			invalidSolution: null,
 			time: timeDuration(start),
 			verified: false
 		};
 	}
 
 	// 3. Verify challenge signature to ensure parameters haven't been tampered with.
-	const signatureCheck = await hmac(
-		hmacAlgorithm,
-		canonicalJSON(challenge.parameters),
-		hmacSignatureSecret
+	const signatureCheck = bufferToHex(
+		await hmac(hmacAlgorithm, canonicalJSON(challenge.parameters), hmacSignatureSecret)
 	);
 	const signatureVerified = constantTimeEqual(challenge.signature, signatureCheck);
 	if (!signatureVerified) {
 		return {
 			expired: false,
-			signatureVerified: false,
-			solutionVerified: null,
+			invalidSignature: true,
+			invalidSolution: null,
 			time: timeDuration(start),
 			verified: false
 		};
@@ -390,10 +364,8 @@ export async function verifySolution(options: VerifySolutionOptions): Promise<{
 
 	// 4a. If a key signature exists, verify the derived key against it (faster path).
 	if (challenge.parameters.keySignature && hmacKeySignatureSecret) {
-		const derivedKeySignatureCheck = await hmac(
-			hmacAlgorithm,
-			hexToBuffer(solution.derivedKey),
-			hmacKeySignatureSecret
+		const derivedKeySignatureCheck = bufferToHex(
+			await hmac(hmacAlgorithm, hexToBuffer(solution.derivedKey), hmacKeySignatureSecret)
 		);
 		const derivedKeySignatureValid = constantTimeEqual(
 			challenge.parameters.keySignature,
@@ -401,8 +373,8 @@ export async function verifySolution(options: VerifySolutionOptions): Promise<{
 		);
 		return {
 			expired: false,
-			signatureVerified: true,
-			solutionVerified: derivedKeySignatureValid,
+			invalidSignature: false,
+			invalidSolution: !derivedKeySignatureValid,
 			time: timeDuration(start),
 			verified: derivedKeySignatureValid
 		};
@@ -417,83 +389,12 @@ export async function verifySolution(options: VerifySolutionOptions): Promise<{
 		new PasswordBuffer(nonceBuf, counterMode).setCounter(solution.counter)
 	);
 	const derivedKeyHex = bufferToHex(derivedKey);
-	const solutionVerified = constantTimeEqual(derivedKeyHex, solution.derivedKey);
+	const invalidSolution = !constantTimeEqual(derivedKeyHex, solution.derivedKey);
 	return {
 		expired: false,
-		signatureVerified: true,
-		solutionVerified,
+		invalidSignature: false,
+		invalidSolution,
 		time: timeDuration(start),
-		verified: solutionVerified && signatureVerified
+		verified: !invalidSolution && signatureVerified
 	};
-}
-
-/** Checks if a buffer starts with the given prefix bytes. */
-function bufferStartsWith(buffer: Uint8Array, prefix: Uint8Array) {
-	if (prefix.length > buffer.length) {
-		return false;
-	}
-	for (let i = 0; i < prefix.length; i++) {
-		if (buffer[i] !== prefix[i]) {
-			return false;
-		}
-	}
-	return true;
-}
-
-/** Checks if two strings are equal in constant time. */
-function constantTimeEqual(a: string, b: string): boolean {
-	if (a.length !== b.length) {
-		return false;
-	}
-	let result = 0;
-	for (let i = 0; i < a.length; i++) {
-		result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-	}
-	return result === 0;
-}
-
-/** Yields to the event loop after the given milliseconds. */
-async function delay(ms: number) {
-	await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/** Computes an HMAC signature using the Web Crypto API. */
-async function hmac(algorithm: HmacAlgorithm, data: string | Uint8Array, keyStr: string) {
-	const key = await crypto.subtle.importKey(
-		'raw',
-		new TextEncoder().encode(keyStr),
-		{
-			name: 'HMAC',
-			hash: { name: algorithm }
-		},
-		false,
-		['sign', 'verify']
-	);
-	const signature = await crypto.subtle.sign(
-		'HMAC',
-		key,
-		typeof data === 'string' ? new TextEncoder().encode(data) : (data as BufferSource)
-	);
-	return bufferToHex(signature);
-}
-
-/** Recursively sorts object keys alphabetically for deterministic serialization. */
-function sortKeys<T = unknown>(obj: T): T {
-	if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
-		return obj;
-	}
-	return Object.keys(obj)
-		.sort()
-		.reduce<Record<string, unknown>>((acc, key) => {
-			const value = (obj as Record<string, unknown>)[key];
-			if (value !== undefined) {
-				acc[key] = sortKeys(value);
-			}
-			return acc;
-		}, {}) as T;
-}
-
-/** Returns elapsed time in milliseconds since `start`, rounded to one decimal. */
-function timeDuration(start: number) {
-	return Math.floor((performance.now() - start) * 10) / 10;
 }

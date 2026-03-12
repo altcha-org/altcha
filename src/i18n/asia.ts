@@ -1,5 +1,6 @@
 // East Asia
 import './zh-cn.ts';
+import './zh-hk.ts';
 import './zh-tw.ts';
 import './ja.ts';
 import './ko.ts';

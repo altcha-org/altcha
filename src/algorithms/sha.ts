@@ -1,4 +1,4 @@
-import { concatBuffers } from '../pow';
+import { concatBuffers } from '../helpers';
 import type { ChallengeParameters, DeriveKeyFunctionResult } from '../types';
 
 export async function deriveKey(

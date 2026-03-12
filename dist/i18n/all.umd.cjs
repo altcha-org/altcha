@@ -2,7 +2,7 @@
   typeof define === "function" && define.amd ? define(factory) : factory();
 })((function() {
   "use strict";
-  const i18n$X = {
+  const i18n$Y = {
     ariaLinkLabel: "زور Altcha.org",
     enterCode: "أدخل الرمز",
     enterCodeAria: "أدخل الرمز الذي تسمعه. اضغط على المسافة لتشغيل الصوت.",
@@ -22,9 +22,9 @@
     enterCodeFromImage: "للمتابعة، يرجى إدخال الرمز من الصورة أدناه."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ar", i18n$X);
+    globalThis.$altcha.i18n.set("ar", i18n$Y);
   }
-  const i18n$W = {
+  const i18n$X = {
     ariaLinkLabel: "Посетете Altcha.org",
     enterCode: "Въведете код",
     enterCodeAria: "Въведете кода, който чувате. Натиснете Space за възпроизвеждане на аудио.",
@@ -44,9 +44,9 @@
     enterCodeFromImage: "За да продължите, моля, въведете кода от изображението по-долу."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("bg", i18n$W);
+    globalThis.$altcha.i18n.set("bg", i18n$X);
   }
-  const i18n$V = {
+  const i18n$W = {
     ariaLinkLabel: "Наведаць Altcha.org",
     enterCode: "Увядзіце код",
     enterCodeAria: "Увядзіце код, які вы чуеце. Націсніце прабел, каб прайграць аўдыё.",
@@ -66,9 +66,9 @@
     enterCodeFromImage: "Каб працягнуць, увядзіце код з малюнка ніжэй."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("be", i18n$V);
+    globalThis.$altcha.i18n.set("be", i18n$W);
   }
-  const i18n$U = {
+  const i18n$V = {
     ariaLinkLabel: "Posjetite Altcha.org",
     enterCode: "Unesite kod",
     enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
@@ -88,9 +88,9 @@
     enterCodeFromImage: "Za nastavak, molimo unesite kod sa slike ispod."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("bs", i18n$U);
+    globalThis.$altcha.i18n.set("bs", i18n$V);
   }
-  const i18n$T = {
+  const i18n$U = {
     ariaLinkLabel: "Visita Altcha.org",
     enterCode: "Introdueix el codi",
     enterCodeAria: "Introdueix el codi que escoltes. Prem Espai per reproduir l’àudio.",
@@ -110,9 +110,9 @@
     enterCodeFromImage: "Per continuar, si us plau, introdueix el codi de la imatge següent."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ca", i18n$T);
+    globalThis.$altcha.i18n.set("ca", i18n$U);
   }
-  const i18n$S = {
+  const i18n$T = {
     ariaLinkLabel: "Navštivte Altcha.org",
     enterCode: "Zadejte kód",
     enterCodeAria: "Zadejte kód, který slyšíte. Stisknutím mezerníku přehrajete zvuk.",
@@ -132,9 +132,9 @@
     enterCodeFromImage: "Pro pokračování zadejte kód z obrázku níže."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("cs", i18n$S);
+    globalThis.$altcha.i18n.set("cs", i18n$T);
   }
-  const i18n$R = {
+  const i18n$S = {
     ariaLinkLabel: "Besøg Altcha.org",
     enterCode: "Indtast kode",
     enterCodeAria: "Indtast den kode, du hører. Tryk på mellemrumstasten for at afspille lyd.",
@@ -154,9 +154,9 @@
     enterCodeFromImage: "For at fortsætte, bedes du indtaste koden fra billedet herunder."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("da", i18n$R);
+    globalThis.$altcha.i18n.set("da", i18n$S);
   }
-  const i18n$Q = {
+  const i18n$R = {
     ariaLinkLabel: "Besuche Altcha.org",
     enterCode: "Code eingeben",
     enterCodeAria: "Geben Sie den Code ein, den Sie hören. Drücken Sie die Leertaste, um die Audio abzuspielen.",
@@ -176,9 +176,9 @@
     enterCodeFromImage: "Um fortzufahren, geben Sie bitte den Code aus dem Bild unten ein."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("de", i18n$Q);
+    globalThis.$altcha.i18n.set("de", i18n$R);
   }
-  const i18n$P = {
+  const i18n$Q = {
     ariaLinkLabel: "Επισκεφθείτε το Altcha.org",
     enterCode: "Εισαγάγετε κωδικό",
     enterCodeAria: "Εισαγάγετε τον κωδικό που ακούτε. Πατήστε Space για να παίξετε τον ήχο.",
@@ -198,9 +198,9 @@
     enterCodeFromImage: "Για να συνεχίσετε, εισάγετε τον κωδικό από την παρακάτω εικόνα."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("el", i18n$P);
+    globalThis.$altcha.i18n.set("el", i18n$Q);
   }
-  const i18n$O = {
+  const i18n$P = {
     ariaLinkLabel: "Visitar Altcha.org",
     enterCode: "Introduce el código",
     enterCodeAria: "Introduce el código que escuchas. Pulsa Espacio para reproducir el audio.",
@@ -220,9 +220,9 @@
     enterCodeFromImage: "Para continuar, introduzca el código de la imagen de abajo."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("es-es", i18n$O);
+    globalThis.$altcha.i18n.set("es-es", i18n$P);
   }
-  const i18n$N = {
+  const i18n$O = {
     ariaLinkLabel: "Visitar Altcha.org",
     enterCode: "Ingresa el código",
     enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
@@ -242,9 +242,9 @@
     enterCodeFromImage: "Para continuar, ingresa el código de la imagen a continuación."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("es-419", i18n$N);
+    globalThis.$altcha.i18n.set("es-419", i18n$O);
   }
-  const i18n$M = {
+  const i18n$N = {
     ariaLinkLabel: "Külasta Altcha.org",
     enterCode: "Sisesta kood",
     enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
@@ -264,9 +264,9 @@
     enterCodeFromImage: "Jätkamiseks sisestage alloleval pildil olev kood."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("et", i18n$M);
+    globalThis.$altcha.i18n.set("et", i18n$N);
   }
-  const i18n$L = {
+  const i18n$M = {
     ariaLinkLabel: "Bisitatu Altcha.org",
     enterCode: "Sartu kodea",
     enterCodeAria: "Sartu entzun duzun kodea. Sakatu Espazioa audioa erreproduzitzeko.",
@@ -286,9 +286,9 @@
     enterCodeFromImage: "Jarraitzeko, idatzi beheko irudiko kodea."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("eu", i18n$L);
+    globalThis.$altcha.i18n.set("eu", i18n$M);
   }
-  const i18n$K = {
+  const i18n$L = {
     ariaLinkLabel: "بازدید از Altcha.org",
     enterCode: "کد را وارد کنید",
     enterCodeAria: "کدی که می‌شنوید را وارد کنید. برای پخش صدا Space را فشار دهید.",
@@ -308,9 +308,9 @@
     enterCodeFromImage: "برای ادامه، لطفاً کد تصویر زیر را وارد کنید."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("fa", i18n$K);
+    globalThis.$altcha.i18n.set("fa", i18n$L);
   }
-  const i18n$J = {
+  const i18n$K = {
     ariaLinkLabel: "Besicht Altcha.org",
     enterCode: "Code aginn",
     enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
@@ -330,9 +330,9 @@
     enterCodeFromImage: "Fir virun ze fueren, gitt wgl. de Code aus dem Bild hei drënner an."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("lb", i18n$J);
+    globalThis.$altcha.i18n.set("lb", i18n$K);
   }
-  const i18n$I = {
+  const i18n$J = {
     ariaLinkLabel: "Vieraile sivulla Altcha.org",
     enterCode: "Syötä koodi",
     enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
@@ -352,9 +352,9 @@
     enterCodeFromImage: "Jatkaaksesi, syötä alla olevan kuvan koodi."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("fi", i18n$I);
+    globalThis.$altcha.i18n.set("fi", i18n$J);
   }
-  const i18n$H = {
+  const i18n$I = {
     ariaLinkLabel: "Visitez Altcha.org",
     enterCode: "Entrez le code",
     enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
@@ -374,9 +374,9 @@
     enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("fr-ca", i18n$H);
+    globalThis.$altcha.i18n.set("fr-ca", i18n$I);
   }
-  const i18n$G = {
+  const i18n$H = {
     ariaLinkLabel: "Visitez Altcha.org",
     enterCode: "Entrez le code",
     enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
@@ -396,9 +396,9 @@
     enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("fr-fr", i18n$G);
+    globalThis.$altcha.i18n.set("fr-fr", i18n$H);
   }
-  const i18n$F = {
+  const i18n$G = {
     ariaLinkLabel: "Tabhair cuairt ar Altcha.org",
     enterCode: "Iontráil cód",
     enterCodeAria: "Cuir isteach an cód a chloiseann tú. Brúigh Spás chun an fuaime a sheinm.",
@@ -418,9 +418,9 @@
     enterCodeFromImage: "Chun dul ar aghaidh, le do thoil cuir isteach an cód ón íomhá thíos."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ga", i18n$F);
+    globalThis.$altcha.i18n.set("ga", i18n$G);
   }
-  const i18n$E = {
+  const i18n$F = {
     ariaLinkLabel: "Posjetite Altcha.org",
     enterCode: "Unesite kod",
     enterCodeAria: "Unesite kod koji čujete. Pritisnite razmaknicu za reprodukciju zvuka.",
@@ -440,9 +440,9 @@
     enterCodeFromImage: "Za nastavak molimo unesite kod sa slike ispod."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("hr", i18n$E);
+    globalThis.$altcha.i18n.set("hr", i18n$F);
   }
-  const i18n$D = {
+  const i18n$E = {
     ariaLinkLabel: "Látogass el az Altcha.org oldalra",
     enterCode: "Írja be a kódot",
     enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
@@ -462,9 +462,9 @@
     enterCodeFromImage: "A folytatáshoz, kérjük, adja meg az alábbi kép kódját."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("hu", i18n$D);
+    globalThis.$altcha.i18n.set("hu", i18n$E);
   }
-  const i18n$C = {
+  const i18n$D = {
     ariaLinkLabel: "Heimsækja Altcha.org",
     enterCode: "Sláðu inn kóða",
     enterCodeAria: "Sláðu inn kóðann sem þú heyrir. Ýttu á Space til að spila hljóðið.",
@@ -484,9 +484,9 @@
     enterCodeFromImage: "Til að halda áfram, vinsamlegast sláðu inn kóðann af myndinni hér að neðan."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("is", i18n$C);
+    globalThis.$altcha.i18n.set("is", i18n$D);
   }
-  const i18n$B = {
+  const i18n$C = {
     ariaLinkLabel: "Visita Altcha.org",
     enterCode: "Inserisci il codice",
     enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
@@ -506,9 +506,9 @@
     enterCodeFromImage: "Per procedere, inserisci il codice dall'immagine sottostante."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("it", i18n$B);
+    globalThis.$altcha.i18n.set("it", i18n$C);
   }
-  const i18n$A = {
+  const i18n$B = {
     ariaLinkLabel: "Apsilankykite Altcha.org",
     enterCode: "Įveskite kodą",
     enterCodeAria: "Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.",
@@ -528,9 +528,9 @@
     enterCodeFromImage: "Norėdami tęsti, įveskite kodą iš paveikslėlio žemiau."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("lt", i18n$A);
+    globalThis.$altcha.i18n.set("lt", i18n$B);
   }
-  const i18n$z = {
+  const i18n$A = {
     ariaLinkLabel: "Apmeklējiet Altcha.org",
     enterCode: "Ievadiet kodu",
     enterCodeAria: "Ievadiet dzirdamo kodu. Nospiediet atstarpes taustiņu, lai atskaņotu audio.",
@@ -550,9 +550,9 @@
     enterCodeFromImage: "Lai turpinātu, lūdzu, ievadiet zemāk redzamo attēlu kodu."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("lv", i18n$z);
+    globalThis.$altcha.i18n.set("lv", i18n$A);
   }
-  const i18n$y = {
+  const i18n$z = {
     ariaLinkLabel: "Żur Altcha.org",
     enterCode: "Idħol il-kodiċi",
     enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
@@ -572,9 +572,9 @@
     enterCodeFromImage: "Biex tipproċedi, jekk jogħġbok daħħal il-kodiċi mill-immaġni hawn taħt."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("mt", i18n$y);
+    globalThis.$altcha.i18n.set("mt", i18n$z);
   }
-  const i18n$x = {
+  const i18n$y = {
     ariaLinkLabel: "Besøk Altcha.org",
     enterCode: "Skriv inn kode",
     enterCodeAria: "Skriv inn koden du hører. Trykk på Space for å spille av lyden.",
@@ -594,9 +594,9 @@
     enterCodeFromImage: "For å fortsette, vennligst skriv inn koden fra bildet nedenfor."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("nb", i18n$x);
+    globalThis.$altcha.i18n.set("nb", i18n$y);
   }
-  const i18n$w = {
+  const i18n$x = {
     ariaLinkLabel: "Bezoek Altcha.org",
     enterCode: "Voer code in",
     enterCodeAria: "Voer de code in die je hoort. Druk op Spatie om de audio af te spelen.",
@@ -616,9 +616,9 @@
     enterCodeFromImage: "Om door te gaan, voert u de code uit de onderstaande afbeelding in."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("nl", i18n$w);
+    globalThis.$altcha.i18n.set("nl", i18n$x);
   }
-  const i18n$v = {
+  const i18n$w = {
     ariaLinkLabel: "Odwiedź Altcha.org",
     enterCode: "Wprowadź kod",
     enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
@@ -638,9 +638,9 @@
     enterCodeFromImage: "Aby kontynuować, wprowadź kod z poniższego obrazka."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("pl", i18n$v);
+    globalThis.$altcha.i18n.set("pl", i18n$w);
   }
-  const i18n$u = {
+  const i18n$v = {
     ariaLinkLabel: "Visitar Altcha.org",
     enterCode: "Introduza o código",
     enterCodeAria: "Introduza o código que ouve. Prima Espaço para reproduzir o áudio.",
@@ -660,9 +660,9 @@
     enterCodeFromImage: "Para prosseguir, introduza o código da imagem abaixo."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("pt-pt", i18n$u);
+    globalThis.$altcha.i18n.set("pt-pt", i18n$v);
   }
-  const i18n$t = {
+  const i18n$u = {
     ariaLinkLabel: "Visitar Altcha.org",
     enterCode: "Digite o código",
     enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
@@ -682,9 +682,9 @@
     enterCodeFromImage: "Para prosseguir, digite o código da imagem abaixo."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("pt-br", i18n$t);
+    globalThis.$altcha.i18n.set("pt-br", i18n$u);
   }
-  const i18n$s = {
+  const i18n$t = {
     ariaLinkLabel: "Vizitează Altcha.org",
     enterCode: "Introduceți codul",
     enterCodeAria: "Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.",
@@ -704,9 +704,9 @@
     enterCodeFromImage: "Pentru a continua, vă rugăm să introduceți codul din imaginea de mai jos."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ro", i18n$s);
+    globalThis.$altcha.i18n.set("ro", i18n$t);
   }
-  const i18n$r = {
+  const i18n$s = {
     ariaLinkLabel: "Перейти на Altcha.org",
     enterCode: "Введите код",
     enterCodeAria: "Введите код, который слышите. Нажмите пробел для воспроизведения аудио.",
@@ -726,9 +726,9 @@
     enterCodeFromImage: "Чтобы продолжить, пожалуйста, введите код с изображения ниже."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ru", i18n$r);
+    globalThis.$altcha.i18n.set("ru", i18n$s);
   }
-  const i18n$q = {
+  const i18n$r = {
     ariaLinkLabel: "Navštívte Altcha.org",
     enterCode: "Zadajte kód",
     enterCodeAria: "Zadajte kód, ktorý počujete. Stlačením medzerníka prehráte zvuk.",
@@ -748,9 +748,9 @@
     enterCodeFromImage: "Na pokračovanie, prosím, zadajte kód z obrázka nižšie."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sk", i18n$q);
+    globalThis.$altcha.i18n.set("sk", i18n$r);
   }
-  const i18n$p = {
+  const i18n$q = {
     ariaLinkLabel: "Obiščite Altcha.org",
     enterCode: "Vnesite kodo",
     enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
@@ -770,9 +770,9 @@
     enterCodeFromImage: "Za nadaljevanje, prosimo, vnesite kodo s slike spodaj."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sl", i18n$p);
+    globalThis.$altcha.i18n.set("sl", i18n$q);
   }
-  const i18n$o = {
+  const i18n$p = {
     ariaLinkLabel: "Vizitoni Altcha.org",
     enterCode: "Fut kodin",
     enterCodeAria: "Fut kodin që dëgjon. Shtypni Hapësirë për të luajtur audio.",
@@ -792,9 +792,9 @@
     enterCodeFromImage: "Për të vazhduar, ju lutemi fusni kodin nga imazhi më poshtë."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sq", i18n$o);
+    globalThis.$altcha.i18n.set("sq", i18n$p);
   }
-  const i18n$n = {
+  const i18n$o = {
     ariaLinkLabel: "Posetite Altcha.org",
     enterCode: "Unesite kod",
     enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
@@ -814,9 +814,9 @@
     enterCodeFromImage: "Да бисте наставили, унесите код са слике испод."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sr", i18n$n);
+    globalThis.$altcha.i18n.set("sr", i18n$o);
   }
-  const i18n$m = {
+  const i18n$n = {
     ariaLinkLabel: "Besök Altcha.org",
     enterCode: "Ange kod",
     enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
@@ -836,9 +836,9 @@
     enterCodeFromImage: "För att fortsätta, ange koden från bilden nedan."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sv", i18n$m);
+    globalThis.$altcha.i18n.set("sv", i18n$n);
   }
-  const i18n$l = {
+  const i18n$m = {
     ariaLinkLabel: "Altcha.org'yu ziyaret edin",
     enterCode: "Kodu girin",
     enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
@@ -858,9 +858,9 @@
     enterCodeFromImage: "Devam etmek için lütfen aşağıdaki resimdeki kodu girin."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("tr", i18n$l);
+    globalThis.$altcha.i18n.set("tr", i18n$m);
   }
-  const i18n$k = {
+  const i18n$l = {
     ariaLinkLabel: "Відвідати Altcha.org",
     enterCode: "Введіть код",
     enterCodeAria: "Введіть код, який ви чуєте. Натисніть пробіл, щоб відтворити аудіо.",
@@ -880,9 +880,9 @@
     enterCodeFromImage: "Щоб продовжити, введіть код із зображення нижче."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("uk", i18n$k);
+    globalThis.$altcha.i18n.set("uk", i18n$l);
   }
-  const i18n$j = {
+  const i18n$k = {
     ariaLinkLabel: "Besoek Altcha.org",
     enterCode: "Voer kode in",
     enterCodeAria: "Voer die kode in wat jy hoor. Druk Spasie om die klank af te speel.",
@@ -902,9 +902,9 @@
     enterCodeFromImage: "Om voort te gaan, voer asseblief die kode vanaf die onderstaande prentjie in."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("af", i18n$j);
+    globalThis.$altcha.i18n.set("af", i18n$k);
   }
-  const i18n$i = {
+  const i18n$j = {
     ariaLinkLabel: "Altcha.org ይጎብኙ",
     enterCode: "ኮድ አስገባ",
     enterCodeAria: "የሚሰማዎትን ኮድ ያስገቡ። ድምጽ ለመጫወት Space ን ይጫኑ።",
@@ -924,9 +924,9 @@
     enterCodeFromImage: "ለመቀጠል፣ እባክዎን ከታች ካለው ምስል ኮዱን ያስገቡ።"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("am", i18n$i);
+    globalThis.$altcha.i18n.set("am", i18n$j);
   }
-  const i18n$h = {
+  const i18n$i = {
     ariaLinkLabel: "Tembelea Altcha.org",
     enterCode: "Weka nambari",
     enterCodeAria: "Weka nambari unayosikia. Bonyeza Space kucheza sauti.",
@@ -946,9 +946,9 @@
     enterCodeFromImage: "Ili kuendelea, tafadhali weka nambari kutoka kwa picha hapa chini."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("sw", i18n$h);
+    globalThis.$altcha.i18n.set("sw", i18n$i);
   }
-  const i18n$g = {
+  const i18n$h = {
     ariaLinkLabel: "Ṣe abẹwo si Altcha.org",
     enterCode: "Tẹ koodu sii",
     enterCodeAria: "Tẹ koodu ti o ngbọ sii. Tẹ Space lati ṣe ohun orin.",
@@ -968,9 +968,9 @@
     enterCodeFromImage: "Lati tẹsiwaju, jọwọ tẹ koodu ti o wa lati aworan isalẹ sii."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("yo", i18n$g);
+    globalThis.$altcha.i18n.set("yo", i18n$h);
   }
-  const i18n$f = {
+  const i18n$g = {
     ariaLinkLabel: "Altcha.org পরিদর্শন করুন",
     enterCode: "কোড লিখুন",
     enterCodeAria: "আপনি যে কোড শুনতে পান তা লিখুন। অডিও প্লে করতে স্পেস বাটন টিপুন।",
@@ -990,9 +990,9 @@
     enterCodeFromImage: "এগিয়ে যেতে, অনুগ্রহ করে নীচের চিত্র থেকে কোডটি প্রবেশ করান।"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("bn", i18n$f);
+    globalThis.$altcha.i18n.set("bn", i18n$g);
   }
-  const i18n$e = {
+  const i18n$f = {
     ariaLinkLabel: "בקר באתר Altcha.org",
     enterCode: "הזן קוד",
     enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
@@ -1012,9 +1012,9 @@
     enterCodeFromImage: "כדי להמשיך, אנא הזן את הקוד מהתמונה למטה."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("he", i18n$e);
+    globalThis.$altcha.i18n.set("he", i18n$f);
   }
-  const i18n$d = {
+  const i18n$e = {
     ariaLinkLabel: "Altcha.org पर जाएं",
     enterCode: "कोड दर्ज करेंं",
     enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
@@ -1034,9 +1034,9 @@
     enterCodeFromImage: "आगे बढ़ने के लिए, कृपया नीचे दी गई छवि से कोड दर्ज करें।"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("hi", i18n$d);
+    globalThis.$altcha.i18n.set("hi", i18n$e);
   }
-  const i18n$c = {
+  const i18n$d = {
     ariaLinkLabel: "Kunjungi Altcha.org",
     enterCode: "Masukkan kode",
     enterCodeAria: "Masukkan kode yang Anda dengar. Tekan Spasi untuk memutar audio.",
@@ -1056,9 +1056,9 @@
     enterCodeFromImage: "Untuk melanjutkan, silakan masukkan kode dari gambar di bawah ini."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("id", i18n$c);
+    globalThis.$altcha.i18n.set("id", i18n$d);
   }
-  const i18n$b = {
+  const i18n$c = {
     ariaLinkLabel: "Altcha.orgを訪問",
     enterCode: "コードを入力",
     enterCodeAria: "聞こえるコードを入力してください。スペースキーを押して音声を再生します。",
@@ -1078,9 +1078,9 @@
     enterCodeFromImage: "続行するには、以下の画像からコードを入力してください。"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ja", i18n$b);
+    globalThis.$altcha.i18n.set("ja", i18n$c);
   }
-  const i18n$a = {
+  const i18n$b = {
     ariaLinkLabel: "Altcha.org 방문하기",
     enterCode: "코드 입력",
     enterCodeAria: "들리는 코드를 입력하세요. 스페이스 바를 눌러 오디오를 재생합니다.",
@@ -1100,9 +1100,9 @@
     enterCodeFromImage: "계속 진행하려면 아래 이미지에서 코드를 입력하세요."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ko", i18n$a);
+    globalThis.$altcha.i18n.set("ko", i18n$b);
   }
-  const i18n$9 = {
+  const i18n$a = {
     ariaLinkLabel: "Altcha.org сайтына кіру",
     enterCode: "Кодты енгізіңіз",
     enterCodeAria: "Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.",
@@ -1122,9 +1122,9 @@
     enterCodeFromImage: "Жалғастыру үшін төмендегі суреттегі кодты енгізіңіз."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("kk", i18n$9);
+    globalThis.$altcha.i18n.set("kk", i18n$a);
   }
-  const i18n$8 = {
+  const i18n$9 = {
     ariaLinkLabel: "Altcha.org भेट द्या",
     enterCode: "कोड टाकाा",
     enterCodeAria: "तुम्ही ऐकत असलेला कोड टाका. ऑडिओ प्ले करण्यासाठी स्पेस दाबा.",
@@ -1144,9 +1144,9 @@
     enterCodeFromImage: "पुढे जाण्यासाठी, कृपया खालील प्रतिमेतील कोड प्रविष्ट करा."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("mr", i18n$8);
+    globalThis.$altcha.i18n.set("mr", i18n$9);
   }
-  const i18n$7 = {
+  const i18n$8 = {
     ariaLinkLabel: "Altcha.org ஐ பார்வையிடவும்",
     enterCode: "குறியீட்டை உள்ளிடவும்",
     enterCodeAria: "நீங்கள் கேட்கும் குறியீட்டை உள்ளிடவும். ஆடியோவை இயக்க Space ஐ அழுத்தவும்.",
@@ -1166,9 +1166,9 @@
     enterCodeFromImage: "தொடர, கீழே உள்ள படத்திலிருந்து குறியீட்டை உள்ளிடவும்."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ta", i18n$7);
+    globalThis.$altcha.i18n.set("ta", i18n$8);
   }
-  const i18n$6 = {
+  const i18n$7 = {
     ariaLinkLabel: "Altcha.org సందర్శించండి",
     enterCode: "కోడ్‌ని నమోదు చేయండి",
     enterCodeAria: "మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.",
@@ -1188,9 +1188,9 @@
     enterCodeFromImage: "కొనసాగడానికి, దయచేసి క్రింది చిత్రంలో ఉన్న కోడ్‌ను నమోదు చేయండి."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("te", i18n$6);
+    globalThis.$altcha.i18n.set("te", i18n$7);
   }
-  const i18n$5 = {
+  const i18n$6 = {
     ariaLinkLabel: "เยี่ยมชม Altcha.org",
     enterCode: "ป้อนรหัส",
     enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
@@ -1210,9 +1210,9 @@
     enterCodeFromImage: "เพื่อดำเนินการต่อ โปรดป้อนรหัสจากรูปภาพด้านล่าง"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("th", i18n$5);
+    globalThis.$altcha.i18n.set("th", i18n$6);
   }
-  const i18n$4 = {
+  const i18n$5 = {
     ariaLinkLabel: "Altcha.org پر جائیں",
     enterCode: "کوڈ درج کریں",
     enterCodeAria: "جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔",
@@ -1232,9 +1232,9 @@
     enterCodeFromImage: "اگلے مرحلے پر جانے کے لیے، براہ کرم نیچے دی گئی تصویر سے کوڈ درج کریں۔"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("ur", i18n$4);
+    globalThis.$altcha.i18n.set("ur", i18n$5);
   }
-  const i18n$3 = {
+  const i18n$4 = {
     ariaLinkLabel: "Altcha.org saytiga tashrif buyuring",
     enterCode: "Kodni kiriting",
     enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
@@ -1254,9 +1254,9 @@
     enterCodeFromImage: "Davom etish uchun, iltimos, quyidagi rasmda ko'rsatilgan kodni kiriting."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("uz", i18n$3);
+    globalThis.$altcha.i18n.set("uz", i18n$4);
   }
-  const i18n$2 = {
+  const i18n$3 = {
     ariaLinkLabel: "Truy cập Altcha.org",
     enterCode: "Nhập mã",
     enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
@@ -1276,9 +1276,9 @@
     enterCodeFromImage: "Để tiếp tục, vui lòng nhập mã từ hình ảnh bên dưới."
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("vi", i18n$2);
+    globalThis.$altcha.i18n.set("vi", i18n$3);
   }
-  const i18n$1 = {
+  const i18n$2 = {
     ariaLinkLabel: "访问 Altcha.org",
     enterCode: "输入代码",
     enterCodeAria: "输入您听到的代码。按空格键播放音频。",
@@ -1298,7 +1298,29 @@
     enterCodeFromImage: "为继续操作，请输入下图中显示的验证码。"
   };
   if ("$altcha" in globalThis) {
-    globalThis.$altcha.i18n.set("zh-cn", i18n$1);
+    globalThis.$altcha.i18n.set("zh-cn", i18n$2);
+  }
+  const i18n$1 = {
+    ariaLinkLabel: "前往 Altcha.org",
+    cancel: "取消",
+    enterCode: "輸入代碼",
+    enterCodeAria: "輸入你聽到嘅代碼。按空格鍵播放音訊。",
+    enterCodeFromImage: "要繼續，請輸入下面圖片入面嘅代碼。",
+    error: "驗證失敗。請稍後再試。",
+    expired: "驗證已過期。請再試一次。",
+    footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="前往 Altcha.org">ALTCHA</a> 提供保護',
+    getAudioChallenge: "取得音訊驗證",
+    label: "我唔係機械人",
+    loading: "載入中...",
+    reload: "重新載入",
+    verify: "驗證",
+    verificationRequired: "需要驗證！",
+    verified: "已驗證",
+    verifying: "驗證中...",
+    waitAlert: "驗證中... 請稍候。"
+  };
+  if ("$altcha" in globalThis) {
+    globalThis.$altcha.i18n.set("zh-hk", i18n$1);
   }
   const i18n = {
     ariaLinkLabel: "訪問 Altcha.org",

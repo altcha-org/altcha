@@ -219,7 +219,59 @@ For simple implementations, the widget supports a subset of configuration option
 - **`test`**: Mocks a successful verification for testing environments.
 - **`mockError`**: Forces the widget into a failed state for UI testing.
 - **`fetch`**: A custom `fetch` implementation for network requests.
+- **`setCookie`**: When configured, sends the payload as a cookie.
 - **`verifyFunction`**: A custom verification handler that overrides default network verification.
+
+## Cookies
+
+By default, the widget sends the ALTCHA payload as a form field by creating a hidden input. It can also be configured to send the payload via a cookie.
+
+To enable this behavior, use the `setCookie` configuration option:
+
+```ts
+widget.configure({
+	setCookie: {
+		name: 'altcha',
+		path: '/'
+	}
+});
+```
+
+`setCookie` accepts the following cookie options:
+
+```ts
+interface SetCookieOptions {
+	domain?: string;
+	name?: string;
+	maxAge?: number;
+	path?: string;
+	sameSite?: string;
+	secure?: boolean;
+}
+```
+
+## Server Configuration
+
+When the widget fetches a challenge from the server, the server can override widget configuration using either the `X-Altcha-Config` response header or the `configuration` property in the challenge response.
+
+Example using the `configuration` property in the challenge JSON response to force cookie usage:
+
+```json
+{
+	"configuration": {
+		"setCookie": {
+			"name": "altcha",
+			"path": "/submit"
+		}
+	},
+	"parameters": {
+		// ...
+	},
+	"signature": "..."
+}
+```
+
+The `X-Altcha-Config` header must contain a JSON-encoded object with configuration options.
 
 ## Internationalization (i18n)
 

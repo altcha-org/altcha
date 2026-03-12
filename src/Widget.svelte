@@ -52,13 +52,15 @@
 		type Configuration,
 		type PayloadV1,
 		type ServerVerificationResult,
+		type SetCookieOptions,
 		type Solution,
 		type Strings,
 		type VerifyOptions,
 		type VerifyResult,
 		type WidgetMethods
 	} from './types/';
-	import { bufferToHex, solveChallengeWorkers } from './pow';
+	import { solveChallengeWorkers } from './pow';
+	import { bufferToHex } from './helpers';
 	import type { BasePlugin } from './plugins/base.plugin';
 
 	// -----------------------------------------------------------------------------
@@ -180,6 +182,7 @@
 		overlayContent: '',
 		name: 'altcha',
 		retryOnOutOfMemoryError: true,
+		setCookie: null,
 		serverVerificationFields: false,
 		serverVerificationTimeZone: false,
 		test: false,
@@ -318,6 +321,13 @@
 	$effect(() => {
 		if (error) {
 			log('error:', error);
+		}
+	});
+
+	/** Sets the payload cookie if enabled */
+	$effect(() => {
+		if (payload && config.setCookie) {
+			setCookie(payload, config.setCookie);
 		}
 	});
 
@@ -912,6 +922,20 @@
 	}
 
 	/**
+	 * Set a cookie with specified value and options.
+	 */
+	function setCookie(value: string, options: SetCookieOptions = {}) {
+		const { domain, name = config.name, maxAge, path, sameSite, secure } = options;
+		let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+		if (domain) cookie += `; Domain=${domain}`;
+		if (maxAge != null) cookie += `; Max-Age=${maxAge}`;
+		if (path) cookie += `; Path=${path}`;
+		if (sameSite) cookie += `; SameSite=${sameSite}`;
+		if (secure) cookie += `; Secure`;
+		document.cookie = cookie;
+	}
+
+	/**
 	 * Apply display mode — hides widget for bar/floating/overlay modes
 	 * and defaults to auto='onsubmit' if no auto mode is set.
 	 */
@@ -941,6 +965,7 @@
 		}
 		const onExpired = () => {
 			if (currentState !== State.UNVERIFIED) {
+				checked = false;
 				setState(State.EXPIRED);
 			} else {
 				reset();
@@ -1154,6 +1179,12 @@
 			}
 			log('challenge', challenge);
 
+			// Additional configuration options from the challenge
+			if ('configuration' in challenge) {
+				log('re-configuring from challenge', challenge.configuration);
+				configure(challenge.configuration as Partial<Configuration>);
+			}
+
 			// Start expiration timer if the challenge has a TTL
 			if (challenge.parameters.expiresAt) {
 				setChallengeExpiration(challenge.parameters.expiresAt);
@@ -1311,7 +1342,9 @@
 			<div bind:this={elAnchorArrow} class="altcha-floating-arrow"></div>
 		{/if}
 
-		<input type="hidden" name={config.name} value={payload} />
+		{#if !config.setCookie}
+			<input type="hidden" name={config.name} value={payload} />
+		{/if}
 	</div>
 
 	{#if error || currentState === State.EXPIRED || !isSecureContext}

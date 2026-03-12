@@ -62,4 +62,5 @@ import './ur.ts'; // Urdu
 import './uz.ts'; // Uzbek
 import './vi.ts'; // Vietnamese
 import './zh-cn.ts'; // Simplified Chinese
+import './zh-hk.ts'; // Cantonese
 import './zh-tw.ts'; // Traditional Chinese (Taiwan)

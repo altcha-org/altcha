@@ -42,6 +42,7 @@ const MAYBE_DIRTY = 1 << 12;
 const INERT = 1 << 13;
 const DESTROYED = 1 << 14;
 const REACTION_RAN = 1 << 15;
+const DESTROYING = 1 << 25;
 const EFFECT_TRANSPARENT = 1 << 16;
 const EAGER_EFFECT = 1 << 17;
 const HEAD_EFFECT = 1 << 18;
@@ -153,6 +154,10 @@ function push(props, runes = false, fn) {
     e: null,
     s: props,
     x: null,
+    r: (
+      /** @type {Effect} */
+      active_effect
+    ),
     l: null
   };
 }
@@ -363,7 +368,7 @@ function proxy(value) {
           sources.set(prop2, s);
         }
         if (s !== void 0) {
-          var v = get$1(s);
+          var v = get(s);
           return v === UNINITIALIZED ? void 0 : v;
         }
         return Reflect.get(target, prop2, receiver);
@@ -372,7 +377,7 @@ function proxy(value) {
         var descriptor = Reflect.getOwnPropertyDescriptor(target, prop2);
         if (descriptor && "value" in descriptor) {
           var s = sources.get(prop2);
-          if (s) descriptor.value = get$1(s);
+          if (s) descriptor.value = get(s);
         } else if (descriptor === void 0) {
           var source2 = sources.get(prop2);
           var value2 = source2?.v;
@@ -402,7 +407,7 @@ function proxy(value) {
             });
             sources.set(prop2, s);
           }
-          var value2 = get$1(s);
+          var value2 = get(s);
           if (value2 === UNINITIALIZED) {
             return false;
           }
@@ -455,7 +460,7 @@ function proxy(value) {
         return true;
       },
       ownKeys(target) {
-        get$1(version);
+        get(version);
         var own_keys = Reflect.ownKeys(target).filter((key3) => {
           var source3 = sources.get(key3);
           return source3 === void 0 || source3.v !== UNINITIALIZED;
@@ -691,1325 +696,59 @@ function defer_effect(effect2, dirty_effects, maybe_dirty_effects) {
   clear_marked(effect2.deps);
   set_signal_status(effect2, CLEAN);
 }
-const batches = /* @__PURE__ */ new Set();
-let current_batch = null;
-let previous_batch = null;
-let batch_values = null;
-let queued_root_effects = [];
-let last_scheduled_effect = null;
-let is_flushing = false;
-let is_flushing_sync = false;
-class Batch {
-  /**
-   * The current values of any sources that are updated in this batch
-   * They keys of this map are identical to `this.#previous`
-   * @type {Map<Source, any>}
-   */
-  current = /* @__PURE__ */ new Map();
-  /**
-   * The values of any sources that are updated in this batch _before_ those updates took place.
-   * They keys of this map are identical to `this.#current`
-   * @type {Map<Source, any>}
-   */
-  previous = /* @__PURE__ */ new Map();
-  /**
-   * When the batch is committed (and the DOM is updated), we need to remove old branches
-   * and append new ones by calling the functions added inside (if/each/key/etc) blocks
-   * @type {Set<() => void>}
-   */
-  #commit_callbacks = /* @__PURE__ */ new Set();
-  /**
-   * If a fork is discarded, we need to destroy any effects that are no longer needed
-   * @type {Set<(batch: Batch) => void>}
-   */
-  #discard_callbacks = /* @__PURE__ */ new Set();
-  /**
-   * The number of async effects that are currently in flight
-   */
-  #pending = 0;
-  /**
-   * The number of async effects that are currently in flight, _not_ inside a pending boundary
-   */
-  #blocking_pending = 0;
-  /**
-   * A deferred that resolves when the batch is committed, used with `settled()`
-   * TODO replace with Promise.withResolvers once supported widely enough
-   * @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
-   */
-  #deferred = null;
-  /**
-   * Deferred effects (which run after async work has completed) that are DIRTY
-   * @type {Set<Effect>}
-   */
-  #dirty_effects = /* @__PURE__ */ new Set();
-  /**
-   * Deferred effects that are MAYBE_DIRTY
-   * @type {Set<Effect>}
-   */
-  #maybe_dirty_effects = /* @__PURE__ */ new Set();
-  /**
-   * A map of branches that still exist, but will be destroyed when this batch
-   * is committed — we skip over these during `process`.
-   * The value contains child effects that were dirty/maybe_dirty before being reset,
-   * so they can be rescheduled if the branch survives.
-   * @type {Map<Effect, { d: Effect[], m: Effect[] }>}
-   */
-  #skipped_branches = /* @__PURE__ */ new Map();
-  is_fork = false;
-  #decrement_queued = false;
-  #is_deferred() {
-    return this.is_fork || this.#blocking_pending > 0;
-  }
-  /**
-   * Add an effect to the #skipped_branches map and reset its children
-   * @param {Effect} effect
-   */
-  skip_effect(effect2) {
-    if (!this.#skipped_branches.has(effect2)) {
-      this.#skipped_branches.set(effect2, { d: [], m: [] });
-    }
-  }
-  /**
-   * Remove an effect from the #skipped_branches map and reschedule
-   * any tracked dirty/maybe_dirty child effects
-   * @param {Effect} effect
-   */
-  unskip_effect(effect2) {
-    var tracked = this.#skipped_branches.get(effect2);
-    if (tracked) {
-      this.#skipped_branches.delete(effect2);
-      for (var e of tracked.d) {
-        set_signal_status(e, DIRTY);
-        schedule_effect(e);
-      }
-      for (e of tracked.m) {
-        set_signal_status(e, MAYBE_DIRTY);
-        schedule_effect(e);
-      }
-    }
-  }
-  /**
-   *
-   * @param {Effect[]} root_effects
-   */
-  process(root_effects) {
-    queued_root_effects = [];
-    this.apply();
-    var effects = [];
-    var render_effects = [];
-    for (const root2 of root_effects) {
-      this.#traverse_effect_tree(root2, effects, render_effects);
-    }
-    if (this.#is_deferred()) {
-      this.#defer_effects(render_effects);
-      this.#defer_effects(effects);
-      for (const [e, t] of this.#skipped_branches) {
-        reset_branch(e, t);
-      }
-    } else {
-      for (const fn of this.#commit_callbacks) fn();
-      this.#commit_callbacks.clear();
-      if (this.#pending === 0) {
-        this.#commit();
-      }
-      previous_batch = this;
-      current_batch = null;
-      flush_queued_effects(render_effects);
-      flush_queued_effects(effects);
-      previous_batch = null;
-      this.#deferred?.resolve();
-    }
-    batch_values = null;
-  }
-  /**
-   * Traverse the effect tree, executing effects or stashing
-   * them for later execution as appropriate
-   * @param {Effect} root
-   * @param {Effect[]} effects
-   * @param {Effect[]} render_effects
-   */
-  #traverse_effect_tree(root2, effects, render_effects) {
-    root2.f ^= CLEAN;
-    var effect2 = root2.first;
-    while (effect2 !== null) {
-      var flags2 = effect2.f;
-      var is_branch = (flags2 & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
-      var is_skippable_branch = is_branch && (flags2 & CLEAN) !== 0;
-      var skip = is_skippable_branch || (flags2 & INERT) !== 0 || this.#skipped_branches.has(effect2);
-      if (!skip && effect2.fn !== null) {
-        if (is_branch) {
-          effect2.f ^= CLEAN;
-        } else if ((flags2 & EFFECT) !== 0) {
-          effects.push(effect2);
-        } else if (is_dirty(effect2)) {
-          if ((flags2 & BLOCK_EFFECT) !== 0) this.#maybe_dirty_effects.add(effect2);
-          update_effect(effect2);
-        }
-        var child2 = effect2.first;
-        if (child2 !== null) {
-          effect2 = child2;
-          continue;
-        }
-      }
-      while (effect2 !== null) {
-        var next2 = effect2.next;
-        if (next2 !== null) {
-          effect2 = next2;
-          break;
-        }
-        effect2 = effect2.parent;
-      }
-    }
-  }
-  /**
-   * @param {Effect[]} effects
-   */
-  #defer_effects(effects) {
-    for (var i = 0; i < effects.length; i += 1) {
-      defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
-    }
-  }
-  /**
-   * Associate a change to a given source with the current
-   * batch, noting its previous and current values
-   * @param {Source} source
-   * @param {any} value
-   */
-  capture(source2, value) {
-    if (value !== UNINITIALIZED && !this.previous.has(source2)) {
-      this.previous.set(source2, value);
-    }
-    if ((source2.f & ERROR_VALUE) === 0) {
-      this.current.set(source2, source2.v);
-      batch_values?.set(source2, source2.v);
-    }
-  }
-  activate() {
-    current_batch = this;
-    this.apply();
-  }
-  deactivate() {
-    if (current_batch !== this) return;
-    current_batch = null;
-    batch_values = null;
-  }
-  flush() {
-    this.activate();
-    if (queued_root_effects.length > 0) {
-      flush_effects();
-      if (current_batch !== null && current_batch !== this) {
-        return;
-      }
-    } else if (this.#pending === 0) {
-      this.process([]);
-    }
-    this.deactivate();
-  }
-  discard() {
-    for (const fn of this.#discard_callbacks) fn(this);
-    this.#discard_callbacks.clear();
-  }
-  #commit() {
-    if (batches.size > 1) {
-      this.previous.clear();
-      var previous_batch_values = batch_values;
-      var is_earlier = true;
-      for (const batch of batches) {
-        if (batch === this) {
-          is_earlier = false;
-          continue;
-        }
-        const sources = [];
-        for (const [source2, value] of this.current) {
-          if (batch.current.has(source2)) {
-            if (is_earlier && value !== batch.current.get(source2)) {
-              batch.current.set(source2, value);
-            } else {
-              continue;
-            }
-          }
-          sources.push(source2);
-        }
-        if (sources.length === 0) {
-          continue;
-        }
-        const others = [...batch.current.keys()].filter((s) => !this.current.has(s));
-        if (others.length > 0) {
-          var prev_queued_root_effects = queued_root_effects;
-          queued_root_effects = [];
-          const marked = /* @__PURE__ */ new Set();
-          const checked = /* @__PURE__ */ new Map();
-          for (const source2 of sources) {
-            mark_effects(source2, others, marked, checked);
-          }
-          if (queued_root_effects.length > 0) {
-            current_batch = batch;
-            batch.apply();
-            for (const root2 of queued_root_effects) {
-              batch.#traverse_effect_tree(root2, [], []);
-            }
-            batch.deactivate();
-          }
-          queued_root_effects = prev_queued_root_effects;
-        }
-      }
-      current_batch = null;
-      batch_values = previous_batch_values;
-    }
-    batches.delete(this);
-  }
-  /**
-   *
-   * @param {boolean} blocking
-   */
-  increment(blocking) {
-    this.#pending += 1;
-    if (blocking) this.#blocking_pending += 1;
-  }
-  /**
-   *
-   * @param {boolean} blocking
-   */
-  decrement(blocking) {
-    this.#pending -= 1;
-    if (blocking) this.#blocking_pending -= 1;
-    if (this.#decrement_queued) return;
-    this.#decrement_queued = true;
-    queue_micro_task(() => {
-      this.#decrement_queued = false;
-      if (!this.#is_deferred()) {
-        this.revive();
-      } else if (queued_root_effects.length > 0) {
-        this.flush();
-      }
-    });
-  }
-  revive() {
-    for (const e of this.#dirty_effects) {
-      this.#maybe_dirty_effects.delete(e);
-      set_signal_status(e, DIRTY);
-      schedule_effect(e);
-    }
-    for (const e of this.#maybe_dirty_effects) {
-      set_signal_status(e, MAYBE_DIRTY);
-      schedule_effect(e);
-    }
-    this.flush();
-  }
-  /** @param {() => void} fn */
-  oncommit(fn) {
-    this.#commit_callbacks.add(fn);
-  }
-  /** @param {(batch: Batch) => void} fn */
-  ondiscard(fn) {
-    this.#discard_callbacks.add(fn);
-  }
-  settled() {
-    return (this.#deferred ??= deferred()).promise;
-  }
-  static ensure() {
-    if (current_batch === null) {
-      const batch = current_batch = new Batch();
-      batches.add(current_batch);
-      if (!is_flushing_sync) {
-        queue_micro_task(() => {
-          if (current_batch !== batch) {
-            return;
-          }
-          batch.flush();
-        });
-      }
-    }
-    return current_batch;
-  }
-  apply() {
-    return;
-  }
+function is_capture_event(name) {
+  return name.endsWith("capture") && name !== "gotpointercapture" && name !== "lostpointercapture";
 }
-function flushSync(fn) {
-  var was_flushing_sync = is_flushing_sync;
-  is_flushing_sync = true;
-  try {
-    var result;
-    if (fn) ;
-    while (true) {
-      flush_tasks();
-      if (queued_root_effects.length === 0) {
-        current_batch?.flush();
-        if (queued_root_effects.length === 0) {
-          last_scheduled_effect = null;
-          return (
-            /** @type {T} */
-            result
-          );
-        }
-      }
-      flush_effects();
-    }
-  } finally {
-    is_flushing_sync = was_flushing_sync;
-  }
+const DELEGATED_EVENTS = [
+  "beforeinput",
+  "click",
+  "change",
+  "dblclick",
+  "contextmenu",
+  "focusin",
+  "focusout",
+  "input",
+  "keydown",
+  "keyup",
+  "mousedown",
+  "mousemove",
+  "mouseout",
+  "mouseover",
+  "mouseup",
+  "pointerdown",
+  "pointermove",
+  "pointerout",
+  "pointerover",
+  "pointerup",
+  "touchend",
+  "touchmove",
+  "touchstart"
+];
+function can_delegate_event(event_name) {
+  return DELEGATED_EVENTS.includes(event_name);
 }
-function flush_effects() {
-  is_flushing = true;
-  var source_stacks = null;
-  try {
-    var flush_count = 0;
-    while (queued_root_effects.length > 0) {
-      var batch = Batch.ensure();
-      if (flush_count++ > 1e3) {
-        var updates, entry;
-        if (DEV) ;
-        infinite_loop_guard();
-      }
-      batch.process(queued_root_effects);
-      old_values.clear();
-      if (DEV) ;
-    }
-  } finally {
-    queued_root_effects = [];
-    is_flushing = false;
-    last_scheduled_effect = null;
-  }
+const ATTRIBUTE_ALIASES = {
+  // no `class: 'className'` because we handle that separately
+  formnovalidate: "formNoValidate",
+  ismap: "isMap",
+  nomodule: "noModule",
+  playsinline: "playsInline",
+  readonly: "readOnly",
+  defaultvalue: "defaultValue",
+  defaultchecked: "defaultChecked",
+  srcobject: "srcObject",
+  novalidate: "noValidate",
+  allowfullscreen: "allowFullscreen",
+  disablepictureinpicture: "disablePictureInPicture",
+  disableremoteplayback: "disableRemotePlayback"
+};
+function normalize_attribute(name) {
+  name = name.toLowerCase();
+  return ATTRIBUTE_ALIASES[name] ?? name;
 }
-function infinite_loop_guard() {
-  try {
-    effect_update_depth_exceeded();
-  } catch (error) {
-    invoke_error_boundary(error, last_scheduled_effect);
-  }
-}
-let eager_block_effects = null;
-function flush_queued_effects(effects) {
-  var length = effects.length;
-  if (length === 0) return;
-  var i = 0;
-  while (i < length) {
-    var effect2 = effects[i++];
-    if ((effect2.f & (DESTROYED | INERT)) === 0 && is_dirty(effect2)) {
-      eager_block_effects = /* @__PURE__ */ new Set();
-      update_effect(effect2);
-      if (effect2.deps === null && effect2.first === null && effect2.nodes === null && effect2.teardown === null && effect2.ac === null) {
-        unlink_effect(effect2);
-      }
-      if (eager_block_effects?.size > 0) {
-        old_values.clear();
-        for (const e of eager_block_effects) {
-          if ((e.f & (DESTROYED | INERT)) !== 0) continue;
-          const ordered_effects = [e];
-          let ancestor = e.parent;
-          while (ancestor !== null) {
-            if (eager_block_effects.has(ancestor)) {
-              eager_block_effects.delete(ancestor);
-              ordered_effects.push(ancestor);
-            }
-            ancestor = ancestor.parent;
-          }
-          for (let j = ordered_effects.length - 1; j >= 0; j--) {
-            const e2 = ordered_effects[j];
-            if ((e2.f & (DESTROYED | INERT)) !== 0) continue;
-            update_effect(e2);
-          }
-        }
-        eager_block_effects.clear();
-      }
-    }
-  }
-  eager_block_effects = null;
-}
-function mark_effects(value, sources, marked, checked) {
-  if (marked.has(value)) return;
-  marked.add(value);
-  if (value.reactions !== null) {
-    for (const reaction of value.reactions) {
-      const flags2 = reaction.f;
-      if ((flags2 & DERIVED) !== 0) {
-        mark_effects(
-          /** @type {Derived} */
-          reaction,
-          sources,
-          marked,
-          checked
-        );
-      } else if ((flags2 & (ASYNC | BLOCK_EFFECT)) !== 0 && (flags2 & DIRTY) === 0 && depends_on(reaction, sources, checked)) {
-        set_signal_status(reaction, DIRTY);
-        schedule_effect(
-          /** @type {Effect} */
-          reaction
-        );
-      }
-    }
-  }
-}
-function depends_on(reaction, sources, checked) {
-  const depends = checked.get(reaction);
-  if (depends !== void 0) return depends;
-  if (reaction.deps !== null) {
-    for (const dep of reaction.deps) {
-      if (includes.call(sources, dep)) {
-        return true;
-      }
-      if ((dep.f & DERIVED) !== 0 && depends_on(
-        /** @type {Derived} */
-        dep,
-        sources,
-        checked
-      )) {
-        checked.set(
-          /** @type {Derived} */
-          dep,
-          true
-        );
-        return true;
-      }
-    }
-  }
-  checked.set(reaction, false);
-  return false;
-}
-function schedule_effect(signal) {
-  var effect2 = last_scheduled_effect = signal;
-  var boundary2 = effect2.b;
-  if (boundary2?.is_pending && (signal.f & (EFFECT | RENDER_EFFECT | MANAGED_EFFECT)) !== 0 && (signal.f & REACTION_RAN) === 0) {
-    boundary2.defer_effect(signal);
-    return;
-  }
-  while (effect2.parent !== null) {
-    effect2 = effect2.parent;
-    var flags2 = effect2.f;
-    if (is_flushing && effect2 === active_effect && (flags2 & BLOCK_EFFECT) !== 0 && (flags2 & HEAD_EFFECT) === 0 && (flags2 & REACTION_RAN) !== 0) {
-      return;
-    }
-    if ((flags2 & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
-      if ((flags2 & CLEAN) === 0) {
-        return;
-      }
-      effect2.f ^= CLEAN;
-    }
-  }
-  queued_root_effects.push(effect2);
-}
-function reset_branch(effect2, tracked) {
-  if ((effect2.f & BRANCH_EFFECT) !== 0 && (effect2.f & CLEAN) !== 0) {
-    return;
-  }
-  if ((effect2.f & DIRTY) !== 0) {
-    tracked.d.push(effect2);
-  } else if ((effect2.f & MAYBE_DIRTY) !== 0) {
-    tracked.m.push(effect2);
-  }
-  set_signal_status(effect2, CLEAN);
-  var e = effect2.first;
-  while (e !== null) {
-    reset_branch(e, tracked);
-    e = e.next;
-  }
-}
-function createSubscriber(start) {
-  let subscribers = 0;
-  let version = source(0);
-  let stop;
-  return () => {
-    if (effect_tracking()) {
-      get$1(version);
-      render_effect(() => {
-        if (subscribers === 0) {
-          stop = untrack(() => start(() => increment(version)));
-        }
-        subscribers += 1;
-        return () => {
-          queue_micro_task(() => {
-            subscribers -= 1;
-            if (subscribers === 0) {
-              stop?.();
-              stop = void 0;
-              increment(version);
-            }
-          });
-        };
-      });
-    }
-  };
-}
-var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
-function boundary(node, props, children, transform_error) {
-  new Boundary(node, props, children, transform_error);
-}
-class Boundary {
-  /** @type {Boundary | null} */
-  parent;
-  is_pending = false;
-  /**
-   * API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
-   * Inherited from parent boundary, or defaults to identity.
-   * @type {(error: unknown) => unknown}
-   */
-  transform_error;
-  /** @type {TemplateNode} */
-  #anchor;
-  /** @type {TemplateNode | null} */
-  #hydrate_open = hydrating ? hydrate_node : null;
-  /** @type {BoundaryProps} */
-  #props;
-  /** @type {((anchor: Node) => void)} */
-  #children;
-  /** @type {Effect} */
-  #effect;
-  /** @type {Effect | null} */
-  #main_effect = null;
-  /** @type {Effect | null} */
-  #pending_effect = null;
-  /** @type {Effect | null} */
-  #failed_effect = null;
-  /** @type {DocumentFragment | null} */
-  #offscreen_fragment = null;
-  #local_pending_count = 0;
-  #pending_count = 0;
-  #pending_count_update_queued = false;
-  /** @type {Set<Effect>} */
-  #dirty_effects = /* @__PURE__ */ new Set();
-  /** @type {Set<Effect>} */
-  #maybe_dirty_effects = /* @__PURE__ */ new Set();
-  /**
-   * A source containing the number of pending async deriveds/expressions.
-   * Only created if `$effect.pending()` is used inside the boundary,
-   * otherwise updating the source results in needless `Batch.ensure()`
-   * calls followed by no-op flushes
-   * @type {Source<number> | null}
-   */
-  #effect_pending = null;
-  #effect_pending_subscriber = createSubscriber(() => {
-    this.#effect_pending = source(this.#local_pending_count);
-    return () => {
-      this.#effect_pending = null;
-    };
-  });
-  /**
-   * @param {TemplateNode} node
-   * @param {BoundaryProps} props
-   * @param {((anchor: Node) => void)} children
-   * @param {((error: unknown) => unknown) | undefined} [transform_error]
-   */
-  constructor(node, props, children, transform_error) {
-    this.#anchor = node;
-    this.#props = props;
-    this.#children = (anchor) => {
-      var effect2 = (
-        /** @type {Effect} */
-        active_effect
-      );
-      effect2.b = this;
-      effect2.f |= BOUNDARY_EFFECT;
-      children(anchor);
-    };
-    this.parent = /** @type {Effect} */
-    active_effect.b;
-    this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
-    this.#effect = block(() => {
-      if (hydrating) {
-        const comment2 = (
-          /** @type {Comment} */
-          this.#hydrate_open
-        );
-        hydrate_next();
-        const server_rendered_pending = comment2.data === HYDRATION_START_ELSE;
-        const server_rendered_failed = comment2.data.startsWith(HYDRATION_START_FAILED);
-        if (server_rendered_failed) {
-          const serialized_error = JSON.parse(comment2.data.slice(HYDRATION_START_FAILED.length));
-          this.#hydrate_failed_content(serialized_error);
-        } else if (server_rendered_pending) {
-          this.#hydrate_pending_content();
-        } else {
-          this.#hydrate_resolved_content();
-        }
-      } else {
-        this.#render();
-      }
-    }, flags);
-    if (hydrating) {
-      this.#anchor = hydrate_node;
-    }
-  }
-  #hydrate_resolved_content() {
-    try {
-      this.#main_effect = branch(() => this.#children(this.#anchor));
-    } catch (error) {
-      this.error(error);
-    }
-  }
-  /**
-   * @param {unknown} error The deserialized error from the server's hydration comment
-   */
-  #hydrate_failed_content(error) {
-    const failed = this.#props.failed;
-    if (!failed) return;
-    this.#failed_effect = branch(() => {
-      failed(
-        this.#anchor,
-        () => error,
-        () => () => {
-        }
-      );
-    });
-  }
-  #hydrate_pending_content() {
-    const pending = this.#props.pending;
-    if (!pending) return;
-    this.is_pending = true;
-    this.#pending_effect = branch(() => pending(this.#anchor));
-    queue_micro_task(() => {
-      var fragment = this.#offscreen_fragment = document.createDocumentFragment();
-      var anchor = create_text();
-      fragment.append(anchor);
-      this.#main_effect = this.#run(() => {
-        Batch.ensure();
-        return branch(() => this.#children(anchor));
-      });
-      if (this.#pending_count === 0) {
-        this.#anchor.before(fragment);
-        this.#offscreen_fragment = null;
-        pause_effect(
-          /** @type {Effect} */
-          this.#pending_effect,
-          () => {
-            this.#pending_effect = null;
-          }
-        );
-        this.#resolve();
-      }
-    });
-  }
-  #render() {
-    try {
-      this.is_pending = this.has_pending_snippet();
-      this.#pending_count = 0;
-      this.#local_pending_count = 0;
-      this.#main_effect = branch(() => {
-        this.#children(this.#anchor);
-      });
-      if (this.#pending_count > 0) {
-        var fragment = this.#offscreen_fragment = document.createDocumentFragment();
-        move_effect(this.#main_effect, fragment);
-        const pending = (
-          /** @type {(anchor: Node) => void} */
-          this.#props.pending
-        );
-        this.#pending_effect = branch(() => pending(this.#anchor));
-      } else {
-        this.#resolve();
-      }
-    } catch (error) {
-      this.error(error);
-    }
-  }
-  #resolve() {
-    this.is_pending = false;
-    for (const e of this.#dirty_effects) {
-      set_signal_status(e, DIRTY);
-      schedule_effect(e);
-    }
-    for (const e of this.#maybe_dirty_effects) {
-      set_signal_status(e, MAYBE_DIRTY);
-      schedule_effect(e);
-    }
-    this.#dirty_effects.clear();
-    this.#maybe_dirty_effects.clear();
-  }
-  /**
-   * Defer an effect inside a pending boundary until the boundary resolves
-   * @param {Effect} effect
-   */
-  defer_effect(effect2) {
-    defer_effect(effect2, this.#dirty_effects, this.#maybe_dirty_effects);
-  }
-  /**
-   * Returns `false` if the effect exists inside a boundary whose pending snippet is shown
-   * @returns {boolean}
-   */
-  is_rendered() {
-    return !this.is_pending && (!this.parent || this.parent.is_rendered());
-  }
-  has_pending_snippet() {
-    return !!this.#props.pending;
-  }
-  /**
-   * @template T
-   * @param {() => T} fn
-   */
-  #run(fn) {
-    var previous_effect = active_effect;
-    var previous_reaction = active_reaction;
-    var previous_ctx = component_context;
-    set_active_effect(this.#effect);
-    set_active_reaction(this.#effect);
-    set_component_context(this.#effect.ctx);
-    try {
-      return fn();
-    } catch (e) {
-      handle_error(e);
-      return null;
-    } finally {
-      set_active_effect(previous_effect);
-      set_active_reaction(previous_reaction);
-      set_component_context(previous_ctx);
-    }
-  }
-  /**
-   * Updates the pending count associated with the currently visible pending snippet,
-   * if any, such that we can replace the snippet with content once work is done
-   * @param {1 | -1} d
-   */
-  #update_pending_count(d) {
-    if (!this.has_pending_snippet()) {
-      if (this.parent) {
-        this.parent.#update_pending_count(d);
-      }
-      return;
-    }
-    this.#pending_count += d;
-    if (this.#pending_count === 0) {
-      this.#resolve();
-      if (this.#pending_effect) {
-        pause_effect(this.#pending_effect, () => {
-          this.#pending_effect = null;
-        });
-      }
-      if (this.#offscreen_fragment) {
-        this.#anchor.before(this.#offscreen_fragment);
-        this.#offscreen_fragment = null;
-      }
-    }
-  }
-  /**
-   * Update the source that powers `$effect.pending()` inside this boundary,
-   * and controls when the current `pending` snippet (if any) is removed.
-   * Do not call from inside the class
-   * @param {1 | -1} d
-   */
-  update_pending_count(d) {
-    this.#update_pending_count(d);
-    this.#local_pending_count += d;
-    if (!this.#effect_pending || this.#pending_count_update_queued) return;
-    this.#pending_count_update_queued = true;
-    queue_micro_task(() => {
-      this.#pending_count_update_queued = false;
-      if (this.#effect_pending) {
-        internal_set(this.#effect_pending, this.#local_pending_count);
-      }
-    });
-  }
-  get_effect_pending() {
-    this.#effect_pending_subscriber();
-    return get$1(
-      /** @type {Source<number>} */
-      this.#effect_pending
-    );
-  }
-  /** @param {unknown} error */
-  error(error) {
-    var onerror = this.#props.onerror;
-    let failed = this.#props.failed;
-    if (!onerror && !failed) {
-      throw error;
-    }
-    if (this.#main_effect) {
-      destroy_effect(this.#main_effect);
-      this.#main_effect = null;
-    }
-    if (this.#pending_effect) {
-      destroy_effect(this.#pending_effect);
-      this.#pending_effect = null;
-    }
-    if (this.#failed_effect) {
-      destroy_effect(this.#failed_effect);
-      this.#failed_effect = null;
-    }
-    if (hydrating) {
-      set_hydrate_node(
-        /** @type {TemplateNode} */
-        this.#hydrate_open
-      );
-      next();
-      set_hydrate_node(skip_nodes());
-    }
-    var did_reset = false;
-    var calling_on_error = false;
-    const reset2 = () => {
-      if (did_reset) {
-        svelte_boundary_reset_noop();
-        return;
-      }
-      did_reset = true;
-      if (calling_on_error) {
-        svelte_boundary_reset_onerror();
-      }
-      if (this.#failed_effect !== null) {
-        pause_effect(this.#failed_effect, () => {
-          this.#failed_effect = null;
-        });
-      }
-      this.#run(() => {
-        Batch.ensure();
-        this.#render();
-      });
-    };
-    const handle_error_result = (transformed_error) => {
-      try {
-        calling_on_error = true;
-        onerror?.(transformed_error, reset2);
-        calling_on_error = false;
-      } catch (error2) {
-        invoke_error_boundary(error2, this.#effect && this.#effect.parent);
-      }
-      if (failed) {
-        this.#failed_effect = this.#run(() => {
-          Batch.ensure();
-          try {
-            return branch(() => {
-              var effect2 = (
-                /** @type {Effect} */
-                active_effect
-              );
-              effect2.b = this;
-              effect2.f |= BOUNDARY_EFFECT;
-              failed(
-                this.#anchor,
-                () => transformed_error,
-                () => reset2
-              );
-            });
-          } catch (error2) {
-            invoke_error_boundary(
-              error2,
-              /** @type {Effect} */
-              this.#effect.parent
-            );
-            return null;
-          }
-        });
-      }
-    };
-    queue_micro_task(() => {
-      var result;
-      try {
-        result = this.transform_error(error);
-      } catch (e) {
-        invoke_error_boundary(e, this.#effect && this.#effect.parent);
-        return;
-      }
-      if (result !== null && typeof result === "object" && typeof /** @type {any} */
-      result.then === "function") {
-        result.then(
-          handle_error_result,
-          /** @param {unknown} e */
-          (e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
-        );
-      } else {
-        handle_error_result(result);
-      }
-    });
-  }
-}
-function flatten(blockers, sync, async, fn) {
-  const d = derived;
-  var pending = blockers.filter((b) => !b.settled);
-  if (async.length === 0 && pending.length === 0) {
-    fn(sync.map(d));
-    return;
-  }
-  var parent = (
-    /** @type {Effect} */
-    active_effect
-  );
-  var restore = capture();
-  var blocker_promise = pending.length === 1 ? pending[0].promise : pending.length > 1 ? Promise.all(pending.map((b) => b.promise)) : null;
-  function finish(values) {
-    restore();
-    try {
-      fn(values);
-    } catch (error) {
-      if ((parent.f & DESTROYED) === 0) {
-        invoke_error_boundary(error, parent);
-      }
-    }
-    unset_context();
-  }
-  if (async.length === 0) {
-    blocker_promise.then(() => finish(sync.map(d)));
-    return;
-  }
-  function run() {
-    restore();
-    Promise.all(async.map((expression) => /* @__PURE__ */ async_derived(expression))).then((result) => finish([...sync.map(d), ...result])).catch((error) => invoke_error_boundary(error, parent));
-  }
-  if (blocker_promise) {
-    blocker_promise.then(run);
-  } else {
-    run();
-  }
-}
-function capture() {
-  var previous_effect = active_effect;
-  var previous_reaction = active_reaction;
-  var previous_component_context = component_context;
-  var previous_batch2 = current_batch;
-  return function restore(activate_batch = true) {
-    set_active_effect(previous_effect);
-    set_active_reaction(previous_reaction);
-    set_component_context(previous_component_context);
-    if (activate_batch) previous_batch2?.activate();
-  };
-}
-function unset_context(deactivate_batch = true) {
-  set_active_effect(null);
-  set_active_reaction(null);
-  set_component_context(null);
-  if (deactivate_batch) current_batch?.deactivate();
-}
-function increment_pending() {
-  var boundary2 = (
-    /** @type {Boundary} */
-    /** @type {Effect} */
-    active_effect.b
-  );
-  var batch = (
-    /** @type {Batch} */
-    current_batch
-  );
-  var blocking = boundary2.is_rendered();
-  boundary2.update_pending_count(1);
-  batch.increment(blocking);
-  return () => {
-    boundary2.update_pending_count(-1);
-    batch.decrement(blocking);
-  };
-}
-// @__NO_SIDE_EFFECTS__
-function derived(fn) {
-  var flags2 = DERIVED | DIRTY;
-  var parent_derived = active_reaction !== null && (active_reaction.f & DERIVED) !== 0 ? (
-    /** @type {Derived} */
-    active_reaction
-  ) : null;
-  if (active_effect !== null) {
-    active_effect.f |= EFFECT_PRESERVED;
-  }
-  const signal = {
-    ctx: component_context,
-    deps: null,
-    effects: null,
-    equals,
-    f: flags2,
-    fn,
-    reactions: null,
-    rv: 0,
-    v: (
-      /** @type {V} */
-      UNINITIALIZED
-    ),
-    wv: 0,
-    parent: parent_derived ?? active_effect,
-    ac: null
-  };
-  return signal;
-}
-// @__NO_SIDE_EFFECTS__
-function async_derived(fn, label, location2) {
-  let parent = (
-    /** @type {Effect | null} */
-    active_effect
-  );
-  if (parent === null) {
-    async_derived_orphan();
-  }
-  var promise = (
-    /** @type {Promise<V>} */
-    /** @type {unknown} */
-    void 0
-  );
-  var signal = source(
-    /** @type {V} */
-    UNINITIALIZED
-  );
-  var should_suspend = !active_reaction;
-  var deferreds = /* @__PURE__ */ new Map();
-  async_effect(() => {
-    var d = deferred();
-    promise = d.promise;
-    try {
-      Promise.resolve(fn()).then(d.resolve, d.reject).finally(unset_context);
-    } catch (error) {
-      d.reject(error);
-      unset_context();
-    }
-    var batch = (
-      /** @type {Batch} */
-      current_batch
-    );
-    if (should_suspend) {
-      var decrement_pending = increment_pending();
-      deferreds.get(batch)?.reject(STALE_REACTION);
-      deferreds.delete(batch);
-      deferreds.set(batch, d);
-    }
-    const handler = (value, error = void 0) => {
-      batch.activate();
-      if (error) {
-        if (error !== STALE_REACTION) {
-          signal.f |= ERROR_VALUE;
-          internal_set(signal, error);
-        }
-      } else {
-        if ((signal.f & ERROR_VALUE) !== 0) {
-          signal.f ^= ERROR_VALUE;
-        }
-        internal_set(signal, value);
-        for (const [b, d2] of deferreds) {
-          deferreds.delete(b);
-          if (b === batch) break;
-          d2.reject(STALE_REACTION);
-        }
-      }
-      if (decrement_pending) {
-        decrement_pending();
-      }
-    };
-    d.promise.then(handler, (e) => handler(null, e || "unknown"));
-  });
-  teardown(() => {
-    for (const d of deferreds.values()) {
-      d.reject(STALE_REACTION);
-    }
-  });
-  return new Promise((fulfil) => {
-    function next2(p) {
-      function go() {
-        if (p === promise) {
-          fulfil(signal);
-        } else {
-          next2(promise);
-        }
-      }
-      p.then(go, go);
-    }
-    next2(promise);
-  });
-}
-// @__NO_SIDE_EFFECTS__
-function user_derived(fn) {
-  const d = /* @__PURE__ */ derived(fn);
-  push_reaction_value(d);
-  return d;
-}
-function destroy_derived_effects(derived2) {
-  var effects = derived2.effects;
-  if (effects !== null) {
-    derived2.effects = null;
-    for (var i = 0; i < effects.length; i += 1) {
-      destroy_effect(
-        /** @type {Effect} */
-        effects[i]
-      );
-    }
-  }
-}
-function get_derived_parent_effect(derived2) {
-  var parent = derived2.parent;
-  while (parent !== null) {
-    if ((parent.f & DERIVED) === 0) {
-      return (parent.f & DESTROYED) === 0 ? (
-        /** @type {Effect} */
-        parent
-      ) : null;
-    }
-    parent = parent.parent;
-  }
-  return null;
-}
-function execute_derived(derived2) {
-  var value;
-  var prev_active_effect = active_effect;
-  set_active_effect(get_derived_parent_effect(derived2));
-  {
-    try {
-      derived2.f &= ~WAS_MARKED;
-      destroy_derived_effects(derived2);
-      value = update_reaction(derived2);
-    } finally {
-      set_active_effect(prev_active_effect);
-    }
-  }
-  return value;
-}
-function update_derived(derived2) {
-  var value = execute_derived(derived2);
-  if (!derived2.equals(value)) {
-    derived2.wv = increment_write_version();
-    if (!current_batch?.is_fork || derived2.deps === null) {
-      derived2.v = value;
-      if (derived2.deps === null) {
-        set_signal_status(derived2, CLEAN);
-        return;
-      }
-    }
-  }
-  if (is_destroying_effect) {
-    return;
-  }
-  if (batch_values !== null) {
-    if (effect_tracking() || current_batch?.is_fork) {
-      batch_values.set(derived2, value);
-    }
-  } else {
-    update_derived_status(derived2);
-  }
-}
-function freeze_derived_effects(derived2) {
-  if (derived2.effects === null) return;
-  for (const e of derived2.effects) {
-    if (e.teardown || e.ac) {
-      e.teardown?.();
-      e.ac?.abort(STALE_REACTION);
-      e.teardown = noop;
-      e.ac = null;
-      remove_reactions(e, 0);
-      destroy_effect_children(e);
-    }
-  }
-}
-function unfreeze_derived_effects(derived2) {
-  if (derived2.effects === null) return;
-  for (const e of derived2.effects) {
-    if (e.teardown) {
-      update_effect(e);
-    }
-  }
-}
-let eager_effects = /* @__PURE__ */ new Set();
-const old_values = /* @__PURE__ */ new Map();
-let eager_effects_deferred = false;
-function source(v, stack) {
-  var signal = {
-    f: 0,
-    // TODO ideally we could skip this altogether, but it causes type errors
-    v,
-    reactions: null,
-    equals,
-    rv: 0,
-    wv: 0
-  };
-  return signal;
-}
-// @__NO_SIDE_EFFECTS__
-function state(v, stack) {
-  const s = source(v);
-  push_reaction_value(s);
-  return s;
-}
-// @__NO_SIDE_EFFECTS__
-function mutable_source(initial_value, immutable = false, trackable = true) {
-  const s = source(initial_value);
-  if (!immutable) {
-    s.equals = safe_equals;
-  }
-  return s;
-}
-function set(source2, value, should_proxy = false) {
-  if (active_reaction !== null && // since we are untracking the function inside `$inspect.with` we need to add this check
-  // to ensure we error if state is set inside an inspect effect
-  (!untracking || (active_reaction.f & EAGER_EFFECT) !== 0) && is_runes() && (active_reaction.f & (DERIVED | BLOCK_EFFECT | ASYNC | EAGER_EFFECT)) !== 0 && (current_sources === null || !includes.call(current_sources, source2))) {
-    state_unsafe_mutation();
-  }
-  let new_value = should_proxy ? proxy(value) : value;
-  return internal_set(source2, new_value);
-}
-function internal_set(source2, value) {
-  if (!source2.equals(value)) {
-    var old_value = source2.v;
-    if (is_destroying_effect) {
-      old_values.set(source2, value);
-    } else {
-      old_values.set(source2, old_value);
-    }
-    source2.v = value;
-    var batch = Batch.ensure();
-    batch.capture(source2, old_value);
-    if ((source2.f & DERIVED) !== 0) {
-      const derived2 = (
-        /** @type {Derived} */
-        source2
-      );
-      if ((source2.f & DIRTY) !== 0) {
-        execute_derived(derived2);
-      }
-      update_derived_status(derived2);
-    }
-    source2.wv = increment_write_version();
-    mark_reactions(source2, DIRTY);
-    if (active_effect !== null && (active_effect.f & CLEAN) !== 0 && (active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0) {
-      if (untracked_writes === null) {
-        set_untracked_writes([source2]);
-      } else {
-        untracked_writes.push(source2);
-      }
-    }
-    if (!batch.is_fork && eager_effects.size > 0 && !eager_effects_deferred) {
-      flush_eager_effects();
-    }
-  }
-  return value;
-}
-function flush_eager_effects() {
-  eager_effects_deferred = false;
-  for (const effect2 of eager_effects) {
-    if ((effect2.f & CLEAN) !== 0) {
-      set_signal_status(effect2, MAYBE_DIRTY);
-    }
-    if (is_dirty(effect2)) {
-      update_effect(effect2);
-    }
-  }
-  eager_effects.clear();
-}
-function increment(source2) {
-  set(source2, source2.v + 1);
-}
-function mark_reactions(signal, status) {
-  var reactions = signal.reactions;
-  if (reactions === null) return;
-  var length = reactions.length;
-  for (var i = 0; i < length; i++) {
-    var reaction = reactions[i];
-    var flags2 = reaction.f;
-    var not_dirty = (flags2 & DIRTY) === 0;
-    if (not_dirty) {
-      set_signal_status(reaction, status);
-    }
-    if ((flags2 & DERIVED) !== 0) {
-      var derived2 = (
-        /** @type {Derived} */
-        reaction
-      );
-      batch_values?.delete(derived2);
-      if ((flags2 & WAS_MARKED) === 0) {
-        if (flags2 & CONNECTED) {
-          reaction.f |= WAS_MARKED;
-        }
-        mark_reactions(derived2, MAYBE_DIRTY);
-      }
-    } else if (not_dirty) {
-      if ((flags2 & BLOCK_EFFECT) !== 0 && eager_block_effects !== null) {
-        eager_block_effects.add(
-          /** @type {Effect} */
-          reaction
-        );
-      }
-      schedule_effect(
-        /** @type {Effect} */
-        reaction
-      );
-    }
-  }
+const PASSIVE_EVENTS = ["touchstart", "touchmove"];
+function is_passive_event(name) {
+  return PASSIVE_EVENTS.includes(name);
 }
 function autofocus(dom, value) {
   if (value) {
@@ -2070,763 +809,6 @@ function listen_to_event_and_reset_event(element, event2, handler, on_reset = ha
     element.__on_r = () => on_reset(true);
   }
   add_form_reset_listener();
-}
-let is_updating_effect = false;
-let is_destroying_effect = false;
-function set_is_destroying_effect(value) {
-  is_destroying_effect = value;
-}
-let active_reaction = null;
-let untracking = false;
-function set_active_reaction(reaction) {
-  active_reaction = reaction;
-}
-let active_effect = null;
-function set_active_effect(effect2) {
-  active_effect = effect2;
-}
-let current_sources = null;
-function push_reaction_value(value) {
-  if (active_reaction !== null && true) {
-    if (current_sources === null) {
-      current_sources = [value];
-    } else {
-      current_sources.push(value);
-    }
-  }
-}
-let new_deps = null;
-let skipped_deps = 0;
-let untracked_writes = null;
-function set_untracked_writes(value) {
-  untracked_writes = value;
-}
-let write_version = 1;
-let read_version = 0;
-let update_version = read_version;
-function set_update_version(value) {
-  update_version = value;
-}
-function increment_write_version() {
-  return ++write_version;
-}
-function is_dirty(reaction) {
-  var flags2 = reaction.f;
-  if ((flags2 & DIRTY) !== 0) {
-    return true;
-  }
-  if (flags2 & DERIVED) {
-    reaction.f &= ~WAS_MARKED;
-  }
-  if ((flags2 & MAYBE_DIRTY) !== 0) {
-    var dependencies = (
-      /** @type {Value[]} */
-      reaction.deps
-    );
-    var length = dependencies.length;
-    for (var i = 0; i < length; i++) {
-      var dependency = dependencies[i];
-      if (is_dirty(
-        /** @type {Derived} */
-        dependency
-      )) {
-        update_derived(
-          /** @type {Derived} */
-          dependency
-        );
-      }
-      if (dependency.wv > reaction.wv) {
-        return true;
-      }
-    }
-    if ((flags2 & CONNECTED) !== 0 && // During time traveling we don't want to reset the status so that
-    // traversal of the graph in the other batches still happens
-    batch_values === null) {
-      set_signal_status(reaction, CLEAN);
-    }
-  }
-  return false;
-}
-function schedule_possible_effect_self_invalidation(signal, effect2, root2 = true) {
-  var reactions = signal.reactions;
-  if (reactions === null) return;
-  if (current_sources !== null && includes.call(current_sources, signal)) {
-    return;
-  }
-  for (var i = 0; i < reactions.length; i++) {
-    var reaction = reactions[i];
-    if ((reaction.f & DERIVED) !== 0) {
-      schedule_possible_effect_self_invalidation(
-        /** @type {Derived} */
-        reaction,
-        effect2,
-        false
-      );
-    } else if (effect2 === reaction) {
-      if (root2) {
-        set_signal_status(reaction, DIRTY);
-      } else if ((reaction.f & CLEAN) !== 0) {
-        set_signal_status(reaction, MAYBE_DIRTY);
-      }
-      schedule_effect(
-        /** @type {Effect} */
-        reaction
-      );
-    }
-  }
-}
-function update_reaction(reaction) {
-  var previous_deps = new_deps;
-  var previous_skipped_deps = skipped_deps;
-  var previous_untracked_writes = untracked_writes;
-  var previous_reaction = active_reaction;
-  var previous_sources = current_sources;
-  var previous_component_context = component_context;
-  var previous_untracking = untracking;
-  var previous_update_version = update_version;
-  var flags2 = reaction.f;
-  new_deps = /** @type {null | Value[]} */
-  null;
-  skipped_deps = 0;
-  untracked_writes = null;
-  active_reaction = (flags2 & (BRANCH_EFFECT | ROOT_EFFECT)) === 0 ? reaction : null;
-  current_sources = null;
-  set_component_context(reaction.ctx);
-  untracking = false;
-  update_version = ++read_version;
-  if (reaction.ac !== null) {
-    without_reactive_context(() => {
-      reaction.ac.abort(STALE_REACTION);
-    });
-    reaction.ac = null;
-  }
-  try {
-    reaction.f |= REACTION_IS_UPDATING;
-    var fn = (
-      /** @type {Function} */
-      reaction.fn
-    );
-    var result = fn();
-    reaction.f |= REACTION_RAN;
-    var deps = reaction.deps;
-    var is_fork = current_batch?.is_fork;
-    if (new_deps !== null) {
-      var i;
-      if (!is_fork) {
-        remove_reactions(reaction, skipped_deps);
-      }
-      if (deps !== null && skipped_deps > 0) {
-        deps.length = skipped_deps + new_deps.length;
-        for (i = 0; i < new_deps.length; i++) {
-          deps[skipped_deps + i] = new_deps[i];
-        }
-      } else {
-        reaction.deps = deps = new_deps;
-      }
-      if (effect_tracking() && (reaction.f & CONNECTED) !== 0) {
-        for (i = skipped_deps; i < deps.length; i++) {
-          (deps[i].reactions ??= []).push(reaction);
-        }
-      }
-    } else if (!is_fork && deps !== null && skipped_deps < deps.length) {
-      remove_reactions(reaction, skipped_deps);
-      deps.length = skipped_deps;
-    }
-    if (is_runes() && untracked_writes !== null && !untracking && deps !== null && (reaction.f & (DERIVED | MAYBE_DIRTY | DIRTY)) === 0) {
-      for (i = 0; i < /** @type {Source[]} */
-      untracked_writes.length; i++) {
-        schedule_possible_effect_self_invalidation(
-          untracked_writes[i],
-          /** @type {Effect} */
-          reaction
-        );
-      }
-    }
-    if (previous_reaction !== null && previous_reaction !== reaction) {
-      read_version++;
-      if (previous_reaction.deps !== null) {
-        for (let i2 = 0; i2 < previous_skipped_deps; i2 += 1) {
-          previous_reaction.deps[i2].rv = read_version;
-        }
-      }
-      if (previous_deps !== null) {
-        for (const dep of previous_deps) {
-          dep.rv = read_version;
-        }
-      }
-      if (untracked_writes !== null) {
-        if (previous_untracked_writes === null) {
-          previous_untracked_writes = untracked_writes;
-        } else {
-          previous_untracked_writes.push(.../** @type {Source[]} */
-          untracked_writes);
-        }
-      }
-    }
-    if ((reaction.f & ERROR_VALUE) !== 0) {
-      reaction.f ^= ERROR_VALUE;
-    }
-    return result;
-  } catch (error) {
-    return handle_error(error);
-  } finally {
-    reaction.f ^= REACTION_IS_UPDATING;
-    new_deps = previous_deps;
-    skipped_deps = previous_skipped_deps;
-    untracked_writes = previous_untracked_writes;
-    active_reaction = previous_reaction;
-    current_sources = previous_sources;
-    set_component_context(previous_component_context);
-    untracking = previous_untracking;
-    update_version = previous_update_version;
-  }
-}
-function remove_reaction(signal, dependency) {
-  let reactions = dependency.reactions;
-  if (reactions !== null) {
-    var index = index_of.call(reactions, signal);
-    if (index !== -1) {
-      var new_length = reactions.length - 1;
-      if (new_length === 0) {
-        reactions = dependency.reactions = null;
-      } else {
-        reactions[index] = reactions[new_length];
-        reactions.pop();
-      }
-    }
-  }
-  if (reactions === null && (dependency.f & DERIVED) !== 0 && // Destroying a child effect while updating a parent effect can cause a dependency to appear
-  // to be unused, when in fact it is used by the currently-updating parent. Checking `new_deps`
-  // allows us to skip the expensive work of disconnecting and immediately reconnecting it
-  (new_deps === null || !includes.call(new_deps, dependency))) {
-    var derived2 = (
-      /** @type {Derived} */
-      dependency
-    );
-    if ((derived2.f & CONNECTED) !== 0) {
-      derived2.f ^= CONNECTED;
-      derived2.f &= ~WAS_MARKED;
-    }
-    update_derived_status(derived2);
-    freeze_derived_effects(derived2);
-    remove_reactions(derived2, 0);
-  }
-}
-function remove_reactions(signal, start_index) {
-  var dependencies = signal.deps;
-  if (dependencies === null) return;
-  for (var i = start_index; i < dependencies.length; i++) {
-    remove_reaction(signal, dependencies[i]);
-  }
-}
-function update_effect(effect2) {
-  var flags2 = effect2.f;
-  if ((flags2 & DESTROYED) !== 0) {
-    return;
-  }
-  set_signal_status(effect2, CLEAN);
-  var previous_effect = active_effect;
-  var was_updating_effect = is_updating_effect;
-  active_effect = effect2;
-  is_updating_effect = true;
-  try {
-    if ((flags2 & (BLOCK_EFFECT | MANAGED_EFFECT)) !== 0) {
-      destroy_block_effect_children(effect2);
-    } else {
-      destroy_effect_children(effect2);
-    }
-    execute_effect_teardown(effect2);
-    var teardown2 = update_reaction(effect2);
-    effect2.teardown = typeof teardown2 === "function" ? teardown2 : null;
-    effect2.wv = write_version;
-    var dep;
-    if (DEV && tracing_mode_flag && (effect2.f & DIRTY) !== 0 && effect2.deps !== null) ;
-  } finally {
-    is_updating_effect = was_updating_effect;
-    active_effect = previous_effect;
-  }
-}
-async function tick() {
-  await Promise.resolve();
-  flushSync();
-}
-function get$1(signal) {
-  var flags2 = signal.f;
-  var is_derived = (flags2 & DERIVED) !== 0;
-  if (active_reaction !== null && !untracking) {
-    var destroyed = active_effect !== null && (active_effect.f & DESTROYED) !== 0;
-    if (!destroyed && (current_sources === null || !includes.call(current_sources, signal))) {
-      var deps = active_reaction.deps;
-      if ((active_reaction.f & REACTION_IS_UPDATING) !== 0) {
-        if (signal.rv < read_version) {
-          signal.rv = read_version;
-          if (new_deps === null && deps !== null && deps[skipped_deps] === signal) {
-            skipped_deps++;
-          } else if (new_deps === null) {
-            new_deps = [signal];
-          } else {
-            new_deps.push(signal);
-          }
-        }
-      } else {
-        (active_reaction.deps ??= []).push(signal);
-        var reactions = signal.reactions;
-        if (reactions === null) {
-          signal.reactions = [active_reaction];
-        } else if (!includes.call(reactions, active_reaction)) {
-          reactions.push(active_reaction);
-        }
-      }
-    }
-  }
-  if (is_destroying_effect && old_values.has(signal)) {
-    return old_values.get(signal);
-  }
-  if (is_derived) {
-    var derived2 = (
-      /** @type {Derived} */
-      signal
-    );
-    if (is_destroying_effect) {
-      var value = derived2.v;
-      if ((derived2.f & CLEAN) === 0 && derived2.reactions !== null || depends_on_old_values(derived2)) {
-        value = execute_derived(derived2);
-      }
-      old_values.set(derived2, value);
-      return value;
-    }
-    var should_connect = (derived2.f & CONNECTED) === 0 && !untracking && active_reaction !== null && (is_updating_effect || (active_reaction.f & CONNECTED) !== 0);
-    var is_new = (derived2.f & REACTION_RAN) === 0;
-    if (is_dirty(derived2)) {
-      if (should_connect) {
-        derived2.f |= CONNECTED;
-      }
-      update_derived(derived2);
-    }
-    if (should_connect && !is_new) {
-      unfreeze_derived_effects(derived2);
-      reconnect(derived2);
-    }
-  }
-  if (batch_values?.has(signal)) {
-    return batch_values.get(signal);
-  }
-  if ((signal.f & ERROR_VALUE) !== 0) {
-    throw signal.v;
-  }
-  return signal.v;
-}
-function reconnect(derived2) {
-  derived2.f |= CONNECTED;
-  if (derived2.deps === null) return;
-  for (const dep of derived2.deps) {
-    (dep.reactions ??= []).push(derived2);
-    if ((dep.f & DERIVED) !== 0 && (dep.f & CONNECTED) === 0) {
-      unfreeze_derived_effects(
-        /** @type {Derived} */
-        dep
-      );
-      reconnect(
-        /** @type {Derived} */
-        dep
-      );
-    }
-  }
-}
-function depends_on_old_values(derived2) {
-  if (derived2.v === UNINITIALIZED) return true;
-  if (derived2.deps === null) return false;
-  for (const dep of derived2.deps) {
-    if (old_values.has(dep)) {
-      return true;
-    }
-    if ((dep.f & DERIVED) !== 0 && depends_on_old_values(
-      /** @type {Derived} */
-      dep
-    )) {
-      return true;
-    }
-  }
-  return false;
-}
-function untrack(fn) {
-  var previous_untracking = untracking;
-  try {
-    untracking = true;
-    return fn();
-  } finally {
-    untracking = previous_untracking;
-  }
-}
-function validate_effect(rune) {
-  if (active_effect === null) {
-    if (active_reaction === null) {
-      effect_orphan();
-    }
-    effect_in_unowned_derived();
-  }
-  if (is_destroying_effect) {
-    effect_in_teardown();
-  }
-}
-function push_effect(effect2, parent_effect) {
-  var parent_last = parent_effect.last;
-  if (parent_last === null) {
-    parent_effect.last = parent_effect.first = effect2;
-  } else {
-    parent_last.next = effect2;
-    effect2.prev = parent_last;
-    parent_effect.last = effect2;
-  }
-}
-function create_effect(type, fn, sync) {
-  var parent = active_effect;
-  if (parent !== null && (parent.f & INERT) !== 0) {
-    type |= INERT;
-  }
-  var effect2 = {
-    ctx: component_context,
-    deps: null,
-    nodes: null,
-    f: type | DIRTY | CONNECTED,
-    first: null,
-    fn,
-    last: null,
-    next: null,
-    parent,
-    b: parent && parent.b,
-    prev: null,
-    teardown: null,
-    wv: 0,
-    ac: null
-  };
-  if (sync) {
-    try {
-      update_effect(effect2);
-    } catch (e2) {
-      destroy_effect(effect2);
-      throw e2;
-    }
-  } else if (fn !== null) {
-    schedule_effect(effect2);
-  }
-  var e = effect2;
-  if (sync && e.deps === null && e.teardown === null && e.nodes === null && e.first === e.last && // either `null`, or a singular child
-  (e.f & EFFECT_PRESERVED) === 0) {
-    e = e.first;
-    if ((type & BLOCK_EFFECT) !== 0 && (type & EFFECT_TRANSPARENT) !== 0 && e !== null) {
-      e.f |= EFFECT_TRANSPARENT;
-    }
-  }
-  if (e !== null) {
-    e.parent = parent;
-    if (parent !== null) {
-      push_effect(e, parent);
-    }
-    if (active_reaction !== null && (active_reaction.f & DERIVED) !== 0 && (type & ROOT_EFFECT) === 0) {
-      var derived2 = (
-        /** @type {Derived} */
-        active_reaction
-      );
-      (derived2.effects ??= []).push(e);
-    }
-  }
-  return effect2;
-}
-function effect_tracking() {
-  return active_reaction !== null && !untracking;
-}
-function teardown(fn) {
-  const effect2 = create_effect(RENDER_EFFECT, null, false);
-  set_signal_status(effect2, CLEAN);
-  effect2.teardown = fn;
-  return effect2;
-}
-function user_effect(fn) {
-  validate_effect();
-  var flags2 = (
-    /** @type {Effect} */
-    active_effect.f
-  );
-  var defer = !active_reaction && (flags2 & BRANCH_EFFECT) !== 0 && (flags2 & REACTION_RAN) === 0;
-  if (defer) {
-    var context = (
-      /** @type {ComponentContext} */
-      component_context
-    );
-    (context.e ??= []).push(fn);
-  } else {
-    return create_user_effect(fn);
-  }
-}
-function create_user_effect(fn) {
-  return create_effect(EFFECT | USER_EFFECT, fn, false);
-}
-function effect_root(fn) {
-  Batch.ensure();
-  const effect2 = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
-  return () => {
-    destroy_effect(effect2);
-  };
-}
-function component_root(fn) {
-  Batch.ensure();
-  const effect2 = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
-  return (options = {}) => {
-    return new Promise((fulfil) => {
-      if (options.outro) {
-        pause_effect(effect2, () => {
-          destroy_effect(effect2);
-          fulfil(void 0);
-        });
-      } else {
-        destroy_effect(effect2);
-        fulfil(void 0);
-      }
-    });
-  };
-}
-function effect(fn) {
-  return create_effect(EFFECT, fn, false);
-}
-function async_effect(fn) {
-  return create_effect(ASYNC | EFFECT_PRESERVED, fn, true);
-}
-function render_effect(fn, flags2 = 0) {
-  return create_effect(RENDER_EFFECT | flags2, fn, true);
-}
-function template_effect(fn, sync = [], async = [], blockers = []) {
-  flatten(blockers, sync, async, (values) => {
-    create_effect(RENDER_EFFECT, () => fn(...values.map(get$1)), true);
-  });
-}
-function block(fn, flags2 = 0) {
-  var effect2 = create_effect(BLOCK_EFFECT | flags2, fn, true);
-  return effect2;
-}
-function managed(fn, flags2 = 0) {
-  var effect2 = create_effect(MANAGED_EFFECT | flags2, fn, true);
-  return effect2;
-}
-function branch(fn) {
-  return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn, true);
-}
-function execute_effect_teardown(effect2) {
-  var teardown2 = effect2.teardown;
-  if (teardown2 !== null) {
-    const previously_destroying_effect = is_destroying_effect;
-    const previous_reaction = active_reaction;
-    set_is_destroying_effect(true);
-    set_active_reaction(null);
-    try {
-      teardown2.call(null);
-    } finally {
-      set_is_destroying_effect(previously_destroying_effect);
-      set_active_reaction(previous_reaction);
-    }
-  }
-}
-function destroy_effect_children(signal, remove_dom = false) {
-  var effect2 = signal.first;
-  signal.first = signal.last = null;
-  while (effect2 !== null) {
-    const controller = effect2.ac;
-    if (controller !== null) {
-      without_reactive_context(() => {
-        controller.abort(STALE_REACTION);
-      });
-    }
-    var next2 = effect2.next;
-    if ((effect2.f & ROOT_EFFECT) !== 0) {
-      effect2.parent = null;
-    } else {
-      destroy_effect(effect2, remove_dom);
-    }
-    effect2 = next2;
-  }
-}
-function destroy_block_effect_children(signal) {
-  var effect2 = signal.first;
-  while (effect2 !== null) {
-    var next2 = effect2.next;
-    if ((effect2.f & BRANCH_EFFECT) === 0) {
-      destroy_effect(effect2);
-    }
-    effect2 = next2;
-  }
-}
-function destroy_effect(effect2, remove_dom = true) {
-  var removed = false;
-  if ((remove_dom || (effect2.f & HEAD_EFFECT) !== 0) && effect2.nodes !== null && effect2.nodes.end !== null) {
-    remove_effect_dom(
-      effect2.nodes.start,
-      /** @type {TemplateNode} */
-      effect2.nodes.end
-    );
-    removed = true;
-  }
-  destroy_effect_children(effect2, remove_dom && !removed);
-  remove_reactions(effect2, 0);
-  set_signal_status(effect2, DESTROYED);
-  var transitions = effect2.nodes && effect2.nodes.t;
-  if (transitions !== null) {
-    for (const transition of transitions) {
-      transition.stop();
-    }
-  }
-  execute_effect_teardown(effect2);
-  var parent = effect2.parent;
-  if (parent !== null && parent.first !== null) {
-    unlink_effect(effect2);
-  }
-  effect2.next = effect2.prev = effect2.teardown = effect2.ctx = effect2.deps = effect2.fn = effect2.nodes = effect2.ac = null;
-}
-function remove_effect_dom(node, end) {
-  while (node !== null) {
-    var next2 = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
-    node.remove();
-    node = next2;
-  }
-}
-function unlink_effect(effect2) {
-  var parent = effect2.parent;
-  var prev = effect2.prev;
-  var next2 = effect2.next;
-  if (prev !== null) prev.next = next2;
-  if (next2 !== null) next2.prev = prev;
-  if (parent !== null) {
-    if (parent.first === effect2) parent.first = next2;
-    if (parent.last === effect2) parent.last = prev;
-  }
-}
-function pause_effect(effect2, callback, destroy = true) {
-  var transitions = [];
-  pause_children(effect2, transitions, true);
-  var fn = () => {
-    if (destroy) destroy_effect(effect2);
-    if (callback) callback();
-  };
-  var remaining = transitions.length;
-  if (remaining > 0) {
-    var check = () => --remaining || fn();
-    for (var transition of transitions) {
-      transition.out(check);
-    }
-  } else {
-    fn();
-  }
-}
-function pause_children(effect2, transitions, local) {
-  if ((effect2.f & INERT) !== 0) return;
-  effect2.f ^= INERT;
-  var t = effect2.nodes && effect2.nodes.t;
-  if (t !== null) {
-    for (const transition of t) {
-      if (transition.is_global || local) {
-        transitions.push(transition);
-      }
-    }
-  }
-  var child2 = effect2.first;
-  while (child2 !== null) {
-    var sibling2 = child2.next;
-    var transparent = (child2.f & EFFECT_TRANSPARENT) !== 0 || // If this is a branch effect without a block effect parent,
-    // it means the parent block effect was pruned. In that case,
-    // transparency information was transferred to the branch effect.
-    (child2.f & BRANCH_EFFECT) !== 0 && (effect2.f & BLOCK_EFFECT) !== 0;
-    pause_children(child2, transitions, transparent ? local : false);
-    child2 = sibling2;
-  }
-}
-function resume_effect(effect2) {
-  resume_children(effect2, true);
-}
-function resume_children(effect2, local) {
-  if ((effect2.f & INERT) === 0) return;
-  effect2.f ^= INERT;
-  if ((effect2.f & CLEAN) === 0) {
-    set_signal_status(effect2, DIRTY);
-    schedule_effect(effect2);
-  }
-  var child2 = effect2.first;
-  while (child2 !== null) {
-    var sibling2 = child2.next;
-    var transparent = (child2.f & EFFECT_TRANSPARENT) !== 0 || (child2.f & BRANCH_EFFECT) !== 0;
-    resume_children(child2, transparent ? local : false);
-    child2 = sibling2;
-  }
-  var t = effect2.nodes && effect2.nodes.t;
-  if (t !== null) {
-    for (const transition of t) {
-      if (transition.is_global || local) {
-        transition.in();
-      }
-    }
-  }
-}
-function move_effect(effect2, fragment) {
-  if (!effect2.nodes) return;
-  var node = effect2.nodes.start;
-  var end = effect2.nodes.end;
-  while (node !== null) {
-    var next2 = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
-    fragment.append(node);
-    node = next2;
-  }
-}
-function is_capture_event(name) {
-  return name.endsWith("capture") && name !== "gotpointercapture" && name !== "lostpointercapture";
-}
-const DELEGATED_EVENTS = [
-  "beforeinput",
-  "click",
-  "change",
-  "dblclick",
-  "contextmenu",
-  "focusin",
-  "focusout",
-  "input",
-  "keydown",
-  "keyup",
-  "mousedown",
-  "mousemove",
-  "mouseout",
-  "mouseover",
-  "mouseup",
-  "pointerdown",
-  "pointermove",
-  "pointerout",
-  "pointerover",
-  "pointerup",
-  "touchend",
-  "touchmove",
-  "touchstart"
-];
-function can_delegate_event(event_name) {
-  return DELEGATED_EVENTS.includes(event_name);
-}
-const ATTRIBUTE_ALIASES = {
-  // no `class: 'className'` because we handle that separately
-  formnovalidate: "formNoValidate",
-  ismap: "isMap",
-  nomodule: "noModule",
-  playsinline: "playsInline",
-  readonly: "readOnly",
-  defaultvalue: "defaultValue",
-  defaultchecked: "defaultChecked",
-  srcobject: "srcObject",
-  novalidate: "noValidate",
-  allowfullscreen: "allowFullscreen",
-  disablepictureinpicture: "disablePictureInPicture",
-  disableremoteplayback: "disableRemotePlayback"
-};
-function normalize_attribute(name) {
-  name = name.toLowerCase();
-  return ATTRIBUTE_ALIASES[name] ?? name;
-}
-const PASSIVE_EVENTS = ["touchstart", "touchmove"];
-function is_passive_event(name) {
-  return PASSIVE_EVENTS.includes(name);
 }
 const event_symbol = /* @__PURE__ */ Symbol("events");
 const all_registered_events = /* @__PURE__ */ new Set();
@@ -3113,11 +1095,427 @@ function append(anchor, dom) {
     dom
   );
 }
+function createSubscriber(start) {
+  let subscribers = 0;
+  let version = source(0);
+  let stop;
+  return () => {
+    if (effect_tracking()) {
+      get(version);
+      render_effect(() => {
+        if (subscribers === 0) {
+          stop = untrack(() => start(() => increment(version)));
+        }
+        subscribers += 1;
+        return () => {
+          queue_micro_task(() => {
+            subscribers -= 1;
+            if (subscribers === 0) {
+              stop?.();
+              stop = void 0;
+              increment(version);
+            }
+          });
+        };
+      });
+    }
+  };
+}
+var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
+function boundary(node, props, children, transform_error) {
+  new Boundary(node, props, children, transform_error);
+}
+class Boundary {
+  /** @type {Boundary | null} */
+  parent;
+  is_pending = false;
+  /**
+   * API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
+   * Inherited from parent boundary, or defaults to identity.
+   * @type {(error: unknown) => unknown}
+   */
+  transform_error;
+  /** @type {TemplateNode} */
+  #anchor;
+  /** @type {TemplateNode | null} */
+  #hydrate_open = hydrating ? hydrate_node : null;
+  /** @type {BoundaryProps} */
+  #props;
+  /** @type {((anchor: Node) => void)} */
+  #children;
+  /** @type {Effect} */
+  #effect;
+  /** @type {Effect | null} */
+  #main_effect = null;
+  /** @type {Effect | null} */
+  #pending_effect = null;
+  /** @type {Effect | null} */
+  #failed_effect = null;
+  /** @type {DocumentFragment | null} */
+  #offscreen_fragment = null;
+  #local_pending_count = 0;
+  #pending_count = 0;
+  #pending_count_update_queued = false;
+  /** @type {Set<Effect>} */
+  #dirty_effects = /* @__PURE__ */ new Set();
+  /** @type {Set<Effect>} */
+  #maybe_dirty_effects = /* @__PURE__ */ new Set();
+  /**
+   * A source containing the number of pending async deriveds/expressions.
+   * Only created if `$effect.pending()` is used inside the boundary,
+   * otherwise updating the source results in needless `Batch.ensure()`
+   * calls followed by no-op flushes
+   * @type {Source<number> | null}
+   */
+  #effect_pending = null;
+  #effect_pending_subscriber = createSubscriber(() => {
+    this.#effect_pending = source(this.#local_pending_count);
+    return () => {
+      this.#effect_pending = null;
+    };
+  });
+  /**
+   * @param {TemplateNode} node
+   * @param {BoundaryProps} props
+   * @param {((anchor: Node) => void)} children
+   * @param {((error: unknown) => unknown) | undefined} [transform_error]
+   */
+  constructor(node, props, children, transform_error) {
+    this.#anchor = node;
+    this.#props = props;
+    this.#children = (anchor) => {
+      var effect2 = (
+        /** @type {Effect} */
+        active_effect
+      );
+      effect2.b = this;
+      effect2.f |= BOUNDARY_EFFECT;
+      children(anchor);
+    };
+    this.parent = /** @type {Effect} */
+    active_effect.b;
+    this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
+    this.#effect = block(() => {
+      if (hydrating) {
+        const comment2 = (
+          /** @type {Comment} */
+          this.#hydrate_open
+        );
+        hydrate_next();
+        const server_rendered_pending = comment2.data === HYDRATION_START_ELSE;
+        const server_rendered_failed = comment2.data.startsWith(HYDRATION_START_FAILED);
+        if (server_rendered_failed) {
+          const serialized_error = JSON.parse(comment2.data.slice(HYDRATION_START_FAILED.length));
+          this.#hydrate_failed_content(serialized_error);
+        } else if (server_rendered_pending) {
+          this.#hydrate_pending_content();
+        } else {
+          this.#hydrate_resolved_content();
+        }
+      } else {
+        this.#render();
+      }
+    }, flags);
+    if (hydrating) {
+      this.#anchor = hydrate_node;
+    }
+  }
+  #hydrate_resolved_content() {
+    try {
+      this.#main_effect = branch(() => this.#children(this.#anchor));
+    } catch (error) {
+      this.error(error);
+    }
+  }
+  /**
+   * @param {unknown} error The deserialized error from the server's hydration comment
+   */
+  #hydrate_failed_content(error) {
+    const failed = this.#props.failed;
+    if (!failed) return;
+    this.#failed_effect = branch(() => {
+      failed(
+        this.#anchor,
+        () => error,
+        () => () => {
+        }
+      );
+    });
+  }
+  #hydrate_pending_content() {
+    const pending = this.#props.pending;
+    if (!pending) return;
+    this.is_pending = true;
+    this.#pending_effect = branch(() => pending(this.#anchor));
+    var batch = (
+      /** @type {Batch} */
+      current_batch
+    );
+    queue_micro_task(() => {
+      var fragment = this.#offscreen_fragment = document.createDocumentFragment();
+      var anchor = create_text();
+      fragment.append(anchor);
+      this.#main_effect = this.#run(() => {
+        return branch(() => this.#children(anchor));
+      });
+      if (this.#pending_count === 0) {
+        this.#anchor.before(fragment);
+        this.#offscreen_fragment = null;
+        pause_effect(
+          /** @type {Effect} */
+          this.#pending_effect,
+          () => {
+            this.#pending_effect = null;
+          }
+        );
+        this.#resolve(batch);
+      }
+    });
+  }
+  #render() {
+    var batch = (
+      /** @type {Batch} */
+      current_batch
+    );
+    try {
+      this.is_pending = this.has_pending_snippet();
+      this.#pending_count = 0;
+      this.#local_pending_count = 0;
+      this.#main_effect = branch(() => {
+        this.#children(this.#anchor);
+      });
+      if (this.#pending_count > 0) {
+        var fragment = this.#offscreen_fragment = document.createDocumentFragment();
+        move_effect(this.#main_effect, fragment);
+        const pending = (
+          /** @type {(anchor: Node) => void} */
+          this.#props.pending
+        );
+        this.#pending_effect = branch(() => pending(this.#anchor));
+      } else {
+        this.#resolve(batch);
+      }
+    } catch (error) {
+      this.error(error);
+    }
+  }
+  /**
+   * @param {Batch} batch
+   */
+  #resolve(batch) {
+    this.is_pending = false;
+    for (const e of this.#dirty_effects) {
+      set_signal_status(e, DIRTY);
+      batch.schedule(e);
+    }
+    for (const e of this.#maybe_dirty_effects) {
+      set_signal_status(e, MAYBE_DIRTY);
+      batch.schedule(e);
+    }
+    this.#dirty_effects.clear();
+    this.#maybe_dirty_effects.clear();
+  }
+  /**
+   * Defer an effect inside a pending boundary until the boundary resolves
+   * @param {Effect} effect
+   */
+  defer_effect(effect2) {
+    defer_effect(effect2, this.#dirty_effects, this.#maybe_dirty_effects);
+  }
+  /**
+   * Returns `false` if the effect exists inside a boundary whose pending snippet is shown
+   * @returns {boolean}
+   */
+  is_rendered() {
+    return !this.is_pending && (!this.parent || this.parent.is_rendered());
+  }
+  has_pending_snippet() {
+    return !!this.#props.pending;
+  }
+  /**
+   * @template T
+   * @param {() => T} fn
+   */
+  #run(fn) {
+    var previous_effect = active_effect;
+    var previous_reaction = active_reaction;
+    var previous_ctx = component_context;
+    set_active_effect(this.#effect);
+    set_active_reaction(this.#effect);
+    set_component_context(this.#effect.ctx);
+    try {
+      Batch.ensure();
+      return fn();
+    } catch (e) {
+      handle_error(e);
+      return null;
+    } finally {
+      set_active_effect(previous_effect);
+      set_active_reaction(previous_reaction);
+      set_component_context(previous_ctx);
+    }
+  }
+  /**
+   * Updates the pending count associated with the currently visible pending snippet,
+   * if any, such that we can replace the snippet with content once work is done
+   * @param {1 | -1} d
+   * @param {Batch} batch
+   */
+  #update_pending_count(d, batch) {
+    if (!this.has_pending_snippet()) {
+      if (this.parent) {
+        this.parent.#update_pending_count(d, batch);
+      }
+      return;
+    }
+    this.#pending_count += d;
+    if (this.#pending_count === 0) {
+      this.#resolve(batch);
+      if (this.#pending_effect) {
+        pause_effect(this.#pending_effect, () => {
+          this.#pending_effect = null;
+        });
+      }
+      if (this.#offscreen_fragment) {
+        this.#anchor.before(this.#offscreen_fragment);
+        this.#offscreen_fragment = null;
+      }
+    }
+  }
+  /**
+   * Update the source that powers `$effect.pending()` inside this boundary,
+   * and controls when the current `pending` snippet (if any) is removed.
+   * Do not call from inside the class
+   * @param {1 | -1} d
+   * @param {Batch} batch
+   */
+  update_pending_count(d, batch) {
+    this.#update_pending_count(d, batch);
+    this.#local_pending_count += d;
+    if (!this.#effect_pending || this.#pending_count_update_queued) return;
+    this.#pending_count_update_queued = true;
+    queue_micro_task(() => {
+      this.#pending_count_update_queued = false;
+      if (this.#effect_pending) {
+        internal_set(this.#effect_pending, this.#local_pending_count);
+      }
+    });
+  }
+  get_effect_pending() {
+    this.#effect_pending_subscriber();
+    return get(
+      /** @type {Source<number>} */
+      this.#effect_pending
+    );
+  }
+  /** @param {unknown} error */
+  error(error) {
+    var onerror = this.#props.onerror;
+    let failed = this.#props.failed;
+    if (!onerror && !failed) {
+      throw error;
+    }
+    if (this.#main_effect) {
+      destroy_effect(this.#main_effect);
+      this.#main_effect = null;
+    }
+    if (this.#pending_effect) {
+      destroy_effect(this.#pending_effect);
+      this.#pending_effect = null;
+    }
+    if (this.#failed_effect) {
+      destroy_effect(this.#failed_effect);
+      this.#failed_effect = null;
+    }
+    if (hydrating) {
+      set_hydrate_node(
+        /** @type {TemplateNode} */
+        this.#hydrate_open
+      );
+      next();
+      set_hydrate_node(skip_nodes());
+    }
+    var did_reset = false;
+    var calling_on_error = false;
+    const reset2 = () => {
+      if (did_reset) {
+        svelte_boundary_reset_noop();
+        return;
+      }
+      did_reset = true;
+      if (calling_on_error) {
+        svelte_boundary_reset_onerror();
+      }
+      if (this.#failed_effect !== null) {
+        pause_effect(this.#failed_effect, () => {
+          this.#failed_effect = null;
+        });
+      }
+      this.#run(() => {
+        this.#render();
+      });
+    };
+    const handle_error_result = (transformed_error) => {
+      try {
+        calling_on_error = true;
+        onerror?.(transformed_error, reset2);
+        calling_on_error = false;
+      } catch (error2) {
+        invoke_error_boundary(error2, this.#effect && this.#effect.parent);
+      }
+      if (failed) {
+        this.#failed_effect = this.#run(() => {
+          try {
+            return branch(() => {
+              var effect2 = (
+                /** @type {Effect} */
+                active_effect
+              );
+              effect2.b = this;
+              effect2.f |= BOUNDARY_EFFECT;
+              failed(
+                this.#anchor,
+                () => transformed_error,
+                () => reset2
+              );
+            });
+          } catch (error2) {
+            invoke_error_boundary(
+              error2,
+              /** @type {Effect} */
+              this.#effect.parent
+            );
+            return null;
+          }
+        });
+      }
+    };
+    queue_micro_task(() => {
+      var result;
+      try {
+        result = this.transform_error(error);
+      } catch (e) {
+        invoke_error_boundary(e, this.#effect && this.#effect.parent);
+        return;
+      }
+      if (result !== null && typeof result === "object" && typeof /** @type {any} */
+      result.then === "function") {
+        result.then(
+          handle_error_result,
+          /** @param {unknown} e */
+          (e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
+        );
+      } else {
+        handle_error_result(result);
+      }
+    });
+  }
+}
 function set_text(text2, value) {
-  var str = value == null ? "" : typeof value === "object" ? value + "" : value;
+  var str = value == null ? "" : typeof value === "object" ? `${value}` : value;
   if (str !== (text2.__t ??= text2.nodeValue)) {
     text2.__t = str;
-    text2.nodeValue = str + "";
+    text2.nodeValue = `${str}`;
   }
 }
 function mount(component2, options) {
@@ -3276,6 +1674,313 @@ function unmount(component2, options) {
   }
   return Promise.resolve();
 }
+// @__NO_SIDE_EFFECTS__
+function derived(fn) {
+  var flags2 = DERIVED | DIRTY;
+  var parent_derived = active_reaction !== null && (active_reaction.f & DERIVED) !== 0 ? (
+    /** @type {Derived} */
+    active_reaction
+  ) : null;
+  if (active_effect !== null) {
+    active_effect.f |= EFFECT_PRESERVED;
+  }
+  const signal = {
+    ctx: component_context,
+    deps: null,
+    effects: null,
+    equals,
+    f: flags2,
+    fn,
+    reactions: null,
+    rv: 0,
+    v: (
+      /** @type {V} */
+      UNINITIALIZED
+    ),
+    wv: 0,
+    parent: parent_derived ?? active_effect,
+    ac: null
+  };
+  return signal;
+}
+// @__NO_SIDE_EFFECTS__
+function async_derived(fn, label, location2) {
+  let parent = (
+    /** @type {Effect | null} */
+    active_effect
+  );
+  if (parent === null) {
+    async_derived_orphan();
+  }
+  var promise = (
+    /** @type {Promise<V>} */
+    /** @type {unknown} */
+    void 0
+  );
+  var signal = source(
+    /** @type {V} */
+    UNINITIALIZED
+  );
+  var should_suspend = !active_reaction;
+  var deferreds = /* @__PURE__ */ new Map();
+  async_effect(() => {
+    var effect2 = (
+      /** @type {Effect} */
+      active_effect
+    );
+    var d = deferred();
+    promise = d.promise;
+    try {
+      Promise.resolve(fn()).then(d.resolve, d.reject).finally(unset_context);
+    } catch (error) {
+      d.reject(error);
+      unset_context();
+    }
+    var batch = (
+      /** @type {Batch} */
+      current_batch
+    );
+    if (should_suspend) {
+      if ((effect2.f & REACTION_RAN) !== 0) {
+        var decrement_pending = increment_pending();
+      }
+      if (
+        /** @type {Boundary} */
+        parent.b.is_rendered()
+      ) {
+        deferreds.get(batch)?.reject(STALE_REACTION);
+        deferreds.delete(batch);
+      } else {
+        for (const d2 of deferreds.values()) {
+          d2.reject(STALE_REACTION);
+        }
+        deferreds.clear();
+      }
+      deferreds.set(batch, d);
+    }
+    const handler = (value, error = void 0) => {
+      if (decrement_pending) {
+        var skip = error === STALE_REACTION;
+        decrement_pending(skip);
+      }
+      if (error === STALE_REACTION || (effect2.f & DESTROYED) !== 0) {
+        return;
+      }
+      batch.activate();
+      if (error) {
+        signal.f |= ERROR_VALUE;
+        internal_set(signal, error);
+      } else {
+        if ((signal.f & ERROR_VALUE) !== 0) {
+          signal.f ^= ERROR_VALUE;
+        }
+        internal_set(signal, value);
+        for (const [b, d2] of deferreds) {
+          deferreds.delete(b);
+          if (b === batch) break;
+          d2.reject(STALE_REACTION);
+        }
+      }
+      batch.deactivate();
+    };
+    d.promise.then(handler, (e) => handler(null, e || "unknown"));
+  });
+  teardown(() => {
+    for (const d of deferreds.values()) {
+      d.reject(STALE_REACTION);
+    }
+  });
+  return new Promise((fulfil) => {
+    function next2(p) {
+      function go() {
+        if (p === promise) {
+          fulfil(signal);
+        } else {
+          next2(promise);
+        }
+      }
+      p.then(go, go);
+    }
+    next2(promise);
+  });
+}
+// @__NO_SIDE_EFFECTS__
+function user_derived(fn) {
+  const d = /* @__PURE__ */ derived(fn);
+  push_reaction_value(d);
+  return d;
+}
+function destroy_derived_effects(derived2) {
+  var effects = derived2.effects;
+  if (effects !== null) {
+    derived2.effects = null;
+    for (var i = 0; i < effects.length; i += 1) {
+      destroy_effect(
+        /** @type {Effect} */
+        effects[i]
+      );
+    }
+  }
+}
+function get_derived_parent_effect(derived2) {
+  var parent = derived2.parent;
+  while (parent !== null) {
+    if ((parent.f & DERIVED) === 0) {
+      return (parent.f & DESTROYED) === 0 ? (
+        /** @type {Effect} */
+        parent
+      ) : null;
+    }
+    parent = parent.parent;
+  }
+  return null;
+}
+function execute_derived(derived2) {
+  var value;
+  var prev_active_effect = active_effect;
+  set_active_effect(get_derived_parent_effect(derived2));
+  {
+    try {
+      derived2.f &= ~WAS_MARKED;
+      destroy_derived_effects(derived2);
+      value = update_reaction(derived2);
+    } finally {
+      set_active_effect(prev_active_effect);
+    }
+  }
+  return value;
+}
+function update_derived(derived2) {
+  var value = execute_derived(derived2);
+  if (!derived2.equals(value)) {
+    derived2.wv = increment_write_version();
+    if (!current_batch?.is_fork || derived2.deps === null) {
+      derived2.v = value;
+      if (derived2.deps === null) {
+        set_signal_status(derived2, CLEAN);
+        return;
+      }
+    }
+  }
+  if (is_destroying_effect) {
+    return;
+  }
+  if (batch_values !== null) {
+    if (effect_tracking() || current_batch?.is_fork) {
+      batch_values.set(derived2, value);
+    }
+  } else {
+    update_derived_status(derived2);
+  }
+}
+function freeze_derived_effects(derived2) {
+  if (derived2.effects === null) return;
+  for (const e of derived2.effects) {
+    if (e.teardown || e.ac) {
+      e.teardown?.();
+      e.ac?.abort(STALE_REACTION);
+      e.teardown = noop;
+      e.ac = null;
+      remove_reactions(e, 0);
+      destroy_effect_children(e);
+    }
+  }
+}
+function unfreeze_derived_effects(derived2) {
+  if (derived2.effects === null) return;
+  for (const e of derived2.effects) {
+    if (e.teardown) {
+      update_effect(e);
+    }
+  }
+}
+function flatten(blockers, sync, async, fn) {
+  const d = derived;
+  var pending = blockers.filter((b) => !b.settled);
+  if (async.length === 0 && pending.length === 0) {
+    fn(sync.map(d));
+    return;
+  }
+  var parent = (
+    /** @type {Effect} */
+    active_effect
+  );
+  var restore = capture();
+  var blocker_promise = pending.length === 1 ? pending[0].promise : pending.length > 1 ? Promise.all(pending.map((b) => b.promise)) : null;
+  function finish(values) {
+    restore();
+    try {
+      fn(values);
+    } catch (error) {
+      if ((parent.f & DESTROYED) === 0) {
+        invoke_error_boundary(error, parent);
+      }
+    }
+    unset_context();
+  }
+  if (async.length === 0) {
+    blocker_promise.then(() => finish(sync.map(d)));
+    return;
+  }
+  var decrement_pending = increment_pending();
+  function run() {
+    Promise.all(async.map((expression) => /* @__PURE__ */ async_derived(expression))).then((result) => finish([...sync.map(d), ...result])).catch((error) => invoke_error_boundary(error, parent)).finally(() => decrement_pending());
+  }
+  if (blocker_promise) {
+    blocker_promise.then(() => {
+      restore();
+      run();
+      unset_context();
+    });
+  } else {
+    run();
+  }
+}
+function capture() {
+  var previous_effect = (
+    /** @type {Effect} */
+    active_effect
+  );
+  var previous_reaction = active_reaction;
+  var previous_component_context = component_context;
+  var previous_batch = (
+    /** @type {Batch} */
+    current_batch
+  );
+  return function restore(activate_batch = true) {
+    set_active_effect(previous_effect);
+    set_active_reaction(previous_reaction);
+    set_component_context(previous_component_context);
+    if (activate_batch && (previous_effect.f & DESTROYED) === 0) {
+      previous_batch?.activate();
+      previous_batch?.apply();
+    }
+  };
+}
+function unset_context(deactivate_batch = true) {
+  set_active_effect(null);
+  set_active_reaction(null);
+  set_component_context(null);
+  if (deactivate_batch) current_batch?.deactivate();
+}
+function increment_pending() {
+  var boundary2 = (
+    /** @type {Boundary} */
+    /** @type {Effect} */
+    active_effect.b
+  );
+  var batch = (
+    /** @type {Batch} */
+    current_batch
+  );
+  var blocking = boundary2.is_rendered();
+  boundary2.update_pending_count(1, batch);
+  batch.increment(blocking);
+  return (skip = false) => {
+    boundary2.update_pending_count(-1, batch);
+    batch.decrement(blocking, skip);
+  };
+}
 class BranchManager {
   /** @type {TemplateNode} */
   anchor;
@@ -3320,11 +2025,10 @@ class BranchManager {
     this.anchor = anchor;
     this.#transition = transition;
   }
-  #commit = () => {
-    var batch = (
-      /** @type {Batch} */
-      current_batch
-    );
+  /**
+   * @param {Batch} batch
+   */
+  #commit = (batch) => {
     if (!this.#batches.has(batch)) return;
     var key2 = (
       /** @type {Key} */
@@ -3440,28 +2144,25 @@ class BranchManager {
       if (hydrating) {
         this.anchor = hydrate_node;
       }
-      this.#commit();
+      this.#commit(batch);
     }
   }
 }
 function if_block(node, fn, elseif = false) {
+  var marker;
   if (hydrating) {
+    marker = hydrate_node;
     hydrate_next();
   }
   var branches = new BranchManager(node);
   var flags2 = elseif ? EFFECT_TRANSPARENT : 0;
   function update_branch(key2, fn2) {
     if (hydrating) {
-      const data = read_hydration_instruction(node);
-      var hydrated_key;
-      if (data === HYDRATION_START) {
-        hydrated_key = 0;
-      } else if (data === HYDRATION_START_ELSE) {
-        hydrated_key = false;
-      } else {
-        hydrated_key = parseInt(data.substring(1));
-      }
-      if (key2 !== hydrated_key) {
+      var data = read_hydration_instruction(
+        /** @type {TemplateNode} */
+        marker
+      );
+      if (key2 !== parseInt(data.substring(1))) {
         var anchor = skip_nodes();
         set_hydrate_node(anchor);
         branches.anchor = anchor;
@@ -3480,7 +2181,7 @@ function if_block(node, fn, elseif = false) {
       update_branch(key2, fn2);
     });
     if (!has_branch) {
-      update_branch(false, null);
+      update_branch(-1, null);
     }
   }, flags2);
 }
@@ -3499,9 +2200,18 @@ function key(node, get_key, render_fn) {
     branches.ensure(key2, render_fn);
   });
 }
-function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
+function html(node, get_value, is_controlled = false, svg = false, mathml = false, skip_warning = false) {
   var anchor = node;
   var value = "";
+  if (is_controlled) {
+    var parent_node = (
+      /** @type {Element} */
+      node
+    );
+    if (hydrating) {
+      anchor = set_hydrate_node(/* @__PURE__ */ get_first_child(parent_node));
+    }
+  }
   template_effect(() => {
     var effect2 = (
       /** @type {Effect} */
@@ -3509,6 +2219,20 @@ function html(node, get_value, svg = false, mathml = false, skip_warning = false
     );
     if (value === (value = get_value() ?? "")) {
       if (hydrating) hydrate_next();
+      return;
+    }
+    if (is_controlled && !hydrating) {
+      effect2.nodes = null;
+      parent_node.innerHTML = /** @type {string} */
+      value;
+      if (value !== "") {
+        assign_nodes(
+          /** @type {TemplateNode} */
+          /* @__PURE__ */ get_first_child(parent_node),
+          /** @type {TemplateNode} */
+          parent_node.lastChild
+        );
+      }
       return;
     }
     if (effect2.nodes !== null) {
@@ -4084,7 +2808,7 @@ function attribute_effect(element, fn, sync = [], async = [], blockers = [], css
     var is_select = element.nodeName === SELECT_TAG;
     var inited = false;
     managed(() => {
-      var next2 = fn(...values.map(get$1));
+      var next2 = fn(...values.map(get));
       var current = set_attributes(
         element,
         prev,
@@ -4205,7 +2929,7 @@ function bind_value(input, get2, set2 = get2) {
     if (input === document.activeElement) {
       var batch = (
         /** @type {Batch} */
-        previous_batch ?? current_batch
+        current_batch
       );
       if (batches2.has(batch)) {
         return;
@@ -4233,6 +2957,14 @@ function is_bound_this(bound_value, element_or_component) {
   return bound_value === element_or_component || bound_value?.[STATE_SYMBOL] === element_or_component;
 }
 function bind_this(element_or_component = {}, update, get_value, get_parts) {
+  var component_effect = (
+    /** @type {ComponentContext} */
+    component_context.r
+  );
+  var parent = (
+    /** @type {Effect} */
+    active_effect
+  );
   effect(() => {
     var old_parts;
     var parts;
@@ -4249,60 +2981,23 @@ function bind_this(element_or_component = {}, update, get_value, get_parts) {
       });
     });
     return () => {
-      queue_micro_task(() => {
+      let p = parent;
+      while (p !== component_effect && p.parent !== null && p.parent.f & DESTROYING) {
+        p = p.parent;
+      }
+      const teardown2 = () => {
         if (parts && is_bound_this(get_value(...parts), element_or_component)) {
           update(null, ...parts);
         }
-      });
+      };
+      const original_teardown = p.teardown;
+      p.teardown = () => {
+        teardown2();
+        original_teardown?.();
+      };
     };
   });
   return element_or_component;
-}
-let IS_UNMOUNTED = /* @__PURE__ */ Symbol();
-function store_get(store2, store_name, stores) {
-  const entry = stores[store_name] ??= {
-    store: null,
-    source: /* @__PURE__ */ mutable_source(void 0),
-    unsubscribe: noop
-  };
-  if (entry.store !== store2 && !(IS_UNMOUNTED in stores)) {
-    entry.unsubscribe();
-    entry.store = store2 ?? null;
-    if (store2 == null) {
-      entry.source.v = void 0;
-      entry.unsubscribe = noop;
-    } else {
-      var is_synchronous_callback = true;
-      entry.unsubscribe = subscribe_to_store(store2, (v) => {
-        if (is_synchronous_callback) {
-          entry.source.v = v;
-        } else {
-          set(entry.source, v);
-        }
-      });
-      is_synchronous_callback = false;
-    }
-  }
-  if (store2 && IS_UNMOUNTED in stores) {
-    return get(store2);
-  }
-  return get$1(entry.source);
-}
-function setup_stores() {
-  const stores = {};
-  function cleanup() {
-    teardown(() => {
-      for (var store_name in stores) {
-        const ref = stores[store_name];
-        ref.unsubscribe();
-      }
-      define_property(stores, IS_UNMOUNTED, {
-        enumerable: false,
-        value: true
-      });
-    });
-  }
-  return [stores, cleanup];
 }
 const rest_props_handler = {
   get(target, key2) {
@@ -4384,7 +3079,7 @@ function prop(props, key2, flags2, fallback) {
     /** @type {() => V} */
     (function(value, mutation) {
       if (arguments.length > 0) {
-        const new_value = mutation ? get$1(d) : value;
+        const new_value = mutation ? get(d) : value;
         set(d, new_value);
         overridden = true;
         if (fallback_value !== void 0) {
@@ -4395,7 +3090,7 @@ function prop(props, key2, flags2, fallback) {
       if (is_destroying_effect && overridden || (parent_effect.f & DESTROYED) !== 0) {
         return d.v;
       }
-      return get$1(d);
+      return get(d);
     })
   );
 }
@@ -4423,11 +3118,11 @@ class Svelte4Component {
       { ...options.props || {}, $$events: {} },
       {
         get(target, prop2) {
-          return get$1(sources.get(prop2) ?? add_source(prop2, Reflect.get(target, prop2)));
+          return get(sources.get(prop2) ?? add_source(prop2, Reflect.get(target, prop2)));
         },
         has(target, prop2) {
           if (prop2 === LEGACY_PROPS) return true;
-          get$1(sources.get(prop2) ?? add_source(prop2, Reflect.get(target, prop2)));
+          get(sources.get(prop2) ?? add_source(prop2, Reflect.get(target, prop2)));
           return Reflect.has(target, prop2);
         },
         set(target, prop2, value) {
@@ -4834,25 +3529,1433 @@ function writable(value, start = noop) {
   }
   return { set: set2, update, subscribe };
 }
-function get(store2) {
+function get$1(store2) {
   let value;
   subscribe_to_store(store2, (_) => value = _)();
   return value;
 }
+let IS_UNMOUNTED = /* @__PURE__ */ Symbol();
+function store_get(store2, store_name, stores) {
+  const entry = stores[store_name] ??= {
+    store: null,
+    source: /* @__PURE__ */ mutable_source(void 0),
+    unsubscribe: noop
+  };
+  if (entry.store !== store2 && !(IS_UNMOUNTED in stores)) {
+    entry.unsubscribe();
+    entry.store = store2 ?? null;
+    if (store2 == null) {
+      entry.source.v = void 0;
+      entry.unsubscribe = noop;
+    } else {
+      var is_synchronous_callback = true;
+      entry.unsubscribe = subscribe_to_store(store2, (v) => {
+        if (is_synchronous_callback) {
+          entry.source.v = v;
+        } else {
+          set(entry.source, v);
+        }
+      });
+      is_synchronous_callback = false;
+    }
+  }
+  if (store2 && IS_UNMOUNTED in stores) {
+    return get$1(store2);
+  }
+  return get(entry.source);
+}
+function setup_stores() {
+  const stores = {};
+  function cleanup() {
+    teardown(() => {
+      for (var store_name in stores) {
+        const ref = stores[store_name];
+        ref.unsubscribe();
+      }
+      define_property(stores, IS_UNMOUNTED, {
+        enumerable: false,
+        value: true
+      });
+    });
+  }
+  return [stores, cleanup];
+}
+const batches = /* @__PURE__ */ new Set();
+let current_batch = null;
+let batch_values = null;
+let last_scheduled_effect = null;
+let is_flushing_sync = false;
+let is_processing = false;
+let collected_effects = null;
+let legacy_updates = null;
+var flush_count = 0;
+let uid = 1;
+class Batch {
+  // for debugging. TODO remove once async is stable
+  id = uid++;
+  /**
+   * The current values of any sources that are updated in this batch
+   * They keys of this map are identical to `this.#previous`
+   * @type {Map<Source, any>}
+   */
+  current = /* @__PURE__ */ new Map();
+  /**
+   * The values of any sources that are updated in this batch _before_ those updates took place.
+   * They keys of this map are identical to `this.#current`
+   * @type {Map<Source, any>}
+   */
+  previous = /* @__PURE__ */ new Map();
+  /**
+   * When the batch is committed (and the DOM is updated), we need to remove old branches
+   * and append new ones by calling the functions added inside (if/each/key/etc) blocks
+   * @type {Set<(batch: Batch) => void>}
+   */
+  #commit_callbacks = /* @__PURE__ */ new Set();
+  /**
+   * If a fork is discarded, we need to destroy any effects that are no longer needed
+   * @type {Set<(batch: Batch) => void>}
+   */
+  #discard_callbacks = /* @__PURE__ */ new Set();
+  /**
+   * The number of async effects that are currently in flight
+   */
+  #pending = 0;
+  /**
+   * The number of async effects that are currently in flight, _not_ inside a pending boundary
+   */
+  #blocking_pending = 0;
+  /**
+   * A deferred that resolves when the batch is committed, used with `settled()`
+   * TODO replace with Promise.withResolvers once supported widely enough
+   * @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
+   */
+  #deferred = null;
+  /**
+   * The root effects that need to be flushed
+   * @type {Effect[]}
+   */
+  #roots = [];
+  /**
+   * Deferred effects (which run after async work has completed) that are DIRTY
+   * @type {Set<Effect>}
+   */
+  #dirty_effects = /* @__PURE__ */ new Set();
+  /**
+   * Deferred effects that are MAYBE_DIRTY
+   * @type {Set<Effect>}
+   */
+  #maybe_dirty_effects = /* @__PURE__ */ new Set();
+  /**
+   * A map of branches that still exist, but will be destroyed when this batch
+   * is committed — we skip over these during `process`.
+   * The value contains child effects that were dirty/maybe_dirty before being reset,
+   * so they can be rescheduled if the branch survives.
+   * @type {Map<Effect, { d: Effect[], m: Effect[] }>}
+   */
+  #skipped_branches = /* @__PURE__ */ new Map();
+  is_fork = false;
+  #decrement_queued = false;
+  #is_deferred() {
+    return this.is_fork || this.#blocking_pending > 0;
+  }
+  /**
+   * Add an effect to the #skipped_branches map and reset its children
+   * @param {Effect} effect
+   */
+  skip_effect(effect2) {
+    if (!this.#skipped_branches.has(effect2)) {
+      this.#skipped_branches.set(effect2, { d: [], m: [] });
+    }
+  }
+  /**
+   * Remove an effect from the #skipped_branches map and reschedule
+   * any tracked dirty/maybe_dirty child effects
+   * @param {Effect} effect
+   */
+  unskip_effect(effect2) {
+    var tracked = this.#skipped_branches.get(effect2);
+    if (tracked) {
+      this.#skipped_branches.delete(effect2);
+      for (var e of tracked.d) {
+        set_signal_status(e, DIRTY);
+        this.schedule(e);
+      }
+      for (e of tracked.m) {
+        set_signal_status(e, MAYBE_DIRTY);
+        this.schedule(e);
+      }
+    }
+  }
+  #process() {
+    if (flush_count++ > 1e3) {
+      infinite_loop_guard();
+    }
+    const roots = this.#roots;
+    this.#roots = [];
+    this.apply();
+    var effects = collected_effects = [];
+    var render_effects = [];
+    var updates = legacy_updates = [];
+    for (const root2 of roots) {
+      this.#traverse(root2, effects, render_effects);
+    }
+    current_batch = null;
+    if (updates.length > 0) {
+      var batch = Batch.ensure();
+      for (const e of updates) {
+        batch.schedule(e);
+      }
+    }
+    collected_effects = null;
+    legacy_updates = null;
+    if (this.#is_deferred()) {
+      this.#defer_effects(render_effects);
+      this.#defer_effects(effects);
+      for (const [e, t] of this.#skipped_branches) {
+        reset_branch(e, t);
+      }
+    } else {
+      this.#dirty_effects.clear();
+      this.#maybe_dirty_effects.clear();
+      for (const fn of this.#commit_callbacks) fn(this);
+      this.#commit_callbacks.clear();
+      flush_queued_effects(render_effects);
+      flush_queued_effects(effects);
+      if (this.#pending === 0) {
+        this.#commit();
+      }
+      this.#deferred?.resolve();
+    }
+    var next_batch = (
+      /** @type {Batch | null} */
+      /** @type {unknown} */
+      current_batch
+    );
+    if (this.#roots.length > 0) {
+      const batch2 = next_batch ??= this;
+      batch2.#roots.push(...this.#roots.filter((r2) => !batch2.#roots.includes(r2)));
+    }
+    if (next_batch !== null) {
+      batches.add(next_batch);
+      next_batch.#process();
+    }
+  }
+  /**
+   * Traverse the effect tree, executing effects or stashing
+   * them for later execution as appropriate
+   * @param {Effect} root
+   * @param {Effect[]} effects
+   * @param {Effect[]} render_effects
+   */
+  #traverse(root2, effects, render_effects) {
+    root2.f ^= CLEAN;
+    var effect2 = root2.first;
+    while (effect2 !== null) {
+      var flags2 = effect2.f;
+      var is_branch = (flags2 & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
+      var is_skippable_branch = is_branch && (flags2 & CLEAN) !== 0;
+      var skip = is_skippable_branch || (flags2 & INERT) !== 0 || this.#skipped_branches.has(effect2);
+      if (!skip && effect2.fn !== null) {
+        if (is_branch) {
+          effect2.f ^= CLEAN;
+        } else if ((flags2 & EFFECT) !== 0) {
+          effects.push(effect2);
+        } else if (is_dirty(effect2)) {
+          if ((flags2 & BLOCK_EFFECT) !== 0) this.#maybe_dirty_effects.add(effect2);
+          update_effect(effect2);
+        }
+        var child2 = effect2.first;
+        if (child2 !== null) {
+          effect2 = child2;
+          continue;
+        }
+      }
+      while (effect2 !== null) {
+        var next2 = effect2.next;
+        if (next2 !== null) {
+          effect2 = next2;
+          break;
+        }
+        effect2 = effect2.parent;
+      }
+    }
+  }
+  /**
+   * @param {Effect[]} effects
+   */
+  #defer_effects(effects) {
+    for (var i = 0; i < effects.length; i += 1) {
+      defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
+    }
+  }
+  /**
+   * Associate a change to a given source with the current
+   * batch, noting its previous and current values
+   * @param {Source} source
+   * @param {any} value
+   */
+  capture(source2, value) {
+    if (value !== UNINITIALIZED && !this.previous.has(source2)) {
+      this.previous.set(source2, value);
+    }
+    if ((source2.f & ERROR_VALUE) === 0) {
+      this.current.set(source2, source2.v);
+      batch_values?.set(source2, source2.v);
+    }
+  }
+  activate() {
+    current_batch = this;
+  }
+  deactivate() {
+    current_batch = null;
+    batch_values = null;
+  }
+  flush() {
+    try {
+      is_processing = true;
+      current_batch = this;
+      if (!this.#is_deferred()) {
+        for (const e of this.#dirty_effects) {
+          this.#maybe_dirty_effects.delete(e);
+          set_signal_status(e, DIRTY);
+          this.schedule(e);
+        }
+        for (const e of this.#maybe_dirty_effects) {
+          set_signal_status(e, MAYBE_DIRTY);
+          this.schedule(e);
+        }
+      }
+      this.#process();
+    } finally {
+      flush_count = 0;
+      last_scheduled_effect = null;
+      collected_effects = null;
+      legacy_updates = null;
+      is_processing = false;
+      current_batch = null;
+      batch_values = null;
+      old_values.clear();
+    }
+  }
+  discard() {
+    for (const fn of this.#discard_callbacks) fn(this);
+    this.#discard_callbacks.clear();
+  }
+  #commit() {
+    if (batches.size > 1) {
+      this.previous.clear();
+      var previous_batch = current_batch;
+      var previous_batch_values = batch_values;
+      var is_earlier = true;
+      for (const batch of batches) {
+        if (batch === this) {
+          is_earlier = false;
+          continue;
+        }
+        const sources = [];
+        for (const [source2, value] of this.current) {
+          if (batch.current.has(source2)) {
+            if (is_earlier && value !== batch.current.get(source2)) {
+              batch.current.set(source2, value);
+            } else {
+              continue;
+            }
+          }
+          sources.push(source2);
+        }
+        if (sources.length === 0) {
+          continue;
+        }
+        const others = [...batch.current.keys()].filter((s) => !this.current.has(s));
+        if (others.length > 0) {
+          batch.activate();
+          const marked = /* @__PURE__ */ new Set();
+          const checked = /* @__PURE__ */ new Map();
+          for (const source2 of sources) {
+            mark_effects(source2, others, marked, checked);
+          }
+          if (batch.#roots.length > 0) {
+            batch.apply();
+            for (const root2 of batch.#roots) {
+              batch.#traverse(root2, [], []);
+            }
+          }
+          batch.deactivate();
+        }
+      }
+      current_batch = previous_batch;
+      batch_values = previous_batch_values;
+    }
+    this.#skipped_branches.clear();
+    batches.delete(this);
+  }
+  /**
+   *
+   * @param {boolean} blocking
+   */
+  increment(blocking) {
+    this.#pending += 1;
+    if (blocking) this.#blocking_pending += 1;
+  }
+  /**
+   * @param {boolean} blocking
+   * @param {boolean} skip - whether to skip updates (because this is triggered by a stale reaction)
+   */
+  decrement(blocking, skip) {
+    this.#pending -= 1;
+    if (blocking) this.#blocking_pending -= 1;
+    if (this.#decrement_queued || skip) return;
+    this.#decrement_queued = true;
+    queue_micro_task(() => {
+      this.#decrement_queued = false;
+      this.flush();
+    });
+  }
+  /** @param {(batch: Batch) => void} fn */
+  oncommit(fn) {
+    this.#commit_callbacks.add(fn);
+  }
+  /** @param {(batch: Batch) => void} fn */
+  ondiscard(fn) {
+    this.#discard_callbacks.add(fn);
+  }
+  settled() {
+    return (this.#deferred ??= deferred()).promise;
+  }
+  static ensure() {
+    if (current_batch === null) {
+      const batch = current_batch = new Batch();
+      if (!is_processing) {
+        batches.add(current_batch);
+        if (!is_flushing_sync) {
+          queue_micro_task(() => {
+            if (current_batch !== batch) {
+              return;
+            }
+            batch.flush();
+          });
+        }
+      }
+    }
+    return current_batch;
+  }
+  apply() {
+    return;
+  }
+  /**
+   *
+   * @param {Effect} effect
+   */
+  schedule(effect2) {
+    last_scheduled_effect = effect2;
+    if (effect2.b?.is_pending && (effect2.f & (EFFECT | RENDER_EFFECT | MANAGED_EFFECT)) !== 0 && (effect2.f & REACTION_RAN) === 0) {
+      effect2.b.defer_effect(effect2);
+      return;
+    }
+    var e = effect2;
+    while (e.parent !== null) {
+      e = e.parent;
+      var flags2 = e.f;
+      if (collected_effects !== null && e === active_effect) {
+        if ((active_reaction === null || (active_reaction.f & DERIVED) === 0) && true) {
+          return;
+        }
+      }
+      if ((flags2 & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
+        if ((flags2 & CLEAN) === 0) {
+          return;
+        }
+        e.f ^= CLEAN;
+      }
+    }
+    this.#roots.push(e);
+  }
+}
+function flushSync(fn) {
+  var was_flushing_sync = is_flushing_sync;
+  is_flushing_sync = true;
+  try {
+    var result;
+    if (fn) ;
+    while (true) {
+      flush_tasks();
+      if (current_batch === null) {
+        return (
+          /** @type {T} */
+          result
+        );
+      }
+      current_batch.flush();
+    }
+  } finally {
+    is_flushing_sync = was_flushing_sync;
+  }
+}
+function infinite_loop_guard() {
+  try {
+    effect_update_depth_exceeded();
+  } catch (error) {
+    invoke_error_boundary(error, last_scheduled_effect);
+  }
+}
+let eager_block_effects = null;
+function flush_queued_effects(effects) {
+  var length = effects.length;
+  if (length === 0) return;
+  var i = 0;
+  while (i < length) {
+    var effect2 = effects[i++];
+    if ((effect2.f & (DESTROYED | INERT)) === 0 && is_dirty(effect2)) {
+      eager_block_effects = /* @__PURE__ */ new Set();
+      update_effect(effect2);
+      if (effect2.deps === null && effect2.first === null && effect2.nodes === null && effect2.teardown === null && effect2.ac === null) {
+        unlink_effect(effect2);
+      }
+      if (eager_block_effects?.size > 0) {
+        old_values.clear();
+        for (const e of eager_block_effects) {
+          if ((e.f & (DESTROYED | INERT)) !== 0) continue;
+          const ordered_effects = [e];
+          let ancestor = e.parent;
+          while (ancestor !== null) {
+            if (eager_block_effects.has(ancestor)) {
+              eager_block_effects.delete(ancestor);
+              ordered_effects.push(ancestor);
+            }
+            ancestor = ancestor.parent;
+          }
+          for (let j = ordered_effects.length - 1; j >= 0; j--) {
+            const e2 = ordered_effects[j];
+            if ((e2.f & (DESTROYED | INERT)) !== 0) continue;
+            update_effect(e2);
+          }
+        }
+        eager_block_effects.clear();
+      }
+    }
+  }
+  eager_block_effects = null;
+}
+function mark_effects(value, sources, marked, checked) {
+  if (marked.has(value)) return;
+  marked.add(value);
+  if (value.reactions !== null) {
+    for (const reaction of value.reactions) {
+      const flags2 = reaction.f;
+      if ((flags2 & DERIVED) !== 0) {
+        mark_effects(
+          /** @type {Derived} */
+          reaction,
+          sources,
+          marked,
+          checked
+        );
+      } else if ((flags2 & (ASYNC | BLOCK_EFFECT)) !== 0 && (flags2 & DIRTY) === 0 && depends_on(reaction, sources, checked)) {
+        set_signal_status(reaction, DIRTY);
+        schedule_effect(
+          /** @type {Effect} */
+          reaction
+        );
+      }
+    }
+  }
+}
+function depends_on(reaction, sources, checked) {
+  const depends = checked.get(reaction);
+  if (depends !== void 0) return depends;
+  if (reaction.deps !== null) {
+    for (const dep of reaction.deps) {
+      if (includes.call(sources, dep)) {
+        return true;
+      }
+      if ((dep.f & DERIVED) !== 0 && depends_on(
+        /** @type {Derived} */
+        dep,
+        sources,
+        checked
+      )) {
+        checked.set(
+          /** @type {Derived} */
+          dep,
+          true
+        );
+        return true;
+      }
+    }
+  }
+  checked.set(reaction, false);
+  return false;
+}
+function schedule_effect(effect2) {
+  current_batch.schedule(effect2);
+}
+function reset_branch(effect2, tracked) {
+  if ((effect2.f & BRANCH_EFFECT) !== 0 && (effect2.f & CLEAN) !== 0) {
+    return;
+  }
+  if ((effect2.f & DIRTY) !== 0) {
+    tracked.d.push(effect2);
+  } else if ((effect2.f & MAYBE_DIRTY) !== 0) {
+    tracked.m.push(effect2);
+  }
+  set_signal_status(effect2, CLEAN);
+  var e = effect2.first;
+  while (e !== null) {
+    reset_branch(e, tracked);
+    e = e.next;
+  }
+}
+let eager_effects = /* @__PURE__ */ new Set();
+const old_values = /* @__PURE__ */ new Map();
+let eager_effects_deferred = false;
+function source(v, stack) {
+  var signal = {
+    f: 0,
+    // TODO ideally we could skip this altogether, but it causes type errors
+    v,
+    reactions: null,
+    equals,
+    rv: 0,
+    wv: 0
+  };
+  return signal;
+}
+// @__NO_SIDE_EFFECTS__
+function state(v, stack) {
+  const s = source(v);
+  push_reaction_value(s);
+  return s;
+}
+// @__NO_SIDE_EFFECTS__
+function mutable_source(initial_value, immutable = false, trackable = true) {
+  const s = source(initial_value);
+  if (!immutable) {
+    s.equals = safe_equals;
+  }
+  return s;
+}
+function set(source2, value, should_proxy = false) {
+  if (active_reaction !== null && // since we are untracking the function inside `$inspect.with` we need to add this check
+  // to ensure we error if state is set inside an inspect effect
+  (!untracking || (active_reaction.f & EAGER_EFFECT) !== 0) && is_runes() && (active_reaction.f & (DERIVED | BLOCK_EFFECT | ASYNC | EAGER_EFFECT)) !== 0 && (current_sources === null || !includes.call(current_sources, source2))) {
+    state_unsafe_mutation();
+  }
+  let new_value = should_proxy ? proxy(value) : value;
+  return internal_set(source2, new_value, legacy_updates);
+}
+function internal_set(source2, value, updated_during_traversal = null) {
+  if (!source2.equals(value)) {
+    var old_value = source2.v;
+    if (is_destroying_effect) {
+      old_values.set(source2, value);
+    } else {
+      old_values.set(source2, old_value);
+    }
+    source2.v = value;
+    var batch = Batch.ensure();
+    batch.capture(source2, old_value);
+    if ((source2.f & DERIVED) !== 0) {
+      const derived2 = (
+        /** @type {Derived} */
+        source2
+      );
+      if ((source2.f & DIRTY) !== 0) {
+        execute_derived(derived2);
+      }
+      update_derived_status(derived2);
+    }
+    source2.wv = increment_write_version();
+    mark_reactions(source2, DIRTY, updated_during_traversal);
+    if (active_effect !== null && (active_effect.f & CLEAN) !== 0 && (active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0) {
+      if (untracked_writes === null) {
+        set_untracked_writes([source2]);
+      } else {
+        untracked_writes.push(source2);
+      }
+    }
+    if (!batch.is_fork && eager_effects.size > 0 && !eager_effects_deferred) {
+      flush_eager_effects();
+    }
+  }
+  return value;
+}
+function flush_eager_effects() {
+  eager_effects_deferred = false;
+  for (const effect2 of eager_effects) {
+    if ((effect2.f & CLEAN) !== 0) {
+      set_signal_status(effect2, MAYBE_DIRTY);
+    }
+    if (is_dirty(effect2)) {
+      update_effect(effect2);
+    }
+  }
+  eager_effects.clear();
+}
+function increment(source2) {
+  set(source2, source2.v + 1);
+}
+function mark_reactions(signal, status, updated_during_traversal) {
+  var reactions = signal.reactions;
+  if (reactions === null) return;
+  var length = reactions.length;
+  for (var i = 0; i < length; i++) {
+    var reaction = reactions[i];
+    var flags2 = reaction.f;
+    var not_dirty = (flags2 & DIRTY) === 0;
+    if (not_dirty) {
+      set_signal_status(reaction, status);
+    }
+    if ((flags2 & DERIVED) !== 0) {
+      var derived2 = (
+        /** @type {Derived} */
+        reaction
+      );
+      batch_values?.delete(derived2);
+      if ((flags2 & WAS_MARKED) === 0) {
+        if (flags2 & CONNECTED) {
+          reaction.f |= WAS_MARKED;
+        }
+        mark_reactions(derived2, MAYBE_DIRTY, updated_during_traversal);
+      }
+    } else if (not_dirty) {
+      var effect2 = (
+        /** @type {Effect} */
+        reaction
+      );
+      if ((flags2 & BLOCK_EFFECT) !== 0 && eager_block_effects !== null) {
+        eager_block_effects.add(effect2);
+      }
+      if (updated_during_traversal !== null) {
+        updated_during_traversal.push(effect2);
+      } else {
+        schedule_effect(effect2);
+      }
+    }
+  }
+}
+let is_updating_effect = false;
+let is_destroying_effect = false;
+function set_is_destroying_effect(value) {
+  is_destroying_effect = value;
+}
+let active_reaction = null;
+let untracking = false;
+function set_active_reaction(reaction) {
+  active_reaction = reaction;
+}
+let active_effect = null;
+function set_active_effect(effect2) {
+  active_effect = effect2;
+}
+let current_sources = null;
+function push_reaction_value(value) {
+  if (active_reaction !== null && true) {
+    if (current_sources === null) {
+      current_sources = [value];
+    } else {
+      current_sources.push(value);
+    }
+  }
+}
+let new_deps = null;
+let skipped_deps = 0;
+let untracked_writes = null;
+function set_untracked_writes(value) {
+  untracked_writes = value;
+}
+let write_version = 1;
+let read_version = 0;
+let update_version = read_version;
+function set_update_version(value) {
+  update_version = value;
+}
+function increment_write_version() {
+  return ++write_version;
+}
+function is_dirty(reaction) {
+  var flags2 = reaction.f;
+  if ((flags2 & DIRTY) !== 0) {
+    return true;
+  }
+  if (flags2 & DERIVED) {
+    reaction.f &= ~WAS_MARKED;
+  }
+  if ((flags2 & MAYBE_DIRTY) !== 0) {
+    var dependencies = (
+      /** @type {Value[]} */
+      reaction.deps
+    );
+    var length = dependencies.length;
+    for (var i = 0; i < length; i++) {
+      var dependency = dependencies[i];
+      if (is_dirty(
+        /** @type {Derived} */
+        dependency
+      )) {
+        update_derived(
+          /** @type {Derived} */
+          dependency
+        );
+      }
+      if (dependency.wv > reaction.wv) {
+        return true;
+      }
+    }
+    if ((flags2 & CONNECTED) !== 0 && // During time traveling we don't want to reset the status so that
+    // traversal of the graph in the other batches still happens
+    batch_values === null) {
+      set_signal_status(reaction, CLEAN);
+    }
+  }
+  return false;
+}
+function schedule_possible_effect_self_invalidation(signal, effect2, root2 = true) {
+  var reactions = signal.reactions;
+  if (reactions === null) return;
+  if (current_sources !== null && includes.call(current_sources, signal)) {
+    return;
+  }
+  for (var i = 0; i < reactions.length; i++) {
+    var reaction = reactions[i];
+    if ((reaction.f & DERIVED) !== 0) {
+      schedule_possible_effect_self_invalidation(
+        /** @type {Derived} */
+        reaction,
+        effect2,
+        false
+      );
+    } else if (effect2 === reaction) {
+      if (root2) {
+        set_signal_status(reaction, DIRTY);
+      } else if ((reaction.f & CLEAN) !== 0) {
+        set_signal_status(reaction, MAYBE_DIRTY);
+      }
+      schedule_effect(
+        /** @type {Effect} */
+        reaction
+      );
+    }
+  }
+}
+function update_reaction(reaction) {
+  var previous_deps = new_deps;
+  var previous_skipped_deps = skipped_deps;
+  var previous_untracked_writes = untracked_writes;
+  var previous_reaction = active_reaction;
+  var previous_sources = current_sources;
+  var previous_component_context = component_context;
+  var previous_untracking = untracking;
+  var previous_update_version = update_version;
+  var flags2 = reaction.f;
+  new_deps = /** @type {null | Value[]} */
+  null;
+  skipped_deps = 0;
+  untracked_writes = null;
+  active_reaction = (flags2 & (BRANCH_EFFECT | ROOT_EFFECT)) === 0 ? reaction : null;
+  current_sources = null;
+  set_component_context(reaction.ctx);
+  untracking = false;
+  update_version = ++read_version;
+  if (reaction.ac !== null) {
+    without_reactive_context(() => {
+      reaction.ac.abort(STALE_REACTION);
+    });
+    reaction.ac = null;
+  }
+  try {
+    reaction.f |= REACTION_IS_UPDATING;
+    var fn = (
+      /** @type {Function} */
+      reaction.fn
+    );
+    var result = fn();
+    reaction.f |= REACTION_RAN;
+    var deps = reaction.deps;
+    var is_fork = current_batch?.is_fork;
+    if (new_deps !== null) {
+      var i;
+      if (!is_fork) {
+        remove_reactions(reaction, skipped_deps);
+      }
+      if (deps !== null && skipped_deps > 0) {
+        deps.length = skipped_deps + new_deps.length;
+        for (i = 0; i < new_deps.length; i++) {
+          deps[skipped_deps + i] = new_deps[i];
+        }
+      } else {
+        reaction.deps = deps = new_deps;
+      }
+      if (effect_tracking() && (reaction.f & CONNECTED) !== 0) {
+        for (i = skipped_deps; i < deps.length; i++) {
+          (deps[i].reactions ??= []).push(reaction);
+        }
+      }
+    } else if (!is_fork && deps !== null && skipped_deps < deps.length) {
+      remove_reactions(reaction, skipped_deps);
+      deps.length = skipped_deps;
+    }
+    if (is_runes() && untracked_writes !== null && !untracking && deps !== null && (reaction.f & (DERIVED | MAYBE_DIRTY | DIRTY)) === 0) {
+      for (i = 0; i < /** @type {Source[]} */
+      untracked_writes.length; i++) {
+        schedule_possible_effect_self_invalidation(
+          untracked_writes[i],
+          /** @type {Effect} */
+          reaction
+        );
+      }
+    }
+    if (previous_reaction !== null && previous_reaction !== reaction) {
+      read_version++;
+      if (previous_reaction.deps !== null) {
+        for (let i2 = 0; i2 < previous_skipped_deps; i2 += 1) {
+          previous_reaction.deps[i2].rv = read_version;
+        }
+      }
+      if (previous_deps !== null) {
+        for (const dep of previous_deps) {
+          dep.rv = read_version;
+        }
+      }
+      if (untracked_writes !== null) {
+        if (previous_untracked_writes === null) {
+          previous_untracked_writes = untracked_writes;
+        } else {
+          previous_untracked_writes.push(.../** @type {Source[]} */
+          untracked_writes);
+        }
+      }
+    }
+    if ((reaction.f & ERROR_VALUE) !== 0) {
+      reaction.f ^= ERROR_VALUE;
+    }
+    return result;
+  } catch (error) {
+    return handle_error(error);
+  } finally {
+    reaction.f ^= REACTION_IS_UPDATING;
+    new_deps = previous_deps;
+    skipped_deps = previous_skipped_deps;
+    untracked_writes = previous_untracked_writes;
+    active_reaction = previous_reaction;
+    current_sources = previous_sources;
+    set_component_context(previous_component_context);
+    untracking = previous_untracking;
+    update_version = previous_update_version;
+  }
+}
+function remove_reaction(signal, dependency) {
+  let reactions = dependency.reactions;
+  if (reactions !== null) {
+    var index = index_of.call(reactions, signal);
+    if (index !== -1) {
+      var new_length = reactions.length - 1;
+      if (new_length === 0) {
+        reactions = dependency.reactions = null;
+      } else {
+        reactions[index] = reactions[new_length];
+        reactions.pop();
+      }
+    }
+  }
+  if (reactions === null && (dependency.f & DERIVED) !== 0 && // Destroying a child effect while updating a parent effect can cause a dependency to appear
+  // to be unused, when in fact it is used by the currently-updating parent. Checking `new_deps`
+  // allows us to skip the expensive work of disconnecting and immediately reconnecting it
+  (new_deps === null || !includes.call(new_deps, dependency))) {
+    var derived2 = (
+      /** @type {Derived} */
+      dependency
+    );
+    if ((derived2.f & CONNECTED) !== 0) {
+      derived2.f ^= CONNECTED;
+      derived2.f &= ~WAS_MARKED;
+    }
+    update_derived_status(derived2);
+    freeze_derived_effects(derived2);
+    remove_reactions(derived2, 0);
+  }
+}
+function remove_reactions(signal, start_index) {
+  var dependencies = signal.deps;
+  if (dependencies === null) return;
+  for (var i = start_index; i < dependencies.length; i++) {
+    remove_reaction(signal, dependencies[i]);
+  }
+}
+function update_effect(effect2) {
+  var flags2 = effect2.f;
+  if ((flags2 & DESTROYED) !== 0) {
+    return;
+  }
+  set_signal_status(effect2, CLEAN);
+  var previous_effect = active_effect;
+  var was_updating_effect = is_updating_effect;
+  active_effect = effect2;
+  is_updating_effect = true;
+  try {
+    if ((flags2 & (BLOCK_EFFECT | MANAGED_EFFECT)) !== 0) {
+      destroy_block_effect_children(effect2);
+    } else {
+      destroy_effect_children(effect2);
+    }
+    execute_effect_teardown(effect2);
+    var teardown2 = update_reaction(effect2);
+    effect2.teardown = typeof teardown2 === "function" ? teardown2 : null;
+    effect2.wv = write_version;
+    var dep;
+    if (DEV && tracing_mode_flag && (effect2.f & DIRTY) !== 0 && effect2.deps !== null) ;
+  } finally {
+    is_updating_effect = was_updating_effect;
+    active_effect = previous_effect;
+  }
+}
+async function tick() {
+  await Promise.resolve();
+  flushSync();
+}
+function get(signal) {
+  var flags2 = signal.f;
+  var is_derived = (flags2 & DERIVED) !== 0;
+  if (active_reaction !== null && !untracking) {
+    var destroyed = active_effect !== null && (active_effect.f & DESTROYED) !== 0;
+    if (!destroyed && (current_sources === null || !includes.call(current_sources, signal))) {
+      var deps = active_reaction.deps;
+      if ((active_reaction.f & REACTION_IS_UPDATING) !== 0) {
+        if (signal.rv < read_version) {
+          signal.rv = read_version;
+          if (new_deps === null && deps !== null && deps[skipped_deps] === signal) {
+            skipped_deps++;
+          } else if (new_deps === null) {
+            new_deps = [signal];
+          } else {
+            new_deps.push(signal);
+          }
+        }
+      } else {
+        (active_reaction.deps ??= []).push(signal);
+        var reactions = signal.reactions;
+        if (reactions === null) {
+          signal.reactions = [active_reaction];
+        } else if (!includes.call(reactions, active_reaction)) {
+          reactions.push(active_reaction);
+        }
+      }
+    }
+  }
+  if (is_destroying_effect && old_values.has(signal)) {
+    return old_values.get(signal);
+  }
+  if (is_derived) {
+    var derived2 = (
+      /** @type {Derived} */
+      signal
+    );
+    if (is_destroying_effect) {
+      var value = derived2.v;
+      if ((derived2.f & CLEAN) === 0 && derived2.reactions !== null || depends_on_old_values(derived2)) {
+        value = execute_derived(derived2);
+      }
+      old_values.set(derived2, value);
+      return value;
+    }
+    var should_connect = (derived2.f & CONNECTED) === 0 && !untracking && active_reaction !== null && (is_updating_effect || (active_reaction.f & CONNECTED) !== 0);
+    var is_new = (derived2.f & REACTION_RAN) === 0;
+    if (is_dirty(derived2)) {
+      if (should_connect) {
+        derived2.f |= CONNECTED;
+      }
+      update_derived(derived2);
+    }
+    if (should_connect && !is_new) {
+      unfreeze_derived_effects(derived2);
+      reconnect(derived2);
+    }
+  }
+  if (batch_values?.has(signal)) {
+    return batch_values.get(signal);
+  }
+  if ((signal.f & ERROR_VALUE) !== 0) {
+    throw signal.v;
+  }
+  return signal.v;
+}
+function reconnect(derived2) {
+  derived2.f |= CONNECTED;
+  if (derived2.deps === null) return;
+  for (const dep of derived2.deps) {
+    (dep.reactions ??= []).push(derived2);
+    if ((dep.f & DERIVED) !== 0 && (dep.f & CONNECTED) === 0) {
+      unfreeze_derived_effects(
+        /** @type {Derived} */
+        dep
+      );
+      reconnect(
+        /** @type {Derived} */
+        dep
+      );
+    }
+  }
+}
+function depends_on_old_values(derived2) {
+  if (derived2.v === UNINITIALIZED) return true;
+  if (derived2.deps === null) return false;
+  for (const dep of derived2.deps) {
+    if (old_values.has(dep)) {
+      return true;
+    }
+    if ((dep.f & DERIVED) !== 0 && depends_on_old_values(
+      /** @type {Derived} */
+      dep
+    )) {
+      return true;
+    }
+  }
+  return false;
+}
+function untrack(fn) {
+  var previous_untracking = untracking;
+  try {
+    untracking = true;
+    return fn();
+  } finally {
+    untracking = previous_untracking;
+  }
+}
+function validate_effect(rune) {
+  if (active_effect === null) {
+    if (active_reaction === null) {
+      effect_orphan();
+    }
+    effect_in_unowned_derived();
+  }
+  if (is_destroying_effect) {
+    effect_in_teardown();
+  }
+}
+function push_effect(effect2, parent_effect) {
+  var parent_last = parent_effect.last;
+  if (parent_last === null) {
+    parent_effect.last = parent_effect.first = effect2;
+  } else {
+    parent_last.next = effect2;
+    effect2.prev = parent_last;
+    parent_effect.last = effect2;
+  }
+}
+function create_effect(type, fn) {
+  var parent = active_effect;
+  if (parent !== null && (parent.f & INERT) !== 0) {
+    type |= INERT;
+  }
+  var effect2 = {
+    ctx: component_context,
+    deps: null,
+    nodes: null,
+    f: type | DIRTY | CONNECTED,
+    first: null,
+    fn,
+    last: null,
+    next: null,
+    parent,
+    b: parent && parent.b,
+    prev: null,
+    teardown: null,
+    wv: 0,
+    ac: null
+  };
+  var e = effect2;
+  if ((type & EFFECT) !== 0) {
+    if (collected_effects !== null) {
+      collected_effects.push(effect2);
+    } else {
+      Batch.ensure().schedule(effect2);
+    }
+  } else if (fn !== null) {
+    try {
+      update_effect(effect2);
+    } catch (e2) {
+      destroy_effect(effect2);
+      throw e2;
+    }
+    if (e.deps === null && e.teardown === null && e.nodes === null && e.first === e.last && // either `null`, or a singular child
+    (e.f & EFFECT_PRESERVED) === 0) {
+      e = e.first;
+      if ((type & BLOCK_EFFECT) !== 0 && (type & EFFECT_TRANSPARENT) !== 0 && e !== null) {
+        e.f |= EFFECT_TRANSPARENT;
+      }
+    }
+  }
+  if (e !== null) {
+    e.parent = parent;
+    if (parent !== null) {
+      push_effect(e, parent);
+    }
+    if (active_reaction !== null && (active_reaction.f & DERIVED) !== 0 && (type & ROOT_EFFECT) === 0) {
+      var derived2 = (
+        /** @type {Derived} */
+        active_reaction
+      );
+      (derived2.effects ??= []).push(e);
+    }
+  }
+  return effect2;
+}
+function effect_tracking() {
+  return active_reaction !== null && !untracking;
+}
+function teardown(fn) {
+  const effect2 = create_effect(RENDER_EFFECT, null);
+  set_signal_status(effect2, CLEAN);
+  effect2.teardown = fn;
+  return effect2;
+}
+function user_effect(fn) {
+  validate_effect();
+  var flags2 = (
+    /** @type {Effect} */
+    active_effect.f
+  );
+  var defer = !active_reaction && (flags2 & BRANCH_EFFECT) !== 0 && (flags2 & REACTION_RAN) === 0;
+  if (defer) {
+    var context = (
+      /** @type {ComponentContext} */
+      component_context
+    );
+    (context.e ??= []).push(fn);
+  } else {
+    return create_user_effect(fn);
+  }
+}
+function create_user_effect(fn) {
+  return create_effect(EFFECT | USER_EFFECT, fn);
+}
+function effect_root(fn) {
+  Batch.ensure();
+  const effect2 = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
+  return () => {
+    destroy_effect(effect2);
+  };
+}
+function component_root(fn) {
+  Batch.ensure();
+  const effect2 = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
+  return (options = {}) => {
+    return new Promise((fulfil) => {
+      if (options.outro) {
+        pause_effect(effect2, () => {
+          destroy_effect(effect2);
+          fulfil(void 0);
+        });
+      } else {
+        destroy_effect(effect2);
+        fulfil(void 0);
+      }
+    });
+  };
+}
+function effect(fn) {
+  return create_effect(EFFECT, fn);
+}
+function async_effect(fn) {
+  return create_effect(ASYNC | EFFECT_PRESERVED, fn);
+}
+function render_effect(fn, flags2 = 0) {
+  return create_effect(RENDER_EFFECT | flags2, fn);
+}
+function template_effect(fn, sync = [], async = [], blockers = []) {
+  flatten(blockers, sync, async, (values) => {
+    create_effect(RENDER_EFFECT, () => fn(...values.map(get)));
+  });
+}
+function block(fn, flags2 = 0) {
+  var effect2 = create_effect(BLOCK_EFFECT | flags2, fn);
+  return effect2;
+}
+function managed(fn, flags2 = 0) {
+  var effect2 = create_effect(MANAGED_EFFECT | flags2, fn);
+  return effect2;
+}
+function branch(fn) {
+  return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn);
+}
+function execute_effect_teardown(effect2) {
+  var teardown2 = effect2.teardown;
+  if (teardown2 !== null) {
+    const previously_destroying_effect = is_destroying_effect;
+    const previous_reaction = active_reaction;
+    set_is_destroying_effect(true);
+    set_active_reaction(null);
+    try {
+      teardown2.call(null);
+    } finally {
+      set_is_destroying_effect(previously_destroying_effect);
+      set_active_reaction(previous_reaction);
+    }
+  }
+}
+function destroy_effect_children(signal, remove_dom = false) {
+  var effect2 = signal.first;
+  signal.first = signal.last = null;
+  while (effect2 !== null) {
+    const controller = effect2.ac;
+    if (controller !== null) {
+      without_reactive_context(() => {
+        controller.abort(STALE_REACTION);
+      });
+    }
+    var next2 = effect2.next;
+    if ((effect2.f & ROOT_EFFECT) !== 0) {
+      effect2.parent = null;
+    } else {
+      destroy_effect(effect2, remove_dom);
+    }
+    effect2 = next2;
+  }
+}
+function destroy_block_effect_children(signal) {
+  var effect2 = signal.first;
+  while (effect2 !== null) {
+    var next2 = effect2.next;
+    if ((effect2.f & BRANCH_EFFECT) === 0) {
+      destroy_effect(effect2);
+    }
+    effect2 = next2;
+  }
+}
+function destroy_effect(effect2, remove_dom = true) {
+  var removed = false;
+  if ((remove_dom || (effect2.f & HEAD_EFFECT) !== 0) && effect2.nodes !== null && effect2.nodes.end !== null) {
+    remove_effect_dom(
+      effect2.nodes.start,
+      /** @type {TemplateNode} */
+      effect2.nodes.end
+    );
+    removed = true;
+  }
+  set_signal_status(effect2, DESTROYING);
+  destroy_effect_children(effect2, remove_dom && !removed);
+  remove_reactions(effect2, 0);
+  var transitions = effect2.nodes && effect2.nodes.t;
+  if (transitions !== null) {
+    for (const transition of transitions) {
+      transition.stop();
+    }
+  }
+  execute_effect_teardown(effect2);
+  effect2.f ^= DESTROYING;
+  effect2.f |= DESTROYED;
+  var parent = effect2.parent;
+  if (parent !== null && parent.first !== null) {
+    unlink_effect(effect2);
+  }
+  effect2.next = effect2.prev = effect2.teardown = effect2.ctx = effect2.deps = effect2.fn = effect2.nodes = effect2.ac = null;
+}
+function remove_effect_dom(node, end) {
+  while (node !== null) {
+    var next2 = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
+    node.remove();
+    node = next2;
+  }
+}
+function unlink_effect(effect2) {
+  var parent = effect2.parent;
+  var prev = effect2.prev;
+  var next2 = effect2.next;
+  if (prev !== null) prev.next = next2;
+  if (next2 !== null) next2.prev = prev;
+  if (parent !== null) {
+    if (parent.first === effect2) parent.first = next2;
+    if (parent.last === effect2) parent.last = prev;
+  }
+}
+function pause_effect(effect2, callback, destroy = true) {
+  var transitions = [];
+  pause_children(effect2, transitions, true);
+  var fn = () => {
+    if (destroy) destroy_effect(effect2);
+    if (callback) callback();
+  };
+  var remaining = transitions.length;
+  if (remaining > 0) {
+    var check = () => --remaining || fn();
+    for (var transition of transitions) {
+      transition.out(check);
+    }
+  } else {
+    fn();
+  }
+}
+function pause_children(effect2, transitions, local) {
+  if ((effect2.f & INERT) !== 0) return;
+  effect2.f ^= INERT;
+  var t = effect2.nodes && effect2.nodes.t;
+  if (t !== null) {
+    for (const transition of t) {
+      if (transition.is_global || local) {
+        transitions.push(transition);
+      }
+    }
+  }
+  var child2 = effect2.first;
+  while (child2 !== null) {
+    var sibling2 = child2.next;
+    var transparent = (child2.f & EFFECT_TRANSPARENT) !== 0 || // If this is a branch effect without a block effect parent,
+    // it means the parent block effect was pruned. In that case,
+    // transparency information was transferred to the branch effect.
+    (child2.f & BRANCH_EFFECT) !== 0 && (effect2.f & BLOCK_EFFECT) !== 0;
+    pause_children(child2, transitions, transparent ? local : false);
+    child2 = sibling2;
+  }
+}
+function resume_effect(effect2) {
+  resume_children(effect2, true);
+}
+function resume_children(effect2, local) {
+  if ((effect2.f & INERT) === 0) return;
+  effect2.f ^= INERT;
+  if ((effect2.f & CLEAN) === 0) {
+    set_signal_status(effect2, DIRTY);
+    Batch.ensure().schedule(effect2);
+  }
+  var child2 = effect2.first;
+  while (child2 !== null) {
+    var sibling2 = child2.next;
+    var transparent = (child2.f & EFFECT_TRANSPARENT) !== 0 || (child2.f & BRANCH_EFFECT) !== 0;
+    resume_children(child2, transparent ? local : false);
+    child2 = sibling2;
+  }
+  var t = effect2.nodes && effect2.nodes.t;
+  if (t !== null) {
+    for (const transition of t) {
+      if (transition.is_global || local) {
+        transition.in();
+      }
+    }
+  }
+}
+function move_effect(effect2, fragment) {
+  if (!effect2.nodes) return;
+  var node = effect2.nodes.start;
+  var end = effect2.nodes.end;
+  while (node !== null) {
+    var next2 = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
+    fragment.append(node);
+    node = next2;
+  }
+}
 function store(defaultValue) {
   const scope = {
     get: (name) => {
-      return get(scope.store)[name];
+      return get$1(scope.store)[name];
     },
     set: (name, value) => {
       if (typeof name === "string") {
-        Object.assign(get(scope.store), {
+        Object.assign(get$1(scope.store), {
           [name]: value
         });
       } else {
-        Object.assign(get(scope.store), name);
+        Object.assign(get$1(scope.store), name);
       }
-      scope.store.set(get(scope.store));
+      scope.store.set(get$1(scope.store));
     },
     store: writable(defaultValue)
   };
@@ -4960,7 +5063,7 @@ function Logo($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Logo, { strings: {} }, [], [], { mode: "open" });
-var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><div><!></div> <!></div>`);
+var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><div></div> <!></div>`);
 function Footer($$anchor, $$props) {
   push($$props, true);
   let logo = prop($$props, "logo"), strings = prop($$props, "strings");
@@ -4982,10 +5085,9 @@ function Footer($$anchor, $$props) {
   };
   var div = root$4();
   var div_1 = child(div);
-  var node = child(div_1);
-  html(node, () => strings().footer);
+  html(div_1, () => strings().footer, true);
   reset(div_1);
-  var node_1 = sibling(div_1, 2);
+  var node = sibling(div_1, 2);
   {
     var consequent = ($$anchor2) => {
       Logo($$anchor2, {
@@ -4994,7 +5096,7 @@ function Footer($$anchor, $$props) {
         }
       });
     };
-    if_block(node_1, ($$render) => {
+    if_block(node, ($$render) => {
       if (logo()) $$render(consequent);
     });
   }
@@ -5049,7 +5151,7 @@ var root_4 = /* @__PURE__ */ from_svg(`<svg aria-hidden="true" xmlns="http://www
 var root_5 = /* @__PURE__ */ from_svg(`<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15 7C15 6.44772 15.4477 6 16 6C16.5523 6 17 6.44772 17 7V17C17 17.5523 16.5523 18 16 18C15.4477 18 15 17.5523 15 17V7ZM7 7C7 6.44772 7.44772 6 8 6C8.55228 6 9 6.44772 9 7V17C9 17.5523 8.55228 18 8 18C7.44772 18 7 17.5523 7 17V7Z"></path></svg>`);
 var root_6 = /* @__PURE__ */ from_svg(`<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12H7C8.10457 12 9 12.8954 9 14V19C9 20.1046 8.10457 21 7 21H4C2.89543 21 2 20.1046 2 19V12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12V19C22 20.1046 21.1046 21 20 21H17C15.8954 21 15 20.1046 15 19V14C15 12.8954 15.8954 12 17 12H20C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12Z"></path></svg>`);
 var root_2$2 = /* @__PURE__ */ from_html(`<button type="button" class="altcha-button altcha-button-secondary"><!></button>`);
-var root_7 = /* @__PURE__ */ from_html(`<audio hidden="" autoplay=""><source/></audio>`);
+var root_7 = /* @__PURE__ */ from_html(`<audio hidden="" autoplay=""></audio>`);
 var root$2 = /* @__PURE__ */ from_html(`<div class="altcha-code-challenge"><form data-code-challenge="true"><!> <div class="altcha-code-challenge-text"> </div> <img class="altcha-code-challenge-image" alt=""/> <div class="altcha-code-challenge-row"><input type="text" class="altcha-input" autocomplete="off" name="" required=""/> <!> <button type="button" class="altcha-button altcha-button-secondary"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2V4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 9.25022 5.38734 6.82447 7.50024 5.38451L7.5 8H9.5V2L3.5 2V4L5.99918 3.99989C3.57075 5.82434 2 8.72873 2 12Z"></path></svg></button></div> <div class="altcha-code-challenge-buttons"><button type="submit" class="altcha-button"> </button> <button type="button" class="altcha-button altcha-button-secondary"> </button></div></form> <!></div>`);
 function Code($$anchor, $$props) {
   push($$props, true);
@@ -5063,12 +5165,12 @@ function Code($$anchor, $$props) {
   onMount(() => {
     if (!config().disableAutoFocus) {
       tick().then(() => {
-        get$1(elInput)?.focus();
+        get(elInput)?.focus();
       });
     }
     return () => {
-      if (get$1(elAudio)) {
-        get$1(elAudio).pause();
+      if (get(elAudio)) {
+        get(elAudio).pause();
         set(elAudio, void 0);
       }
     };
@@ -5105,21 +5207,27 @@ function Code($$anchor, $$props) {
   function onSubmitCapture(ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    onSubmit()?.(get$1(code));
+    onSubmit()?.(get(code));
   }
   function onPlayAudio() {
-    if (get$1(elAudio)) {
-      if (get$1(audioState) === AudioState.LOADING) ;
-      else if (!get$1(elAudio).paused) {
-        get$1(elAudio).pause();
+    if (get(elAudio)) {
+      if (get(audioState) === AudioState.LOADING) ;
+      else if (!get(elAudio).paused) {
+        get(elAudio).pause();
       } else {
-        get$1(elAudio).currentTime = 0;
-        get$1(elAudio).play();
+        if (audioUrl() && get(elAudio).src !== audioUrl()) {
+          get(elAudio).src = audioUrl();
+        }
+        get(elAudio).currentTime = 0;
+        get(elAudio).play();
       }
     } else {
       set(playAudio, true);
       requestAnimationFrame(() => {
-        get$1(elAudio)?.play();
+        if (get(elAudio) && audioUrl()) {
+          get(elAudio).src = audioUrl();
+          get(elAudio).play();
+        }
       });
     }
   }
@@ -5203,8 +5311,8 @@ function Code($$anchor, $$props) {
   var div_3 = sibling(img, 2);
   var input = child(div_3);
   remove_input_defaults(input);
-  input.disabled = get$1(loading);
-  bind_this(input, ($$value) => set(elInput, $$value), () => get$1(elInput));
+  input.disabled = get(loading);
+  bind_this(input, ($$value) => set(elInput, $$value), () => get(elInput));
   var node_1 = sibling(input, 2);
   {
     var consequent_4 = ($$anchor2) => {
@@ -5228,17 +5336,17 @@ function Code($$anchor, $$props) {
           append($$anchor3, svg_2);
         };
         if_block(node_2, ($$render) => {
-          if (get$1(audioState) === AudioState.LOADING) $$render(consequent_1);
-          else if (get$1(audioState) === AudioState.ERROR) $$render(consequent_2, 1);
-          else if (get$1(audioState) === AudioState.PLAYING) $$render(consequent_3, 2);
-          else $$render(alternate, false);
+          if (get(audioState) === AudioState.LOADING) $$render(consequent_1);
+          else if (get(audioState) === AudioState.ERROR) $$render(consequent_2, 1);
+          else if (get(audioState) === AudioState.PLAYING) $$render(consequent_3, 2);
+          else $$render(alternate, -1);
         });
       }
       reset(button);
       template_effect(() => {
         set_attribute(button, "title", strings().getAudioChallenge);
-        button.disabled = get$1(audioState) === AudioState.LOADING || get$1(audioState) === AudioState.ERROR;
-        set_attribute(button, "aria-label", get$1(audioState) === AudioState.LOADING ? strings().loading : strings().getAudioChallenge);
+        button.disabled = get(audioState) === AudioState.LOADING || get(audioState) === AudioState.ERROR;
+        set_attribute(button, "aria-label", get(audioState) === AudioState.LOADING ? strings().loading : strings().getAudioChallenge);
       });
       delegated("click", button, () => onPlayAudio());
       append($$anchor2, button);
@@ -5262,20 +5370,17 @@ function Code($$anchor, $$props) {
   {
     var consequent_5 = ($$anchor2) => {
       var audio = root_7();
-      var source2 = child(audio);
-      reset(audio);
-      bind_this(audio, ($$value) => set(elAudio, $$value), () => get$1(elAudio));
-      template_effect(() => set_attribute(source2, "src", audioUrl()));
+      bind_this(audio, ($$value) => set(elAudio, $$value), () => get(elAudio));
+      event("error", audio, onAudioError);
       event("loadstart", audio, onAudioLoadStart);
       event("canplay", audio, onAudioCanPlay);
       event("pause", audio, onAudioPause);
       event("playing", audio, onAudioPlaying);
       event("ended", audio, onAudioEnded);
-      event("error", source2, onAudioError);
       append($$anchor2, audio);
     };
     if_block(node_3, ($$render) => {
-      if (get$1(playAudio) && audioUrl()) $$render(consequent_5);
+      if (get(playAudio)) $$render(consequent_5);
     });
   }
   reset(div);
@@ -5285,9 +5390,9 @@ function Code($$anchor, $$props) {
     set_attribute(input, "minlength", codeChallenge().length || 1);
     set_attribute(input, "maxlength", codeChallenge().length);
     set_attribute(input, "placeholder", strings().enterCode);
-    set_attribute(input, "aria-label", get$1(audioState) === AudioState.LOADING ? strings().loading : get$1(audioState) === AudioState.PLAYING ? "" : strings().enterCodeAria);
-    set_attribute(input, "aria-live", get$1(audioState) ? "assertive" : "polite");
-    set_attribute(input, "aria-busy", get$1(audioState) === AudioState.LOADING);
+    set_attribute(input, "aria-label", get(audioState) === AudioState.LOADING ? strings().loading : get(audioState) === AudioState.PLAYING ? "" : strings().enterCodeAria);
+    set_attribute(input, "aria-live", get(audioState) ? "assertive" : "polite");
+    set_attribute(input, "aria-busy", get(audioState) === AudioState.LOADING);
     set_attribute(button_1, "title", strings().reload);
     set_attribute(button_1, "aria-label", strings().reload);
     set_attribute(button_2, "aria-label", strings().verify);
@@ -5297,7 +5402,7 @@ function Code($$anchor, $$props) {
   });
   event("submit", form, onSubmitCapture, true);
   delegated("keydown", input, onInputKeyDown);
-  bind_value(input, () => get$1(code), ($$value) => set(code, $$value));
+  bind_value(input, () => get(code), ($$value) => set(code, $$value));
   delegated("click", button_1, () => onReload()?.());
   delegated("click", button_3, () => onCancel()?.());
   append($$anchor, div);
@@ -5347,8 +5452,8 @@ function Popover($$anchor, $$props) {
   onMount(() => {
     const moveToBody = display() === "bottomsheet" || display() === "overlay";
     if (moveToBody) {
-      get$1(elBackdrop) && document.body.append(get$1(elBackdrop));
-      get$1(el) && document.body.append(get$1(el));
+      get(elBackdrop) && document.body.append(get(elBackdrop));
+      get(el) && document.body.append(get(el));
     }
     reposition();
     tick().then(() => {
@@ -5356,8 +5461,8 @@ function Popover($$anchor, $$props) {
     });
     return () => {
       if (moveToBody) {
-        get$1(elBackdrop) && document.body.removeChild(get$1(elBackdrop));
-        get$1(el) && document.body.removeChild(get$1(el));
+        get(elBackdrop) && document.body.removeChild(get(elBackdrop));
+        get(el) && document.body.removeChild(get(el));
       }
     };
   });
@@ -5366,7 +5471,7 @@ function Popover($$anchor, $$props) {
   }
   function onWindowClick(ev) {
     const target = ev.target;
-    if (!get$1(el)?.contains(target) && get$1(mountedAt) && get$1(mountedAt) + onClickOutsideDelay() < Date.now()) {
+    if (!get(el)?.contains(target) && get(mountedAt) && get(mountedAt) + onClickOutsideDelay() < Date.now()) {
       onClickOutside()?.();
     }
   }
@@ -5377,11 +5482,11 @@ function Popover($$anchor, $$props) {
     reposition();
   }
   function reposition() {
-    if (anchor() && get$1(el)) {
+    if (anchor() && get(el)) {
       const boundary2 = anchor().getBoundingClientRect();
       const bottomGap = document.documentElement.clientHeight - (boundary2.top + boundary2.height);
-      const newTop = bottomGap < get$1(el).clientHeight;
-      if (get$1(top) !== newTop) {
+      const newTop = bottomGap < get(el).clientHeight;
+      if (get(top) !== newTop) {
         set(top, newTop);
       }
     }
@@ -5452,7 +5557,7 @@ function Popover($$anchor, $$props) {
   {
     var consequent = ($$anchor2) => {
       var div = root_1$1();
-      bind_this(div, ($$value) => set(elBackdrop, $$value), () => get$1(elBackdrop));
+      bind_this(div, ($$value) => set(elBackdrop, $$value), () => get(elBackdrop));
       append($$anchor2, div);
     };
     if_block(node, ($$render) => {
@@ -5465,7 +5570,7 @@ function Popover($$anchor, $$props) {
     class: `altcha-popover ${($$props.class || "") ?? ""}`,
     "data-popover": true,
     "data-variant": variant(),
-    "data-top": get$1(top),
+    "data-top": get(top),
     "data-display": display()
   }));
   var node_1 = child(div_1);
@@ -5494,7 +5599,7 @@ function Popover($$anchor, $$props) {
   snippet(node_3, () => children() ?? noop);
   reset(div_4);
   reset(div_1);
-  bind_this(div_1, ($$value) => set(el, $$value), () => get$1(el));
+  bind_this(div_1, ($$value) => set(el, $$value), () => get(el));
   append($$anchor, fragment);
   return pop($$exports);
 }
@@ -5519,7 +5624,7 @@ function bufferToHex(buffer) {
   return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 async function solveChallengeWorkers(options) {
-  let {
+  const {
     challenge,
     concurrency = navigator.hardwareConcurrency,
     controller = new AbortController(),
@@ -5527,14 +5632,14 @@ async function solveChallengeWorkers(options) {
     onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
     counterMode
   } = options;
-  concurrency = Math.min(16, Math.max(1, concurrency));
+  const workersConcurrency = Math.min(16, Math.max(1, concurrency));
   const workersInstances = [];
   const terminate = () => {
     for (const worker of workersInstances) {
       worker.terminate();
     }
   };
-  for (let i = 0; i < concurrency; i++) {
+  for (let i = 0; i < workersConcurrency; i++) {
     workersInstances.push(await createWorker(challenge.parameters.algorithm));
   }
   let solution = null;
@@ -5565,18 +5670,18 @@ async function solveChallengeWorkers(options) {
             challenge,
             counterMode,
             counterStart: i,
-            counterStep: concurrency,
+            counterStep: workersConcurrency,
             type: "work"
           });
         });
       })
     );
   } catch (err) {
-    const isOOM = !!err?.message?.includes("Out of memory");
+    const isOOM = err instanceof Error && !!err?.message?.includes("Out of memory");
     if (isOOM) {
-      if (!!onOutOfMemory) {
+      if (onOutOfMemory) {
         terminate();
-        const retryConcurrency = onOutOfMemory(concurrency);
+        const retryConcurrency = onOutOfMemory(workersConcurrency);
         if (retryConcurrency) {
           return solveChallengeWorkers({
             ...options,
@@ -5598,14 +5703,15 @@ async function solveChallengeWorkers(options) {
   return solution || null;
 }
 var root_1 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-backdrop" data-backdrop=""></div>`);
-var root_3 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-content"><!></div>`);
+var root_3 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-content"></div>`);
 var root_2 = /* @__PURE__ */ from_html(`<div role="button" class="altcha-overlay-close">&times;</div> <!>`, 1);
 var root_10 = /* @__PURE__ */ from_html(`<div class="altcha-floating-arrow"></div>`);
-var root_13 = /* @__PURE__ */ from_html(`<div class="altcha-error">Secure context (HTTPS) required.</div>`);
-var root_14 = /* @__PURE__ */ from_html(`<div class="altcha-error"> </div>`);
+var root_11 = /* @__PURE__ */ from_html(`<input type="hidden"/>`);
+var root_14 = /* @__PURE__ */ from_html(`<div class="altcha-error">Secure context (HTTPS) required.</div>`);
 var root_15 = /* @__PURE__ */ from_html(`<div class="altcha-error"> </div>`);
-var root_18 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
-var root = /* @__PURE__ */ from_html(`<!> <div class="altcha"><!> <div class="altcha-main"><div><div class="altcha-checkbox-wrap"><!> <label><!></label></div> <!></div> <!> <!> <input type="hidden"/></div> <!></div>`, 1);
+var root_16 = /* @__PURE__ */ from_html(`<div class="altcha-error"> </div>`);
+var root_19 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
+var root = /* @__PURE__ */ from_html(`<!> <div class="altcha"><!> <div class="altcha-main"><div><div class="altcha-checkbox-wrap"><!> <label><!></label></div> <!></div> <!> <!> <!></div> <!></div>`, 1);
 function Widget($$anchor, $$props) {
   push($$props, true);
   const $altchaDefaults = () => store_get(altchaDefaults, "$altchaDefaults", $$stores);
@@ -5666,6 +5772,7 @@ function Widget($$anchor, $$props) {
     overlayContent: "",
     name: "altcha",
     retryOnOutOfMemoryError: true,
+    setCookie: null,
     serverVerificationFields: false,
     serverVerificationTimeZone: false,
     test: false,
@@ -5675,24 +5782,24 @@ function Widget($$anchor, $$props) {
     verifyUrl: "",
     workers: defaultWorkers,
     ...$altchaDefaults(),
-    ...get$1(userConfig)
+    ...get(userConfig)
   }));
   const checkboxId = /* @__PURE__ */ user_derived(() => `altcha-checkbox-${$$props.id || Math.floor(Math.random() * 1e12).toString(16)}`);
-  const CheckboxComponent = /* @__PURE__ */ user_derived(() => getCheckboxComponent(get$1(config).type));
-  const loading = /* @__PURE__ */ user_derived(() => get$1(currentState) === State.VERIFYING);
-  const showFooter = /* @__PURE__ */ user_derived(() => !get$1(config).hideFooter);
-  const showLogo = /* @__PURE__ */ user_derived(() => !get$1(config).hideLogo && get$1(config).display !== "bar");
+  const CheckboxComponent = /* @__PURE__ */ user_derived(() => getCheckboxComponent(get(config).type));
+  const loading = /* @__PURE__ */ user_derived(() => get(currentState) === State.VERIFYING);
+  const showFooter = /* @__PURE__ */ user_derived(() => !get(config).hideFooter);
+  const showLogo = /* @__PURE__ */ user_derived(() => !get(config).hideLogo && get(config).display !== "bar");
   const locale = /* @__PURE__ */ user_derived(() => getI18nStrings($altchaI18nStore(), [
-    get$1(config).language,
+    get(config).language,
     document.documentElement.lang,
     ...navigator.languages
   ]));
-  const dir = /* @__PURE__ */ user_derived(() => rtlLanguages.includes(get$1(locale).language) ? "rtl" : void 0);
-  const strings = /* @__PURE__ */ user_derived(() => ({ ...get$1(locale).strings }));
-  const codeChallengeAudioUrl = /* @__PURE__ */ user_derived(() => get$1(codeChallenge)?.audio?.match(/^(https?:)?\//) ? getUrl(get$1(codeChallenge).audio, get$1(baseUrl), {
-    language: get$1(config).audioChallengeLanguage || get$1(locale).language
-  }).toString() : get$1(codeChallenge)?.audio);
-  const codeChallengeImageUrl = /* @__PURE__ */ user_derived(() => get$1(codeChallenge)?.image?.match(/^(https?:)?\//) ? getUrl(get$1(codeChallenge).image, get$1(baseUrl)) : get$1(codeChallenge)?.image);
+  const dir = /* @__PURE__ */ user_derived(() => rtlLanguages.includes(get(locale).language) ? "rtl" : void 0);
+  const strings = /* @__PURE__ */ user_derived(() => ({ ...get(locale).strings }));
+  const codeChallengeAudioUrl = /* @__PURE__ */ user_derived(() => get(codeChallenge)?.audio?.match(/^(https?:)?\//) ? getUrl(get(codeChallenge).audio, get(baseUrl), {
+    language: get(config).audioChallengeLanguage || get(locale).language
+  }).toString() : get(codeChallenge)?.audio);
+  const codeChallengeImageUrl = /* @__PURE__ */ user_derived(() => get(codeChallenge)?.image?.match(/^(https?:)?\//) ? getUrl(get(codeChallenge).image, get(baseUrl)) : get(codeChallenge)?.image);
   user_effect(() => {
     configure({
       auto: $$props.auto,
@@ -5714,20 +5821,20 @@ function Widget($$anchor, $$props) {
     }
   });
   user_effect(() => {
-    setDisplay(get$1(config).display);
+    setDisplay(get(config).display);
   });
   user_effect(() => {
-    if (get$1(checked) && get$1(currentState) === State.VERIFYING) {
+    if (get(checked) && get(currentState) === State.VERIFYING) {
       set(checked, false);
     }
   });
   user_effect(() => {
-    if (!get$1(checked) && get$1(currentState) === State.VERIFIED) {
+    if (!get(checked) && get(currentState) === State.VERIFIED) {
       set(checked, true);
     }
   });
   user_effect(() => {
-    if (!get$1(checked)) {
+    if (!get(checked)) {
       const checkbox = getCheckboxElement();
       if (checkbox && checkbox.checked) {
         checkbox.checked = false;
@@ -5735,12 +5842,12 @@ function Widget($$anchor, $$props) {
     }
   });
   user_effect(() => {
-    if (get$1(currentState) === State.VERIFIED) {
+    if (get(currentState) === State.VERIFIED) {
       getCheckboxElement()?.setCustomValidity("");
     }
   });
   user_effect(() => {
-    if (get$1(config).auto === "onload") {
+    if (get(config).auto === "onload") {
       const tm = setTimeout(
         () => {
           verify();
@@ -5755,19 +5862,24 @@ function Widget($$anchor, $$props) {
     }
   });
   user_effect(() => {
-    if (get$1(error)) {
-      log("error:", get$1(error));
+    if (get(error)) {
+      log("error:", get(error));
+    }
+  });
+  user_effect(() => {
+    if (get(payload) && get(config).setCookie) {
+      setCookie(get(payload), get(config).setCookie);
     }
   });
   onMount(() => {
-    log("mounted", "3.0.0-beta.1");
+    log("mounted", "3.0.0-beta.2");
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }
-    set(elForm, get$1(elRoot)?.closest("form"), true);
-    get$1(elForm)?.addEventListener("reset", onFormReset);
-    get$1(elForm)?.addEventListener("submit", onFormSubmit);
-    get$1(elForm)?.addEventListener("focusin", onFormFocusIn);
+    set(elForm, get(elRoot)?.closest("form"), true);
+    get(elForm)?.addEventListener("reset", onFormReset);
+    get(elForm)?.addEventListener("submit", onFormSubmit);
+    get(elForm)?.addEventListener("focusin", onFormFocusIn);
     activatePlugins();
     dispatch("load");
     if (!isSecureContext) {
@@ -5778,30 +5890,30 @@ function Widget($$anchor, $$props) {
       if (instance) {
         globalThis.$altcha.instances.delete(instance);
       }
-      if (get$1(expirationTimeout)) {
-        clearTimeout(get$1(expirationTimeout));
+      if (get(expirationTimeout)) {
+        clearTimeout(get(expirationTimeout));
       }
-      get$1(elForm)?.removeEventListener("reset", onFormReset);
-      get$1(elForm)?.removeEventListener("submit", onFormSubmit);
-      get$1(elForm)?.removeEventListener("focusin", onFormFocusIn);
+      get(elForm)?.removeEventListener("reset", onFormReset);
+      get(elForm)?.removeEventListener("submit", onFormSubmit);
+      get(elForm)?.removeEventListener("focusin", onFormFocusIn);
     };
   });
   function activatePlugins() {
     set(plugins, [...globalThis.$altcha.plugins].map((PluginCls) => new PluginCls(instance)), true);
-    log("activating plugins", get$1(plugins).map((plugin) => plugin.constructor.name));
-    for (const plugin of get$1(plugins)) {
+    log("activating plugins", get(plugins).map((plugin) => plugin.constructor.name));
+    for (const plugin of get(plugins)) {
       plugin.activate();
     }
   }
   async function callHook(hook, ...args) {
     let result = void 0;
-    for (const plugin of get$1(plugins)) {
+    for (const plugin of get(plugins)) {
       result = await plugin[hook].call(plugin, ...args);
     }
     return result;
   }
   function destroyPlugins() {
-    for (const plugin of get$1(plugins)) {
+    for (const plugin of get(plugins)) {
       plugin.destroy();
     }
   }
@@ -5847,7 +5959,7 @@ function Widget($$anchor, $$props) {
   async function delay(ms) {
     await new Promise((resolve) => setTimeout(resolve, ms));
   }
-  async function fetchChallenge(source2 = get$1(config).challenge) {
+  async function fetchChallenge(source2 = get(config).challenge) {
     const hook = await callHook("onFetchChallenge", source2);
     if (hook !== void 0) {
       return hook;
@@ -5857,7 +5969,7 @@ function Widget($$anchor, $$props) {
       if (source2.match(/^(https?:)?\//)) {
         log("fetching challenge from", source2);
         set(baseUrl, new URL(source2, location.origin), true);
-        const resp = await get$1(config).fetch(source2, { credentials: get$1(config).credentials || void 0 });
+        const resp = await get(config).fetch(source2, { credentials: get(config).credentials || void 0 });
         validateResponse(resp);
         const configHeader = resp.headers.get("x-altcha-config");
         if (configHeader) {
@@ -5888,7 +6000,7 @@ function Widget($$anchor, $$props) {
     return !!challenge && typeof challenge === "object" && "parameters" in challenge && "signature" in challenge && !!challenge.parameters && typeof challenge.parameters === "object" && "algorithm" in challenge.parameters && "nonce" in challenge.parameters && "salt" in challenge.parameters && "keyPrefix" in challenge.parameters;
   }
   function getCheckboxElement() {
-    return document.getElementById(get$1(checkboxId));
+    return document.getElementById(get(checkboxId));
   }
   function getCheckboxComponent(type) {
     switch (type) {
@@ -5918,16 +6030,16 @@ function Widget($$anchor, $$props) {
   function getPlacement(display) {
     switch (display) {
       case "bar":
-        return get$1(config).barPlacement || "bottom";
+        return get(config).barPlacement || "bottom";
       case "floating":
-        return get$1(config).floatingPlacement || "auto";
+        return get(config).floatingPlacement || "auto";
       default:
         return void 0;
     }
   }
   function getTextFields(names) {
     const elInputs = [
-      ...get$1(elForm)?.querySelectorAll(fieldsSelector) || []
+      ...get(elForm)?.querySelectorAll(fieldsSelector) || []
     ];
     return elInputs.reduce(
       (acc, el) => {
@@ -5963,10 +6075,10 @@ function Widget($$anchor, $$props) {
     return result.toString();
   }
   function onCheckboxChange(ev) {
-    if (!get$1(checked) && ev.currentTarget.checked) {
+    if (!get(checked) && ev.currentTarget.checked) {
       ev.preventDefault();
       ev.currentTarget.checked = false;
-      if (get$1(currentState) !== State.VERIFYING) {
+      if (get(currentState) !== State.VERIFYING) {
         verify();
       }
     } else if (!ev.currentTarget.checked) {
@@ -5975,17 +6087,17 @@ function Widget($$anchor, $$props) {
     }
   }
   function onCheckboxInvalid(ev) {
-    if (get$1(currentState) === State.VERIFYING) {
-      ev.currentTarget.setCustomValidity(get$1(strings).waitAlert);
-    } else if (get$1(config).validationMessage) {
-      ev.currentTarget.setCustomValidity(get$1(config).validationMessage);
+    if (get(currentState) === State.VERIFYING) {
+      ev.currentTarget.setCustomValidity(get(strings).waitAlert);
+    } else if (get(config).validationMessage) {
+      ev.currentTarget.setCustomValidity(get(config).validationMessage);
     }
   }
   function onCloseClick() {
-    if (get$1(currentController)) {
-      get$1(currentController).abort();
+    if (get(currentController)) {
+      get(currentController).abort();
     }
-    setDisplay(get$1(config).display);
+    setDisplay(get(config).display);
     reset$1();
   }
   function onDocumentScroll() {
@@ -5993,32 +6105,32 @@ function Widget($$anchor, $$props) {
   }
   function onDocumentClick(ev) {
     const target = ev.target;
-    if (get$1(config).display === "floating" && target && !instance?.contains(target) && !target.hasAttribute("data-backdrop") && !target.closest("[data-popover]") && get$1(currentState) !== State.VERIFIED && !get$1(config).floatingPersist) {
+    if (get(config).display === "floating" && target && !instance?.contains(target) && !target.hasAttribute("data-backdrop") && !target.closest("[data-popover]") && get(currentState) !== State.VERIFIED && !get(config).floatingPersist) {
       hide();
     }
   }
   function onFormFocusIn(ev) {
-    if (get$1(config).auto === "onfocus" && get$1(currentState) === State.UNVERIFIED) {
+    if (get(config).auto === "onfocus" && get(currentState) === State.UNVERIFIED) {
       verify();
     }
   }
   function onFormReset() {
-    if (get$1(currentController)) {
-      get$1(currentController).abort();
+    if (get(currentController)) {
+      get(currentController).abort();
     }
-    setDisplay(get$1(config).display);
+    setDisplay(get(config).display);
     reset$1();
   }
   function onFormSubmit(ev) {
     set(elSubmitter, ev.submitter, true);
-    if (get$1(config).auto === "onsubmit" && get$1(currentState) === State.UNVERIFIED) {
+    if (get(config).auto === "onsubmit" && get(currentState) === State.UNVERIFIED) {
       ev.preventDefault();
       ev.stopPropagation();
       show();
       verify().then((result) => {
-        if (result && !get$1(codeChallenge)) {
+        if (result && !get(codeChallenge)) {
           tick().then(() => {
-            requestSubmit(get$1(elSubmitter));
+            requestSubmit(get(elSubmitter));
           });
         }
       });
@@ -6047,34 +6159,34 @@ function Widget($$anchor, $$props) {
     }
   }
   function repositionFloating(viewportOffset = 20) {
-    if (!get$1(elRoot)) {
+    if (!get(elRoot)) {
       return;
     }
-    const floatingPlacement = get$1(config).floatingPlacement;
-    if (!get$1(elFloatingAnchor)) {
+    const floatingPlacement = get(config).floatingPlacement;
+    if (!get(elFloatingAnchor)) {
       set(
         elFloatingAnchor,
-        (get$1(config).floatingAnchor instanceof HTMLElement ? get$1(config).floatingAnchor : get$1(config).floatingAnchor ? document.querySelector(get$1(config).floatingAnchor) : get$1(elForm)?.querySelector(submitButtonSelector)) || get$1(elForm),
+        (get(config).floatingAnchor instanceof HTMLElement ? get(config).floatingAnchor : get(config).floatingAnchor ? document.querySelector(get(config).floatingAnchor) : get(elForm)?.querySelector(submitButtonSelector)) || get(elForm),
         true
       );
-      if (!get$1(elFloatingAnchor)) {
+      if (!get(elFloatingAnchor)) {
         log("unable to find floating anchor element");
         return;
       }
     }
-    const offsetY = parseInt(get$1(config).floatingOffset, 10) || 12;
-    const anchorBoundry = get$1(elFloatingAnchor).getBoundingClientRect();
-    const elBoundary = get$1(elRoot).getBoundingClientRect();
+    const offsetY = parseInt(get(config).floatingOffset, 10) || 12;
+    const anchorBoundry = get(elFloatingAnchor).getBoundingClientRect();
+    const elBoundary = get(elRoot).getBoundingClientRect();
     const docHeight = document.documentElement.clientHeight;
     const docWidth = document.documentElement.clientWidth;
     const showOnTop = !floatingPlacement || floatingPlacement === "auto" ? anchorBoundry.bottom + elBoundary.height + offsetY + viewportOffset > docHeight : floatingPlacement === "top";
     const left = Math.max(viewportOffset, Math.min(docWidth - viewportOffset - elBoundary.width, anchorBoundry.left + anchorBoundry.width / 2 - elBoundary.width / 2));
-    get$1(elRoot).style.setProperty("--altcha-floating-left", `${left}px`);
-    get$1(elRoot).style.setProperty("--altcha-floating-top", showOnTop ? `${anchorBoundry.top - (elBoundary.height + offsetY)}px` : `${anchorBoundry.bottom + offsetY}px`);
-    get$1(elRoot).setAttribute("data-floating-position", showOnTop ? "top" : "bottom");
-    if (get$1(elAnchorArrow)) {
-      const anchorArrowBoundry = get$1(elAnchorArrow).getBoundingClientRect();
-      get$1(elAnchorArrow).style.left = anchorBoundry.left - left + anchorBoundry.width / 2 - anchorArrowBoundry.width / 2 + "px";
+    get(elRoot).style.setProperty("--altcha-floating-left", `${left}px`);
+    get(elRoot).style.setProperty("--altcha-floating-top", showOnTop ? `${anchorBoundry.top - (elBoundary.height + offsetY)}px` : `${anchorBoundry.bottom + offsetY}px`);
+    get(elRoot).setAttribute("data-floating-position", showOnTop ? "top" : "bottom");
+    if (get(elAnchorArrow)) {
+      const anchorArrowBoundry = get(elAnchorArrow).getBoundingClientRect();
+      get(elAnchorArrow).style.left = anchorBoundry.left - left + anchorBoundry.width / 2 - anchorArrowBoundry.width / 2 + "px";
     }
   }
   async function requestServerVerification(verificationPayload, code) {
@@ -6082,18 +6194,18 @@ function Widget($$anchor, $$props) {
     if (hook !== void 0) {
       return hook;
     }
-    log("requesting server verification from", get$1(config).verifyUrl);
-    if (!get$1(config).verifyUrl) {
+    log("requesting server verification from", get(config).verifyUrl);
+    if (!get(config).verifyUrl) {
       throw new Error(`Parameter verifyUrl must be set for server verification.`);
     }
-    const resp = await get$1(config).fetch(getUrl(get$1(config).verifyUrl, get$1(baseUrl)), {
+    const resp = await get(config).fetch(getUrl(get(config).verifyUrl, get(baseUrl)), {
       body: JSON.stringify({
         code,
-        fields: get$1(config).serverVerificationFields ? getTextFields() : void 0,
+        fields: get(config).serverVerificationFields ? getTextFields() : void 0,
         payload: verificationPayload,
-        timeZone: get$1(config).serverVerificationTimeZone ? getTimeZone() : void 0
+        timeZone: get(config).serverVerificationTimeZone ? getTimeZone() : void 0
       }),
-      credentials: get$1(config).credentials || void 0,
+      credentials: get(config).credentials || void 0,
       headers: { "Content-Type": "application/json" },
       method: "POST"
     });
@@ -6105,15 +6217,32 @@ function Widget($$anchor, $$props) {
     return json;
   }
   function requestSubmit(submitter) {
-    if (get$1(elForm) && "requestSubmit" in get$1(elForm)) {
-      get$1(elForm).requestSubmit(submitter);
-    } else if (get$1(elForm)?.reportValidity()) {
+    if (get(elForm) && "requestSubmit" in get(elForm)) {
+      get(elForm).requestSubmit(submitter);
+    } else if (get(elForm)?.reportValidity()) {
       if (submitter) {
         submitter.click();
       } else {
-        get$1(elForm).submit();
+        get(elForm).submit();
       }
     }
+  }
+  function setCookie(value, options = {}) {
+    const {
+      domain,
+      name = get(config).name,
+      maxAge,
+      path,
+      sameSite,
+      secure
+    } = options;
+    let cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+    if (domain) cookie += `; Domain=${domain}`;
+    if (maxAge != null) cookie += `; Max-Age=${maxAge}`;
+    if (path) cookie += `; Path=${path}`;
+    if (sameSite) cookie += `; SameSite=${sameSite}`;
+    if (secure) cookie += `; Secure`;
+    document.cookie = cookie;
   }
   function setDisplay(value) {
     switch (value) {
@@ -6121,8 +6250,8 @@ function Widget($$anchor, $$props) {
       case "floating":
       case "overlay":
         hide();
-        if (!get$1(config).auto || get$1(config).auto === "off") {
-          get$1(userConfig).auto = "onsubmit";
+        if (!get(config).auto || get(config).auto === "off") {
+          get(userConfig).auto = "onsubmit";
         }
         break;
       case "standard":
@@ -6130,11 +6259,12 @@ function Widget($$anchor, $$props) {
     }
   }
   function setChallengeExpiration(expiresAt) {
-    if (get$1(expirationTimeout)) {
-      clearTimeout(get$1(expirationTimeout));
+    if (get(expirationTimeout)) {
+      clearTimeout(get(expirationTimeout));
     }
     const onExpired = () => {
-      if (get$1(currentState) !== State.UNVERIFIED) {
+      if (get(currentState) !== State.UNVERIFIED) {
+        set(checked, false);
         setState(State.EXPIRED);
       } else {
         reset$1();
@@ -6158,65 +6288,65 @@ function Widget($$anchor, $$props) {
     }
   }
   async function verifyServer(code) {
-    if (!get$1(payload)) {
+    if (!get(payload)) {
       setState(State.ERROR, "Cannot verify code challenge without PoW payload.");
       return;
     }
     setState(State.VERIFYING);
     let result = null;
-    if (get$1(config).verifyUrl) {
-      result = await requestServerVerification(get$1(payload), code);
-    } else if (get$1(config).verifyFunction) {
-      result = await get$1(config).verifyFunction(get$1(payload), code);
+    if (get(config).verifyUrl) {
+      result = await requestServerVerification(get(payload), code);
+    } else if (get(config).verifyFunction) {
+      result = await get(config).verifyFunction(get(payload), code);
     } else {
       setState(State.ERROR, "Parameter verifyUrl is required for code challenge verification.");
       return;
     }
     if (result?.payload) {
       set(payload, result.payload, true);
-      log("server payload", get$1(payload));
+      log("server payload", get(payload));
     }
     if (result?.verified === true) {
       log("verified");
       setState(State.VERIFIED);
-      dispatch("verified", { payload: get$1(payload) });
-      if (get$1(config).auto === "onsubmit") {
+      dispatch("verified", { payload: get(payload) });
+      if (get(config).auto === "onsubmit") {
         tick().then(() => {
-          requestSubmit(get$1(elSubmitter));
+          requestSubmit(get(elSubmitter));
         });
       }
     } else {
       setState(State.ERROR, result?.reason || "Verification failed.");
     }
-    if (!get$1(config).disableAutoFocus) {
+    if (!get(config).disableAutoFocus) {
       getCheckboxElement()?.focus();
     }
   }
   function configure(newConfig) {
-    Object.assign(get$1(userConfig), {
+    Object.assign(get(userConfig), {
       ...Object.fromEntries(Object.entries(newConfig).filter(([_, value]) => value !== void 0))
     });
   }
   function getConfiguration() {
-    return { ...get$1(config) };
+    return { ...get(config) };
   }
   function getState() {
-    return get$1(currentState);
+    return get(currentState);
   }
   function hide() {
     set(visible, false);
   }
   function log(...args) {
-    if (get$1(config).debug || args.some((a) => a instanceof Error)) {
-      console[args[0] instanceof Error ? "error" : "log"]("ALTCHA", `[name=${get$1(config).name}]`, ...args);
+    if (get(config).debug || args.some((a) => a instanceof Error)) {
+      console[args[0] instanceof Error ? "error" : "log"]("ALTCHA", `[name=${get(config).name}]`, ...args);
     }
   }
   function reset$1(newState = State.UNVERIFIED, err = null) {
     set(checked, false);
     set(error, err, true);
     set(payload, null);
-    if (get$1(expirationTimeout)) {
-      clearTimeout(get$1(expirationTimeout));
+    if (get(expirationTimeout)) {
+      clearTimeout(get(expirationTimeout));
       set(expirationTimeout, null);
     }
     setState(newState);
@@ -6224,7 +6354,7 @@ function Widget($$anchor, $$props) {
   function setState(newState, err = null) {
     set(currentState, newState, true);
     set(error, err, true);
-    dispatch("statechange", { payload: get$1(payload), state: get$1(currentState) });
+    dispatch("statechange", { payload: get(payload), state: get(currentState) });
   }
   function show() {
     set(visible, true);
@@ -6233,16 +6363,16 @@ function Widget($$anchor, $$props) {
     });
   }
   function updateUI() {
-    switch (get$1(config).display) {
+    switch (get(config).display) {
       case "floating":
         return repositionFloating();
     }
   }
   async function verify(options = {}) {
     const {
-      concurrency = Math.max(1, get$1(config).workers),
+      concurrency = Math.max(1, get(config).workers),
       controller = new AbortController(),
-      minDuration = get$1(config).minDuration
+      minDuration = get(config).minDuration
     } = options;
     const start = performance.now();
     let challenge = null;
@@ -6258,23 +6388,27 @@ function Widget($$anchor, $$props) {
       if (!isSecureContext) {
         throw new Error("Secure context (HTTPS) required.");
       }
-      if (get$1(config).mockError) {
+      if (get(config).mockError) {
         throw new Error("Mock error.");
       }
-      if (get$1(config).test) {
+      if (get(config).test) {
         log("running test mode with null challenge");
         await delay(Math.max(0, minDuration - (performance.now() - start)));
         set(payload, btoa(JSON.stringify({ challenge: null, solution: null, test: true })), true);
         log("verified");
         setState(State.VERIFIED);
-        dispatch("vefified", { payload: get$1(payload) });
-        return { payload: get$1(payload) };
+        dispatch("vefified", { payload: get(payload) });
+        return { payload: get(payload) };
       }
       challenge = await fetchChallenge();
       if (!challenge) {
         throw new Error("Failed to fetch challenge.");
       }
       log("challenge", challenge);
+      if ("configuration" in challenge) {
+        log("re-configuring from challenge", challenge.configuration);
+        configure(challenge.configuration);
+      }
       if (challenge.parameters.expiresAt) {
         setChallengeExpiration(challenge.parameters.expiresAt);
       }
@@ -6292,14 +6426,14 @@ function Widget($$anchor, $$props) {
         onOutOfMemory: (c) => {
           log("out of memory error received");
           dispatch("outofmemory");
-          if (get$1(config).retryOnOutOfMemoryError && c > 1) {
+          if (get(config).retryOnOutOfMemoryError && c > 1) {
             const retryConcurrency = Math.floor(c / 2);
             log(`retrying with ${retryConcurrency} workers...`);
             return retryConcurrency;
           }
         }
       });
-      if (get$1(currentController)?.signal.aborted) {
+      if (get(currentController)?.signal.aborted) {
         reset$1();
         return null;
       }
@@ -6308,7 +6442,7 @@ function Widget($$anchor, $$props) {
       }
       log("solution", solution);
       await delay(Math.max(0, minDuration - (performance.now() - start)));
-      set(codeChallenge, challenge.codeChallenge || get$1(config).codeChallenge || null, true);
+      set(codeChallenge, challenge.codeChallenge || get(config).codeChallenge || null, true);
       if (isChallengeV1) {
         set(payload, btoa(JSON.stringify(createPayloadV1(challenge, solution))), true);
       } else {
@@ -6321,16 +6455,16 @@ function Widget($$anchor, $$props) {
           true
         );
       }
-      if (get$1(codeChallenge)) {
+      if (get(codeChallenge)) {
         log("requesting code verification");
         setState(State.CODE);
-        dispatch("codechallenge", { codeChallenge: get$1(codeChallenge) });
-      } else if (get$1(config).verifyUrl) {
+        dispatch("codechallenge", { codeChallenge: get(codeChallenge) });
+      } else if (get(config).verifyUrl) {
         await verifyServer();
       } else {
         log("verified");
         setState(State.VERIFIED);
-        dispatch("vefified", { payload: get$1(payload) });
+        dispatch("vefified", { payload: get(payload) });
       }
     } catch (err) {
       log("verification failed", err);
@@ -6339,7 +6473,7 @@ function Widget($$anchor, $$props) {
     } finally {
       set(currentController, null);
     }
-    return { challenge, payload: get$1(payload), solution };
+    return { challenge, payload: get(payload), solution };
   }
   var $$exports = {
     configure,
@@ -6365,7 +6499,7 @@ function Widget($$anchor, $$props) {
       append($$anchor2, div);
     };
     if_block(node, ($$render) => {
-      if (get$1(config).display === "overlay" && get$1(visible)) $$render(consequent);
+      if (get(config).display === "overlay" && get(visible)) $$render(consequent);
     });
   }
   var div_1 = sibling(node, 2);
@@ -6378,133 +6512,145 @@ function Widget($$anchor, $$props) {
       {
         var consequent_1 = ($$anchor3) => {
           var div_3 = root_3();
-          var node_3 = child(div_3);
-          html(node_3, () => document.querySelector(get$1(config).overlayContent)?.innerHTML);
+          html(div_3, () => document.querySelector(get(config).overlayContent)?.innerHTML, true);
           reset(div_3);
           append($$anchor3, div_3);
         };
         if_block(node_2, ($$render) => {
-          if (get$1(config).overlayContent) $$render(consequent_1);
+          if (get(config).overlayContent) $$render(consequent_1);
         });
       }
       delegated("click", div_2, onCloseClick);
       append($$anchor2, fragment_1);
     };
     if_block(node_1, ($$render) => {
-      if (get$1(config).display === "overlay" && get$1(visible)) $$render(consequent_2);
+      if (get(config).display === "overlay" && get(visible)) $$render(consequent_2);
     });
   }
   var div_4 = sibling(node_1, 2);
   var div_5 = child(div_4);
   var div_6 = child(div_5);
-  var node_4 = child(div_6);
+  var node_3 = child(div_6);
   {
-    let $0 = /* @__PURE__ */ user_derived(() => get$1(config).display === "standard" && get$1(config).auto !== "onsubmit" || get$1(currentState) === State.VERIFYING);
-    component(node_4, () => get$1(CheckboxComponent), ($$anchor2, CheckboxComponent_1) => {
+    let $0 = /* @__PURE__ */ user_derived(() => get(config).display === "standard" && get(config).auto !== "onsubmit" || get(currentState) === State.VERIFYING);
+    component(node_3, () => get(CheckboxComponent), ($$anchor2, CheckboxComponent_1) => {
       CheckboxComponent_1($$anchor2, {
         get id() {
-          return get$1(checkboxId);
+          return get(checkboxId);
         },
         name: "",
         get required() {
-          return get$1($0);
+          return get($0);
         },
         get loading() {
-          return get$1(loading);
+          return get(loading);
         },
         get checked() {
-          return get$1(checked);
+          return get(checked);
         },
         onchange: onCheckboxChange,
         oninvalid: onCheckboxInvalid
       });
     });
   }
-  var label = sibling(node_4, 2);
-  var node_5 = child(label);
+  var label = sibling(node_3, 2);
+  var node_4 = child(label);
   {
     var consequent_3 = ($$anchor2) => {
       var text$1 = text();
-      template_effect(() => set_text(text$1, get$1(strings).verificationRequired));
+      template_effect(() => set_text(text$1, get(strings).verificationRequired));
       append($$anchor2, text$1);
     };
     var consequent_4 = ($$anchor2) => {
       var text_1 = text();
-      template_effect(() => set_text(text_1, get$1(strings).verifying));
+      template_effect(() => set_text(text_1, get(strings).verifying));
       append($$anchor2, text_1);
     };
     var consequent_5 = ($$anchor2) => {
       var text_2 = text();
-      template_effect(() => set_text(text_2, get$1(strings).verified));
+      template_effect(() => set_text(text_2, get(strings).verified));
       append($$anchor2, text_2);
     };
     var alternate = ($$anchor2) => {
       var text_3 = text();
-      template_effect(() => set_text(text_3, get$1(strings).label));
+      template_effect(() => set_text(text_3, get(strings).label));
       append($$anchor2, text_3);
     };
-    if_block(node_5, ($$render) => {
-      if (get$1(currentState) === State.CODE && get$1(codeChallenge)) $$render(consequent_3);
-      else if (get$1(currentState) === State.VERIFYING) $$render(consequent_4, 1);
-      else if (get$1(currentState) === State.VERIFIED) $$render(consequent_5, 2);
-      else $$render(alternate, false);
+    if_block(node_4, ($$render) => {
+      if (get(currentState) === State.CODE && get(codeChallenge)) $$render(consequent_3);
+      else if (get(currentState) === State.VERIFYING) $$render(consequent_4, 1);
+      else if (get(currentState) === State.VERIFIED) $$render(consequent_5, 2);
+      else $$render(alternate, -1);
     });
   }
   reset(label);
   reset(div_6);
-  var node_6 = sibling(div_6, 2);
+  var node_5 = sibling(div_6, 2);
   {
     var consequent_6 = ($$anchor2) => {
       Logo($$anchor2, {
         get strings() {
-          return get$1(strings);
+          return get(strings);
         }
       });
     };
-    if_block(node_6, ($$render) => {
-      if (get$1(showLogo)) $$render(consequent_6);
+    if_block(node_5, ($$render) => {
+      if (get(showLogo)) $$render(consequent_6);
     });
   }
   reset(div_5);
-  var node_7 = sibling(div_5, 2);
+  var node_6 = sibling(div_5, 2);
   {
     var consequent_7 = ($$anchor2) => {
       {
-        let $0 = /* @__PURE__ */ user_derived(() => get$1(config).display === "bar" && get$1(showLogo));
+        let $0 = /* @__PURE__ */ user_derived(() => get(config).display === "bar" && get(showLogo));
         Footer($$anchor2, {
           get logo() {
-            return get$1($0);
+            return get($0);
           },
           get strings() {
-            return get$1(strings);
+            return get(strings);
           }
         });
       }
     };
+    if_block(node_6, ($$render) => {
+      if (get(showFooter)) $$render(consequent_7);
+    });
+  }
+  var node_7 = sibling(node_6, 2);
+  {
+    var consequent_8 = ($$anchor2) => {
+      var div_7 = root_10();
+      bind_this(div_7, ($$value) => set(elAnchorArrow, $$value), () => get(elAnchorArrow));
+      append($$anchor2, div_7);
+    };
     if_block(node_7, ($$render) => {
-      if (get$1(showFooter)) $$render(consequent_7);
+      if (get(config).display === "floating") $$render(consequent_8);
     });
   }
   var node_8 = sibling(node_7, 2);
   {
-    var consequent_8 = ($$anchor2) => {
-      var div_7 = root_10();
-      bind_this(div_7, ($$value) => set(elAnchorArrow, $$value), () => get$1(elAnchorArrow));
-      append($$anchor2, div_7);
+    var consequent_9 = ($$anchor2) => {
+      var input_1 = root_11();
+      remove_input_defaults(input_1);
+      template_effect(() => {
+        set_attribute(input_1, "name", get(config).name);
+        set_value(input_1, get(payload));
+      });
+      append($$anchor2, input_1);
     };
     if_block(node_8, ($$render) => {
-      if (get$1(config).display === "floating") $$render(consequent_8);
+      if (!get(config).setCookie) $$render(consequent_9);
     });
   }
-  var input_1 = sibling(node_8, 2);
-  remove_input_defaults(input_1);
   reset(div_4);
   var node_9 = sibling(div_4, 2);
   {
-    var consequent_11 = ($$anchor2) => {
+    var consequent_12 = ($$anchor2) => {
       Popover($$anchor2, {
         get anchor() {
-          return get$1(elRoot);
+          return get(elRoot);
         },
         onClickOutside: () => {
           if (isSecureContext) {
@@ -6514,37 +6660,37 @@ function Widget($$anchor, $$props) {
         role: "alert",
         variant: "error",
         get dir() {
-          return get$1(dir);
+          return get(dir);
         },
         children: ($$anchor3, $$slotProps) => {
           var fragment_9 = comment();
           var node_10 = first_child(fragment_9);
           {
-            var consequent_9 = ($$anchor4) => {
-              var div_8 = root_13();
+            var consequent_10 = ($$anchor4) => {
+              var div_8 = root_14();
               append($$anchor4, div_8);
             };
-            var consequent_10 = ($$anchor4) => {
-              var div_9 = root_14();
+            var consequent_11 = ($$anchor4) => {
+              var div_9 = root_15();
               var text_4 = child(div_9, true);
               reset(div_9);
-              template_effect(() => set_text(text_4, get$1(strings).expired));
+              template_effect(() => set_text(text_4, get(strings).expired));
               append($$anchor4, div_9);
             };
             var alternate_1 = ($$anchor4) => {
-              var div_10 = root_15();
+              var div_10 = root_16();
               var text_5 = child(div_10, true);
               reset(div_10);
               template_effect(() => {
-                set_attribute(div_10, "title", get$1(error));
-                set_text(text_5, get$1(strings).error);
+                set_attribute(div_10, "title", get(error));
+                set_text(text_5, get(strings).error);
               });
               append($$anchor4, div_10);
             };
             if_block(node_10, ($$render) => {
-              if (!get$1(error) && !isSecureContext) $$render(consequent_9);
-              else if (!get$1(error) && get$1(currentState) === State.EXPIRED) $$render(consequent_10, 1);
-              else $$render(alternate_1, false);
+              if (!get(error) && !isSecureContext) $$render(consequent_10);
+              else if (!get(error) && get(currentState) === State.EXPIRED) $$render(consequent_11, 1);
+              else $$render(alternate_1, -1);
             });
           }
           append($$anchor3, fragment_9);
@@ -6552,69 +6698,69 @@ function Widget($$anchor, $$props) {
         $$slots: { default: true }
       });
     };
-    var consequent_13 = ($$anchor2) => {
+    var consequent_14 = ($$anchor2) => {
       var fragment_10 = comment();
       var node_11 = first_child(fragment_10);
-      key(node_11, () => get$1(codeChallenge), ($$anchor3) => {
+      key(node_11, () => get(codeChallenge), ($$anchor3) => {
         {
-          let $0 = /* @__PURE__ */ user_derived(() => get$1(config).codeChallengeDisplay !== "standard");
+          let $0 = /* @__PURE__ */ user_derived(() => get(config).codeChallengeDisplay !== "standard");
           Popover($$anchor3, {
             get anchor() {
-              return get$1(elRoot);
+              return get(elRoot);
             },
             get backdrop() {
-              return get$1($0);
+              return get($0);
             },
             get display() {
-              return get$1(config).codeChallengeDisplay;
+              return get(config).codeChallengeDisplay;
             },
             onClose: () => {
               reset$1();
             },
             role: "dialog",
             get "aria-label"() {
-              return get$1(strings).verificationRequired;
+              return get(strings).verificationRequired;
             },
             get dir() {
-              return get$1(dir);
+              return get(dir);
             },
             children: ($$anchor4, $$slotProps) => {
-              var fragment_12 = root_18();
+              var fragment_12 = root_19();
               var node_12 = first_child(fragment_12);
               Code(node_12, {
                 get audioUrl() {
-                  return get$1(codeChallengeAudioUrl);
+                  return get(codeChallengeAudioUrl);
                 },
                 get imageUrl() {
-                  return get$1(codeChallengeImageUrl);
+                  return get(codeChallengeImageUrl);
                 },
                 onCancel: () => reset$1(),
                 onReload: () => verify(),
                 onSubmit: (code) => verifyServer(code),
                 get codeChallenge() {
-                  return get$1(codeChallenge);
+                  return get(codeChallenge);
                 },
                 get config() {
-                  return get$1(config);
+                  return get(config);
                 },
                 get strings() {
-                  return get$1(strings);
+                  return get(strings);
                 }
               });
               var node_13 = sibling(node_12, 2);
               {
-                var consequent_12 = ($$anchor5) => {
+                var consequent_13 = ($$anchor5) => {
                   Footer($$anchor5, {
                     get logo() {
-                      return get$1(showLogo);
+                      return get(showLogo);
                     },
                     get strings() {
-                      return get$1(strings);
+                      return get(strings);
                     }
                   });
                 };
                 if_block(node_13, ($$render) => {
-                  if (get$1(showFooter) && get$1(config).codeChallengeDisplay !== "standard") $$render(consequent_12);
+                  if (get(showFooter) && get(config).codeChallengeDisplay !== "standard") $$render(consequent_13);
                 });
               }
               append($$anchor4, fragment_12);
@@ -6626,25 +6772,23 @@ function Widget($$anchor, $$props) {
       append($$anchor2, fragment_10);
     };
     if_block(node_9, ($$render) => {
-      if (get$1(error) || get$1(currentState) === State.EXPIRED || !isSecureContext) $$render(consequent_11);
-      else if (get$1(codeChallenge) && get$1(currentState) === State.CODE) $$render(consequent_13, 1);
+      if (get(error) || get(currentState) === State.EXPIRED || !isSecureContext) $$render(consequent_12);
+      else if (get(codeChallenge) && get(currentState) === State.CODE) $$render(consequent_14, 1);
     });
   }
   reset(div_1);
-  bind_this(div_1, ($$value) => set(elRoot, $$value), () => get$1(elRoot));
+  bind_this(div_1, ($$value) => set(elRoot, $$value), () => get(elRoot));
   template_effect(
     ($0) => {
-      set_attribute(div_1, "data-state", get$1(currentState));
-      set_attribute(div_1, "data-display", get$1(config).display || void 0);
+      set_attribute(div_1, "data-state", get(currentState));
+      set_attribute(div_1, "data-display", get(config).display || void 0);
       set_attribute(div_1, "data-placement", $0);
-      set_attribute(div_1, "data-visible", get$1(visible) || void 0);
-      set_attribute(div_1, "dir", get$1(dir));
-      set_attribute(label, "for", get$1(checkboxId));
-      set_attribute(input_1, "name", get$1(config).name);
-      set_value(input_1, get$1(payload));
+      set_attribute(div_1, "data-visible", get(visible) || void 0);
+      set_attribute(div_1, "dir", get(dir));
+      set_attribute(label, "for", get(checkboxId));
       div_1.dir = div_1.dir;
     },
-    [() => getPlacement(get$1(config).display)]
+    [() => getPlacement(get(config).display)]
   );
   append($$anchor, fragment);
   var $$pop = pop($$exports);

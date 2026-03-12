@@ -1,12 +1,7 @@
 import { BasePlugin } from './base.plugin';
 import { deriveKey } from '../algorithms/pbkdf2';
-import {
-	bufferToHex,
-	createChallenge,
-	hexToBuffer,
-	solveChallenge,
-	solveChallengeWorkers
-} from '../pow';
+import { createChallenge, solveChallenge, solveChallengeWorkers } from '../pow';
+import { bufferToHex, hexToBuffer } from '../helpers';
 import {
 	State,
 	type Challenge,

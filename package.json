@@ -1,38 +1,38 @@
 {
 	"name": "altcha",
 	"description": "Privacy-first CAPTCHA widget, compliant with global regulations (GDPR/HIPAA/CCPA/LGDP/DPDPA/PIPL) and WCAG accessible. No tracking, self-verifying.",
-	"version": "3.0.0-beta.1",
-  "license": "MIT",
-  "author": {
-    "name": "Daniel Regeci",
-    "url": "https://altcha.org"
-  },
-  "homepage": "https://altcha.org",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/altcha-org/altcha.git"
-  },
-  "keywords": [
-    "altcha",
-    "altcaptcha",
-    "captcha",
-    "captcha alternative",
-    "recaptcha",
-    "hcaptcha",
-    "antispam",
-    "anti-abuse",
-    "anti-bot",
-    "anti-ddos",
-    "anti-scraping",
-    "ddos",
-    "security",
-    "pow",
-    "proof-of-work",
-    "spam",
-    "spam filter",
-    "protection",
-    "svelte"
-  ],
+	"version": "3.0.0-beta.2",
+	"license": "MIT",
+	"author": {
+		"name": "Daniel Regeci",
+		"url": "https://altcha.org"
+	},
+	"homepage": "https://altcha.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/altcha-org/altcha.git"
+	},
+	"keywords": [
+		"altcha",
+		"altcaptcha",
+		"captcha",
+		"captcha alternative",
+		"recaptcha",
+		"hcaptcha",
+		"antispam",
+		"anti-abuse",
+		"anti-bot",
+		"anti-ddos",
+		"anti-scraping",
+		"ddos",
+		"security",
+		"pow",
+		"proof-of-work",
+		"spam",
+		"spam filter",
+		"protection",
+		"svelte"
+	],
 	"type": "module",
 	"files": [
 		"dist"
@@ -111,7 +111,7 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
-		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-terser": "^1.0.0",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.18",
@@ -129,13 +129,13 @@
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"rimraf": "^6.1.2",
 		"sass-embedded": "^1.97.1",
-		"svelte": "^5.53.2",
+		"svelte": "^5.53.10",
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.18",
 		"terser": "^5.44.1",
 		"testcafe": "^3.7.4",
 		"typescript": "~5.9.3",
-		"vite": "^7.2.4",
+		"vite": "^7.3.1",
 		"vite-plugin-markdown": "^2.2.0",
 		"vitest": "^4.0.18"
 	},
@@ -143,6 +143,6 @@
 		"hash-wasm": "^4.12.0"
 	},
 	"overrides": {
-		"minimatch": "10.2.2"
+		"underscore": "^1.13.8"
 	}
 }

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { deriveKey } from '../../src/algorithms/pbkdf2';
-import { bufferToHex, hexToBuffer, PasswordBuffer } from '../../src/pow';
+import { PasswordBuffer } from '../../src/pow';
+import { bufferToHex, hexToBuffer } from '../../src/helpers';
 import { ChallengeParameters } from '../../src/types';
 
 describe('PBKDF2', () => {

@@ -146,6 +146,11 @@ export interface Configuration {
 	serverVerificationTimeZone: boolean;
 
 	/**
+	 * When set, the widget will set a configured cookie for the payload instead of sending it as form field.
+	 */
+	setCookie: SetCookieOptions | null;
+
+	/**
 	 * Mocks a successful verification. Useful for testing environments without network access.
 	 */
 	test: boolean;
@@ -219,7 +224,7 @@ export interface CreateChallengeOptions {
 	counter?: number;
 	counterMode?: 'uint32' | 'string';
 	cost: number;
-	data?: Record<string, any>;
+	data?: Record<string, string | number | boolean | null>;
 	deriveKey: DeriveKeyFunction;
 	expiresAt?: number | Date;
 	hmacAlgorithm?: HmacAlgorithm;
@@ -306,6 +311,41 @@ export interface PayloadV1 {
 	took: number;
 }
 
+export interface SetCookieOptions {
+	domain?: string;
+	name?: string;
+	maxAge?: number;
+	path?: string;
+	sameSite?: string;
+	secure?: boolean;
+}
+
+export type ServerClassification = 'BAD' | 'GOOD' | 'NEUTRAL';
+
+export interface ServerSignaturePayload {
+	algorithm: string;
+	apiKey?: string;
+	id?: string;
+	signature: string;
+	verificationData: string;
+	verified: boolean;
+}
+
+export interface ServerSignatureVerificationData {
+	[key: string]: string | unknown;
+	classification?: ServerClassification;
+	email?: string;
+	expire?: number;
+	fields?: string[];
+	fieldsHash?: string;
+	id?: string;
+	ipAddress?: string;
+	reasons?: string[];
+	score?: number;
+	time?: number;
+	verified?: boolean;
+}
+
 export interface ServerVerificationResult {
 	algorithm?: string;
 	apiKey?: string;
@@ -379,6 +419,10 @@ export interface VerifyResult {
 	solution?: Solution;
 }
 
+export interface VerifyServerSignatureResult extends VerifySolutionResult {
+	verificationData?: ServerSignatureVerificationData | null;
+}
+
 export interface VerifySolutionOptions {
 	challenge: Challenge;
 	counterMode?: 'uint32' | 'string';
@@ -387,6 +431,14 @@ export interface VerifySolutionOptions {
 	hmacKeySignatureSecret?: string;
 	hmacSignatureSecret: string;
 	solution: Solution;
+}
+
+export interface VerifySolutionResult {
+	expired: boolean;
+	invalidSignature: boolean | null;
+	invalidSolution: boolean | null;
+	time: number;
+	verified: boolean;
 }
 
 export interface WidgetAttributes extends Partial<

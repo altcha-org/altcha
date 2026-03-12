@@ -104,6 +104,9 @@
 			} else if (!elAudio.paused) {
 				elAudio.pause();
 			} else {
+				if (audioUrl && elAudio.src !== audioUrl) {
+					elAudio.src = audioUrl;
+				}
 				elAudio.currentTime = 0;
 				elAudio.play();
 			}
@@ -111,7 +114,10 @@
 			playAudio = true;
 			// required for safari
 			requestAnimationFrame(() => {
-				elAudio?.play();
+				if (elAudio && audioUrl) {
+					elAudio.src = audioUrl;
+					elAudio.play();
+				}
 			});
 		}
 	}
@@ -234,18 +240,17 @@
 		</div>
 	</form>
 
-	{#if playAudio && audioUrl}
+	{#if playAudio}
 		<audio
 			bind:this={elAudio}
 			hidden
 			autoplay
+			onerror={onAudioError}
 			onloadstart={onAudioLoadStart}
 			oncanplay={onAudioCanPlay}
 			onpause={onAudioPause}
 			onplaying={onAudioPlaying}
 			onended={onAudioEnded}
-		>
-			<source src={audioUrl} onerror={onAudioError} />
-		</audio>
+		></audio>
 	{/if}
 </div>

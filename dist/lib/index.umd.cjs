@@ -707,11 +707,11 @@
     };
     return obj;
   }
-  function createHMAC(hash, key) {
-    if (!hash || !hash.then) {
+  function createHMAC(hash2, key) {
+    if (!hash2 || !hash2.then) {
       throw new Error('Invalid hash function is provided! Usage: createHMAC(createMD5(), "key").');
     }
-    return hash.then((hasher) => calculateHmac(hasher, key));
+    return hash2.then((hasher) => calculateHmac(hasher, key));
   }
   function calculatePBKDF2(digest, salt, iterations, hashLength, outputType) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -879,9 +879,19 @@
     __proto__: null,
     deriveKey: deriveKey$3
   }, Symbol.toStringTag, { value: "Module" }));
+  function getDigest(algorithm) {
+    switch (algorithm) {
+      case "PBKDF2/SHA-512":
+        return "SHA-512";
+      case "PBKDF2/SHA-384":
+        return "SHA-384";
+      case "PBKDF2/SHA-256":
+      default:
+        return "SHA-256";
+    }
+  }
   async function deriveKey$2(parameters, salt, password) {
-    const { cost, keyLength = 32 } = parameters;
-    const hash = parameters.algorithm.startsWith("PBKDF2/") ? parameters.algorithm.slice(7) : "SHA-256";
+    const { algorithm, cost, keyLength = 32 } = parameters;
     const passwordKey = await crypto.subtle.importKey(
       "raw",
       password,
@@ -894,7 +904,7 @@
         name: "PBKDF2",
         salt,
         iterations: cost,
-        hash
+        hash: getDigest(algorithm)
       },
       passwordKey,
       { name: "AES-GCM", length: keyLength * 8 },
@@ -931,6 +941,120 @@
     __proto__: null,
     deriveKey: deriveKey$1
   }, Symbol.toStringTag, { value: "Module" }));
+  function bufferStartsWith(buffer, prefix) {
+    if (prefix.length > buffer.length) {
+      return false;
+    }
+    for (let i = 0; i < prefix.length; i++) {
+      if (buffer[i] !== prefix[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function bufferToHex(buffer) {
+    return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  function canonicalJSON(obj) {
+    return JSON.stringify(sortKeys(obj));
+  }
+  function concatBuffers(a, b) {
+    const out = new Uint8Array(a.length + b.length);
+    out.set(a, 0);
+    out.set(b, a.length);
+    return out;
+  }
+  function hexToBuffer(hex) {
+    if (hex.length % 2 !== 0) {
+      throw new Error(`Hex string must have an even length. Got: ${hex}`);
+    }
+    const buffer = new ArrayBuffer(hex.length / 2);
+    const view = new DataView(buffer);
+    for (let i = 0; i < hex.length; i += 2) {
+      const byteString = hex.substring(i, i + 2);
+      const byteValue = parseInt(byteString, 16);
+      view.setUint8(i / 2, byteValue);
+    }
+    return new Uint8Array(buffer);
+  }
+  function constantTimeEqual(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+  }
+  async function delay(ms) {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  async function hash(algorithm, data) {
+    return new Uint8Array(
+      await crypto.subtle.digest(
+        algorithm.toUpperCase(),
+        typeof data === "string" ? new TextEncoder().encode(data) : new Uint8Array(data)
+      )
+    );
+  }
+  async function hmac(algorithm, data, keyStr) {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(keyStr),
+      {
+        name: "HMAC",
+        hash: { name: algorithm }
+      },
+      false,
+      ["sign", "verify"]
+    );
+    const signature = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      typeof data === "string" ? new TextEncoder().encode(data) : data
+    );
+    return new Uint8Array(signature);
+  }
+  function sortKeys(obj) {
+    if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
+      return obj;
+    }
+    return Object.keys(obj).sort().reduce((acc, key) => {
+      const value = obj[key];
+      if (value !== void 0) {
+        acc[key] = sortKeys(value);
+      }
+      return acc;
+    }, {});
+  }
+  function timeDuration(start) {
+    return Math.floor((performance.now() - start) * 10) / 10;
+  }
+  async function deriveKey(parameters, salt, password) {
+    const { algorithm, keyLength = 32 } = parameters;
+    const iterations = Math.max(1, parameters.cost);
+    let data = void 0;
+    let derivedKey = void 0;
+    for (let i = 0; i < iterations; i++) {
+      if (i === 0) {
+        data = concatBuffers(salt, password);
+      } else {
+        data = derivedKey;
+      }
+      derivedKey = new Uint8Array(
+        (await crypto.subtle.digest(algorithm, data)).slice(0, keyLength)
+      );
+    }
+    return {
+      parameters: {},
+      derivedKey
+    };
+  }
+  const sha = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    deriveKey
+  }, Symbol.toStringTag, { value: "Module" }));
   var HmacAlgorithm = /* @__PURE__ */ ((HmacAlgorithm2) => {
     HmacAlgorithm2["SHA_256"] = "SHA-256";
     HmacAlgorithm2["SHA_384"] = "SHA-384";
@@ -961,9 +1085,6 @@
       this.dataView.setUint32(this.nonce.length, n, false);
       return this.buffer;
     }
-  }
-  function bufferToHex(buffer) {
-    return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
   }
   async function createChallenge(options) {
     const {
@@ -1021,28 +1142,6 @@
       hmacKeySignatureSecret
     );
   }
-  function canonicalJSON(obj) {
-    return JSON.stringify(sortKeys(obj));
-  }
-  function concatBuffers(a, b) {
-    const out = new Uint8Array(a.length + b.length);
-    out.set(a, 0);
-    out.set(b, a.length);
-    return out;
-  }
-  function hexToBuffer(hex) {
-    if (hex.length % 2 !== 0) {
-      throw new Error(`Hex string must have an even length. Got: ${hex}`);
-    }
-    const buffer = new ArrayBuffer(hex.length / 2);
-    const view = new DataView(buffer);
-    for (let i = 0; i < hex.length; i += 2) {
-      const byteString = hex.substring(i, i + 2);
-      const byteValue = parseInt(byteString, 16);
-      view.setUint8(i / 2, byteValue);
-    }
-    return new Uint8Array(buffer);
-  }
   async function solveChallenge(options) {
     const {
       challenge,
@@ -1053,7 +1152,7 @@
       deriveKey: deriveKey2,
       timeout = 9e4
     } = options;
-    let { nonce, keyPrefix, salt } = challenge.parameters;
+    const { nonce, keyPrefix, salt } = challenge.parameters;
     const nonceBuf = hexToBuffer(nonce);
     const saltBuf = hexToBuffer(salt);
     const keyPrefixBuf = keyPrefix.length % 2 === 0 ? hexToBuffer(keyPrefix) : null;
@@ -1088,7 +1187,7 @@
     };
   }
   async function solveChallengeWorkers(options) {
-    let {
+    const {
       challenge,
       concurrency = navigator.hardwareConcurrency,
       controller = new AbortController(),
@@ -1096,14 +1195,14 @@
       onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
       counterMode
     } = options;
-    concurrency = Math.min(16, Math.max(1, concurrency));
+    const workersConcurrency = Math.min(16, Math.max(1, concurrency));
     const workersInstances = [];
     const terminate = () => {
       for (const worker of workersInstances) {
         worker.terminate();
       }
     };
-    for (let i = 0; i < concurrency; i++) {
+    for (let i = 0; i < workersConcurrency; i++) {
       workersInstances.push(await createWorker(challenge.parameters.algorithm));
     }
     let solution = null;
@@ -1134,18 +1233,18 @@
               challenge,
               counterMode,
               counterStart: i,
-              counterStep: concurrency,
+              counterStep: workersConcurrency,
               type: "work"
             });
           });
         })
       );
     } catch (err) {
-      const isOOM = !!err?.message?.includes("Out of memory");
+      const isOOM = err instanceof Error && !!err?.message?.includes("Out of memory");
       if (isOOM) {
-        if (!!onOutOfMemory) {
+        if (onOutOfMemory) {
           terminate();
-          const retryConcurrency = onOutOfMemory(concurrency);
+          const retryConcurrency = onOutOfMemory(workersConcurrency);
           if (retryConcurrency) {
             return solveChallengeWorkers({
               ...options,
@@ -1168,12 +1267,14 @@
   }
   async function signChallenge(algorithm, parameters, derivedKey, hmacSignatureSecret, hmacKeySignatureSecret) {
     if (derivedKey && hmacKeySignatureSecret) {
-      parameters.keySignature = await hmac(algorithm, derivedKey, hmacKeySignatureSecret);
+      parameters.keySignature = bufferToHex(
+        await hmac(algorithm, derivedKey, hmacKeySignatureSecret)
+      );
     }
     parameters = sortKeys(parameters);
     return {
       parameters,
-      signature: await hmac(algorithm, JSON.stringify(parameters), hmacSignatureSecret)
+      signature: bufferToHex(await hmac(algorithm, JSON.stringify(parameters), hmacSignatureSecret))
     };
   }
   async function verifySolution(options) {
@@ -1190,8 +1291,8 @@
     if (challenge.parameters.expiresAt && challenge.parameters.expiresAt < Date.now() / 1e3) {
       return {
         expired: true,
-        signatureVerified: null,
-        solutionVerified: null,
+        invalidSignature: null,
+        invalidSolution: null,
         time: timeDuration(start),
         verified: false
       };
@@ -1199,32 +1300,28 @@
     if (!challenge.signature) {
       return {
         expired: false,
-        signatureVerified: false,
-        solutionVerified: null,
+        invalidSignature: true,
+        invalidSolution: null,
         time: timeDuration(start),
         verified: false
       };
     }
-    const signatureCheck = await hmac(
-      hmacAlgorithm,
-      canonicalJSON(challenge.parameters),
-      hmacSignatureSecret
+    const signatureCheck = bufferToHex(
+      await hmac(hmacAlgorithm, canonicalJSON(challenge.parameters), hmacSignatureSecret)
     );
     const signatureVerified = constantTimeEqual(challenge.signature, signatureCheck);
     if (!signatureVerified) {
       return {
         expired: false,
-        signatureVerified: false,
-        solutionVerified: null,
+        invalidSignature: true,
+        invalidSolution: null,
         time: timeDuration(start),
         verified: false
       };
     }
     if (challenge.parameters.keySignature && hmacKeySignatureSecret) {
-      const derivedKeySignatureCheck = await hmac(
-        hmacAlgorithm,
-        hexToBuffer(solution.derivedKey),
-        hmacKeySignatureSecret
+      const derivedKeySignatureCheck = bufferToHex(
+        await hmac(hmacAlgorithm, hexToBuffer(solution.derivedKey), hmacKeySignatureSecret)
       );
       const derivedKeySignatureValid = constantTimeEqual(
         challenge.parameters.keySignature,
@@ -1232,8 +1329,8 @@
       );
       return {
         expired: false,
-        signatureVerified: true,
-        solutionVerified: derivedKeySignatureValid,
+        invalidSignature: false,
+        invalidSolution: !derivedKeySignatureValid,
         time: timeDuration(start),
         verified: derivedKeySignatureValid
       };
@@ -1246,103 +1343,78 @@
       new PasswordBuffer(nonceBuf, counterMode).setCounter(solution.counter)
     );
     const derivedKeyHex = bufferToHex(derivedKey);
-    const solutionVerified = constantTimeEqual(derivedKeyHex, solution.derivedKey);
+    const invalidSolution = !constantTimeEqual(derivedKeyHex, solution.derivedKey);
     return {
       expired: false,
-      signatureVerified: true,
-      solutionVerified,
+      invalidSignature: false,
+      invalidSolution,
       time: timeDuration(start),
-      verified: solutionVerified && signatureVerified
+      verified: !invalidSolution && signatureVerified
     };
   }
-  function bufferStartsWith(buffer, prefix) {
-    if (prefix.length > buffer.length) {
-      return false;
-    }
-    for (let i = 0; i < prefix.length; i++) {
-      if (buffer[i] !== prefix[i]) {
-        return false;
+  function parseVerificationData(data, convertToArray = ["fields", "reasons"]) {
+    const verificationData = {};
+    try {
+      const params = new URLSearchParams(data);
+      for (const [key, value] of params.entries()) {
+        if (value === "true" || value === "false") {
+          verificationData[key] = value === "true";
+        } else if (value !== null && /^\d+?$/.test(value)) {
+          verificationData[key] = parseInt(value, 10);
+        } else if (value !== null && /^\d+\.\d+?$/.test(value)) {
+          verificationData[key] = parseFloat(value);
+        } else if (value !== null) {
+          verificationData[key] = convertToArray.includes(key) ? value.trim().split(",") : value.trim();
+        }
       }
+    } catch {
+      return null;
     }
-    return true;
+    return verificationData;
   }
-  function constantTimeEqual(a, b) {
-    if (a.length !== b.length) {
-      return false;
+  async function verifyFieldsHash(options) {
+    const { algorithm = "SHA-256", formData, fields, fieldsHash } = options;
+    const data = formData instanceof FormData ? Object.fromEntries(formData) : formData;
+    const lines = [];
+    for (const field of fields) {
+      lines.push(String(data[field] || ""));
     }
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-    return result === 0;
+    return bufferToHex(await hash(algorithm, lines.join("\n"))) === fieldsHash;
   }
-  async function delay(ms) {
-    await new Promise((resolve) => setTimeout(resolve, ms));
-  }
-  async function hmac(algorithm, data, keyStr) {
-    const key = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(keyStr),
-      {
-        name: "HMAC",
-        hash: { name: algorithm }
-      },
-      false,
-      ["sign", "verify"]
+  async function verifyServerSignature(options) {
+    const { hmacSecret, payload } = options;
+    const start = performance.now();
+    const signature = bufferToHex(
+      await hmac(
+        payload.algorithm,
+        await hash(payload.algorithm, payload.verificationData),
+        hmacSecret
+      )
     );
-    const signature = await crypto.subtle.sign(
-      "HMAC",
-      key,
-      typeof data === "string" ? new TextEncoder().encode(data) : data
-    );
-    return bufferToHex(signature);
-  }
-  function sortKeys(obj) {
-    if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
-      return obj;
-    }
-    return Object.keys(obj).sort().reduce((acc, key) => {
-      const value = obj[key];
-      if (value !== void 0) {
-        acc[key] = sortKeys(value);
-      }
-      return acc;
-    }, {});
-  }
-  function timeDuration(start) {
-    return Math.floor((performance.now() - start) * 10) / 10;
-  }
-  async function deriveKey(parameters, salt, password) {
-    const { algorithm, keyLength = 32 } = parameters;
-    const iterations = Math.max(1, parameters.cost);
-    let data = void 0;
-    let derivedKey = void 0;
-    for (let i = 0; i < iterations; i++) {
-      if (i === 0) {
-        data = concatBuffers(salt, password);
-      } else {
-        data = derivedKey;
-      }
-      derivedKey = new Uint8Array(
-        (await crypto.subtle.digest(algorithm, data)).slice(0, keyLength)
-      );
-    }
+    const verificationData = parseVerificationData(payload.verificationData);
+    const expired = !!verificationData && !!verificationData.expire && verificationData.expire < Math.floor(Date.now() / 1e3);
+    const invalidSignature = !constantTimeEqual(payload.signature, signature);
+    const invalidSolution = !verificationData || verificationData.verified !== true || payload.verified !== true;
+    const verified = !expired && !invalidSignature && !invalidSolution;
     return {
-      parameters: {},
-      derivedKey
+      expired,
+      invalidSignature,
+      invalidSolution,
+      time: timeDuration(start),
+      verificationData,
+      verified
     };
   }
-  const sha = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    deriveKey
-  }, Symbol.toStringTag, { value: "Module" }));
   exports2.argon2id = argon2id;
   exports2.createChallenge = createChallenge;
+  exports2.parseVerificationData = parseVerificationData;
   exports2.pbkdf2 = pbkdf2;
   exports2.scrypt = scrypt;
   exports2.sha = sha;
   exports2.solveChallenge = solveChallenge;
   exports2.solveChallengeWorkers = solveChallengeWorkers;
+  exports2.verifyFieldsHash = verifyFieldsHash;
+  exports2.verifyServerSignature = verifyServerSignature;
   exports2.verifySolution = verifySolution;
   Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
 }));

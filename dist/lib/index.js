@@ -1189,7 +1189,8 @@ async function solveChallengeWorkers(options) {
     controller = new AbortController(),
     createWorker,
     onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
-    counterMode
+    counterMode,
+    timeout = 9e4
   } = options;
   const workersConcurrency = Math.min(16, Math.max(1, concurrency));
   const workersInstances = [];
@@ -1230,6 +1231,7 @@ async function solveChallengeWorkers(options) {
             counterMode,
             counterStart: i,
             counterStep: workersConcurrency,
+            timeout,
             type: "work"
           });
         });

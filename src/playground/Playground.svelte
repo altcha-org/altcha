@@ -6,7 +6,7 @@
 	import AboutView from './views/About.svelte';
 	import PluginsView from './views/Plugins.svelte';
 	import Logs from './components/Logs.svelte';
-	import { log } from './helpers';
+	import { hookConsoleLog, log } from './helpers';
 	import { injectCss } from '../helpers';
 	import css from '../widget.scss?inline';
 	import './playground.css';
@@ -21,6 +21,7 @@
 	let tab = $state('widget');
 
 	onMount(() => {
+		hookConsoleLog();
 		injectCss(css);
 
 		globalThis.$altcha.algorithms.set('SHA-256', () => new WorkerSha());

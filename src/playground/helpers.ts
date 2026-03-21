@@ -5,6 +5,19 @@ export function log(msg: string, data?: any) {
 	logs.set([...get(logs), [`[${currentTime()}] ${msg}`, data]].slice(-1_000));
 }
 
+export function hookConsoleLog() {
+	const origError = console.error;
+	const origLog = console.log;
+	console.log = (...args: any[]) => {
+		log('widget', args);
+		origLog(...args);
+	};
+	console.error = (...args: any[]) => {
+		log('widget', args);
+		origError(...args);
+	};
+}
+
 export function currentTime() {
 	const date = new Date();
 	return (

@@ -148,7 +148,7 @@ For implementation details, see the [README](/README.md#data-obfuscation).
 
 ### Challenge & Verification
 
-The main `altcha` package can now be used in JavaScript and TypeScript server environments. It includes utilities for creating and verifying challenges.
+The main `altcha` package can now be used in JavaScript and TypeScript server environments. It includes utilities for creating and verifying challenges. Alternatively, the version 2 of `altcha-lib` can be used as well.
 
 ```ts
 import { createChallenge, solveChallenge, verifySolution, pbkdf2 } from 'altcha/lib';

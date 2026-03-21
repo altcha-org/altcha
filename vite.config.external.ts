@@ -5,7 +5,7 @@ import terser from '@rollup/plugin-terser';
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 import { basename } from 'node:path';
-import { ssrSafeCustomElements, generateDts } from './vite.helpers';
+import { ssrSafeCustomElements } from './vite.helpers';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -17,11 +17,7 @@ export default defineConfig({
 				customElement: true
 			}
 		}),
-		ssrSafeCustomElements(),
-		generateDts({
-			distPath: 'dist/external/index.d.ts',
-			packageName: 'altcha/external'
-		})
+		ssrSafeCustomElements()
 	],
 	build: {
 		target: 'baseline-widely-available',

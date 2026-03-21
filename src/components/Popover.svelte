@@ -11,6 +11,7 @@
 		onClickOutside?: () => void;
 		onClickOutsideDelay?: number;
 		onClose?: () => void;
+		placement: 'auto' | 'bottom' | 'top';
 		variant?: 'error' | 'neutral';
 	}
 
@@ -22,6 +23,7 @@
 		onClickOutside,
 		onClickOutsideDelay = 600,
 		onClose,
+		placement = 'auto',
 		variant = 'neutral',
 		...rest
 	}: Props = $props();
@@ -29,6 +31,12 @@
 	let elBackdrop = $state<HTMLElement>();
 	let top = $state(false);
 	let mountedAt = $state(0);
+
+	$effect(() => {
+		if (placement !== 'auto') {
+			top = placement === 'top';
+		}
+	});
 
 	onMount(() => {
 		const moveToBody = display === 'bottomsheet' || display === 'overlay';
@@ -68,7 +76,7 @@
 	}
 
 	function reposition() {
-		if (anchor && el) {
+		if (anchor && placement === 'auto' && el) {
 			const boundary = anchor.getBoundingClientRect();
 			const bottomGap = document.documentElement.clientHeight - (boundary.top + boundary.height);
 			const newTop = bottomGap < el.clientHeight;

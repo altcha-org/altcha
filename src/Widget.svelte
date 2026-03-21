@@ -61,6 +61,7 @@
 	} from './types/';
 	import { solveChallengeWorkers } from './pow';
 	import { bufferToHex } from './helpers';
+	import { Collector } from './his';
 	import type { BasePlugin } from './plugins/base.plugin';
 
 	// -----------------------------------------------------------------------------
@@ -133,6 +134,7 @@
 	// -----------------------------------------------------------------------------
 
 	let { ...props }: Props = $props();
+	let hisCollector: Collector | null = null;
 
 	let baseUrl = $state<URL>(new URL(location.origin));
 	let checked = $state(false);
@@ -176,16 +178,19 @@
 		floatingPlacement: 'auto',
 		hideFooter: false,
 		hideLogo: false,
+		humanInteractionSignature: true,
 		language: '',
 		mockError: false,
 		minDuration: 500,
 		overlayContent: '',
 		name: 'altcha',
+		popoverPlacement: 'auto',
 		retryOnOutOfMemoryError: true,
 		setCookie: null,
 		serverVerificationFields: false,
 		serverVerificationTimeZone: false,
 		test: false,
+		timeout: 90_000,
 		type: 'checkbox',
 		validationMessage: '',
 		verifyFunction: null,
@@ -203,6 +208,7 @@
 	/** Resolves the correct checkbox component based on config.type */
 	const CheckboxComponent = $derived(getCheckboxComponent(config.type));
 
+	const auto = $derived(config.auto);
 	const loading = $derived(currentState === State.VERIFYING);
 	const showFooter = $derived(!config.hideFooter);
 	const showLogo = $derived(!config.hideLogo && config.display !== 'bar');
@@ -305,7 +311,7 @@
 
 	/** Auto-verify on page load if configured */
 	$effect(() => {
-		if (config.auto === 'onload') {
+		if (auto === 'onload') {
 			const tm = setTimeout(() => {
 				verify();
 			}, 1);
@@ -346,10 +352,18 @@
 		// Find and attach to the parent form
 		elForm = elRoot?.closest('form') as HTMLFormElement | null;
 		elForm?.addEventListener('reset', onFormReset);
-		elForm?.addEventListener('submit', onFormSubmit);
+		elForm?.addEventListener('submit', onFormSubmit, {
+			capture: true
+		});
 		elForm?.addEventListener('focusin', onFormFocusIn);
 
 		activatePlugins();
+
+		if (config.humanInteractionSignature) {
+			log('human interaction signature enabled');
+			hisCollector = new Collector();
+		}
+
 		dispatch('load');
 
 		if (!isSecureContext) {
@@ -366,8 +380,11 @@
 				clearTimeout(expirationTimeout);
 			}
 			elForm?.removeEventListener('reset', onFormReset);
-			elForm?.removeEventListener('submit', onFormSubmit);
+			elForm?.removeEventListener('submit', onFormSubmit, {
+				capture: true
+			});
 			elForm?.removeEventListener('focusin', onFormFocusIn);
+			hisCollector?.destroy();
 		};
 	});
 
@@ -487,32 +504,55 @@
 	 * Plugins can intercept via the `onFetchChallenge` hook.
 	 */
 	async function fetchChallenge(
-		source: string | Challenge | null = config.challenge
+		source: string | Challenge | null = config.challenge,
+		requestOptions?: RequestInit
 	): Promise<Challenge | null> {
 		// Let plugins handle the fetch if they want
 		const hook = await callHook('onFetchChallenge', source);
+		let challenge = null;
+
 		if (hook !== undefined) {
 			return hook;
 		}
 
 		if (typeof source === 'string') {
-			let challenge = null;
-
 			if (source.match(/^(https?:)?\//)) {
 				// Source is a URL — fetch from server
-				log('fetching challenge from', source);
+				log('fetching challenge from', requestOptions?.method || 'GET', source);
 				baseUrl = new URL(source, location.origin);
 				const resp = await config.fetch(source, {
-					credentials: config.credentials || undefined
+					credentials: config.credentials || undefined,
+					...requestOptions
 				});
-				validateResponse(resp);
+				await validateResponse(resp);
 
 				// Server may send extra config via response header
 				const configHeader = resp.headers.get('x-altcha-config');
 				if (configHeader) {
 					processConfigHeader(configHeader);
 				}
-				challenge = await resp.json();
+				const json = await resp.json();
+				if (json && 'his' in json && json.his) {
+					log('requested HIS');
+					if (!hisCollector) {
+						throw new Error('Server requested HIS data but collector is disabled.');
+					}
+					return fetchChallenge(getUrl(json.his.url, baseUrl), {
+						body: JSON.stringify({
+							his: hisCollector.export()
+						}),
+						headers: {
+							'content-type': 'application/json'
+						},
+						method: 'POST'
+					});
+				}
+
+				if (json && 'hisResult' in json && json.hisResult) {
+					log('HIS result', json.hisResult);
+				}
+
+				challenge = json;
 			} else {
 				// Source is a JSON string — parse directly
 				log('parsing JSON challenge');
@@ -522,21 +562,30 @@
 					throw new Error(`Unable to parse JSON challenge.`);
 				}
 			}
-
-			// Handle legacy v1 challenge format
-			if (typeof challenge === 'object' && 'challenge' in challenge) {
-				challenge = createChallengeFromV1(challenge as ChallengeV1);
-			}
-
-			if (!isChallengeValid(challenge)) {
-				throw new Error(`Challenge validation failed.`);
-			}
-			return challenge;
 		} else if (source && typeof source === 'object') {
 			// Source is an object — deep clone to avoid mutation
-			return JSON.parse(JSON.stringify(source));
+			try {
+				challenge = JSON.parse(JSON.stringify(source));
+			} catch {
+				throw new Error(`Unable to parse JSON challenge.`);
+			}
 		}
-		return null;
+
+		// Handle legacy v1 challenge format
+		if (isChallengeV1(challenge)) {
+			challenge = createChallengeFromV1(challenge as ChallengeV1);
+		}
+
+		if (!isChallengeValid(challenge)) {
+			throw new Error(`Challenge validation failed.`);
+		}
+
+		return challenge;
+	}
+
+	/** Checks whether the challenge is V1 */
+	function isChallengeV1(challenge: any) {
+		return typeof challenge === 'object' && 'challenge' in challenge;
 	}
 
 	/** Validate that a challenge object has all required fields */
@@ -545,7 +594,6 @@
 			!!challenge &&
 			typeof challenge === 'object' &&
 			'parameters' in challenge &&
-			'signature' in challenge &&
 			!!challenge.parameters &&
 			typeof challenge.parameters === 'object' &&
 			'algorithm' in challenge.parameters &&
@@ -738,7 +786,7 @@
 
 	/** Auto-verify when any form field receives focus (if auto='onfocus') */
 	function onFormFocusIn(ev: FocusEvent) {
-		if (config.auto === 'onfocus' && currentState === State.UNVERIFIED) {
+		if (auto === 'onfocus' && currentState === State.UNVERIFIED) {
 			verify();
 		}
 	}
@@ -758,7 +806,7 @@
 	 */
 	function onFormSubmit(ev: SubmitEvent) {
 		elSubmitter = ev.submitter as HTMLElement | null;
-		if (config.auto === 'onsubmit' && currentState === State.UNVERIFIED) {
+		if (auto === 'onsubmit' && currentState === State.UNVERIFIED) {
 			ev.preventDefault();
 			ev.stopPropagation();
 			show();
@@ -895,7 +943,7 @@
 			},
 			method: 'POST'
 		});
-		validateResponse(resp);
+		await validateResponse(resp);
 		const json = await resp.json();
 		if (json && typeof json === 'object' && 'payload' in json && !!json.payload) {
 			dispatch('serververification', json);
@@ -945,7 +993,7 @@
 			case 'floating':
 			case 'overlay':
 				hide();
-				if (!config.auto || config.auto === 'off') {
+				if (!auto || auto === 'off') {
 					userConfig.auto = 'onsubmit';
 				}
 				break;
@@ -981,8 +1029,17 @@
 	}
 
 	/** Validate that a server response is OK and returns JSON */
-	function validateResponse(resp: Response) {
+	async function validateResponse(resp: Response) {
 		if (resp.status >= 400) {
+			if (resp.headers.get('content-type')?.includes('/json')) {
+				let json;
+				try {
+					json = await resp.json();
+				} catch {}
+				if (json && 'error' in json) {
+					throw new Error(`Server responded with ${resp.status} - ${json.error}`);
+				}
+			}
 			throw new Error(`Server responded with ${resp.status}.`);
 		}
 		const contentType = resp.headers.get('content-type');
@@ -1020,7 +1077,7 @@
 			log('verified');
 			setState(State.VERIFIED);
 			dispatch('verified', { payload });
-			if (config.auto === 'onsubmit') {
+			if (auto === 'onsubmit') {
 				tick().then(() => {
 					requestSubmit(elSubmitter);
 				});
@@ -1214,7 +1271,8 @@
 						log(`retrying with ${retryConcurrency} workers...`);
 						return retryConcurrency;
 					}
-				}
+				},
+				timeout: config.timeout
 			});
 
 			// Check if verification was aborted
@@ -1239,8 +1297,8 @@
 				payload = btoa(
 					JSON.stringify({
 						challenge: {
-							...challenge,
-							codeChallenge: undefined
+							parameters: challenge.parameters,
+							signature: challenge.signature
 						},
 						solution
 					})
@@ -1309,7 +1367,7 @@
 				<CheckboxComponent
 					id={checkboxId}
 					name=""
-					required={(config.display === 'standard' && config.auto !== 'onsubmit') ||
+					required={(config.display === 'standard' && auto !== 'onsubmit') ||
 						currentState === State.VERIFYING}
 					{loading}
 					{checked}
@@ -1355,6 +1413,7 @@
 					reset();
 				}
 			}}
+			placement={config.popoverPlacement}
 			role="alert"
 			variant="error"
 			{dir}
@@ -1380,6 +1439,7 @@
 				onClose={() => {
 					reset();
 				}}
+				placement={config.popoverPlacement}
 				role="dialog"
 				aria-label={strings.verificationRequired}
 				{dir}

@@ -1,5 +1,5 @@
 import { BasePlugin } from './base.plugin';
-import { deriveKey } from '../algorithms/pbkdf2';
+import { deriveKey as derivedKeyPBKDF2 } from '../algorithms/pbkdf2';
 import { createChallenge, solveChallenge, solveChallengeWorkers } from '../pow';
 import { bufferToHex, hexToBuffer } from '../helpers';
 import {
@@ -16,11 +16,16 @@ import {
 export async function deobfuscate(
 	obfuscatedData: string,
 	options: {
-		deriveKey?: DeriveKeyFunction;
 		concurrency?: number;
+		createWorker?: (algorithm: string) => Worker | Promise<Worker>;
+		deriveKey?: DeriveKeyFunction;
 	} = {}
 ) {
-	const { concurrency = navigator.hardwareConcurrency, deriveKey } = options;
+	let {
+		concurrency = Math.max(1, Math.min(4, navigator.hardwareConcurrency)),
+		createWorker,
+		deriveKey = derivedKeyPBKDF2
+	} = options;
 	let challenge:
 		| (Challenge & {
 				cipher: {
@@ -47,20 +52,19 @@ export async function deobfuscate(
 		data: string;
 	};
 	let solution: Solution | null = null;
-	if (deriveKey) {
-		solution = await solveChallenge({
-			challenge,
-			deriveKey
-		});
-	} else {
-		const createWorker = globalThis.$altcha.algorithms.get(challenge.parameters.algorithm);
-		if (!createWorker) {
-			throw new Error(`Unsupported algorithm ${challenge.parameters.algorithm}.`);
-		}
+	if (!createWorker && '$altcha' in globalThis) {
+		createWorker = globalThis.$altcha.algorithms.get(challenge.parameters.algorithm);
+	}
+	if (createWorker) {
 		solution = await solveChallengeWorkers({
 			challenge,
 			concurrency,
 			createWorker
+		});
+	} else {
+		solution = await solveChallenge({
+			challenge,
+			deriveKey
 		});
 	}
 	if (!solution) {
@@ -86,11 +90,13 @@ export async function deobfuscate(
 
 export async function obfuscate(
 	str: string,
-	options?: Partial<CreateChallengeOptions> & {
+	options: Partial<CreateChallengeOptions> & {
 		counterMax?: number;
 		counterMin?: number;
-	}
+		deriveKey?: DeriveKeyFunction;
+	} = {}
 ) {
+	const { deriveKey = derivedKeyPBKDF2 } = options;
 	const counterMin = options?.counterMin || 20;
 	const counterMax = options?.counterMax || 200;
 	const { parameters } = await createChallenge({

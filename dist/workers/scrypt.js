@@ -112,7 +112,7 @@
     const { deriveKey: deriveKey2 } = options;
     let controller = void 0;
     self.onmessage = async (message) => {
-      const { challenge, counterMode, counterStart, counterStep, type } = message.data;
+      const { challenge, counterMode, counterStart, counterStep, timeout, type } = message.data;
       if (type === "abort") {
         controller?.abort();
       } else if (type === "work") {
@@ -125,7 +125,8 @@
             counterStart,
             counterStep,
             deriveKey: deriveKey2,
-            counterMode
+            counterMode,
+            timeout
           });
         } catch (err) {
           return self.postMessage({ error: err });

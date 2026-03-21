@@ -14,6 +14,42 @@ class BasePlugin {
   async onVerify(value) {
   }
 }
+function getDigest(algorithm) {
+  switch (algorithm) {
+    case "PBKDF2/SHA-512":
+      return "SHA-512";
+    case "PBKDF2/SHA-384":
+      return "SHA-384";
+    case "PBKDF2/SHA-256":
+    default:
+      return "SHA-256";
+  }
+}
+async function deriveKey(parameters, salt, password) {
+  const { algorithm, cost, keyLength = 32 } = parameters;
+  const passwordKey = await crypto.subtle.importKey(
+    "raw",
+    password,
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+  const derivedKey = await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: cost,
+      hash: getDigest(algorithm)
+    },
+    passwordKey,
+    { name: "AES-GCM", length: keyLength * 8 },
+    true,
+    ["encrypt"]
+  );
+  return {
+    derivedKey: new Uint8Array(await crypto.subtle.exportKey("raw", derivedKey))
+  };
+}
 function bufferStartsWith(buffer, prefix) {
   if (prefix.length > buffer.length) {
     return false;
@@ -94,7 +130,7 @@ async function solveChallenge(options) {
     counterMode = "uint32",
     counterStart = 0,
     counterStep = 1,
-    deriveKey,
+    deriveKey: deriveKey2,
     timeout = 9e4
   } = options;
   const { nonce, keyPrefix, salt } = challenge.parameters;
@@ -110,7 +146,7 @@ async function solveChallenge(options) {
     if (controller?.signal.aborted || timeout && counter % 10 === 0 && performance.now() - start > timeout) {
       return null;
     }
-    const { derivedKey } = await deriveKey(
+    const { derivedKey } = await deriveKey2(
       challenge.parameters,
       saltBuf,
       password.setCounter(counter)
@@ -138,7 +174,8 @@ async function solveChallengeWorkers(options) {
     controller = new AbortController(),
     createWorker,
     onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
-    counterMode
+    counterMode,
+    timeout = 9e4
   } = options;
   const workersConcurrency = Math.min(16, Math.max(1, concurrency));
   const workersInstances = [];
@@ -179,6 +216,7 @@ async function solveChallengeWorkers(options) {
             counterMode,
             counterStart: i,
             counterStep: workersConcurrency,
+            timeout,
             type: "work"
           });
         });
@@ -211,7 +249,11 @@ async function solveChallengeWorkers(options) {
   return solution || null;
 }
 async function deobfuscate(obfuscatedData, options = {}) {
-  const { concurrency = navigator.hardwareConcurrency, deriveKey: deriveKey2 } = options;
+  let {
+    concurrency = Math.max(1, Math.min(4, navigator.hardwareConcurrency)),
+    createWorker,
+    deriveKey: deriveKey$1 = deriveKey
+  } = options;
   let challenge = null;
   try {
     challenge = JSON.parse(atob(obfuscatedData));
@@ -223,20 +265,19 @@ async function deobfuscate(obfuscatedData, options = {}) {
   }
   const cipher = challenge.cipher;
   let solution = null;
-  if (deriveKey2) {
-    solution = await solveChallenge({
-      challenge,
-      deriveKey: deriveKey2
-    });
-  } else {
-    const createWorker = globalThis.$altcha.algorithms.get(challenge.parameters.algorithm);
-    if (!createWorker) {
-      throw new Error(`Unsupported algorithm ${challenge.parameters.algorithm}.`);
-    }
+  if (!createWorker && "$altcha" in globalThis) {
+    createWorker = globalThis.$altcha.algorithms.get(challenge.parameters.algorithm);
+  }
+  if (createWorker) {
     solution = await solveChallengeWorkers({
       challenge,
       concurrency,
       createWorker
+    });
+  } else {
+    solution = await solveChallenge({
+      challenge,
+      deriveKey: deriveKey$1
     });
   }
   if (!solution) {

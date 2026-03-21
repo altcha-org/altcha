@@ -5436,7 +5436,7 @@
   var root$1 = /* @__PURE__ */ from_html(`<!> <div><!> <!> <div class="altcha-popover-content"><!></div></div>`, 1);
   function Popover($$anchor, $$props) {
     push($$props, true);
-    let anchor = prop($$props, "anchor"), children = prop($$props, "children"), display = prop($$props, "display", 7, "standard"), backdrop = prop($$props, "backdrop", 7, false), onClickOutside = prop($$props, "onClickOutside"), onClickOutsideDelay = prop($$props, "onClickOutsideDelay", 7, 600), onClose = prop($$props, "onClose"), variant = prop($$props, "variant", 7, "neutral"), rest = /* @__PURE__ */ rest_props($$props, [
+    let anchor = prop($$props, "anchor"), children = prop($$props, "children"), display = prop($$props, "display", 7, "standard"), backdrop = prop($$props, "backdrop", 7, false), onClickOutside = prop($$props, "onClickOutside"), onClickOutsideDelay = prop($$props, "onClickOutsideDelay", 7, 600), onClose = prop($$props, "onClose"), placement = prop($$props, "placement", 7, "auto"), variant = prop($$props, "variant", 7, "neutral"), rest = /* @__PURE__ */ rest_props($$props, [
       "$$slots",
       "$$events",
       "$$legacy",
@@ -5448,12 +5448,18 @@
       "onClickOutside",
       "onClickOutsideDelay",
       "onClose",
+      "placement",
       "variant"
     ]);
     let el = /* @__PURE__ */ state(void 0);
     let elBackdrop = /* @__PURE__ */ state(void 0);
     let top = /* @__PURE__ */ state(false);
     let mountedAt = /* @__PURE__ */ state(0);
+    user_effect(() => {
+      if (placement() !== "auto") {
+        set(top, placement() === "top");
+      }
+    });
     onMount(() => {
       const moveToBody = display() === "bottomsheet" || display() === "overlay";
       if (moveToBody) {
@@ -5487,7 +5493,7 @@
       reposition();
     }
     function reposition() {
-      if (anchor() && get(el)) {
+      if (anchor() && placement() === "auto" && get(el)) {
         const boundary2 = anchor().getBoundingClientRect();
         const bottomGap = document.documentElement.clientHeight - (boundary2.top + boundary2.height);
         const newTop = bottomGap < get(el).clientHeight;
@@ -5544,6 +5550,13 @@
       },
       set onClose($$value) {
         onClose($$value);
+        flushSync();
+      },
+      get placement() {
+        return placement();
+      },
+      set placement($$value = "auto") {
+        placement($$value);
         flushSync();
       },
       get variant() {
@@ -5619,6 +5632,7 @@
       onClickOutside: {},
       onClickOutsideDelay: {},
       onClose: {},
+      placement: {},
       variant: {}
     },
     [],
@@ -5635,7 +5649,8 @@
       controller = new AbortController(),
       createWorker,
       onOutOfMemory = (c) => c > 1 ? Math.floor(c / 2) : 0,
-      counterMode
+      counterMode,
+      timeout = 9e4
     } = options;
     const workersConcurrency = Math.min(16, Math.max(1, concurrency));
     const workersInstances = [];
@@ -5676,6 +5691,7 @@
               counterMode,
               counterStart: i,
               counterStep: workersConcurrency,
+              timeout,
               type: "work"
             });
           });
@@ -5707,6 +5723,147 @@
     }
     return solution || null;
   }
+  class Collector {
+    TAG_CODES = {
+      INPUT: 1,
+      TEXTAREA: 2,
+      SELECT: 3,
+      BUTTON: 4,
+      A: 5,
+      DETAILS: 6,
+      SUMMARY: 7,
+      IFRAME: 8,
+      VIDEO: 9,
+      AUDIO: 10
+    };
+    maxSamples;
+    sampleInterval;
+    target;
+    focusStartTime = 0;
+    focusInteraction = 0;
+    focusInteractionTimer = null;
+    lastPointerSample = 0;
+    lastTouchSample = 0;
+    lastScrollSample = 0;
+    pendingPointer = null;
+    pendingTouch = null;
+    focus = [];
+    pointer = [];
+    scroll = [];
+    touch = [];
+    constructor(options = {}) {
+      const { maxSamples = 60, sampleInterval = 50, target = window } = options;
+      this.maxSamples = maxSamples;
+      this.sampleInterval = sampleInterval;
+      this.target = target;
+      this.attach();
+    }
+    destroy() {
+      const o = { capture: true };
+      this.target.removeEventListener("focusin", this.onFocus, o);
+      this.target.removeEventListener("keydown", this.onInteraction, o);
+      this.target.removeEventListener("pointerdown", this.onInteraction, o);
+      this.target.removeEventListener("pointermove", this.onPointer, o);
+      this.target.removeEventListener("scroll", this.onScroll, o);
+      this.target.removeEventListener("touchmove", this.onTouchMove, o);
+    }
+    export() {
+      return {
+        focus: this.focus,
+        maxTouchPoints: navigator.maxTouchPoints || 0,
+        pointer: this.pointer,
+        scroll: this.scroll,
+        time: Date.now(),
+        touch: this.touch
+      };
+    }
+    attach() {
+      const o = { passive: true, capture: true };
+      this.target.addEventListener("focusin", this.onFocus, o);
+      this.target.addEventListener("keydown", this.onInteraction, o);
+      this.target.addEventListener("pointerdown", this.onInteraction, o);
+      this.target.addEventListener("pointermove", this.onPointer, o);
+      this.target.addEventListener("scroll", this.onScroll, o);
+      this.target.addEventListener("touchmove", this.onTouchMove, o);
+    }
+    evict(buffer) {
+      if (buffer.length > this.maxSamples) {
+        buffer.splice(0, buffer.length - this.maxSamples);
+      }
+    }
+    onFocus = (e) => {
+      if (this.focusInteraction === 2) {
+        return;
+      }
+      const el = e.target;
+      if (!(el instanceof Element)) {
+        return;
+      }
+      const now = performance.now();
+      if (this.focusStartTime === 0) {
+        this.focusStartTime = now;
+      }
+      this.focus.push([
+        Math.round(now - this.focusStartTime),
+        el.tabIndex,
+        this.TAG_CODES[el.tagName] ?? 0,
+        this.focusInteraction ? 1 : 0
+      ]);
+      this.evict(this.focus);
+    };
+    onInteraction = (e) => {
+      this.focusInteraction = "keyCode" in e ? 1 : 2;
+      if (this.focusInteractionTimer) {
+        clearTimeout(this.focusInteractionTimer);
+      }
+      this.focusInteractionTimer = setTimeout(() => {
+        this.focusInteraction = 0;
+      }, 100);
+    };
+    onPointer = (e) => {
+      if (e.pointerType === "touch") {
+        return;
+      }
+      const now = e.timeStamp || performance.now();
+      this.pendingPointer = [Math.round(e.clientX), Math.round(e.clientY), Math.round(now)];
+      if (now - this.lastPointerSample >= this.sampleInterval) {
+        this.pointer.push(this.pendingPointer);
+        this.lastPointerSample = now;
+        this.pendingPointer = null;
+        this.evict(this.pointer);
+      }
+    };
+    onScroll = () => {
+      const now = performance.now();
+      if (now - this.lastScrollSample < this.sampleInterval) {
+        return;
+      }
+      this.scroll.push([Math.round(window.scrollY), Math.round(now)]);
+      this.lastScrollSample = now;
+      this.evict(this.scroll);
+    };
+    onTouchMove = (e) => {
+      const now = e.timeStamp || performance.now();
+      const t = e.touches[0];
+      if (!t) {
+        return;
+      }
+      this.pendingTouch = [
+        Math.round(t.clientX),
+        Math.round(t.clientY),
+        Math.round(now),
+        Math.round(t.force * 1e3) / 1e3,
+        Math.round(t.radiusX || 0),
+        Math.round(t.radiusY || 0)
+      ];
+      if (now - this.lastTouchSample >= this.sampleInterval) {
+        this.touch.push(this.pendingTouch);
+        this.lastTouchSample = now;
+        this.pendingTouch = null;
+        this.evict(this.touch);
+      }
+    };
+  }
   var root_1 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-backdrop" data-backdrop=""></div>`);
   var root_3 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-content"></div>`);
   var root_2 = /* @__PURE__ */ from_html(`<div role="button" class="altcha-overlay-close">&times;</div> <!>`, 1);
@@ -5737,6 +5894,7 @@
         instance?.dispatchEvent(new CustomEvent(event2, { detail }));
       });
     };
+    let hisCollector = null;
     let baseUrl = /* @__PURE__ */ state(proxy(new URL(location.origin)));
     let checked = /* @__PURE__ */ state(false);
     let codeChallenge = /* @__PURE__ */ state(null);
@@ -5771,16 +5929,19 @@
       floatingPlacement: "auto",
       hideFooter: false,
       hideLogo: false,
+      humanInteractionSignature: true,
       language: "",
       mockError: false,
       minDuration: 500,
       overlayContent: "",
       name: "altcha",
+      popoverPlacement: "auto",
       retryOnOutOfMemoryError: true,
       setCookie: null,
       serverVerificationFields: false,
       serverVerificationTimeZone: false,
       test: false,
+      timeout: 9e4,
       type: "checkbox",
       validationMessage: "",
       verifyFunction: null,
@@ -5791,6 +5952,7 @@
     }));
     const checkboxId = /* @__PURE__ */ user_derived(() => `altcha-checkbox-${$$props.id || Math.floor(Math.random() * 1e12).toString(16)}`);
     const CheckboxComponent = /* @__PURE__ */ user_derived(() => getCheckboxComponent(get(config).type));
+    const auto = /* @__PURE__ */ user_derived(() => get(config).auto);
     const loading = /* @__PURE__ */ user_derived(() => get(currentState) === State.VERIFYING);
     const showFooter = /* @__PURE__ */ user_derived(() => !get(config).hideFooter);
     const showLogo = /* @__PURE__ */ user_derived(() => !get(config).hideLogo && get(config).display !== "bar");
@@ -5852,7 +6014,7 @@
       }
     });
     user_effect(() => {
-      if (get(config).auto === "onload") {
+      if (get(auto) === "onload") {
         const tm = setTimeout(
           () => {
             verify();
@@ -5877,15 +6039,19 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.0.0-beta.2");
+      log("mounted", "3.0.0-beta.3");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }
       set(elForm, get(elRoot)?.closest("form"), true);
       get(elForm)?.addEventListener("reset", onFormReset);
-      get(elForm)?.addEventListener("submit", onFormSubmit);
+      get(elForm)?.addEventListener("submit", onFormSubmit, { capture: true });
       get(elForm)?.addEventListener("focusin", onFormFocusIn);
       activatePlugins();
+      if (get(config).humanInteractionSignature) {
+        log("human interaction signature enabled");
+        hisCollector = new Collector();
+      }
       dispatch("load");
       if (!isSecureContext) {
         log("secure context (HTTPS) required");
@@ -5899,8 +6065,9 @@
           clearTimeout(get(expirationTimeout));
         }
         get(elForm)?.removeEventListener("reset", onFormReset);
-        get(elForm)?.removeEventListener("submit", onFormSubmit);
+        get(elForm)?.removeEventListener("submit", onFormSubmit, { capture: true });
         get(elForm)?.removeEventListener("focusin", onFormFocusIn);
+        hisCollector?.destroy();
       };
     });
     function activatePlugins() {
@@ -5964,23 +6131,41 @@
     async function delay(ms) {
       await new Promise((resolve) => setTimeout(resolve, ms));
     }
-    async function fetchChallenge(source2 = get(config).challenge) {
+    async function fetchChallenge(source2 = get(config).challenge, requestOptions) {
       const hook = await callHook("onFetchChallenge", source2);
+      let challenge = null;
       if (hook !== void 0) {
         return hook;
       }
       if (typeof source2 === "string") {
-        let challenge = null;
         if (source2.match(/^(https?:)?\//)) {
-          log("fetching challenge from", source2);
+          log("fetching challenge from", requestOptions?.method || "GET", source2);
           set(baseUrl, new URL(source2, location.origin), true);
-          const resp = await get(config).fetch(source2, { credentials: get(config).credentials || void 0 });
-          validateResponse(resp);
+          const resp = await get(config).fetch(source2, {
+            credentials: get(config).credentials || void 0,
+            ...requestOptions
+          });
+          await validateResponse(resp);
           const configHeader = resp.headers.get("x-altcha-config");
           if (configHeader) {
             processConfigHeader(configHeader);
           }
-          challenge = await resp.json();
+          const json = await resp.json();
+          if (json && "his" in json && json.his) {
+            log("requested HIS");
+            if (!hisCollector) {
+              throw new Error("Server requested HIS data but collector is disabled.");
+            }
+            return fetchChallenge(getUrl(json.his.url, get(baseUrl)), {
+              body: JSON.stringify({ his: hisCollector.export() }),
+              headers: { "content-type": "application/json" },
+              method: "POST"
+            });
+          }
+          if (json && "hisResult" in json && json.hisResult) {
+            log("HIS result", json.hisResult);
+          }
+          challenge = json;
         } else {
           log("parsing JSON challenge");
           try {
@@ -5989,20 +6174,26 @@
             throw new Error(`Unable to parse JSON challenge.`);
           }
         }
-        if (typeof challenge === "object" && "challenge" in challenge) {
-          challenge = createChallengeFromV1(challenge);
-        }
-        if (!isChallengeValid(challenge)) {
-          throw new Error(`Challenge validation failed.`);
-        }
-        return challenge;
       } else if (source2 && typeof source2 === "object") {
-        return JSON.parse(JSON.stringify(source2));
+        try {
+          challenge = JSON.parse(JSON.stringify(source2));
+        } catch {
+          throw new Error(`Unable to parse JSON challenge.`);
+        }
       }
-      return null;
+      if (isChallengeV1(challenge)) {
+        challenge = createChallengeFromV1(challenge);
+      }
+      if (!isChallengeValid(challenge)) {
+        throw new Error(`Challenge validation failed.`);
+      }
+      return challenge;
+    }
+    function isChallengeV1(challenge) {
+      return typeof challenge === "object" && "challenge" in challenge;
     }
     function isChallengeValid(challenge) {
-      return !!challenge && typeof challenge === "object" && "parameters" in challenge && "signature" in challenge && !!challenge.parameters && typeof challenge.parameters === "object" && "algorithm" in challenge.parameters && "nonce" in challenge.parameters && "salt" in challenge.parameters && "keyPrefix" in challenge.parameters;
+      return !!challenge && typeof challenge === "object" && "parameters" in challenge && !!challenge.parameters && typeof challenge.parameters === "object" && "algorithm" in challenge.parameters && "nonce" in challenge.parameters && "salt" in challenge.parameters && "keyPrefix" in challenge.parameters;
     }
     function getCheckboxElement() {
       return document.getElementById(get(checkboxId));
@@ -6115,7 +6306,7 @@
       }
     }
     function onFormFocusIn(ev) {
-      if (get(config).auto === "onfocus" && get(currentState) === State.UNVERIFIED) {
+      if (get(auto) === "onfocus" && get(currentState) === State.UNVERIFIED) {
         verify();
       }
     }
@@ -6128,7 +6319,7 @@
     }
     function onFormSubmit(ev) {
       set(elSubmitter, ev.submitter, true);
-      if (get(config).auto === "onsubmit" && get(currentState) === State.UNVERIFIED) {
+      if (get(auto) === "onsubmit" && get(currentState) === State.UNVERIFIED) {
         ev.preventDefault();
         ev.stopPropagation();
         show();
@@ -6214,7 +6405,7 @@
         headers: { "Content-Type": "application/json" },
         method: "POST"
       });
-      validateResponse(resp);
+      await validateResponse(resp);
       const json = await resp.json();
       if (json && typeof json === "object" && "payload" in json && !!json.payload) {
         dispatch("serververification", json);
@@ -6255,7 +6446,7 @@
         case "floating":
         case "overlay":
           hide();
-          if (!get(config).auto || get(config).auto === "off") {
+          if (!get(auto) || get(auto) === "off") {
             get(userConfig).auto = "onsubmit";
           }
           break;
@@ -6283,8 +6474,18 @@
         onExpired();
       }
     }
-    function validateResponse(resp) {
+    async function validateResponse(resp) {
       if (resp.status >= 400) {
+        if (resp.headers.get("content-type")?.includes("/json")) {
+          let json;
+          try {
+            json = await resp.json();
+          } catch {
+          }
+          if (json && "error" in json) {
+            throw new Error(`Server responded with ${resp.status} - ${json.error}`);
+          }
+        }
         throw new Error(`Server responded with ${resp.status}.`);
       }
       const contentType = resp.headers.get("content-type");
@@ -6315,7 +6516,7 @@
         log("verified");
         setState(State.VERIFIED);
         dispatch("verified", { payload: get(payload) });
-        if (get(config).auto === "onsubmit") {
+        if (get(auto) === "onsubmit") {
           tick().then(() => {
             requestSubmit(get(elSubmitter));
           });
@@ -6382,7 +6583,7 @@
       const start = performance.now();
       let challenge = null;
       let solution = null;
-      let isChallengeV1 = false;
+      let isChallengeV12 = false;
       const hook = await callHook("onVerify", options);
       if (hook !== void 0) {
         return hook;
@@ -6417,7 +6618,7 @@
         if (challenge.parameters.expiresAt) {
           setChallengeExpiration(challenge.parameters.expiresAt);
         }
-        isChallengeV1 = "_version" in challenge && challenge._version === 1;
+        isChallengeV12 = "_version" in challenge && challenge._version === 1;
         const createWorker = globalThis.$altcha.algorithms.get(challenge.parameters.algorithm);
         if (!createWorker) {
           throw new Error(`Unsupported algorithm ${challenge.parameters.algorithm}.`);
@@ -6427,7 +6628,7 @@
           concurrency,
           controller,
           createWorker,
-          counterMode: isChallengeV1 ? "string" : "uint32",
+          counterMode: isChallengeV12 ? "string" : "uint32",
           onOutOfMemory: (c) => {
             log("out of memory error received");
             dispatch("outofmemory");
@@ -6436,7 +6637,8 @@
               log(`retrying with ${retryConcurrency} workers...`);
               return retryConcurrency;
             }
-          }
+          },
+          timeout: get(config).timeout
         });
         if (get(currentController)?.signal.aborted) {
           reset$1();
@@ -6448,13 +6650,16 @@
         log("solution", solution);
         await delay(Math.max(0, minDuration - (performance.now() - start)));
         set(codeChallenge, challenge.codeChallenge || get(config).codeChallenge || null, true);
-        if (isChallengeV1) {
+        if (isChallengeV12) {
           set(payload, btoa(JSON.stringify(createPayloadV1(challenge, solution))), true);
         } else {
           set(
             payload,
             btoa(JSON.stringify({
-              challenge: { ...challenge, codeChallenge: void 0 },
+              challenge: {
+                parameters: challenge.parameters,
+                signature: challenge.signature
+              },
               solution
             })),
             true
@@ -6537,7 +6742,7 @@
     var div_6 = child(div_5);
     var node_3 = child(div_6);
     {
-      let $0 = /* @__PURE__ */ user_derived(() => get(config).display === "standard" && get(config).auto !== "onsubmit" || get(currentState) === State.VERIFYING);
+      let $0 = /* @__PURE__ */ user_derived(() => get(config).display === "standard" && get(auto) !== "onsubmit" || get(currentState) === State.VERIFYING);
       component(node_3, () => get(CheckboxComponent), ($$anchor2, CheckboxComponent_1) => {
         CheckboxComponent_1($$anchor2, {
           get id() {
@@ -6662,6 +6867,9 @@
               reset$1();
             }
           },
+          get placement() {
+            return get(config).popoverPlacement;
+          },
           role: "alert",
           variant: "error",
           get dir() {
@@ -6721,6 +6929,9 @@
               },
               onClose: () => {
                 reset$1();
+              },
+              get placement() {
+                return get(config).popoverPlacement;
               },
               role: "dialog",
               get "aria-label"() {

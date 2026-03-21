@@ -119,13 +119,13 @@ ALTCHA is optimized for performance:
 
 | Distribution                 | Size (GZIPped) |
 | ---------------------------- | -------------- |
-| ALTCHA                       | 31 kB          |
+| ALTCHA                       | 34 kB          |
 | ALTCHA with all translations | 49 kB          |
 | Cloudflare Turnstile         | 85+ kB         |
 | hCaptcha                     | 250+ kB        |
 | reCAPTCHA                    | 300+ kB        |
 
-When GZIPped, it totals about 31 kB, making ALTCHA’s widget about 90% smaller than reCAPTCHA.
+When GZIPped, it totals about 34 kB, making ALTCHA’s widget about ~90% smaller than reCAPTCHA.
 
 ## Content Security Policy (CSP)
 
@@ -205,6 +205,7 @@ For simple implementations, the widget supports a subset of configuration option
 - **`floatingPlacement`**: Preferred position relative to the anchor (`'auto'`, `'bottom'`, or `'top'`).
 - **`floatingOffset`**: Vertical offset in pixels between the UI and its anchor. (Default: `12`)
 - **`floatingPersist`**: Whether the floating widget remains visible after successful verification.
+- **`popoverPlacement`**: Preferred position of popovers relative to the widget (`'auto'`, `'bottom'`, or `'top'`).
 
 ### Modal & Challenge Settings
 
@@ -219,7 +220,9 @@ For simple implementations, the widget supports a subset of configuration option
 - **`test`**: Mocks a successful verification for testing environments.
 - **`mockError`**: Forces the widget into a failed state for UI testing.
 - **`fetch`**: A custom `fetch` implementation for network requests.
+- **`humanInteractionSignature`**: Whether the collector for HIS is enabled (Default: `true`).
 - **`setCookie`**: When configured, sends the payload as a cookie.
+- **`timeout`**: Verification timeout in milliseconds (Default: `90_000`).
 - **`verifyFunction`**: A custom verification handler that overrides default network verification.
 
 ## Cookies

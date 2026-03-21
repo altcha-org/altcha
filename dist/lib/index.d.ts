@@ -49,11 +49,6 @@ export interface Configuration {
 	 */
 	debug: boolean;
 	/**
-	 * The minimum verification time in milliseconds (adds an artificial delay if the PoW is faster).
-	 * @default 500
-	 */
-	minDuration: number;
-	/**
 	 * Prevents the code-challenge modal from stealing focus when opened.
 	 */
 	disableAutoFocus: boolean;
@@ -92,9 +87,18 @@ export interface Configuration {
 	 */
 	hideLogo: boolean;
 	/**
+	 * Enables the collection of pointer and scroll events for ALTCHA HIS mechanism (defaults to true).
+	 */
+	humanInteractionSignature: boolean;
+	/**
 	 * The ISO alpha-2 language code for localization (requires corresponding i18n file).
 	 */
 	language: string;
+	/**
+	 * The minimum verification time in milliseconds (adds an artificial delay if the PoW is faster).
+	 * @default 500
+	 */
+	minDuration: number;
 	/**
 	 * Forces the widget into a failed state with a mock error for UI testing.
 	 */
@@ -108,6 +112,10 @@ export interface Configuration {
 	 * CSS selector for an element to be mirrored inside the overlay modal.
 	 */
 	overlayContent: string | null;
+	/**
+	 * Configures the placement (top / bottom) for popovers. Defaults to 'auto'.
+	 */
+	popoverPlacement: "auto" | "bottom" | "top";
 	/**
 	 * Automatically attempts to restart verification with fewer workers if the browser runs out of memory (Argon2 and Scrypt only).
 	 */
@@ -128,6 +136,10 @@ export interface Configuration {
 	 * Mocks a successful verification. Useful for testing environments without network access.
 	 */
 	test: boolean;
+	/**
+	 * PoW verification timeout in milliseconds. Defaults to 90_000 ms.
+	 */
+	timeout: number;
 	/**
 	 * The visual style of the interaction element.
 	 */
@@ -386,7 +398,7 @@ export interface WidgetMethods {
 	getConfiguration: () => Configuration;
 	getState: () => State;
 	hide: () => void;
-	reset: (newState: State) => void;
+	reset: (newState?: State, err?: string | null) => void;
 	setState: (newState: State, err?: string | null) => void;
 	show: () => void;
 	updateUI: () => void;

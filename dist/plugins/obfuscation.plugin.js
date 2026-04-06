@@ -1,3 +1,111 @@
+const noop = () => {
+};
+function safe_not_equal(a, b) {
+  return a != a ? b == b : a !== b || a !== null && typeof a === "object" || typeof a === "function";
+}
+function subscribe_to_store(store2, run, invalidate) {
+  if (store2 == null) {
+    run(void 0);
+    return noop;
+  }
+  const unsub = untrack(
+    () => store2.subscribe(
+      run,
+      // @ts-expect-error
+      invalidate
+    )
+  );
+  return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+const subscriber_queue = [];
+function writable(value, start = noop) {
+  let stop = null;
+  const subscribers = /* @__PURE__ */ new Set();
+  function set(new_value) {
+    if (safe_not_equal(value, new_value)) {
+      value = new_value;
+      if (stop) {
+        const run_queue = !subscriber_queue.length;
+        for (const subscriber of subscribers) {
+          subscriber[1]();
+          subscriber_queue.push(subscriber, value);
+        }
+        if (run_queue) {
+          for (let i = 0; i < subscriber_queue.length; i += 2) {
+            subscriber_queue[i][0](subscriber_queue[i + 1]);
+          }
+          subscriber_queue.length = 0;
+        }
+      }
+    }
+  }
+  function update(fn) {
+    set(fn(
+      /** @type {T} */
+      value
+    ));
+  }
+  function subscribe(run, invalidate = noop) {
+    const subscriber = [run, invalidate];
+    subscribers.add(subscriber);
+    if (subscribers.size === 1) {
+      stop = start(set, update) || noop;
+    }
+    run(
+      /** @type {T} */
+      value
+    );
+    return () => {
+      subscribers.delete(subscriber);
+      if (subscribers.size === 0 && stop) {
+        stop();
+        stop = null;
+      }
+    };
+  }
+  return { set, update, subscribe };
+}
+function get(store2) {
+  let value;
+  subscribe_to_store(store2, (_) => value = _)();
+  return value;
+}
+let untracking = false;
+function untrack(fn) {
+  var previous_untracking = untracking;
+  try {
+    untracking = true;
+    return fn();
+  } finally {
+    untracking = previous_untracking;
+  }
+}
+function store(defaultValue) {
+  const scope = {
+    get: (name) => {
+      return get(scope.store)[name];
+    },
+    set: (name, value) => {
+      if (typeof name === "string") {
+        Object.assign(get(scope.store), {
+          [name]: value
+        });
+      } else {
+        Object.assign(get(scope.store), name);
+      }
+      scope.store.set(get(scope.store));
+    },
+    store: writable(defaultValue)
+  };
+  return scope;
+}
+globalThis.$altcha = globalThis.$altcha || {
+  algorithms: /* @__PURE__ */ new Map(),
+  defaults: store({}),
+  i18n: store({}),
+  instances: /* @__PURE__ */ new Set(),
+  plugins: /* @__PURE__ */ new Set()
+};
 class BasePlugin {
   constructor(host) {
     this.host = host;
@@ -86,9 +194,45 @@ function hexToBuffer(hex) {
 async function delay(ms) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
+async function hmac(algorithm, data, keyStr) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(keyStr),
+    {
+      name: "HMAC",
+      hash: { name: algorithm }
+    },
+    false,
+    ["sign", "verify"]
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    typeof data === "string" ? new TextEncoder().encode(data) : data
+  );
+  return new Uint8Array(signature);
+}
+function sortKeys(obj) {
+  if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
+    return obj;
+  }
+  return Object.keys(obj).sort().reduce((acc, key) => {
+    const value = obj[key];
+    if (value !== void 0) {
+      acc[key] = sortKeys(value);
+    }
+    return acc;
+  }, {});
+}
 function timeDuration(start) {
   return Math.floor((performance.now() - start) * 10) / 10;
 }
+var HmacAlgorithm = /* @__PURE__ */ ((HmacAlgorithm2) => {
+  HmacAlgorithm2["SHA_256"] = "SHA-256";
+  HmacAlgorithm2["SHA_384"] = "SHA-384";
+  HmacAlgorithm2["SHA_512"] = "SHA-512";
+  return HmacAlgorithm2;
+})(HmacAlgorithm || {});
 var State = /* @__PURE__ */ ((State2) => {
   State2["CODE"] = "code";
   State2["ERROR"] = "error";
@@ -122,6 +266,62 @@ class PasswordBuffer {
     this.dataView.setUint32(this.nonce.length, n, false);
     return this.buffer;
   }
+}
+async function createChallenge(options) {
+  const {
+    algorithm,
+    counter,
+    counterMode = "uint32",
+    cost,
+    deriveKey: deriveKey2,
+    data,
+    expiresAt,
+    hmacAlgorithm = HmacAlgorithm.SHA_256,
+    hmacKeySignatureSecret,
+    hmacSignatureSecret,
+    keyLength = 32,
+    keyPrefix = "00",
+    keyPrefixLength = keyLength / 2,
+    memoryCost,
+    parallelism
+  } = options;
+  const parameters = {
+    algorithm,
+    nonce: bufferToHex(crypto.getRandomValues(new Uint8Array(16))),
+    salt: bufferToHex(crypto.getRandomValues(new Uint8Array(16))),
+    cost,
+    keyLength,
+    memoryCost,
+    parallelism,
+    keyPrefix,
+    expiresAt: expiresAt instanceof Date ? Math.floor(expiresAt.getTime() / 1e3) : expiresAt,
+    data
+  };
+  let deriveKeyResult = null;
+  if (counter !== void 0) {
+    const nonceBuf = hexToBuffer(parameters.nonce);
+    deriveKeyResult = await deriveKey2(
+      parameters,
+      hexToBuffer(parameters.salt),
+      new PasswordBuffer(nonceBuf, counterMode).setCounter(counter)
+    );
+    if (deriveKeyResult.parameters) {
+      Object.assign(parameters, deriveKeyResult.parameters);
+    }
+    parameters.keyPrefix = bufferToHex(deriveKeyResult.derivedKey.slice(0, keyPrefixLength));
+  }
+  if (!hmacSignatureSecret) {
+    return {
+      parameters: sortKeys(parameters)
+    };
+  }
+  return signChallenge(
+    hmacAlgorithm,
+    parameters,
+    deriveKeyResult?.derivedKey,
+    hmacSignatureSecret,
+    hmacKeySignatureSecret
+  );
 }
 async function solveChallenge(options) {
   const {
@@ -248,6 +448,18 @@ async function solveChallengeWorkers(options) {
   }
   return solution || null;
 }
+async function signChallenge(algorithm, parameters, derivedKey, hmacSignatureSecret, hmacKeySignatureSecret) {
+  if (derivedKey && hmacKeySignatureSecret) {
+    parameters.keySignature = bufferToHex(
+      await hmac(algorithm, derivedKey, hmacKeySignatureSecret)
+    );
+  }
+  parameters = sortKeys(parameters);
+  return {
+    parameters,
+    signature: bufferToHex(await hmac(algorithm, JSON.stringify(parameters), hmacSignatureSecret))
+  };
+}
 async function deobfuscate(obfuscatedData, options = {}) {
   let {
     concurrency = Math.max(1, Math.min(4, navigator.hardwareConcurrency)),
@@ -300,7 +512,48 @@ async function deobfuscate(obfuscatedData, options = {}) {
   );
   return new TextDecoder().decode(result);
 }
+async function obfuscate(str, options = {}) {
+  const { deriveKey: deriveKey$1 = deriveKey } = options;
+  const counterMin = options?.counterMin || 20;
+  const counterMax = options?.counterMax || 200;
+  const { parameters } = await createChallenge({
+    algorithm: "PBKDF2/SHA-256",
+    cost: 5e3,
+    deriveKey: deriveKey$1,
+    counter: Math.floor(Math.random() * (counterMax - counterMin + 1)) + counterMin,
+    keyPrefixLength: 32,
+    ...options
+  });
+  const key = await crypto.subtle.importKey(
+    "raw",
+    hexToBuffer(parameters.keyPrefix),
+    { name: "AES-GCM" },
+    false,
+    ["encrypt"]
+  );
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    new TextEncoder().encode(str)
+  );
+  return btoa(
+    JSON.stringify({
+      parameters: {
+        ...parameters,
+        // Return only half the derived key
+        keyPrefix: parameters.keyPrefix.slice(0, parameters.keyLength || 32)
+      },
+      cipher: {
+        iv: bufferToHex(iv),
+        data: bufferToHex(data)
+      }
+    })
+  );
+}
 class ObfuscationPlugin extends BasePlugin {
+  static deobfuscate = deobfuscate;
+  static obfuscate = obfuscate;
   elTrigger = null;
   activate() {
     this.elTrigger = this.host.querySelector("button");

@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.0-beta.4] - 2026-04-06
+
+- Fix: Plugin registration in the global variable
+
 ## [3.0.0-beta.3] - 2026-03-21
 
 - Fix: Challenge v1 compatibility when using configure() method

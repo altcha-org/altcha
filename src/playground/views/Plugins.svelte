@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ObfuscationPlugin, obfuscate } from '../../plugins/obfuscation.plugin';
+	import { ObfuscationPlugin } from '../../plugins/obfuscation.plugin';
 	import Options from '../components/Options.svelte';
 	import { log } from '../helpers';
 
@@ -9,7 +9,7 @@
 	let obfuscated = $state('');
 
 	$effect(() => {
-		obfuscate(obfuscationOptions.data).then((result) => {
+		ObfuscationPlugin.obfuscate(obfuscationOptions.data).then((result) => {
 			obfuscated = result;
 			log('obfuscated data', result);
 		});

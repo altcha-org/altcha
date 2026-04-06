@@ -13,7 +13,7 @@ import {
 	type VerifyResult
 } from '../types';
 
-export async function deobfuscate(
+async function deobfuscate(
 	obfuscatedData: string,
 	options: {
 		concurrency?: number;
@@ -88,7 +88,7 @@ export async function deobfuscate(
 	return new TextDecoder().decode(result);
 }
 
-export async function obfuscate(
+async function obfuscate(
 	str: string,
 	options: Partial<CreateChallengeOptions> & {
 		counterMax?: number;
@@ -136,6 +136,10 @@ export async function obfuscate(
 }
 
 export class ObfuscationPlugin extends BasePlugin {
+	static deobfuscate = deobfuscate;
+
+	static obfuscate = obfuscate;
+
 	elTrigger: HTMLElement | null = null;
 
 	activate() {

@@ -56,6 +56,7 @@ Explore starter templates for popular frameworks:
 - [Java](https://github.com/altcha-org/altcha-lib-java)
 - [Ruby](https://github.com/altcha-org/altcha-lib-rb)
 - [Elixir](https://github.com/altcha-org/altcha-lib-ex)
+- [Rust](https://github.com/altcha-org/altcha-lib-rs)
 
 ## Plugins & CMS
 
@@ -120,7 +121,7 @@ ALTCHA is optimized for performance:
 | Distribution                 | Size (GZIPped) |
 | ---------------------------- | -------------- |
 | ALTCHA                       | 34 kB          |
-| ALTCHA with all translations | 49 kB          |
+| ALTCHA with all translations | 52 kB          |
 | Cloudflare Turnstile         | 85+ kB         |
 | hCaptcha                     | 250+ kB        |
 | reCAPTCHA                    | 300+ kB        |
@@ -335,24 +336,30 @@ For additional verification, ALTCHA supports **image/audio code challenges** (e.
 
 [Data obfuscation]() is supported via an official plugin, which must be imported alongside the widget. This is ideal for protecting sensitive information, such as email addresses, from scrapers until the challenge is solved.
 
+To obfuscate data, run:
+
+```sh
+npx altcha-lib obfuscate [data]
+```
+
 ### Programmatic Usage
 
-The plugin exports `obfuscate` and `deobfuscate` functions for manual data handling:
+The plugin exports `ObfuscationPlugin` with static methods `obfuscate` and `deobfuscate` for manual data handling:
 
 ```ts
-import { obfuscate } from 'altcha/plugins/obfuscation';
+import { ObfuscationPlugin } from 'altcha/plugins/obfuscation';
 
-const obfuscatedData = await obfuscate('mailto:hello@example.com');
+const obfuscatedData = await ObfuscationPlugin.obfuscate('mailto:hello@example.com');
 ```
 
 ### Widget Integration
 
-To use the plugin with the widget, ensure `altcha/plugins/obfuscation` is imported **after** the main library. Use the `data-obfuscated` attribute to provide the Base64-encoded payload:
+To use the plugin with the widget, ensure `altcha/plugins/obfuscation` is imported before the main library. Use the `data-obfuscated` attribute to provide the Base64-encoded payload:
 
 ```html
 <script>
-	import 'altcha';
 	import 'altcha/plugins/obfuscation';
+	import 'altcha';
 </script>
 
 <altcha-widget data-obfuscated="${obfuscatedData}" display="floating"></altcha-widget>

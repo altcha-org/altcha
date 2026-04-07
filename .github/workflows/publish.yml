@@ -2,8 +2,7 @@ name: Publish Package to npmjs
 on:
   push:
     tags:
-      - 'v3.[0-9]+.[0-9]+-beta.[0-9]+'
-      # - 'v3.[0-9]+.[0-9]+'
+      - 'v3.[0-9]+.[0-9]+'
 jobs:
   build:
     runs-on: ubuntu-latest

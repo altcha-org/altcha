@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.0] - 2026-04-07
+
+- Stable release
+
 ## [3.0.0-beta.4] - 2026-04-06
 
 - Fix: Plugin registration in the global variable

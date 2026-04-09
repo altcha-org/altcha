@@ -50,6 +50,7 @@ Explore starter templates for popular frameworks:
 ## Server Integrations
 
 - [TypeScript](https://github.com/altcha-org/altcha-lib)
+- [Dart](https://github.com/altcha-org/altcha-lib-dart)
 - [PHP](https://github.com/altcha-org/altcha-lib-php)
 - [Go](https://github.com/altcha-org/altcha-lib-go)
 - [Python](https://github.com/altcha-org/altcha-lib-py)
@@ -57,6 +58,7 @@ Explore starter templates for popular frameworks:
 - [Ruby](https://github.com/altcha-org/altcha-lib-rb)
 - [Elixir](https://github.com/altcha-org/altcha-lib-ex)
 - [Rust](https://github.com/altcha-org/altcha-lib-rs)
+- [C++](https://github.com/altcha-org/altcha-lib-cpp)
 
 ## Plugins & CMS
 
@@ -165,7 +167,7 @@ For simple implementations, the widget supports a subset of configuration option
 <altcha-widget
 	auto="off"
 	challenge="https://api.example.com/challenge"
-	configuration='{"delay": 500}'
+	configuration='{"minDuration": 1000}'
 	display="standard"
 	language="en"
 	name="altcha"
@@ -268,9 +270,7 @@ Example using the `configuration` property in the challenge JSON response to for
 			"path": "/submit"
 		}
 	},
-	"parameters": {
-		// ...
-	},
+	"parameters": {},
 	"signature": "..."
 }
 ```

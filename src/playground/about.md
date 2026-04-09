@@ -11,7 +11,7 @@ The system is intentionally asymmetric: solving is computationally expensive for
 ## Source Code
 
 - [TypeScript Implementation](https://github.com/altcha-org/altcha/tree/v3/src/pow.ts)
-- [C++ Solver](https://github.com/altcha-org/pow-v2-cpp-solver)
+- [CLI Utility (C++)](https://github.com/altcha-org/altcha-lib-cpp)
 
 ## Design Goals
 

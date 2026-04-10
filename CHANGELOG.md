@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.0.2] - 2026-04-10
+
+- Fix: solveChallenge yielding and timeout
+
+## [3.0.1] - 2026-04-07
+
+- Version bump to re-release in stable npm channel
+
 ## [3.0.0] - 2026-04-07
 
 - Stable release

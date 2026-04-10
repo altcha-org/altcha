@@ -7125,10 +7125,11 @@ const jsContent$1 = `(function() {
     const password = new PasswordBuffer(nonceBuf, counterMode);
     const start = performance.now();
     let counter = counterStart;
+    let iterations = 0;
     let derivedKeyHex = "";
     let lastYield = start;
     while (true) {
-      if (controller?.signal.aborted || timeout && counter % 10 === 0 && performance.now() - start > timeout) {
+      if (controller?.signal.aborted || timeout && iterations % 10 === 0 && performance.now() - start > timeout) {
         return null;
       }
       const { derivedKey } = await deriveKey2(
@@ -7136,7 +7137,7 @@ const jsContent$1 = `(function() {
         saltBuf,
         password.setCounter(counter)
       );
-      if (counter % 10 === 0 && performance.now() - lastYield > 200) {
+      if (iterations % 10 === 0 && performance.now() - lastYield > 200) {
         await delay(0);
         lastYield = performance.now();
       }
@@ -7145,6 +7146,7 @@ const jsContent$1 = `(function() {
         break;
       }
       counter = counter + counterStep;
+      iterations = iterations + 1;
     }
     return {
       counter,
@@ -7325,10 +7327,11 @@ const jsContent = `(function() {
     const password = new PasswordBuffer(nonceBuf, counterMode);
     const start = performance.now();
     let counter = counterStart;
+    let iterations = 0;
     let derivedKeyHex = "";
     let lastYield = start;
     while (true) {
-      if (controller?.signal.aborted || timeout && counter % 10 === 0 && performance.now() - start > timeout) {
+      if (controller?.signal.aborted || timeout && iterations % 10 === 0 && performance.now() - start > timeout) {
         return null;
       }
       const { derivedKey } = await deriveKey2(
@@ -7336,7 +7339,7 @@ const jsContent = `(function() {
         saltBuf,
         password.setCounter(counter)
       );
-      if (counter % 10 === 0 && performance.now() - lastYield > 200) {
+      if (iterations % 10 === 0 && performance.now() - lastYield > 200) {
         await delay(0);
         lastYield = performance.now();
       }
@@ -7345,6 +7348,7 @@ const jsContent = `(function() {
         break;
       }
       counter = counter + counterStep;
+      iterations = iterations + 1;
     }
     return {
       counter,

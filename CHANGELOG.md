@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.3] - 2026-04-18
+
+- Fix: Accessibility improvements [#175]
+
 ## [3.0.2] - 2026-04-10
 
 - Fix: solveChallenge yielding and timeout

@@ -1,5 +1,5 @@
 const i18n = {
-	ariaLinkLabel: '前往 Altcha.org',
+	ariaLinkLabel: 'Altcha (官方網站)',
 	cancel: '取消',
 	enterCode: '輸入代碼',
 	enterCodeAria: '輸入你聽到嘅代碼。按空格鍵播放音訊。',
@@ -7,7 +7,7 @@ const i18n = {
 	error: '驗證失敗。請稍後再試。',
 	expired: '驗證已過期。請再試一次。',
 	footer:
-		'由 <a href="https://altcha.org/" target="_blank" aria-label="前往 Altcha.org">ALTCHA</a> 提供保護',
+		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 提供保護',
 	getAudioChallenge: '取得音訊驗證',
 	label: '我唔係機械人',
 	loading: '載入中...',

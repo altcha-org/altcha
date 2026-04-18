@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "Żur Altcha.org",
+  ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
-  footer: 'Protett minn <a href="https://altcha.org/" target="_blank" aria-label="Żur Altcha.org">ALTCHA</a>',
+  footer: 'Protett minn <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sit uffiċjali)">ALTCHA</a>',
   getAudioChallenge: "Ikseb sfida bl-awdjo",
   label: "M’inix robot",
   loading: "Qed jitgħabba...",

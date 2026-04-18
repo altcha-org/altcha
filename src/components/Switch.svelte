@@ -7,11 +7,19 @@
 	}
 
 	let { loading, ...rest }: Props = $props();
+
+	let inputEl: HTMLInputElement;
+
+	function onClick() {
+		inputEl?.click();
+	}
 </script>
 
-<label class="altcha-switch" data-loading={loading}>
-	<input type="checkbox" {...rest} />
-	<div class="altcha-switch-toggle">
+<div class="altcha-switch" data-loading={loading}>
+	<input bind:this={inputEl} type="checkbox" {...rest} />
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="altcha-switch-toggle" onclick={onClick}>
 		<div class="altcha-spinner altcha-switch-spinner"></div>
 	</div>
-</label>
+</div>

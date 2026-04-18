@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: '访问 Altcha.org',
+	ariaLinkLabel: 'Altcha (官方网站)',
 	enterCode: '输入代码',
 	enterCodeAria: '输入您听到的代码。按空格键播放音频。',
 	error: '验证失败。稍后再试。',
 	expired: '验证已过期。请重试。',
 	footer:
-		'由 <a href="https://altcha.org/" target="_blank" aria-label="访问 Altcha.org">ALTCHA</a> 保护',
+		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方网站)">ALTCHA</a> 保护',
 	getAudioChallenge: '获取音频挑战',
 	label: '我不是机器人',
 	loading: '加载中...',

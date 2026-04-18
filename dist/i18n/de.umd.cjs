@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Besuche Altcha.org",
+    ariaLinkLabel: "Altcha (offizielle Website)",
     enterCode: "Code eingeben",
     enterCodeAria: "Geben Sie den Code ein, den Sie hören. Drücken Sie die Leertaste, um die Audio abzuspielen.",
     error: "Überprüfung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
     expired: "Überprüfung abgelaufen. Bitte versuchen Sie es erneut.",
-    footer: 'Geschützt durch <a href="https://altcha.org/" target="_blank" aria-label="Besuche Altcha.org">ALTCHA</a>',
+    footer: 'Geschützt durch <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offizielle Website)">ALTCHA</a>',
     getAudioChallenge: "Audio-Herausforderung anfordern",
     label: "Ich bin kein Roboter",
     loading: "Lade...",

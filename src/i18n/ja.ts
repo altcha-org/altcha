@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Altcha.orgを訪問',
+	ariaLinkLabel: 'Altcha (公式ウェブサイト)',
 	enterCode: 'コードを入力',
 	enterCodeAria: '聞こえるコードを入力してください。スペースキーを押して音声を再生します。',
 	error: '認証に失敗しました。後でもう一度試してください。',
 	expired: '認証が期限切れです。再試行してください。',
 	footer:
-		'保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
+		'保護されています <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (公式ウェブサイト)">ALTCHA</a>',
 	getAudioChallenge: '音声チャレンジを取得',
 	label: '私はロボットではありません',
 	loading: '読み込み中...',

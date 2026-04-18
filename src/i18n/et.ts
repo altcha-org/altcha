@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Külasta Altcha.org',
+	ariaLinkLabel: 'Altcha (ametlik veebisait)',
 	enterCode: 'Sisesta kood',
 	enterCodeAria: 'Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.',
 	error: 'Kinnitamine ebaõnnestus. Proovi hiljem uuesti.',
 	expired: 'Kinnitamine aegus. Proovi uuesti.',
 	footer:
-		'Kaitstud <a href="https://altcha.org/" target="_blank" aria-label="Külasta Altcha.org">ALTCHA</a> poolt',
+		'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
 	getAudioChallenge: 'Hangi heliülesanne',
 	label: 'Ma ei ole robot',
 	loading: 'Laadimine...',

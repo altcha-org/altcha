@@ -1,12 +1,12 @@
 const i18n$2 = {
-  ariaLinkLabel: "Visitez Altcha.org",
+  ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
   enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
   error: "Échec de la vérification. Réessayez plus tard.",
   expired: "La vérification a expiré. Réessayez.",
-  footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
+  footer: 'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site officiel)">ALTCHA</a>',
   getAudioChallenge: "Obtenir un défi audio",
-  label: "Pas un robot",
+  label: "Je ne suis pas un robot",
   loading: "Chargement...",
   reload: "Recharger",
   verify: "Vérifier",
@@ -21,12 +21,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("fr-ca", i18n$2);
 }
 const i18n$1 = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (sitio web oficial)",
   enterCode: "Ingresa el código",
   enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
   error: "Falló la verificación. Por favor vuelve a intentarlo más tarde.",
   expired: "La verificación expiró. Por favor inténtalo de nuevo.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sitio web oficial)">ALTCHA</a>',
   getAudioChallenge: "Obtener un reto de audio",
   label: "No soy un robot",
   loading: "Cargando...",
@@ -43,12 +43,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("es-419", i18n$1);
 }
 const i18n = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Digite o código",
   enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
   error: "Falha na verificação. Por favor, tente novamente mais tarde.",
   expired: "Verificação expirada. Por favor, tente novamente.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
   getAudioChallenge: "Obter desafio de áudio",
   label: "Eu não sou um robô",
   loading: "Carregando...",

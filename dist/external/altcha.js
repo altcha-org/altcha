@@ -4969,14 +4969,14 @@ globalThis.$altcha = globalThis.$altcha || {
   plugins: /* @__PURE__ */ new Set()
 };
 const i18n = {
-  ariaLinkLabel: "Visit Altcha.org",
+  ariaLinkLabel: "Altcha (official website)",
   cancel: "Cancel",
   enterCode: "Enter code",
   enterCodeAria: "Enter code you hear. Press Space to play audio.",
   enterCodeFromImage: "To proceed, please enter the code from the image below.",
   error: "Verification failed. Try again later.",
   expired: "Verification expired. Try again.",
-  footer: 'Protected by <a href="https://altcha.org/" target="_blank" aria-label="Visit Altcha.org">ALTCHA</a>',
+  footer: 'Protected by <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (official website)">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
   label: "I'm not a robot",
   loading: "Loading...",
@@ -4994,10 +4994,14 @@ const PUBLIC_VERSION = "5";
 if (typeof window !== "undefined") {
   ((window.__svelte ??= {}).v ??= /* @__PURE__ */ new Set()).add(PUBLIC_VERSION);
 }
-var root$7 = /* @__PURE__ */ from_html(`<label class="altcha-checkbox"><input/> <svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></label>`);
+var root$7 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox"><input/> <svg aria-hidden="true" width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></div>`);
 function Checkbox($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, ["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
+  let inputEl;
+  function onClick() {
+    inputEl?.click();
+  }
   var $$exports = {
     get loading() {
       return loading();
@@ -5007,15 +5011,19 @@ function Checkbox($$anchor, $$props) {
       flushSync();
     }
   };
-  var label = root$7();
-  var input = child(label);
+  var div = root$7();
+  var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
-  next(4);
-  reset(label);
-  template_effect(() => set_attribute(label, "data-loading", loading()));
-  append($$anchor, label);
+  bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
+  var svg = sibling(input, 2);
+  next(2);
+  reset(div);
+  template_effect(() => set_attribute(div, "data-loading", loading()));
+  delegated("click", svg, onClick);
+  append($$anchor, div);
   return pop($$exports);
 }
+delegate(["click"]);
 create_custom_element(Checkbox, { loading: {} }, [], [], { mode: "open" });
 var root$6 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox-native"><input/> <div class="altcha-spinner altcha-checkbox-native-spinner"></div></div>`);
 function CheckboxNative($$anchor, $$props) {
@@ -5040,7 +5048,7 @@ function CheckboxNative($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(CheckboxNative, { loading: {} }, [], [], { mode: "open" });
-var root$5 = /* @__PURE__ */ from_html(`<div><a target="_blank" class="altcha-logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
+var root$5 = /* @__PURE__ */ from_html(`<div><a target="_blank" class="altcha-logo" aria-hidden="true" tabindex="-1"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
 function Logo($$anchor, $$props) {
   push($$props, true);
   let strings = prop($$props, "strings");
@@ -5063,7 +5071,7 @@ function Logo($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Logo, { strings: {} }, [], [], { mode: "open" });
-var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><div></div> <!></div>`);
+var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><p></p> <!></div>`);
 function Footer($$anchor, $$props) {
   push($$props, true);
   let logo = prop($$props, "logo"), strings = prop($$props, "strings");
@@ -5084,10 +5092,10 @@ function Footer($$anchor, $$props) {
     }
   };
   var div = root$4();
-  var div_1 = child(div);
-  html(div_1, () => strings().footer, true);
-  reset(div_1);
-  var node = sibling(div_1, 2);
+  var p = child(div);
+  html(p, () => strings().footer, true);
+  reset(p);
+  var node = sibling(p, 2);
   {
     var consequent = ($$anchor2) => {
       Logo($$anchor2, {
@@ -5105,10 +5113,14 @@ function Footer($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Footer, { logo: {}, strings: {} }, [], [], { mode: "open" });
-var root$3 = /* @__PURE__ */ from_html(`<label class="altcha-switch"><input/> <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></label>`);
+var root$3 = /* @__PURE__ */ from_html(`<div class="altcha-switch"><input/>  <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></div>`);
 function Switch($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, ["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
+  let inputEl;
+  function onClick() {
+    inputEl?.click();
+  }
   var $$exports = {
     get loading() {
       return loading();
@@ -5118,15 +5130,18 @@ function Switch($$anchor, $$props) {
       flushSync();
     }
   };
-  var label = root$3();
-  var input = child(label);
+  var div = root$3();
+  var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
-  next(2);
-  reset(label);
-  template_effect(() => set_attribute(label, "data-loading", loading()));
-  append($$anchor, label);
+  bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
+  var div_1 = sibling(input, 2);
+  reset(div);
+  template_effect(() => set_attribute(div, "data-loading", loading()));
+  delegated("click", div_1, onClick);
+  append($$anchor, div);
   return pop($$exports);
 }
+delegate(["click"]);
 create_custom_element(Switch, { loading: {} }, [], [], { mode: "open" });
 var AudioState = /* @__PURE__ */ ((AudioState2) => {
   AudioState2["ERROR"] = "error";

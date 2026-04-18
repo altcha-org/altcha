@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Altcha.org sahypasyna giriň',
+	ariaLinkLabel: 'Altcha (resmi web sahypa)',
 	enterCode: 'Kody giriziň',
 	enterCodeAria: 'Eşiden kodyňyzy giriziň. Sesli görkezmäni diňlemek üçin Space basyň.',
 	error: 'Barlamak şowsuz boldy. Has soňrak synanyşyň.',
 	expired: 'Barlamanyň möhleti gutardy. Gaýtadan synanyşyň.',
 	footer:
-		'Goralan <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org sahypasyna giriň">ALTCHA</a> tarapyndan',
+		'Goralan <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sahypa)">ALTCHA</a> tarapyndan',
 	getAudioChallenge: 'Sesli tabşyryk alyň',
 	label: 'Men robot däl',
 	loading: 'Ýüklenýär...',

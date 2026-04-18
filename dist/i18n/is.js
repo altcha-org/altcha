@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "Heimsækja Altcha.org",
+  ariaLinkLabel: "Altcha (opinber vefsíða)",
   enterCode: "Sláðu inn kóða",
   enterCodeAria: "Sláðu inn kóðann sem þú heyrir. Ýttu á Space til að spila hljóðið.",
   error: "Staðfesting mistókst. Reyndu aftur síðar.",
   expired: "Staðfesting er útrunnin. Reyndu aftur.",
-  footer: 'Verndað af <a href="https://altcha.org/" target="_blank" aria-label="Heimsækja Altcha.org">ALTCHA</a>',
+  footer: 'Verndað af <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (opinber vefsíða)">ALTCHA</a>',
   getAudioChallenge: "Fá hljóðáskorun",
   label: "Ég er ekki robot",
   loading: "Hleður...",

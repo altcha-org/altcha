@@ -1,12 +1,12 @@
 const i18n = {
-	ariaLinkLabel: 'Altcha.org saytiga tashrif buyuring',
+	ariaLinkLabel: 'Altcha (rasmiy veb-sayt)',
 	enterCode: 'Kodni kiriting',
 	enterCodeAria:
 		"Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
 	error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
 	expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
 	footer:
-		'<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org saytiga tashrif buyuring">ALTCHA</a> tomonidan himoyalangan',
+		'<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rasmiy veb-sayt)">ALTCHA</a> tomonidan himoyalangan',
 	getAudioChallenge: 'Audio sinovni olish',
 	label: 'Men robot emasman',
 	loading: 'Yuklanmoqda...',

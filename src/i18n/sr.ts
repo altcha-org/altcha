@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Posetite Altcha.org',
+	ariaLinkLabel: 'Altcha (zvanična web stranica)',
 	enterCode: 'Unesite kod',
 	enterCodeAria: 'Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.',
 	error: 'Verifikacija nije uspela. Pokušajte ponovo kasnije.',
 	expired: 'Verifikacija je istekla. Pokušajte ponovo.',
 	footer:
-		'Zaštićeno od strane <a href="https://altcha.org/" target="_blank" aria-label="Posetite Altcha.org">ALTCHA</a>',
+		'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (zvanična web stranica)">ALTCHA</a>',
 	getAudioChallenge: 'Dohvatite audio izazov',
 	label: 'Nisam robot',
 	loading: 'Učitavanje...',

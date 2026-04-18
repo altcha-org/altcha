@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Vieraile sivulla Altcha.org",
+    ariaLinkLabel: "Altcha (virallinen verkkosivusto)",
     enterCode: "Syötä koodi",
     enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
     error: "Varmennus epäonnistui. Yritä myöhemmin uudelleen.",
     expired: "Varmennus vanhentui. Yritä uudelleen.",
-    footer: 'Suojattu <a href="https://altcha.org/" target="_blank" aria-label="Vieraile sivulla Altcha.org">ALTCHA</a>:lla',
+    footer: 'Suojattu <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (virallinen verkkosivusto)">ALTCHA</a>:lla',
     getAudioChallenge: "Hae äänitehtävä",
     label: "En ole robotti",
     loading: "Ladataan...",

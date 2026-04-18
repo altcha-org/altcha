@@ -18,14 +18,14 @@
 	--altcha-color-primary-content: oklch(100% 0.00011 271.152);
 	--altcha-color-success: oklch(55.748% 0.18968 142.511);
 	--altcha-color-success-content: oklch(100% 0.00011 271.152);
-	--altcha-checkbox-border-color: var(--altcha-color-neutral);
+	--altcha-checkbox-border-color: light-dark(
+		oklch(66.494% 0.00233 15.434),
+		oklch(51.028% 0.00006 271.152)
+	);
 	--altcha-checkbox-border-radius: 5px;
 	--altcha-checkbox-border-width: var(--altcha-border-width);
 	--altcha-checkbox-outline: 2px solid var(--altcha-checkbox-outline-color);
-	--altcha-checkbox-outline-color: light-dark(
-		color-mix(in srgb, var(--altcha-color-primary) 20%, transparent),
-		color-mix(in srgb, var(--altcha-color-primary) 60%, transparent)
-	);
+	--altcha-checkbox-outline-color: -webkit-focus-ring-color;
 	--altcha-checkbox-outline-offset: 2px;
 	--altcha-checkbox-size: 22px;
 	--altcha-checkbox-transition-duration: var(--altcha-transition-duration);
@@ -52,6 +52,12 @@
 	--altcha-transition-duration: 0.6s;
 	--altcha-z-index: 99999999;
 	--altcha-z-index-popover: 999999999;
+}
+
+@supports (-moz-appearance: none) {
+	:root {
+		--altcha-checkbox-outline-color: var(--altcha-color-primary);
+	}
 }
 
 .altcha {
@@ -139,6 +145,11 @@
 		justify-content: flex-end;
 		font-size: 0.7rem;
 		opacity: 0.7;
+
+		& p {
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	&-error {
@@ -200,7 +211,7 @@
 		border: var(--altcha-checkbox-border-width) solid var(--altcha-spinner-color);
 		border-bottom-color: transparent;
 		border-right-color: transparent;
-		opacity: 0.5;
+		opacity: 0.7;
 	}
 
 	&-popover {
@@ -397,10 +408,10 @@
 			background: var(--altcha-input-background-color);
 			border: var(--altcha-checkbox-border-width, 2px) solid var(--altcha-checkbox-border-color);
 			border-radius: var(--altcha-checkbox-border-radius);
+			cursor: pointer;
 			height: var(--altcha-checkbox-size);
 			left: 0;
 			margin: 0;
-			outline: none;
 			padding: 0;
 			position: absolute;
 			top: 0;
@@ -414,11 +425,6 @@
 				background: var(--altcha-color-neutral);
 				display: block;
 				transform: scale(0);
-			}
-
-			&:focus {
-				outline: var(--altcha-checkbox-outline);
-				outline-offset: var(--altcha-checkbox-outline-offset);
 			}
 
 			&:checked {
@@ -492,11 +498,6 @@
 			height: var(--altcha-checkbox-size);
 			margin: 0;
 			width: var(--altcha-checkbox-size);
-
-			&:focus {
-				outline: var(--altcha-checkbox-outline);
-				outline-offset: var(--altcha-checkbox-outline-offset);
-			}
 		}
 
 		&-spinner {
@@ -523,7 +524,6 @@
 		align-items: center;
 		border-radius: var(--altcha-switch-border-radius);
 		background-color: var(--altcha-switch-background-color);
-		cursor: pointer;
 		display: flex;
 		height: var(--altcha-switch-height);
 		padding: var(--altcha-switch-padding);
@@ -537,6 +537,7 @@
 
 		& input {
 			appearance: none;
+			cursor: pointer;
 			height: 100%;
 			left: 0;
 			opacity: 0;
@@ -549,6 +550,7 @@
 			align-items: center;
 			background-color: var(--altcha-switch-toggle-color);
 			border-radius: var(--altcha-switch-toggle-border-radius);
+			cursor: pointer;
 			display: flex;
 			height: var(--altcha-switch-toggle-size);
 			justify-content: center;

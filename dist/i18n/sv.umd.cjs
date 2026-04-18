@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Besök Altcha.org",
+    ariaLinkLabel: "Altcha (officiell webbplats)",
     enterCode: "Ange kod",
     enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
     error: "Verifiering misslyckades. Försök igen senare.",
     expired: "Verifieringen har gått ut. Försök igen.",
-    footer: 'Skyddad av <a href="https://altcha.org/" target="_blank" aria-label="Besök Altcha.org">ALTCHA</a>',
+    footer: 'Skyddad av <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiell webbplats)">ALTCHA</a>',
     getAudioChallenge: "Få ljudutmaning",
     label: "Jag är inte en robot",
     loading: "Laddar...",

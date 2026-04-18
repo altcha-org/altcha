@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "Besoek Altcha.org",
+  ariaLinkLabel: "Altcha (amptelike webwerf)",
   enterCode: "Voer kode in",
   enterCodeAria: "Voer die kode in wat jy hoor. Druk Spasie om die klank af te speel.",
   error: "Verifikasie het misluk. Probeer later weer.",
   expired: "Verifikasie het verval. Probeer weer.",
-  footer: 'Beskerm deur <a href="https://altcha.org/" target="_blank" aria-label="Besoek Altcha.org">ALTCHA</a>',
+  footer: 'Beskerm deur <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (amptelike webwerf)">ALTCHA</a>',
   getAudioChallenge: "Kry 'n klankuitdaging",
   label: "Ek is nie 'n robot nie",
   loading: "Laai...",

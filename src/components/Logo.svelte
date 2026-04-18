@@ -17,6 +17,7 @@
 		class="altcha-logo"
 		aria-label={strings.ariaLinkLabel}
 		aria-hidden="true"
+		tabindex="-1"
 	>
 		<svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path

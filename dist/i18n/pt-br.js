@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Digite o código",
   enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
   error: "Falha na verificação. Por favor, tente novamente mais tarde.",
   expired: "Verificação expirada. Por favor, tente novamente.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
   getAudioChallenge: "Obter desafio de áudio",
   label: "Eu não sou um robô",
   loading: "Carregando...",

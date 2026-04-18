@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Այցելեք Altcha.org",
+    ariaLinkLabel: "Altcha (պաշտոնական կայք)",
     enterCode: "Մուտքագրեք կոդը",
     enterCodeAria: "Մուտքագրեք այն կոդը, որը լսում եք։ Ձայնը նվագելու համար սեղմեք բացատ (Space):",
     error: "Հաստատումը ձախողվեց։ Փորձեք ավելի ուշ։",
     expired: "Հաստատման ժամկետը լրացել է։ Փորձեք կրկին։",
-    footer: 'Պաշտպանված է <a href="https://altcha.org/" target="_blank" aria-label="Այցելեք Altcha.org">ALTCHA</a>-ի կողմից',
+    footer: 'Պաշտպանված է <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (պաշտոնական կայք)">ALTCHA</a>-ի կողմից',
     getAudioChallenge: "Ստանալ ձայնային առաջադրանք",
     label: "Ես ռոբոտ չեմ",
     loading: "Բեռնվում է...",

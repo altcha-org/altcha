@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Vizitoni Altcha.org",
+    ariaLinkLabel: "Altcha (faqja zyrtare)",
     enterCode: "Fut kodin",
     enterCodeAria: "Fut kodin që dëgjon. Shtypni Hapësirë për të luajtur audio.",
     error: "Verifikimi dështoi. Provoni përsëri më vonë.",
     expired: "Verifikimi ka skaduar. Provoni përsëri.",
-    footer: 'I mbrojtur nga <a href="https://altcha.org/" target="_blank" aria-label="Vizitoni Altcha.org">ALTCHA</a>',
+    footer: 'I mbrojtur nga <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (faqja zyrtare)">ALTCHA</a>',
     getAudioChallenge: "Merr një sfidë audio",
     label: "Unë nuk jam një robot",
     loading: "Duke u ngarkuar...",

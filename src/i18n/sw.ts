@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Tembelea Altcha.org',
+	ariaLinkLabel: 'Altcha (tovuti rasmi)',
 	enterCode: 'Weka nambari',
 	enterCodeAria: 'Weka nambari unayosikia. Bonyeza Space kucheza sauti.',
 	error: 'Uthibitishaji umeshindwa. Jaribu tena baadaye.',
 	expired: 'Uthibitishaji umeisha. Jaribu tena.',
 	footer:
-		'Imealindwa na <a href="https://altcha.org/" target="_blank" aria-label="Tembelea Altcha.org">ALTCHA</a>',
+		'Imealindwa na <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (tovuti rasmi)">ALTCHA</a>',
 	getAudioChallenge: 'Pata changamoto ya sauti',
 	label: 'Mimi sio roboti',
 	loading: 'Inapakia...',

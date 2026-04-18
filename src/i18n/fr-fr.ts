@@ -1,13 +1,13 @@
 const i18n = {
-	ariaLinkLabel: 'Visitez Altcha.org',
+	ariaLinkLabel: 'Altcha (site officiel)',
 	enterCode: 'Entrez le code',
 	enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
 	error: 'Échec de la vérification. Essayez à nouveau plus tard.',
 	expired: 'La vérification a expiré. Essayez à nouveau.',
 	footer:
-		'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
+		'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site officiel)">ALTCHA</a>',
 	getAudioChallenge: 'Obtenir un défi audio',
-	label: 'Pas un robot',
+	label: 'Je ne suis pas un robot',
 	loading: 'Chargement...',
 	reload: 'Recharger',
 	verify: 'Vérifier',

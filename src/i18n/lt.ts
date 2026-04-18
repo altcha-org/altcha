@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Apsilankykite Altcha.org',
+	ariaLinkLabel: 'Altcha (oficiali svetainė)',
 	enterCode: 'Įveskite kodą',
 	enterCodeAria: 'Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.',
 	error: 'Patvirtinimas nepavyko. Bandykite vėliau.',
 	expired: 'Patvirtinimo laikas baigėsi. Bandykite dar kartą.',
 	footer:
-		'Apsaugota <a href="https://altcha.org/" target="_blank" aria-label="Apsilankykite Altcha.org">ALTCHA</a>',
+		'Apsaugota <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiali svetainė)">ALTCHA</a>',
 	getAudioChallenge: 'Gauti garso užduotį',
 	label: 'Aš nesu robotas',
 	loading: 'Įkeliama...',

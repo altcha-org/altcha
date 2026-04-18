@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n$n = {
-    ariaLinkLabel: "访问 Altcha.org",
+    ariaLinkLabel: "Altcha (官方网站)",
     enterCode: "输入代码",
     enterCodeAria: "输入您听到的代码。按空格键播放音频。",
     error: "验证失败。稍后再试。",
     expired: "验证已过期。请重试。",
-    footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="访问 Altcha.org">ALTCHA</a> 保护',
+    footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方网站)">ALTCHA</a> 保护',
     getAudioChallenge: "获取音频挑战",
     label: "我不是机器人",
     loading: "加载中...",
@@ -25,14 +25,14 @@
     globalThis.$altcha.i18n.set("zh-cn", i18n$n);
   }
   const i18n$m = {
-    ariaLinkLabel: "前往 Altcha.org",
+    ariaLinkLabel: "Altcha (官方網站)",
     cancel: "取消",
     enterCode: "輸入代碼",
     enterCodeAria: "輸入你聽到嘅代碼。按空格鍵播放音訊。",
     enterCodeFromImage: "要繼續，請輸入下面圖片入面嘅代碼。",
     error: "驗證失敗。請稍後再試。",
     expired: "驗證已過期。請再試一次。",
-    footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="前往 Altcha.org">ALTCHA</a> 提供保護',
+    footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 提供保護',
     getAudioChallenge: "取得音訊驗證",
     label: "我唔係機械人",
     loading: "載入中...",
@@ -47,12 +47,12 @@
     globalThis.$altcha.i18n.set("zh-hk", i18n$m);
   }
   const i18n$l = {
-    ariaLinkLabel: "訪問 Altcha.org",
+    ariaLinkLabel: "Altcha (官方網站)",
     enterCode: "輸入代碼",
     enterCodeAria: "輸入您聽到的代碼。按空格鍵播放音頻。",
     error: "驗證失敗。稍後再試。",
     expired: "驗證已過期。請重試。",
-    footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="訪問 Altcha.org">ALTCHA</a> 保護',
+    footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 保護',
     getAudioChallenge: "獲取音頻挑戰",
     label: "我不是機器人",
     loading: "載入中...",
@@ -69,12 +69,12 @@
     globalThis.$altcha.i18n.set("zh-tw", i18n$l);
   }
   const i18n$k = {
-    ariaLinkLabel: "Altcha.orgを訪問",
+    ariaLinkLabel: "Altcha (公式ウェブサイト)",
     enterCode: "コードを入力",
     enterCodeAria: "聞こえるコードを入力してください。スペースキーを押して音声を再生します。",
     error: "認証に失敗しました。後でもう一度試してください。",
     expired: "認証が期限切れです。再試行してください。",
-    footer: '保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
+    footer: '保護されています <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (公式ウェブサイト)">ALTCHA</a>',
     getAudioChallenge: "音声チャレンジを取得",
     label: "私はロボットではありません",
     loading: "読み込み中...",
@@ -91,12 +91,12 @@
     globalThis.$altcha.i18n.set("ja", i18n$k);
   }
   const i18n$j = {
-    ariaLinkLabel: "Altcha.org 방문하기",
+    ariaLinkLabel: "Altcha (공식 웹사이트)",
     enterCode: "코드 입력",
     enterCodeAria: "들리는 코드를 입력하세요. 스페이스 바를 눌러 오디오를 재생합니다.",
     error: "인증 실패. 나중에 다시 시도해주세요.",
     expired: "인증이 만료되었습니다. 다시 시도해주세요.",
-    footer: 'ALTCHA에서 보호됨 <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org 방문하기">ALTCHA</a>',
+    footer: 'ALTCHA에서 보호됨 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (공식 웹사이트)">ALTCHA</a>',
     getAudioChallenge: "오디오 챌린지 받기",
     label: "저는 로봇이 아닙니다",
     loading: "로딩 중...",
@@ -113,12 +113,12 @@
     globalThis.$altcha.i18n.set("ko", i18n$j);
   }
   const i18n$i = {
-    ariaLinkLabel: "Altcha.org पर जाएं",
+    ariaLinkLabel: "Altcha (आधिकारिक वेबसाइट)",
     enterCode: "कोड दर्ज करेंं",
     enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
     error: "सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।",
     expired: "सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।",
-    footer: 'द्वारा संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org पर जाएं">ALTCHA</a>',
+    footer: 'द्वारा संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (आधिकारिक वेबसाइट)">ALTCHA</a>',
     getAudioChallenge: "ऑडियो चुनौती प्राप्त करें",
     label: "मैं रोबोट नहीं हूँ",
     loading: "लोड हो रहा है...",
@@ -135,12 +135,12 @@
     globalThis.$altcha.i18n.set("hi", i18n$i);
   }
   const i18n$h = {
-    ariaLinkLabel: "Altcha.org পরিদর্শন করুন",
+    ariaLinkLabel: "Altcha (অফিসিয়াল ওয়েবসাইট)",
     enterCode: "কোড লিখুন",
     enterCodeAria: "আপনি যে কোড শুনতে পান তা লিখুন। অডিও প্লে করতে স্পেস বাটন টিপুন।",
     error: "যাচাইকরণ ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।",
     expired: "যাচাইকরণ সময়সীমা শেষ হয়েছে। আবার চেষ্টা করুন।",
-    footer: 'দ্বারা সুরক্ষিত <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org পরিদর্শন করুন">ALTCHA</a>',
+    footer: 'দ্বারা সুরক্ষিত <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (অফিসিয়াল ওয়েবসাইট)">ALTCHA</a>',
     getAudioChallenge: "অডিও চ্যালেঞ্জ নিন",
     label: "আমি রোবট নই",
     loading: "লোড হচ্ছে...",
@@ -157,12 +157,12 @@
     globalThis.$altcha.i18n.set("bn", i18n$h);
   }
   const i18n$g = {
-    ariaLinkLabel: "Altcha.org भेट द्या",
+    ariaLinkLabel: "Altcha (अधिकृत संकेतस्थळ)",
     enterCode: "कोड टाकाा",
     enterCodeAria: "तुम्ही ऐकत असलेला कोड टाका. ऑडिओ प्ले करण्यासाठी स्पेस दाबा.",
     error: "पुष्टीकरण अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.",
     expired: "पुष्टीकरण कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.",
-    footer: 'द्वारे संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org भेट द्या">ALTCHA</a>',
+    footer: 'द्वारे संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (अधिकृत संकेतस्थळ)">ALTCHA</a>',
     getAudioChallenge: "ऑडिओ चॅलेंज मिळवा",
     label: "मी रोबोट नाही",
     loading: "लोड होत आहे...",
@@ -179,12 +179,12 @@
     globalThis.$altcha.i18n.set("mr", i18n$g);
   }
   const i18n$f = {
-    ariaLinkLabel: "Altcha.org సందర్శించండి",
+    ariaLinkLabel: "Altcha (అధికారిక వెబ్‌సైట్)",
     enterCode: "కోడ్‌ని నమోదు చేయండి",
     enterCodeAria: "మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.",
     error: "చెకింగ్ విఫలమైంది. దయచేసి మరల ప్రయత్నించండి.",
     expired: "చెకింగ్ కాలం ముగిసింది. దయచేసి మరల ప్రయత్నించండి.",
-    footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org సందర్శించండి">ALTCHA</a>',
+    footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (అధికారిక వెబ్‌సైట్)">ALTCHA</a>',
     getAudioChallenge: "ఆడియో ఛాలెంజ్ పొందండి",
     label: "నేను రోబోట్ కాదు",
     loading: "లోడ్ అవుతోంది...",
@@ -201,12 +201,12 @@
     globalThis.$altcha.i18n.set("te", i18n$f);
   }
   const i18n$e = {
-    ariaLinkLabel: "Altcha.org ஐ பார்வையிடவும்",
+    ariaLinkLabel: "Altcha (அதிகாரப்பூர்வ வலைத்தளம்)",
     enterCode: "குறியீட்டை உள்ளிடவும்",
     enterCodeAria: "நீங்கள் கேட்கும் குறியீட்டை உள்ளிடவும். ஆடியோவை இயக்க Space ஐ அழுத்தவும்.",
     error: "சரிபார்ப்பு தோல்வி. பிறகு மீண்டும் முயற்சிக்கவும்.",
     expired: "சரிபார்ப்பு காலாவதியானது. மீண்டும் முயற்சிக்கவும்.",
-    footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org ஐ பார்வையிடவும்">ALTCHA</a>',
+    footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (அதிகாரப்பூர்வ வலைத்தளம்)">ALTCHA</a>',
     getAudioChallenge: "ஒலி சவாலை பெறவும்",
     label: "நான் ரோபோடான அல்ல",
     loading: "செயலாக்கம்...",
@@ -223,12 +223,12 @@
     globalThis.$altcha.i18n.set("ta", i18n$e);
   }
   const i18n$d = {
-    ariaLinkLabel: "Altcha.org پر جائیں",
+    ariaLinkLabel: "Altcha (سرکاری ویب سائٹ)",
     enterCode: "کوڈ درج کریں",
     enterCodeAria: "جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔",
     error: "توثیق ناکام ہو گئی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
     expired: "توثیق کی مدت ختم ہو گئی ہے۔ براہ کرم دوبارہ کوشش کریں۔",
-    footer: 'کے ذریعے محفوظ <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org پر جائیں">ALTCHA</a>',
+    footer: 'کے ذریعے محفوظ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (سرکاری ویب سائٹ)">ALTCHA</a>',
     getAudioChallenge: "آڈیو چیلنج حاصل کریں",
     label: "میں روبوٹ نہیں ہوں",
     loading: "لوڈ ہو رہا ہے...",
@@ -245,12 +245,12 @@
     globalThis.$altcha.i18n.set("ur", i18n$d);
   }
   const i18n$c = {
-    ariaLinkLabel: "Kunjungi Altcha.org",
+    ariaLinkLabel: "Altcha (situs web resmi)",
     enterCode: "Masukkan kode",
     enterCodeAria: "Masukkan kode yang Anda dengar. Tekan Spasi untuk memutar audio.",
     error: "Verifikasi gagal. Coba lagi nanti.",
     expired: "Verifikasi telah kedaluwarsa. Coba lagi.",
-    footer: 'Dilindungi oleh <a href="https://altcha.org/" target="_blank" aria-label="Kunjungi Altcha.org">ALTCHA</a>',
+    footer: 'Dilindungi oleh <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (situs web resmi)">ALTCHA</a>',
     getAudioChallenge: "Dapatkan tantangan audio",
     label: "Saya bukan robot",
     loading: "Memuat...",
@@ -267,12 +267,12 @@
     globalThis.$altcha.i18n.set("id", i18n$c);
   }
   const i18n$b = {
-    ariaLinkLabel: "เยี่ยมชม Altcha.org",
+    ariaLinkLabel: "Altcha (เว็บไซต์ทางการ)",
     enterCode: "ป้อนรหัส",
     enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
     error: "การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง",
     expired: "การตรวจสอบหมดอายุ กรุณาลองใหม่",
-    footer: 'ป้องกันโดย <a href="https://altcha.org/" target="_blank" aria-label="เยี่ยมชม Altcha.org">ALTCHA</a>',
+    footer: 'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
     getAudioChallenge: "รับการท้าทายเสียง",
     label: "ฉันไม่ใช่บอท",
     loading: "กำลังโหลด...",
@@ -289,12 +289,12 @@
     globalThis.$altcha.i18n.set("th", i18n$b);
   }
   const i18n$a = {
-    ariaLinkLabel: "Truy cập Altcha.org",
+    ariaLinkLabel: "Altcha (trang web chính thức)",
     enterCode: "Nhập mã",
     enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
     error: "Xác minh thất bại. Vui lòng thử lại sau.",
     expired: "Xác minh đã hết hạn. Vui lòng thử lại.",
-    footer: 'Được bảo vệ bởi <a href="https://altcha.org/" target="_blank" aria-label="Truy cập Altcha.org">ALTCHA</a>',
+    footer: 'Được bảo vệ bởi <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (trang web chính thức)">ALTCHA</a>',
     getAudioChallenge: "Nhận thử thách âm thanh",
     label: "Tôi không phải là robot",
     loading: "Đang tải...",
@@ -311,12 +311,12 @@
     globalThis.$altcha.i18n.set("vi", i18n$a);
   }
   const i18n$9 = {
-    ariaLinkLabel: "زور Altcha.org",
+    ariaLinkLabel: "Altcha (الموقع الرسمي)",
     enterCode: "أدخل الرمز",
     enterCodeAria: "أدخل الرمز الذي تسمعه. اضغط على المسافة لتشغيل الصوت.",
     error: "فشل التحقق. حاول مرة أخرى لاحقاً.",
     expired: "انتهت صلاحية التحقق. حاول مرة أخرى.",
-    footer: 'محمي بواسطة <a href="https://altcha.org/" target="_blank" aria-label="زور Altcha.org">ALTCHA</a>',
+    footer: 'محمي بواسطة <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (الموقع الرسمي)">ALTCHA</a>',
     getAudioChallenge: "احصل على تحدي صوتي",
     label: "أنا لست روبوتاً",
     loading: "جارٍ التحميل...",
@@ -333,12 +333,12 @@
     globalThis.$altcha.i18n.set("ar", i18n$9);
   }
   const i18n$8 = {
-    ariaLinkLabel: "بازدید از Altcha.org",
+    ariaLinkLabel: "Altcha (وب‌سایت رسمی)",
     enterCode: "کد را وارد کنید",
     enterCodeAria: "کدی که می‌شنوید را وارد کنید. برای پخش صدا Space را فشار دهید.",
     error: "احراز هویت ناموفق بود. بعداً دوباره تلاش کنید.",
     expired: "احراز هویت منقضی شد. دوباره تلاش کنید.",
-    footer: 'محافظت شده توسط <a href="https://altcha.org/" target="_blank" aria-label="بازدید از Altcha.org">ALTCHA</a>',
+    footer: 'محافظت شده توسط <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (وب‌سایت رسمی)">ALTCHA</a>',
     getAudioChallenge: "دریافت چالش صوتی",
     label: "من ربات نیستم",
     loading: "در حال بارگذاری...",
@@ -355,12 +355,12 @@
     globalThis.$altcha.i18n.set("fa", i18n$8);
   }
   const i18n$7 = {
-    ariaLinkLabel: "בקר באתר Altcha.org",
+    ariaLinkLabel: "Altcha (אתר רשמי)",
     enterCode: "הזן קוד",
     enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
     error: "האימות נכשל. נסה שוב מאוחר יותר.",
     expired: "תוקף האימות פג. נסה שוב.",
-    footer: 'מוגן על ידי <a href="https://altcha.org/" target="_blank" aria-label="בקר באתר Altcha.org">ALTCHA</a>',
+    footer: 'מוגן על ידי <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (אתר רשמי)">ALTCHA</a>',
     getAudioChallenge: "קבל אתגר שמע",
     label: "אני לא רובוט",
     loading: "טוען...",
@@ -377,12 +377,12 @@
     globalThis.$altcha.i18n.set("he", i18n$7);
   }
   const i18n$6 = {
-    ariaLinkLabel: "Altcha.org'yu ziyaret edin",
+    ariaLinkLabel: "Altcha (resmi web sitesi)",
     enterCode: "Kodu girin",
     enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
     error: "Doğrulama başarısız oldu. Lütfen daha sonra tekrar deneyin.",
     expired: "Doğrulama süresi doldu. Lütfen tekrar deneyin.",
-    footer: `ALTCHA tarafından korunuyor <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org'yu ziyaret edin">ALTCHA</a>`,
+    footer: 'ALTCHA tarafından korunuyor <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sitesi)">ALTCHA</a>',
     getAudioChallenge: "Sesli doğrulama al",
     label: "Ben robot değilim",
     loading: "Yükleniyor...",
@@ -399,12 +399,12 @@
     globalThis.$altcha.i18n.set("tr", i18n$6);
   }
   const i18n$5 = {
-    ariaLinkLabel: "Altcha.org saytına daxil olun",
+    ariaLinkLabel: "Altcha (rəsmi vebsayt)",
     enterCode: "Kodu daxil edin",
     enterCodeAria: "Eşitdiyiniz kodu daxil edin. Səsi dinləmək üçün Boşluq düyməsinə basın.",
     error: "Təsdiqləmə uğursuz oldu. Daha sonra yenidən cəhd edin.",
     expired: "Təsdiqləmə vaxtı bitdi. Yenidən cəhd edin.",
-    footer: 'Qorunur <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org saytına daxil olun">ALTCHA</a> tərəfindən',
+    footer: 'Qorunur <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rəsmi vebsayt)">ALTCHA</a> tərəfindən',
     getAudioChallenge: "Audio tapşırıq alın",
     label: "Mən robot deyiləm",
     loading: "Yüklənir...",
@@ -421,12 +421,12 @@
     globalThis.$altcha.i18n.set("az", i18n$5);
   }
   const i18n$4 = {
-    ariaLinkLabel: "Այցելեք Altcha.org",
+    ariaLinkLabel: "Altcha (պաշտոնական կայք)",
     enterCode: "Մուտքագրեք կոդը",
     enterCodeAria: "Մուտքագրեք այն կոդը, որը լսում եք։ Ձայնը նվագելու համար սեղմեք բացատ (Space):",
     error: "Հաստատումը ձախողվեց։ Փորձեք ավելի ուշ։",
     expired: "Հաստատման ժամկետը լրացել է։ Փորձեք կրկին։",
-    footer: 'Պաշտպանված է <a href="https://altcha.org/" target="_blank" aria-label="Այցելեք Altcha.org">ALTCHA</a>-ի կողմից',
+    footer: 'Պաշտպանված է <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (պաշտոնական կայք)">ALTCHA</a>-ի կողմից',
     getAudioChallenge: "Ստանալ ձայնային առաջադրանք",
     label: "Ես ռոբոտ չեմ",
     loading: "Բեռնվում է...",
@@ -443,12 +443,12 @@
     globalThis.$altcha.i18n.set("hy", i18n$4);
   }
   const i18n$3 = {
-    ariaLinkLabel: "ეწვიეთ Altcha.org-ს",
+    ariaLinkLabel: "Altcha (ოფიციალური ვებსაიტი)",
     enterCode: "შეიყვანეთ კოდი",
     enterCodeAria: "შეიყვანეთ კოდი, რომელსაც გაიგონებთ. აუდიოს მოსასმენად დააჭირეთ Space-ს.",
     error: "ვერიფიკაცია ჩაიშალა. სცადეთ მოგვიანებით.",
     expired: "ვერიფიკაციის ვადა გავიდა. სცადეთ ხელახლა.",
-    footer: 'დაცულია <a href="https://altcha.org/" target="_blank" aria-label="ეწვიეთ Altcha.org-ს">ALTCHA</a>-ით',
+    footer: 'დაცულია <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ოფიციალური ვებსაიტი)">ALTCHA</a>-ით',
     getAudioChallenge: "მიიღეთ აუდიო გამოწვევა",
     label: "მე არ ვარ რობოტი",
     loading: "იტვირთება...",
@@ -465,12 +465,12 @@
     globalThis.$altcha.i18n.set("ka", i18n$3);
   }
   const i18n$2 = {
-    ariaLinkLabel: "Altcha.org сайтына кіру",
+    ariaLinkLabel: "Altcha (ресми веб-сайт)",
     enterCode: "Кодты енгізіңіз",
     enterCodeAria: "Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.",
     error: "Тексеру сәтсіз аяқталды. Кейінірек қайталаңыз.",
     expired: "Тексеру мерзімі аяқталды. Қайталаңыз.",
-    footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org сайтына кіру">ALTCHA</a> қорғайды',
+    footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ресми веб-сайт)">ALTCHA</a> қорғайды',
     getAudioChallenge: "Аудио сынақ алу",
     label: "Мен робот емеспін",
     loading: "Жүктелуде...",
@@ -487,12 +487,12 @@
     globalThis.$altcha.i18n.set("kk", i18n$2);
   }
   const i18n$1 = {
-    ariaLinkLabel: "Altcha.org sahypasyna giriň",
+    ariaLinkLabel: "Altcha (resmi web sahypa)",
     enterCode: "Kody giriziň",
     enterCodeAria: "Eşiden kodyňyzy giriziň. Sesli görkezmäni diňlemek üçin Space basyň.",
     error: "Barlamak şowsuz boldy. Has soňrak synanyşyň.",
     expired: "Barlamanyň möhleti gutardy. Gaýtadan synanyşyň.",
-    footer: 'Goralan <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org sahypasyna giriň">ALTCHA</a> tarapyndan',
+    footer: 'Goralan <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sahypa)">ALTCHA</a> tarapyndan',
     getAudioChallenge: "Sesli tabşyryk alyň",
     label: "Men robot däl",
     loading: "Ýüklenýär...",
@@ -509,12 +509,12 @@
     globalThis.$altcha.i18n.set("tk", i18n$1);
   }
   const i18n = {
-    ariaLinkLabel: "Altcha.org saytiga tashrif buyuring",
+    ariaLinkLabel: "Altcha (rasmiy veb-sayt)",
     enterCode: "Kodni kiriting",
     enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
     error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
     expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
-    footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org saytiga tashrif buyuring">ALTCHA</a> tomonidan himoyalangan',
+    footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rasmiy veb-sayt)">ALTCHA</a> tomonidan himoyalangan',
     getAudioChallenge: "Audio sinovni olish",
     label: "Men robot emasman",
     loading: "Yuklanmoqda...",

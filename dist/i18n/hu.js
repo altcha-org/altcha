@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "Látogass el az Altcha.org oldalra",
+  ariaLinkLabel: "Altcha (hivatalos weboldal)",
   enterCode: "Írja be a kódot",
   enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
   error: "A hitelesítés nem sikerült. Próbáld meg később újra.",
   expired: "A hitelesítés lejárt. Próbáld újra.",
-  footer: 'Védve a következő által: <a href="https://altcha.org/" target="_blank" aria-label="Látogass el az Altcha.org oldalra">ALTCHA</a>',
+  footer: 'Védve a következő által: <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (hivatalos weboldal)">ALTCHA</a>',
   getAudioChallenge: "Hangalapú kihívás kérése",
   label: "Nem vagyok robot",
   loading: "Betöltés...",

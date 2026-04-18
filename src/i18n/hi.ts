@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Altcha.org पर जाएं',
+	ariaLinkLabel: 'Altcha (आधिकारिक वेबसाइट)',
 	enterCode: 'कोड दर्ज करेंं',
 	enterCodeAria: 'आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।',
 	error: 'सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।',
 	expired: 'सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।',
 	footer:
-		'द्वारा संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org पर जाएं">ALTCHA</a>',
+		'द्वारा संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (आधिकारिक वेबसाइट)">ALTCHA</a>',
 	getAudioChallenge: 'ऑडियो चुनौती प्राप्त करें',
 	label: 'मैं रोबोट नहीं हूँ',
 	loading: 'लोड हो रहा है...',

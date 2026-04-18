@@ -1,5 +1,5 @@
 const i18n = {
-	ariaLinkLabel: 'Visit Altcha.org',
+	ariaLinkLabel: 'Altcha (official website)',
 	cancel: 'Cancel',
 	enterCode: 'Enter code',
 	enterCodeAria: 'Enter code you hear. Press Space to play audio.',
@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Verification failed. Try again later.',
 	expired: 'Verification expired. Try again.',
 	footer:
-		'Protected by <a href="https://altcha.org/" target="_blank" aria-label="Visit Altcha.org">ALTCHA</a>',
+		'Protected by <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (official website)">ALTCHA</a>',
 	getAudioChallenge: 'Get an audio challenge',
 	label: "I'm not a robot",
 	loading: 'Loading...',

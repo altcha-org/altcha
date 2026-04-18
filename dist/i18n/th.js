@@ -1,10 +1,10 @@
 const i18n = {
-  ariaLinkLabel: "เยี่ยมชม Altcha.org",
+  ariaLinkLabel: "Altcha (เว็บไซต์ทางการ)",
   enterCode: "ป้อนรหัส",
   enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
   error: "การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง",
   expired: "การตรวจสอบหมดอายุ กรุณาลองใหม่",
-  footer: 'ป้องกันโดย <a href="https://altcha.org/" target="_blank" aria-label="เยี่ยมชม Altcha.org">ALTCHA</a>',
+  footer: 'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
   getAudioChallenge: "รับการท้าทายเสียง",
   label: "ฉันไม่ใช่บอท",
   loading: "กำลังโหลด...",

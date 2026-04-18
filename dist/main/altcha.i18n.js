@@ -4969,14 +4969,14 @@ globalThis.$altcha = globalThis.$altcha || {
   plugins: /* @__PURE__ */ new Set()
 };
 const i18n$Z = {
-  ariaLinkLabel: "Visit Altcha.org",
+  ariaLinkLabel: "Altcha (official website)",
   cancel: "Cancel",
   enterCode: "Enter code",
   enterCodeAria: "Enter code you hear. Press Space to play audio.",
   enterCodeFromImage: "To proceed, please enter the code from the image below.",
   error: "Verification failed. Try again later.",
   expired: "Verification expired. Try again.",
-  footer: 'Protected by <a href="https://altcha.org/" target="_blank" aria-label="Visit Altcha.org">ALTCHA</a>',
+  footer: 'Protected by <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (official website)">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
   label: "I'm not a robot",
   loading: "Loading...",
@@ -4994,10 +4994,14 @@ const PUBLIC_VERSION = "5";
 if (typeof window !== "undefined") {
   ((window.__svelte ??= {}).v ??= /* @__PURE__ */ new Set()).add(PUBLIC_VERSION);
 }
-var root$7 = /* @__PURE__ */ from_html(`<label class="altcha-checkbox"><input/> <svg width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></label>`);
+var root$7 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox"><input/> <svg aria-hidden="true" width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></div>`);
 function Checkbox($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, ["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
+  let inputEl;
+  function onClick() {
+    inputEl?.click();
+  }
   var $$exports = {
     get loading() {
       return loading();
@@ -5007,15 +5011,19 @@ function Checkbox($$anchor, $$props) {
       flushSync();
     }
   };
-  var label = root$7();
-  var input = child(label);
+  var div = root$7();
+  var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
-  next(4);
-  reset(label);
-  template_effect(() => set_attribute(label, "data-loading", loading()));
-  append($$anchor, label);
+  bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
+  var svg = sibling(input, 2);
+  next(2);
+  reset(div);
+  template_effect(() => set_attribute(div, "data-loading", loading()));
+  delegated("click", svg, onClick);
+  append($$anchor, div);
   return pop($$exports);
 }
+delegate(["click"]);
 create_custom_element(Checkbox, { loading: {} }, [], [], { mode: "open" });
 var root$6 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox-native"><input/> <div class="altcha-spinner altcha-checkbox-native-spinner"></div></div>`);
 function CheckboxNative($$anchor, $$props) {
@@ -5040,7 +5048,7 @@ function CheckboxNative($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(CheckboxNative, { loading: {} }, [], [], { mode: "open" });
-var root$5 = /* @__PURE__ */ from_html(`<div><a target="_blank" class="altcha-logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
+var root$5 = /* @__PURE__ */ from_html(`<div><a target="_blank" class="altcha-logo" aria-hidden="true" tabindex="-1"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
 function Logo($$anchor, $$props) {
   push($$props, true);
   let strings = prop($$props, "strings");
@@ -5063,7 +5071,7 @@ function Logo($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Logo, { strings: {} }, [], [], { mode: "open" });
-var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><div></div> <!></div>`);
+var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><p></p> <!></div>`);
 function Footer($$anchor, $$props) {
   push($$props, true);
   let logo = prop($$props, "logo"), strings = prop($$props, "strings");
@@ -5084,10 +5092,10 @@ function Footer($$anchor, $$props) {
     }
   };
   var div = root$4();
-  var div_1 = child(div);
-  html(div_1, () => strings().footer, true);
-  reset(div_1);
-  var node = sibling(div_1, 2);
+  var p = child(div);
+  html(p, () => strings().footer, true);
+  reset(p);
+  var node = sibling(p, 2);
   {
     var consequent = ($$anchor2) => {
       Logo($$anchor2, {
@@ -5105,10 +5113,14 @@ function Footer($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Footer, { logo: {}, strings: {} }, [], [], { mode: "open" });
-var root$3 = /* @__PURE__ */ from_html(`<label class="altcha-switch"><input/> <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></label>`);
+var root$3 = /* @__PURE__ */ from_html(`<div class="altcha-switch"><input/>  <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></div>`);
 function Switch($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, ["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
+  let inputEl;
+  function onClick() {
+    inputEl?.click();
+  }
   var $$exports = {
     get loading() {
       return loading();
@@ -5118,15 +5130,18 @@ function Switch($$anchor, $$props) {
       flushSync();
     }
   };
-  var label = root$3();
-  var input = child(label);
+  var div = root$3();
+  var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
-  next(2);
-  reset(label);
-  template_effect(() => set_attribute(label, "data-loading", loading()));
-  append($$anchor, label);
+  bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
+  var div_1 = sibling(input, 2);
+  reset(div);
+  template_effect(() => set_attribute(div, "data-loading", loading()));
+  delegated("click", div_1, onClick);
+  append($$anchor, div);
   return pop($$exports);
 }
+delegate(["click"]);
 create_custom_element(Switch, { loading: {} }, [], [], { mode: "open" });
 var AudioState = /* @__PURE__ */ ((AudioState2) => {
   AudioState2["ERROR"] = "error";
@@ -7430,7 +7445,7 @@ function WorkerWrapper(options) {
     );
   }
 }
-const css = ':root {\n  --altcha-border-color: var(--altcha-color-neutral);\n  --altcha-border-width: 1px;\n  --altcha-border-radius: 6px;\n  --altcha-color-base: light-dark(oklch(100% 0.00011 271.152), oklch(20.904% 0.00002 271.152));\n  --altcha-color-base-content: light-dark(\n  	oklch(20.904% 0.00002 271.152),\n  	oklch(100% 0.00011 271.152)\n  );\n  --altcha-color-error: oklch(51.284% 0.20527 28.678);\n  --altcha-color-error-content: oklch(100% 0.00011 271.152);\n  --altcha-color-neutral: light-dark(oklch(83.591% 0.0001 271.152), oklch(46.04% 0.00005 271.152));\n  --altcha-color-neutral-content: light-dark(\n  	oklch(46.76% 0.00005 271.152),\n  	oklch(100% 0.00011 271.152)\n  );\n  --altcha-color-primary: oklch(40.279% 0.2449 268.131);\n  --altcha-color-primary-content: oklch(100% 0.00011 271.152);\n  --altcha-color-success: oklch(55.748% 0.18968 142.511);\n  --altcha-color-success-content: oklch(100% 0.00011 271.152);\n  --altcha-checkbox-border-color: var(--altcha-color-neutral);\n  --altcha-checkbox-border-radius: 5px;\n  --altcha-checkbox-border-width: var(--altcha-border-width);\n  --altcha-checkbox-outline: 2px solid var(--altcha-checkbox-outline-color);\n  --altcha-checkbox-outline-color: light-dark(\n  	color-mix(in srgb, var(--altcha-color-primary) 20%, transparent),\n  	color-mix(in srgb, var(--altcha-color-primary) 60%, transparent)\n  );\n  --altcha-checkbox-outline-offset: 2px;\n  --altcha-checkbox-size: 22px;\n  --altcha-checkbox-transition-duration: var(--altcha-transition-duration);\n  --altcha-input-background-color: var(--altcha-color-base);\n  --altcha-input-border-radius: 3px;\n  --altcha-input-border-width: 1px;\n  --altcha-input-color: var(--altcha-color-base-content);\n  --altcha-max-width: 320px;\n  --altcha-padding: 0.75rem;\n  --altcha-popover-arrow-size: 6px;\n  --altcha-popover-color: var(--altcha-border-color);\n  --altcha-shadow: drop-shadow(3px 3px 6px oklch(0% 0 0 / 0.2));\n  --altcha-spinner-color: var(--altcha-color-base-content);\n  --altcha-switch-background-color: var(--altcha-color-neutral);\n  --altcha-switch-border-radius: calc(infinity * 1px);\n  --altcha-switch-height: var(--altcha-checkbox-size);\n  --altcha-switch-padding: 0.25rem;\n  --altcha-switch-width: calc(var(--altcha-checkbox-size) * 1.75);\n  --altcha-switch-toggle-border-radius: 100%;\n  --altcha-switch-toggle-color: var(--altcha-color-neutral-content);\n  --altcha-switch-toggle-size: calc(\n  	var(--altcha-switch-height) - calc(var(--altcha-switch-padding) * 2)\n  );\n  --altcha-transition-duration: 0.6s;\n  --altcha-z-index: 99999999;\n  --altcha-z-index-popover: 999999999;\n}\n\n.altcha {\n  all: revert-layer;\n  display: none;\n  font-family: inherit;\n  font-size: inherit;\n  position: relative;\n}\n.altcha[data-visible] {\n  display: block;\n}\n.altcha-popover, .altcha-popover * {\n  all: revert-layer;\n  box-sizing: border-box;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: 1.25;\n}\n.altcha * {\n  all: revert-layer;\n  box-sizing: border-box;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: 1.25;\n}\n.altcha a, .altcha-popover a {\n  color: currentColor;\n  text-decoration: none;\n}\n.altcha a:hover, .altcha-popover a:hover {\n  color: currentColor;\n}\n.altcha-main {\n  align-items: start;\n  background-color: var(--altcha-color-base);\n  border: var(--altcha-border-width, 1px) solid var(--altcha-border-color);\n  border-radius: var(--altcha-border-radius, 0);\n  color: var(--altcha-color-base-content);\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  justify-content: space-between;\n  padding: var(--altcha-padding);\n  max-width: var(--altcha-max-width, 100%);\n}\n.altcha-main > * {\n  display: flex;\n  width: 100%;\n}\n.altcha-main > *:first-child {\n  flex-grow: 1;\n}\n.altcha-checkbox-wrap {\n  align-items: center;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  gap: 0.5rem;\n}\n.altcha-checkbox-wrap > * {\n  display: flex;\n}\n.altcha-logo {\n  opacity: 0.7;\n}\n.altcha-footer {\n  align-items: center;\n  display: flex;\n  flex-grow: 1;\n  gap: 0.5rem;\n  justify-content: flex-end;\n  font-size: 0.7rem;\n  opacity: 0.7;\n}\n.altcha-error {\n  font-size: 0.85rem;\n}\n.altcha-button {\n  align-items: center;\n  background: var(--altcha-color-primary);\n  border: var(--altcha-input-border-width) solid var(--altcha-color-primary);\n  border-radius: var(--altcha-input-border-radius);\n  color: var(--altcha-color-primary-content);\n  cursor: pointer;\n  display: flex;\n  font-size: 0.9rem;\n  gap: 0.5rem;\n  padding: 0.35rem;\n}\n.altcha-button:focus {\n  border-color: var(--altcha-color-primary);\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-button > .altcha-spinner, .altcha-button > svg {\n  height: 20px;\n  width: 20px;\n}\n.altcha-button-secondary {\n  background: transparent;\n  border-color: var(--altcha-color-neutral);\n  color: var(--altcha-color-neutral-content);\n}\n.altcha-input {\n  background: var(--altcha-input-background-color);\n  border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);\n  border-radius: var(--altcha-input-border-radius);\n  color: var(--altcha-input-color);\n  flex-grow: 1;\n  font-size: 1rem;\n  min-width: 0;\n  padding: 0.25rem;\n  width: auto;\n}\n.altcha-input:focus {\n  border-color: var(--altcha-color-primary);\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-spinner {\n  animation: altcha-rotate 0.6s linear infinite;\n  border-radius: 100%;\n  border: var(--altcha-checkbox-border-width) solid var(--altcha-spinner-color);\n  border-bottom-color: transparent;\n  border-right-color: transparent;\n  opacity: 0.5;\n}\n.altcha-popover {\n  background-color: var(--altcha-color-base);\n  border: var(--altcha-border-width) solid var(--altcha-border-color);\n  border-radius: var(--altcha-border-radius);\n  color: var(--altcha-color-base-content);\n  filter: var(--altcha-shadow);\n  position: absolute;\n  left: calc(var(--altcha-padding) / 2);\n  max-width: calc(var(--altcha-max-width) - var(--altcha-padding));\n  top: calc(var(--altcha-padding) + var(--altcha-checkbox-size) + var(--altcha-popover-arrow-size));\n  z-index: var(--altcha-z-index-popover);\n}\n.altcha-popover-arrow {\n  border: var(--altcha-popover-arrow-size) solid transparent;\n  border-bottom-color: var(--altcha-popover-color);\n  content: "";\n  height: 0;\n  left: calc(var(--altcha-checkbox-size) / 2);\n  position: absolute;\n  top: calc(var(--altcha-popover-arrow-size) * -2);\n  width: 0;\n}\n.altcha-popover-content {\n  max-height: 100dvh;\n  overflow: auto;\n  padding: var(--altcha-padding);\n}\n.altcha-popover[data-top=true][data-display=standard] {\n  bottom: calc(100% - (var(--altcha-padding) - var(--altcha-popover-arrow-size)));\n  top: auto;\n}\n.altcha-popover[data-top=true][data-display=standard] .altcha-popover-arrow {\n  border-bottom-color: transparent;\n  border-top-color: var(--altcha-popover-color);\n  bottom: calc(var(--altcha-popover-arrow-size) * -2);\n  top: auto;\n}\n.altcha-popover[data-variant=error] {\n  --altcha-popover-color: var(--altcha-color-error);\n  background-color: var(--altcha-color-error);\n  border-color: var(--altcha-color-error);\n  color: var(--altcha-color-error-content);\n}\n.altcha-popover[data-variant=error] .altcha-popover-content {\n  padding: calc(var(--altcha-padding) / 1.5) var(--altcha-padding);\n}\n.altcha-popover[data-display=overlay] {\n  animation: altcha-overlay-slidein 0.5s forwards;\n  left: 50%;\n  position: fixed;\n  top: 45%;\n  transform: translate(-50%, -50%);\n  width: var(--altcha-max-width);\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover[data-display=bottomsheet] {\n  animation: altcha-bottomsheet-slideup 0.5s forwards;\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n  border-bottom: 0;\n  bottom: -100%;\n  left: 50%;\n  position: fixed;\n  top: auto;\n  transform: translate(-50%, 0);\n  width: var(--altcha-max-width);\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover[data-display=bottomsheet] .altcha-popover-content {\n  padding-bottom: calc(var(--altcha-padding) * 2);\n}\n.altcha-popover-backdrop {\n  background: var(--altcha-color-base-content);\n  bottom: 0;\n  left: 0;\n  opacity: 0.1;\n  position: fixed;\n  right: 0;\n  top: 0;\n  transition: opacity 0.5s;\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover-close {\n  color: var(--altcha-color-base-content);\n  cursor: pointer;\n  display: inline-block;\n  font-size: 1rem;\n  height: 1.25rem;\n  line-height: 0.95;\n  position: absolute;\n  right: 0;\n  text-align: center;\n  text-shadow: 0 0 1px var(--altcha-color-base);\n  top: -1.5rem;\n  width: 1.25rem;\n  z-index: var(--altcha-z-index);\n}\n[dir=rtl] .altcha-popover {\n  left: auto;\n  right: calc(var(--altcha-padding) / 2);\n}\n[dir=rtl] .altcha-popover-arrow {\n  left: auto;\n  right: calc(var(--altcha-checkbox-size) / 2);\n}\n[dir=rtl] .altcha-popover-close {\n  left: 0;\n  right: auto;\n}\n.altcha-popover[data-display=bottomsheet] .altcha-footer, .altcha-popover[data-display=overlay] .altcha-footer {\n  align-items: center;\n  justify-content: center;\n  padding-top: 1rem;\n  gap: 0.5rem;\n}\n.altcha-popover[data-display=bottomsheet] .altcha-footer svg, .altcha-popover[data-display=overlay] .altcha-footer svg {\n  height: 18px;\n  width: 18px;\n  vertical-align: middle;\n}\n.altcha-code-challenge > form {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n}\n.altcha-code-challenge-title {\n  font-weight: 600;\n}\n.altcha-code-challenge-text {\n  font-size: 0.85rem;\n}\n.altcha-code-challenge-image {\n  background: white;\n  border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);\n  border-radius: var(--altcha-input-border-radius);\n  object-fit: contain;\n  height: 50px;\n}\n.altcha-code-challenge-row {\n  display: flex;\n  gap: 0.5rem;\n}\n.altcha-code-challenge-buttons {\n  align-items: center;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  margin-top: var(--altcha-padding);\n  justify-content: space-between;\n}\n.altcha-code-challenge-buttons button {\n  justify-content: center;\n  width: 100%;\n}\n.altcha-checkbox {\n  cursor: pointer;\n  height: var(--altcha-checkbox-size);\n  position: relative;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox input {\n  appearance: none;\n  background: var(--altcha-input-background-color);\n  border: var(--altcha-checkbox-border-width, 2px) solid var(--altcha-checkbox-border-color);\n  border-radius: var(--altcha-checkbox-border-radius);\n  height: var(--altcha-checkbox-size);\n  left: 0;\n  margin: 0;\n  outline: none;\n  padding: 0;\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox input:before {\n  border-radius: var(--altcha-checkbox-border-radius);\n  content: "";\n  width: 100%;\n  height: 100%;\n  background: var(--altcha-color-neutral);\n  display: block;\n  transform: scale(0);\n}\n.altcha-checkbox input:focus {\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-checkbox input:checked {\n  background-color: var(--altcha-color-success);\n  border-color: var(--altcha-color-success);\n}\n.altcha-checkbox input:checked::before {\n  background-color: var(--altcha-color-success);\n  opacity: 0;\n  transform: scale(2.2);\n  transition: all var(--altcha-checkbox-transition-duration) ease;\n  transition-delay: 0.1s;\n}\n.altcha-checkbox svg {\n  --altcha-radio-svg-size: calc(var(--altcha-checkbox-size) * 0.5);\n  --altcha-radio-svg-offset: calc(var(--altcha-checkbox-size) * 0.25);\n  fill: none;\n  left: var(--altcha-radio-svg-offset);\n  height: var(--altcha-radio-svg-size);\n  opacity: 0;\n  position: absolute;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-dasharray: 16px;\n  stroke-dashoffset: 16px;\n  top: var(--altcha-radio-svg-offset);\n  transform: translate3d(0, 0, 0);\n  width: var(--altcha-radio-svg-size);\n}\n.altcha-checkbox input:checked + svg {\n  color: var(--altcha-color-success-content);\n  opacity: 1;\n  stroke-dashoffset: 0;\n  transition: all var(--altcha-checkbox-transition-duration) ease;\n  transition-delay: 0.1s;\n}\n.altcha-checkbox-spinner {\n  display: none;\n  left: 0;\n  height: var(--altcha-checkbox-size);\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox[data-loading=true] input {\n  appearance: none;\n  opacity: 0;\n  pointer-events: none;\n}\n.altcha-checkbox[data-loading=true] .altcha-checkbox-spinner {\n  display: block;\n}\n.altcha-checkbox-native {\n  height: var(--altcha-checkbox-size);\n  position: relative;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native input {\n  height: var(--altcha-checkbox-size);\n  margin: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native input:focus {\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-checkbox-native-spinner {\n  display: none;\n  left: 0;\n  height: var(--altcha-checkbox-size);\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native[data-loading=true] input {\n  appearance: none;\n  opacity: 0;\n  pointer-events: none;\n}\n.altcha-checkbox-native[data-loading=true] .altcha-checkbox-native-spinner {\n  display: block;\n}\n.altcha-switch {\n  align-items: center;\n  border-radius: var(--altcha-switch-border-radius);\n  background-color: var(--altcha-switch-background-color);\n  cursor: pointer;\n  display: flex;\n  height: var(--altcha-switch-height);\n  padding: var(--altcha-switch-padding);\n  position: relative;\n  width: var(--altcha-switch-width);\n}\n.altcha-switch:focus-within {\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-switch input {\n  appearance: none;\n  height: 100%;\n  left: 0;\n  opacity: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n.altcha-switch-toggle {\n  align-items: center;\n  background-color: var(--altcha-switch-toggle-color);\n  border-radius: var(--altcha-switch-toggle-border-radius);\n  display: flex;\n  height: var(--altcha-switch-toggle-size);\n  justify-content: center;\n  left: var(--altcha-switch-padding);\n  position: absolute;\n  transition: width 150ms ease-out, left 150ms ease-out;\n  width: var(--altcha-switch-toggle-size);\n}\n.altcha-switch-spinner {\n  display: none;\n  height: var(--altcha-switch-toggle-size);\n  width: var(--altcha-switch-toggle-size);\n}\n.altcha-switch[data-loading=true] {\n  pointer-events: none;\n}\n.altcha-switch[data-loading=true] .altcha-switch-spinner {\n  display: block;\n}\n.altcha-switch[data-loading=true] .altcha-switch-toggle {\n  background-color: transparent;\n  left: calc(50% - var(--altcha-switch-toggle-size) / 2);\n}\n[data-state=verified] .altcha-switch {\n  --altcha-switch-background-color: var(--altcha-color-success);\n}\n[data-state=verified] .altcha-switch-toggle {\n  background-color: var(--altcha-color-success-content);\n  left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));\n}\n[dir=rtl] .altcha-switch-toggle {\n  left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));\n}\n[dir=rtl][data-state=verified] .altcha-switch-toggle {\n  left: var(--altcha-switch-padding);\n}\n.altcha-floating-arrow {\n  border: 6px solid transparent;\n  border-bottom-color: var(--altcha-border-color);\n  content: "";\n  height: 0;\n  left: 12px;\n  position: absolute;\n  top: -12px;\n  width: 0;\n}\n.altcha-overlay-backdrop {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n  transition: opacity var(--altcha-transition-duration);\n  z-index: var(--altcha-z-index);\n}\n.altcha-overlay-close {\n  display: inline-block;\n  color: currentColor;\n  cursor: pointer;\n  font-size: 1rem;\n  height: 1rem;\n  line-height: 0.85;\n  position: absolute;\n  right: 0;\n  text-align: center;\n  text-shadow: 0 0 1px var(--altcha-color-base);\n  top: -1.5rem;\n  width: 1rem;\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=overlay] {\n  animation: altcha-overlay-slidein var(--altcha-transition-duration) forwards;\n  filter: var(--altcha-shadow);\n  left: 50%;\n  opacity: 0;\n  position: fixed;\n  top: 45%;\n  transform: translate(-50%, -50%);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=overlay] .altcha-main {\n  width: var(--altcha-max-width);\n}\n.altcha[data-display=floating] {\n  display: none;\n  filter: var(--altcha-shadow);\n  left: var(--altcha-floating-left, -100%);\n  position: fixed;\n  top: var(--altcha-floating-top, -100%);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=floating] .altcha-main {\n  width: var(--altcha-max-width);\n}\n.altcha[data-display=floating][data-placement=top] .altcha-floating-arrow {\n  border-bottom-color: transparent;\n  border-top-color: var(--altcha-border-color);\n  bottom: -12px;\n  top: auto;\n}\n.altcha[data-display=floating][data-visible] {\n  display: flex;\n}\n.altcha[data-display=bar] {\n  bottom: -100%;\n  filter: var(--altcha-shadow);\n  left: 0;\n  position: fixed;\n  right: 0;\n  transition: bottom var(--altcha-transition-duration), top var(--altcha-transition-duration);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=bar] .altcha-main {\n  align-items: center;\n  border-radius: 0;\n  border-width: var(--altcha-border-width) 0 0 0;\n  flex-direction: row;\n  max-width: 100% !important;\n}\n.altcha[data-display=bar] .altcha-main > * {\n  width: auto;\n}\n.altcha[data-display=bar][data-placement=top] {\n  bottom: auto;\n  top: -100%;\n}\n.altcha[data-display=bar][data-placement=top] .altcha-main {\n  border-width: 0 0 var(--altcha-border-width) 0;\n}\n.altcha[data-display=bar][data-placement=bottom]:not([data-state=unverified]) {\n  bottom: 0;\n}\n.altcha[data-display=bar][data-placement=top]:not([data-state=unverified]) {\n  top: 0;\n}\n.altcha[data-display=invisible] {\n  display: none;\n}\n\n@keyframes altcha-rotate {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@keyframes altcha-bottomsheet-slideup {\n  100% {\n    bottom: 0;\n  }\n}\n@keyframes altcha-overlay-slidein {\n  100% {\n    opacity: 1;\n    top: 50%;\n  }\n}';
+const css = ':root {\n  --altcha-border-color: var(--altcha-color-neutral);\n  --altcha-border-width: 1px;\n  --altcha-border-radius: 6px;\n  --altcha-color-base: light-dark(oklch(100% 0.00011 271.152), oklch(20.904% 0.00002 271.152));\n  --altcha-color-base-content: light-dark(\n  	oklch(20.904% 0.00002 271.152),\n  	oklch(100% 0.00011 271.152)\n  );\n  --altcha-color-error: oklch(51.284% 0.20527 28.678);\n  --altcha-color-error-content: oklch(100% 0.00011 271.152);\n  --altcha-color-neutral: light-dark(oklch(83.591% 0.0001 271.152), oklch(46.04% 0.00005 271.152));\n  --altcha-color-neutral-content: light-dark(\n  	oklch(46.76% 0.00005 271.152),\n  	oklch(100% 0.00011 271.152)\n  );\n  --altcha-color-primary: oklch(40.279% 0.2449 268.131);\n  --altcha-color-primary-content: oklch(100% 0.00011 271.152);\n  --altcha-color-success: oklch(55.748% 0.18968 142.511);\n  --altcha-color-success-content: oklch(100% 0.00011 271.152);\n  --altcha-checkbox-border-color: light-dark(\n  	oklch(66.494% 0.00233 15.434),\n  	oklch(51.028% 0.00006 271.152)\n  );\n  --altcha-checkbox-border-radius: 5px;\n  --altcha-checkbox-border-width: var(--altcha-border-width);\n  --altcha-checkbox-outline: 2px solid var(--altcha-checkbox-outline-color);\n  --altcha-checkbox-outline-color: -webkit-focus-ring-color;\n  --altcha-checkbox-outline-offset: 2px;\n  --altcha-checkbox-size: 22px;\n  --altcha-checkbox-transition-duration: var(--altcha-transition-duration);\n  --altcha-input-background-color: var(--altcha-color-base);\n  --altcha-input-border-radius: 3px;\n  --altcha-input-border-width: 1px;\n  --altcha-input-color: var(--altcha-color-base-content);\n  --altcha-max-width: 320px;\n  --altcha-padding: 0.75rem;\n  --altcha-popover-arrow-size: 6px;\n  --altcha-popover-color: var(--altcha-border-color);\n  --altcha-shadow: drop-shadow(3px 3px 6px oklch(0% 0 0 / 0.2));\n  --altcha-spinner-color: var(--altcha-color-base-content);\n  --altcha-switch-background-color: var(--altcha-color-neutral);\n  --altcha-switch-border-radius: calc(infinity * 1px);\n  --altcha-switch-height: var(--altcha-checkbox-size);\n  --altcha-switch-padding: 0.25rem;\n  --altcha-switch-width: calc(var(--altcha-checkbox-size) * 1.75);\n  --altcha-switch-toggle-border-radius: 100%;\n  --altcha-switch-toggle-color: var(--altcha-color-neutral-content);\n  --altcha-switch-toggle-size: calc(\n  	var(--altcha-switch-height) - calc(var(--altcha-switch-padding) * 2)\n  );\n  --altcha-transition-duration: 0.6s;\n  --altcha-z-index: 99999999;\n  --altcha-z-index-popover: 999999999;\n}\n\n@supports (-moz-appearance: none) {\n  :root {\n    --altcha-checkbox-outline-color: var(--altcha-color-primary);\n  }\n}\n.altcha {\n  all: revert-layer;\n  display: none;\n  font-family: inherit;\n  font-size: inherit;\n  position: relative;\n}\n.altcha[data-visible] {\n  display: block;\n}\n.altcha-popover, .altcha-popover * {\n  all: revert-layer;\n  box-sizing: border-box;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: 1.25;\n}\n.altcha * {\n  all: revert-layer;\n  box-sizing: border-box;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: 1.25;\n}\n.altcha a, .altcha-popover a {\n  color: currentColor;\n  text-decoration: none;\n}\n.altcha a:hover, .altcha-popover a:hover {\n  color: currentColor;\n}\n.altcha-main {\n  align-items: start;\n  background-color: var(--altcha-color-base);\n  border: var(--altcha-border-width, 1px) solid var(--altcha-border-color);\n  border-radius: var(--altcha-border-radius, 0);\n  color: var(--altcha-color-base-content);\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  justify-content: space-between;\n  padding: var(--altcha-padding);\n  max-width: var(--altcha-max-width, 100%);\n}\n.altcha-main > * {\n  display: flex;\n  width: 100%;\n}\n.altcha-main > *:first-child {\n  flex-grow: 1;\n}\n.altcha-checkbox-wrap {\n  align-items: center;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  gap: 0.5rem;\n}\n.altcha-checkbox-wrap > * {\n  display: flex;\n}\n.altcha-logo {\n  opacity: 0.7;\n}\n.altcha-footer {\n  align-items: center;\n  display: flex;\n  flex-grow: 1;\n  gap: 0.5rem;\n  justify-content: flex-end;\n  font-size: 0.7rem;\n  opacity: 0.7;\n}\n.altcha-footer p {\n  margin: 0;\n  padding: 0;\n}\n.altcha-error {\n  font-size: 0.85rem;\n}\n.altcha-button {\n  align-items: center;\n  background: var(--altcha-color-primary);\n  border: var(--altcha-input-border-width) solid var(--altcha-color-primary);\n  border-radius: var(--altcha-input-border-radius);\n  color: var(--altcha-color-primary-content);\n  cursor: pointer;\n  display: flex;\n  font-size: 0.9rem;\n  gap: 0.5rem;\n  padding: 0.35rem;\n}\n.altcha-button:focus {\n  border-color: var(--altcha-color-primary);\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-button > .altcha-spinner, .altcha-button > svg {\n  height: 20px;\n  width: 20px;\n}\n.altcha-button-secondary {\n  background: transparent;\n  border-color: var(--altcha-color-neutral);\n  color: var(--altcha-color-neutral-content);\n}\n.altcha-input {\n  background: var(--altcha-input-background-color);\n  border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);\n  border-radius: var(--altcha-input-border-radius);\n  color: var(--altcha-input-color);\n  flex-grow: 1;\n  font-size: 1rem;\n  min-width: 0;\n  padding: 0.25rem;\n  width: auto;\n}\n.altcha-input:focus {\n  border-color: var(--altcha-color-primary);\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-spinner {\n  animation: altcha-rotate 0.6s linear infinite;\n  border-radius: 100%;\n  border: var(--altcha-checkbox-border-width) solid var(--altcha-spinner-color);\n  border-bottom-color: transparent;\n  border-right-color: transparent;\n  opacity: 0.7;\n}\n.altcha-popover {\n  background-color: var(--altcha-color-base);\n  border: var(--altcha-border-width) solid var(--altcha-border-color);\n  border-radius: var(--altcha-border-radius);\n  color: var(--altcha-color-base-content);\n  filter: var(--altcha-shadow);\n  position: absolute;\n  left: calc(var(--altcha-padding) / 2);\n  max-width: calc(var(--altcha-max-width) - var(--altcha-padding));\n  top: calc(var(--altcha-padding) + var(--altcha-checkbox-size) + var(--altcha-popover-arrow-size));\n  z-index: var(--altcha-z-index-popover);\n}\n.altcha-popover-arrow {\n  border: var(--altcha-popover-arrow-size) solid transparent;\n  border-bottom-color: var(--altcha-popover-color);\n  content: "";\n  height: 0;\n  left: calc(var(--altcha-checkbox-size) / 2);\n  position: absolute;\n  top: calc(var(--altcha-popover-arrow-size) * -2);\n  width: 0;\n}\n.altcha-popover-content {\n  max-height: 100dvh;\n  overflow: auto;\n  padding: var(--altcha-padding);\n}\n.altcha-popover[data-top=true][data-display=standard] {\n  bottom: calc(100% - (var(--altcha-padding) - var(--altcha-popover-arrow-size)));\n  top: auto;\n}\n.altcha-popover[data-top=true][data-display=standard] .altcha-popover-arrow {\n  border-bottom-color: transparent;\n  border-top-color: var(--altcha-popover-color);\n  bottom: calc(var(--altcha-popover-arrow-size) * -2);\n  top: auto;\n}\n.altcha-popover[data-variant=error] {\n  --altcha-popover-color: var(--altcha-color-error);\n  background-color: var(--altcha-color-error);\n  border-color: var(--altcha-color-error);\n  color: var(--altcha-color-error-content);\n}\n.altcha-popover[data-variant=error] .altcha-popover-content {\n  padding: calc(var(--altcha-padding) / 1.5) var(--altcha-padding);\n}\n.altcha-popover[data-display=overlay] {\n  animation: altcha-overlay-slidein 0.5s forwards;\n  left: 50%;\n  position: fixed;\n  top: 45%;\n  transform: translate(-50%, -50%);\n  width: var(--altcha-max-width);\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover[data-display=bottomsheet] {\n  animation: altcha-bottomsheet-slideup 0.5s forwards;\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n  border-bottom: 0;\n  bottom: -100%;\n  left: 50%;\n  position: fixed;\n  top: auto;\n  transform: translate(-50%, 0);\n  width: var(--altcha-max-width);\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover[data-display=bottomsheet] .altcha-popover-content {\n  padding-bottom: calc(var(--altcha-padding) * 2);\n}\n.altcha-popover-backdrop {\n  background: var(--altcha-color-base-content);\n  bottom: 0;\n  left: 0;\n  opacity: 0.1;\n  position: fixed;\n  right: 0;\n  top: 0;\n  transition: opacity 0.5s;\n  z-index: var(--altcha-z-index);\n}\n.altcha-popover-close {\n  color: var(--altcha-color-base-content);\n  cursor: pointer;\n  display: inline-block;\n  font-size: 1rem;\n  height: 1.25rem;\n  line-height: 0.95;\n  position: absolute;\n  right: 0;\n  text-align: center;\n  text-shadow: 0 0 1px var(--altcha-color-base);\n  top: -1.5rem;\n  width: 1.25rem;\n  z-index: var(--altcha-z-index);\n}\n[dir=rtl] .altcha-popover {\n  left: auto;\n  right: calc(var(--altcha-padding) / 2);\n}\n[dir=rtl] .altcha-popover-arrow {\n  left: auto;\n  right: calc(var(--altcha-checkbox-size) / 2);\n}\n[dir=rtl] .altcha-popover-close {\n  left: 0;\n  right: auto;\n}\n.altcha-popover[data-display=bottomsheet] .altcha-footer, .altcha-popover[data-display=overlay] .altcha-footer {\n  align-items: center;\n  justify-content: center;\n  padding-top: 1rem;\n  gap: 0.5rem;\n}\n.altcha-popover[data-display=bottomsheet] .altcha-footer svg, .altcha-popover[data-display=overlay] .altcha-footer svg {\n  height: 18px;\n  width: 18px;\n  vertical-align: middle;\n}\n.altcha-code-challenge > form {\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n}\n.altcha-code-challenge-title {\n  font-weight: 600;\n}\n.altcha-code-challenge-text {\n  font-size: 0.85rem;\n}\n.altcha-code-challenge-image {\n  background: white;\n  border: var(--altcha-input-border-width) solid var(--altcha-color-neutral);\n  border-radius: var(--altcha-input-border-radius);\n  object-fit: contain;\n  height: 50px;\n}\n.altcha-code-challenge-row {\n  display: flex;\n  gap: 0.5rem;\n}\n.altcha-code-challenge-buttons {\n  align-items: center;\n  display: flex;\n  flex-direction: column;\n  gap: 0.5rem;\n  margin-top: var(--altcha-padding);\n  justify-content: space-between;\n}\n.altcha-code-challenge-buttons button {\n  justify-content: center;\n  width: 100%;\n}\n.altcha-checkbox {\n  cursor: pointer;\n  height: var(--altcha-checkbox-size);\n  position: relative;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox input {\n  appearance: none;\n  background: var(--altcha-input-background-color);\n  border: var(--altcha-checkbox-border-width, 2px) solid var(--altcha-checkbox-border-color);\n  border-radius: var(--altcha-checkbox-border-radius);\n  cursor: pointer;\n  height: var(--altcha-checkbox-size);\n  left: 0;\n  margin: 0;\n  padding: 0;\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox input:before {\n  border-radius: var(--altcha-checkbox-border-radius);\n  content: "";\n  width: 100%;\n  height: 100%;\n  background: var(--altcha-color-neutral);\n  display: block;\n  transform: scale(0);\n}\n.altcha-checkbox input:checked {\n  background-color: var(--altcha-color-success);\n  border-color: var(--altcha-color-success);\n}\n.altcha-checkbox input:checked::before {\n  background-color: var(--altcha-color-success);\n  opacity: 0;\n  transform: scale(2.2);\n  transition: all var(--altcha-checkbox-transition-duration) ease;\n  transition-delay: 0.1s;\n}\n.altcha-checkbox svg {\n  --altcha-radio-svg-size: calc(var(--altcha-checkbox-size) * 0.5);\n  --altcha-radio-svg-offset: calc(var(--altcha-checkbox-size) * 0.25);\n  fill: none;\n  left: var(--altcha-radio-svg-offset);\n  height: var(--altcha-radio-svg-size);\n  opacity: 0;\n  position: absolute;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-dasharray: 16px;\n  stroke-dashoffset: 16px;\n  top: var(--altcha-radio-svg-offset);\n  transform: translate3d(0, 0, 0);\n  width: var(--altcha-radio-svg-size);\n}\n.altcha-checkbox input:checked + svg {\n  color: var(--altcha-color-success-content);\n  opacity: 1;\n  stroke-dashoffset: 0;\n  transition: all var(--altcha-checkbox-transition-duration) ease;\n  transition-delay: 0.1s;\n}\n.altcha-checkbox-spinner {\n  display: none;\n  left: 0;\n  height: var(--altcha-checkbox-size);\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox[data-loading=true] input {\n  appearance: none;\n  opacity: 0;\n  pointer-events: none;\n}\n.altcha-checkbox[data-loading=true] .altcha-checkbox-spinner {\n  display: block;\n}\n.altcha-checkbox-native {\n  height: var(--altcha-checkbox-size);\n  position: relative;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native input {\n  height: var(--altcha-checkbox-size);\n  margin: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native-spinner {\n  display: none;\n  left: 0;\n  height: var(--altcha-checkbox-size);\n  position: absolute;\n  top: 0;\n  width: var(--altcha-checkbox-size);\n}\n.altcha-checkbox-native[data-loading=true] input {\n  appearance: none;\n  opacity: 0;\n  pointer-events: none;\n}\n.altcha-checkbox-native[data-loading=true] .altcha-checkbox-native-spinner {\n  display: block;\n}\n.altcha-switch {\n  align-items: center;\n  border-radius: var(--altcha-switch-border-radius);\n  background-color: var(--altcha-switch-background-color);\n  display: flex;\n  height: var(--altcha-switch-height);\n  padding: var(--altcha-switch-padding);\n  position: relative;\n  width: var(--altcha-switch-width);\n}\n.altcha-switch:focus-within {\n  outline: var(--altcha-checkbox-outline);\n  outline-offset: var(--altcha-checkbox-outline-offset);\n}\n.altcha-switch input {\n  appearance: none;\n  cursor: pointer;\n  height: 100%;\n  left: 0;\n  opacity: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n.altcha-switch-toggle {\n  align-items: center;\n  background-color: var(--altcha-switch-toggle-color);\n  border-radius: var(--altcha-switch-toggle-border-radius);\n  cursor: pointer;\n  display: flex;\n  height: var(--altcha-switch-toggle-size);\n  justify-content: center;\n  left: var(--altcha-switch-padding);\n  position: absolute;\n  transition: width 150ms ease-out, left 150ms ease-out;\n  width: var(--altcha-switch-toggle-size);\n}\n.altcha-switch-spinner {\n  display: none;\n  height: var(--altcha-switch-toggle-size);\n  width: var(--altcha-switch-toggle-size);\n}\n.altcha-switch[data-loading=true] {\n  pointer-events: none;\n}\n.altcha-switch[data-loading=true] .altcha-switch-spinner {\n  display: block;\n}\n.altcha-switch[data-loading=true] .altcha-switch-toggle {\n  background-color: transparent;\n  left: calc(50% - var(--altcha-switch-toggle-size) / 2);\n}\n[data-state=verified] .altcha-switch {\n  --altcha-switch-background-color: var(--altcha-color-success);\n}\n[data-state=verified] .altcha-switch-toggle {\n  background-color: var(--altcha-color-success-content);\n  left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));\n}\n[dir=rtl] .altcha-switch-toggle {\n  left: calc(100% - var(--altcha-switch-height) + var(--altcha-switch-padding));\n}\n[dir=rtl][data-state=verified] .altcha-switch-toggle {\n  left: var(--altcha-switch-padding);\n}\n.altcha-floating-arrow {\n  border: 6px solid transparent;\n  border-bottom-color: var(--altcha-border-color);\n  content: "";\n  height: 0;\n  left: 12px;\n  position: absolute;\n  top: -12px;\n  width: 0;\n}\n.altcha-overlay-backdrop {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n  transition: opacity var(--altcha-transition-duration);\n  z-index: var(--altcha-z-index);\n}\n.altcha-overlay-close {\n  display: inline-block;\n  color: currentColor;\n  cursor: pointer;\n  font-size: 1rem;\n  height: 1rem;\n  line-height: 0.85;\n  position: absolute;\n  right: 0;\n  text-align: center;\n  text-shadow: 0 0 1px var(--altcha-color-base);\n  top: -1.5rem;\n  width: 1rem;\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=overlay] {\n  animation: altcha-overlay-slidein var(--altcha-transition-duration) forwards;\n  filter: var(--altcha-shadow);\n  left: 50%;\n  opacity: 0;\n  position: fixed;\n  top: 45%;\n  transform: translate(-50%, -50%);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=overlay] .altcha-main {\n  width: var(--altcha-max-width);\n}\n.altcha[data-display=floating] {\n  display: none;\n  filter: var(--altcha-shadow);\n  left: var(--altcha-floating-left, -100%);\n  position: fixed;\n  top: var(--altcha-floating-top, -100%);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=floating] .altcha-main {\n  width: var(--altcha-max-width);\n}\n.altcha[data-display=floating][data-placement=top] .altcha-floating-arrow {\n  border-bottom-color: transparent;\n  border-top-color: var(--altcha-border-color);\n  bottom: -12px;\n  top: auto;\n}\n.altcha[data-display=floating][data-visible] {\n  display: flex;\n}\n.altcha[data-display=bar] {\n  bottom: -100%;\n  filter: var(--altcha-shadow);\n  left: 0;\n  position: fixed;\n  right: 0;\n  transition: bottom var(--altcha-transition-duration), top var(--altcha-transition-duration);\n  z-index: var(--altcha-z-index);\n}\n.altcha[data-display=bar] .altcha-main {\n  align-items: center;\n  border-radius: 0;\n  border-width: var(--altcha-border-width) 0 0 0;\n  flex-direction: row;\n  max-width: 100% !important;\n}\n.altcha[data-display=bar] .altcha-main > * {\n  width: auto;\n}\n.altcha[data-display=bar][data-placement=top] {\n  bottom: auto;\n  top: -100%;\n}\n.altcha[data-display=bar][data-placement=top] .altcha-main {\n  border-width: 0 0 var(--altcha-border-width) 0;\n}\n.altcha[data-display=bar][data-placement=bottom]:not([data-state=unverified]) {\n  bottom: 0;\n}\n.altcha[data-display=bar][data-placement=top]:not([data-state=unverified]) {\n  top: 0;\n}\n.altcha[data-display=invisible] {\n  display: none;\n}\n\n@keyframes altcha-rotate {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@keyframes altcha-bottomsheet-slideup {\n  100% {\n    bottom: 0;\n  }\n}\n@keyframes altcha-overlay-slidein {\n  100% {\n    opacity: 1;\n    top: 50%;\n  }\n}';
 injectCss(css);
 $altcha.algorithms.set("SHA-256", () => new WorkerWrapper());
 $altcha.algorithms.set("SHA-384", () => new WorkerWrapper());
@@ -7439,12 +7454,12 @@ $altcha.algorithms.set("PBKDF2/SHA-256", () => new WorkerWrapper$1());
 $altcha.algorithms.set("PBKDF2/SHA-384", () => new WorkerWrapper$1());
 $altcha.algorithms.set("PBKDF2/SHA-512", () => new WorkerWrapper$1());
 const i18n$Y = {
-  ariaLinkLabel: "زور Altcha.org",
+  ariaLinkLabel: "Altcha (الموقع الرسمي)",
   enterCode: "أدخل الرمز",
   enterCodeAria: "أدخل الرمز الذي تسمعه. اضغط على المسافة لتشغيل الصوت.",
   error: "فشل التحقق. حاول مرة أخرى لاحقاً.",
   expired: "انتهت صلاحية التحقق. حاول مرة أخرى.",
-  footer: 'محمي بواسطة <a href="https://altcha.org/" target="_blank" aria-label="زور Altcha.org">ALTCHA</a>',
+  footer: 'محمي بواسطة <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (الموقع الرسمي)">ALTCHA</a>',
   getAudioChallenge: "احصل على تحدي صوتي",
   label: "أنا لست روبوتاً",
   loading: "جارٍ التحميل...",
@@ -7461,12 +7476,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ar", i18n$Y);
 }
 const i18n$X = {
-  ariaLinkLabel: "Посетете Altcha.org",
+  ariaLinkLabel: "Altcha (официален уебсайт)",
   enterCode: "Въведете код",
   enterCodeAria: "Въведете кода, който чувате. Натиснете Space за възпроизвеждане на аудио.",
   error: "Проверката неуспешна. Моля, опитайте по-късно.",
   expired: "Времето за проверка изтече. Моля, опитайте отново.",
-  footer: 'Защитено от <a href="https://altcha.org/" target="_blank" aria-label="Посетете Altcha.org">ALTCHA</a>',
+  footer: 'Защитено от <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (официален уебсайт)">ALTCHA</a>',
   getAudioChallenge: "Аудио проверка",
   label: "Аз не съм робот",
   loading: "Зареждане...",
@@ -7483,12 +7498,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("bg", i18n$X);
 }
 const i18n$W = {
-  ariaLinkLabel: "Наведаць Altcha.org",
+  ariaLinkLabel: "Altcha (афіцыйны сайт)",
   enterCode: "Увядзіце код",
   enterCodeAria: "Увядзіце код, які вы чуеце. Націсніце прабел, каб прайграць аўдыё.",
   error: "Праверка не прайшла. Паспрабуйце пазней.",
   expired: "Тэрмін праверкі скончыўся. Паспрабуйце зноў.",
-  footer: 'Абаронена <a href="https://altcha.org/" target="_blank" aria-label="Наведаць Altcha.org">ALTCHA</a>',
+  footer: 'Абаронена <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (афіцыйны сайт)">ALTCHA</a>',
   getAudioChallenge: "Атрымаць аўдыё выклік",
   label: "Я не робат",
   loading: "Загрузка...",
@@ -7505,12 +7520,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("be", i18n$W);
 }
 const i18n$V = {
-  ariaLinkLabel: "Posjetite Altcha.org",
+  ariaLinkLabel: "Altcha (službena web stranica)",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
   error: "Verifikacija nije uspjela. Pokušajte ponovo kasnije.",
   expired: "Verifikacija je istekla. Pokušajte ponovo.",
-  footer: 'Zaštićeno od strane <a href="https://altcha.org/" target="_blank" aria-label="Posjetite Altcha.org">ALTCHA</a>',
+  footer: 'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (službena web stranica)">ALTCHA</a>',
   getAudioChallenge: "Dohvatite audio izazov",
   label: "Nisam robot",
   loading: "Učitavanje...",
@@ -7527,12 +7542,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("bs", i18n$V);
 }
 const i18n$U = {
-  ariaLinkLabel: "Visita Altcha.org",
+  ariaLinkLabel: "Altcha (lloc web oficial)",
   enterCode: "Introdueix el codi",
   enterCodeAria: "Introdueix el codi que escoltes. Prem Espai per reproduir l’àudio.",
   error: "Verificació fallida. Torna-ho a provar més tard.",
   expired: "Verificació expirada. Torna-ho a provar.",
-  footer: 'Protegit per <a href="https://altcha.org/" target="_blank" aria-label="Visita Altcha.org">ALTCHA</a>',
+  footer: 'Protegit per <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (lloc web oficial)">ALTCHA</a>',
   getAudioChallenge: "Obtenir un desafiament d’àudio",
   label: "No sóc un robot",
   loading: "Carregant...",
@@ -7549,12 +7564,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ca", i18n$U);
 }
 const i18n$T = {
-  ariaLinkLabel: "Navštivte Altcha.org",
+  ariaLinkLabel: "Altcha (oficiální web)",
   enterCode: "Zadejte kód",
   enterCodeAria: "Zadejte kód, který slyšíte. Stisknutím mezerníku přehrajete zvuk.",
   error: "Ověření selhalo. Zkuste to prosím později.",
   expired: "Ověření vypršelo. Zkuste to prosím znovu.",
-  footer: 'Chráněno pomocí <a href="https://altcha.org/" target="_blank" aria-label="Navštivte Altcha.org">ALTCHA</a>',
+  footer: 'Chráněno pomocí <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiální web)">ALTCHA</a>',
   getAudioChallenge: "Získat audio výzvu",
   label: "Nejsem robot",
   loading: "Načítání...",
@@ -7571,12 +7586,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("cs", i18n$T);
 }
 const i18n$S = {
-  ariaLinkLabel: "Besøg Altcha.org",
+  ariaLinkLabel: "Altcha (officiel hjemmeside)",
   enterCode: "Indtast kode",
   enterCodeAria: "Indtast den kode, du hører. Tryk på mellemrumstasten for at afspille lyd.",
   error: "Verificering mislykkedes. Prøv venligst igen senere.",
   expired: "Verificering udløbet. Prøv venligst igen.",
-  footer: 'Beskyttet af <a href="https://altcha.org/" target="_blank" aria-label="Besøg Altcha.org">ALTCHA</a>',
+  footer: 'Beskyttet af <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiel hjemmeside)">ALTCHA</a>',
   getAudioChallenge: "Hent lydudfordring",
   label: "Jeg er ikke en robot",
   loading: "Indlæser...",
@@ -7593,12 +7608,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("da", i18n$S);
 }
 const i18n$R = {
-  ariaLinkLabel: "Besuche Altcha.org",
+  ariaLinkLabel: "Altcha (offizielle Website)",
   enterCode: "Code eingeben",
   enterCodeAria: "Geben Sie den Code ein, den Sie hören. Drücken Sie die Leertaste, um die Audio abzuspielen.",
   error: "Überprüfung fehlgeschlagen. Bitte versuchen Sie es später erneut.",
   expired: "Überprüfung abgelaufen. Bitte versuchen Sie es erneut.",
-  footer: 'Geschützt durch <a href="https://altcha.org/" target="_blank" aria-label="Besuche Altcha.org">ALTCHA</a>',
+  footer: 'Geschützt durch <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offizielle Website)">ALTCHA</a>',
   getAudioChallenge: "Audio-Herausforderung anfordern",
   label: "Ich bin kein Roboter",
   loading: "Lade...",
@@ -7615,12 +7630,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("de", i18n$R);
 }
 const i18n$Q = {
-  ariaLinkLabel: "Επισκεφθείτε το Altcha.org",
+  ariaLinkLabel: "Altcha (επίσημος ιστότοπος)",
   enterCode: "Εισαγάγετε κωδικό",
   enterCodeAria: "Εισαγάγετε τον κωδικό που ακούτε. Πατήστε Space για να παίξετε τον ήχο.",
   error: "Η επαλήθευση απέτυχε. Δοκιμάστε ξανά αργότερα.",
   expired: "Η επαλήθευση έληξε. Δοκιμάστε ξανά.",
-  footer: 'Προστατεύεται από το <a href="https://altcha.org/" target="_blank" aria-label="Επισκεφθείτε το Altcha.org">ALTCHA</a>',
+  footer: 'Προστατεύεται από το <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (επίσημος ιστότοπος)">ALTCHA</a>',
   getAudioChallenge: "Λήψη ηχητικής δοκιμασίας",
   label: "Δεν είμαι ρομπότ",
   loading: "Φόρτωση...",
@@ -7637,12 +7652,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("el", i18n$Q);
 }
 const i18n$P = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (sitio web oficial)",
   enterCode: "Introduce el código",
   enterCodeAria: "Introduce el código que escuchas. Pulsa Espacio para reproducir el audio.",
   error: "Falló la verificación. Por favor intente nuevamente más tarde.",
   expired: "Verificación expirada. Por favor intente nuevamente.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sitio web oficial)">ALTCHA</a>',
   getAudioChallenge: "Obtener un desafío de audio",
   label: "No soy un robot",
   loading: "Cargando...",
@@ -7659,12 +7674,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("es-es", i18n$P);
 }
 const i18n$O = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (sitio web oficial)",
   enterCode: "Ingresa el código",
   enterCodeAria: "Ingresa el código que escuchas. Presiona Espacio para reproducir el audio.",
   error: "Falló la verificación. Por favor vuelve a intentarlo más tarde.",
   expired: "La verificación expiró. Por favor inténtalo de nuevo.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sitio web oficial)">ALTCHA</a>',
   getAudioChallenge: "Obtener un reto de audio",
   label: "No soy un robot",
   loading: "Cargando...",
@@ -7681,12 +7696,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("es-419", i18n$O);
 }
 const i18n$N = {
-  ariaLinkLabel: "Külasta Altcha.org",
+  ariaLinkLabel: "Altcha (ametlik veebisait)",
   enterCode: "Sisesta kood",
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
   error: "Kinnitamine ebaõnnestus. Proovi hiljem uuesti.",
   expired: "Kinnitamine aegus. Proovi uuesti.",
-  footer: 'Kaitstud <a href="https://altcha.org/" target="_blank" aria-label="Külasta Altcha.org">ALTCHA</a> poolt',
+  footer: 'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
   getAudioChallenge: "Hangi heliülesanne",
   label: "Ma ei ole robot",
   loading: "Laadimine...",
@@ -7703,12 +7718,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("et", i18n$N);
 }
 const i18n$M = {
-  ariaLinkLabel: "Bisitatu Altcha.org",
+  ariaLinkLabel: "Altcha (webgune ofiziala)",
   enterCode: "Sartu kodea",
   enterCodeAria: "Sartu entzun duzun kodea. Sakatu Espazioa audioa erreproduzitzeko.",
   error: "Egiaztatzeak huts egin du. Saiatu berriro geroago.",
   expired: "Egiaztatzea iraungi da. Saiatu berriro.",
-  footer: '<a href="https://altcha.org/" target="_blank" aria-label="Bisitatu Altcha.org">ALTCHA</a>k babestuta',
+  footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (webgune ofiziala)">ALTCHA</a>k babestuta',
   getAudioChallenge: "Jaso audio-erronka bat",
   label: "Ez naiz robot bat",
   loading: "Kargatzen...",
@@ -7725,12 +7740,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("eu", i18n$M);
 }
 const i18n$L = {
-  ariaLinkLabel: "بازدید از Altcha.org",
+  ariaLinkLabel: "Altcha (وب‌سایت رسمی)",
   enterCode: "کد را وارد کنید",
   enterCodeAria: "کدی که می‌شنوید را وارد کنید. برای پخش صدا Space را فشار دهید.",
   error: "احراز هویت ناموفق بود. بعداً دوباره تلاش کنید.",
   expired: "احراز هویت منقضی شد. دوباره تلاش کنید.",
-  footer: 'محافظت شده توسط <a href="https://altcha.org/" target="_blank" aria-label="بازدید از Altcha.org">ALTCHA</a>',
+  footer: 'محافظت شده توسط <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (وب‌سایت رسمی)">ALTCHA</a>',
   getAudioChallenge: "دریافت چالش صوتی",
   label: "من ربات نیستم",
   loading: "در حال بارگذاری...",
@@ -7747,12 +7762,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("fa", i18n$L);
 }
 const i18n$K = {
-  ariaLinkLabel: "Besicht Altcha.org",
+  ariaLinkLabel: "Altcha (offiziell Websäit)",
   enterCode: "Code aginn",
   enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
   error: "Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.",
   expired: "Verifikatioun ofgelaf. Probéiert nach emol.",
-  footer: 'Geschützt vun <a href="https://altcha.org/" target="_blank" aria-label="Besicht Altcha.org">ALTCHA</a>',
+  footer: 'Geschützt vun <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offiziell Websäit)">ALTCHA</a>',
   getAudioChallenge: "Kritt eng Audio-Herausfuerderung",
   label: "Ech sinn keen Robot",
   loading: "Lueden...",
@@ -7769,12 +7784,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("lb", i18n$K);
 }
 const i18n$J = {
-  ariaLinkLabel: "Vieraile sivulla Altcha.org",
+  ariaLinkLabel: "Altcha (virallinen verkkosivusto)",
   enterCode: "Syötä koodi",
   enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
   error: "Varmennus epäonnistui. Yritä myöhemmin uudelleen.",
   expired: "Varmennus vanhentui. Yritä uudelleen.",
-  footer: 'Suojattu <a href="https://altcha.org/" target="_blank" aria-label="Vieraile sivulla Altcha.org">ALTCHA</a>:lla',
+  footer: 'Suojattu <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (virallinen verkkosivusto)">ALTCHA</a>:lla',
   getAudioChallenge: "Hae äänitehtävä",
   label: "En ole robotti",
   loading: "Ladataan...",
@@ -7791,14 +7806,14 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("fi", i18n$J);
 }
 const i18n$I = {
-  ariaLinkLabel: "Visitez Altcha.org",
+  ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
   enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
   error: "Échec de la vérification. Réessayez plus tard.",
   expired: "La vérification a expiré. Réessayez.",
-  footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
+  footer: 'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site officiel)">ALTCHA</a>',
   getAudioChallenge: "Obtenir un défi audio",
-  label: "Pas un robot",
+  label: "Je ne suis pas un robot",
   loading: "Chargement...",
   reload: "Recharger",
   verify: "Vérifier",
@@ -7813,14 +7828,14 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("fr-ca", i18n$I);
 }
 const i18n$H = {
-  ariaLinkLabel: "Visitez Altcha.org",
+  ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
   enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
   error: "Échec de la vérification. Essayez à nouveau plus tard.",
   expired: "La vérification a expiré. Essayez à nouveau.",
-  footer: 'Protégé par <a href="https://altcha.org/" target="_blank" aria-label="Visitez Altcha.org">ALTCHA</a>',
+  footer: 'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site officiel)">ALTCHA</a>',
   getAudioChallenge: "Obtenir un défi audio",
-  label: "Pas un robot",
+  label: "Je ne suis pas un robot",
   loading: "Chargement...",
   reload: "Recharger",
   verify: "Vérifier",
@@ -7835,12 +7850,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("fr-fr", i18n$H);
 }
 const i18n$G = {
-  ariaLinkLabel: "Tabhair cuairt ar Altcha.org",
+  ariaLinkLabel: "Altcha (láithreán gréasáin oifigiúil)",
   enterCode: "Iontráil cód",
   enterCodeAria: "Cuir isteach an cód a chloiseann tú. Brúigh Spás chun an fuaime a sheinm.",
   error: "Theip ar an bhfíorú. Bain triail eile as níos déanaí.",
   expired: "Tá an fíorú as feidhm. Bain triail eile as.",
-  footer: 'Cosanta ag <a href="https://altcha.org/" target="_blank" aria-label="Tabhair cuairt ar Altcha.org">ALTCHA</a>',
+  footer: 'Cosanta ag <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (láithreán gréasáin oifigiúil)">ALTCHA</a>',
   getAudioChallenge: "Faigh dúshlán fuaime",
   label: "Níl mé i mo róbat",
   loading: "Á luchtú...",
@@ -7857,12 +7872,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ga", i18n$G);
 }
 const i18n$F = {
-  ariaLinkLabel: "Posjetite Altcha.org",
+  ariaLinkLabel: "Altcha (službena web stranica)",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite razmaknicu za reprodukciju zvuka.",
   error: "Provjera nije uspjela. Molimo pokušajte kasnije.",
   expired: "Provjera je istekla. Molimo pokušajte ponovo.",
-  footer: 'Zaštićeno od strane <a href="https://altcha.org/" target="_blank" aria-label="Posjetite Altcha.org">ALTCHA</a>',
+  footer: 'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (službena web stranica)">ALTCHA</a>',
   getAudioChallenge: "Audio provjera",
   label: "Ja nisam robot",
   loading: "Učitavanje...",
@@ -7879,12 +7894,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("hr", i18n$F);
 }
 const i18n$E = {
-  ariaLinkLabel: "Látogass el az Altcha.org oldalra",
+  ariaLinkLabel: "Altcha (hivatalos weboldal)",
   enterCode: "Írja be a kódot",
   enterCodeAria: "Írja be a hallott kódot. Nyomja meg a Szóköz billentyűt a hang lejátszásához.",
   error: "A hitelesítés nem sikerült. Próbáld meg később újra.",
   expired: "A hitelesítés lejárt. Próbáld újra.",
-  footer: 'Védve a következő által: <a href="https://altcha.org/" target="_blank" aria-label="Látogass el az Altcha.org oldalra">ALTCHA</a>',
+  footer: 'Védve a következő által: <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (hivatalos weboldal)">ALTCHA</a>',
   getAudioChallenge: "Hangalapú kihívás kérése",
   label: "Nem vagyok robot",
   loading: "Betöltés...",
@@ -7901,12 +7916,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("hu", i18n$E);
 }
 const i18n$D = {
-  ariaLinkLabel: "Heimsækja Altcha.org",
+  ariaLinkLabel: "Altcha (opinber vefsíða)",
   enterCode: "Sláðu inn kóða",
   enterCodeAria: "Sláðu inn kóðann sem þú heyrir. Ýttu á Space til að spila hljóðið.",
   error: "Staðfesting mistókst. Reyndu aftur síðar.",
   expired: "Staðfesting er útrunnin. Reyndu aftur.",
-  footer: 'Verndað af <a href="https://altcha.org/" target="_blank" aria-label="Heimsækja Altcha.org">ALTCHA</a>',
+  footer: 'Verndað af <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (opinber vefsíða)">ALTCHA</a>',
   getAudioChallenge: "Fá hljóðáskorun",
   label: "Ég er ekki robot",
   loading: "Hleður...",
@@ -7923,12 +7938,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("is", i18n$D);
 }
 const i18n$C = {
-  ariaLinkLabel: "Visita Altcha.org",
+  ariaLinkLabel: "Altcha (sito ufficiale)",
   enterCode: "Inserisci il codice",
   enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
-  footer: 'Protetto da <a href="https://altcha.org/" target="_blank" aria-label="Visita Altcha.org">ALTCHA</a>',
+  footer: 'Protetto da <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sito ufficiale)">ALTCHA</a>',
   getAudioChallenge: "Ottieni una sfida audio",
   label: "Non sono un robot",
   loading: "Caricamento...",
@@ -7945,12 +7960,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("it", i18n$C);
 }
 const i18n$B = {
-  ariaLinkLabel: "Apsilankykite Altcha.org",
+  ariaLinkLabel: "Altcha (oficiali svetainė)",
   enterCode: "Įveskite kodą",
   enterCodeAria: "Įveskite girdimą kodą. Paspauskite tarpo klavišą, kad grotumėte garso įrašą.",
   error: "Patvirtinimas nepavyko. Bandykite vėliau.",
   expired: "Patvirtinimo laikas baigėsi. Bandykite dar kartą.",
-  footer: 'Apsaugota <a href="https://altcha.org/" target="_blank" aria-label="Apsilankykite Altcha.org">ALTCHA</a>',
+  footer: 'Apsaugota <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiali svetainė)">ALTCHA</a>',
   getAudioChallenge: "Gauti garso užduotį",
   label: "Aš nesu robotas",
   loading: "Įkeliama...",
@@ -7967,12 +7982,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("lt", i18n$B);
 }
 const i18n$A = {
-  ariaLinkLabel: "Apmeklējiet Altcha.org",
+  ariaLinkLabel: "Altcha (oficiālā tīmekļa vietne)",
   enterCode: "Ievadiet kodu",
   enterCodeAria: "Ievadiet dzirdamo kodu. Nospiediet atstarpes taustiņu, lai atskaņotu audio.",
   error: "Verifikācija neizdevās. Mēģiniet vēlāk vēlreiz.",
   expired: "Verifikācijas laiks ir beidzies. Mēģiniet vēlreiz.",
-  footer: 'Aizsargāts ar <a href="https://altcha.org/" target="_blank" aria-label="Apmeklējiet Altcha.org">ALTCHA</a>',
+  footer: 'Aizsargāts ar <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiālā tīmekļa vietne)">ALTCHA</a>',
   getAudioChallenge: "Saņemt audio izaicinājumu",
   label: "Es neesmu robots",
   loading: "Notiek ielāde...",
@@ -7989,12 +8004,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("lv", i18n$A);
 }
 const i18n$z = {
-  ariaLinkLabel: "Żur Altcha.org",
+  ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
-  footer: 'Protett minn <a href="https://altcha.org/" target="_blank" aria-label="Żur Altcha.org">ALTCHA</a>',
+  footer: 'Protett minn <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sit uffiċjali)">ALTCHA</a>',
   getAudioChallenge: "Ikseb sfida bl-awdjo",
   label: "M’inix robot",
   loading: "Qed jitgħabba...",
@@ -8011,12 +8026,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("mt", i18n$z);
 }
 const i18n$y = {
-  ariaLinkLabel: "Besøk Altcha.org",
+  ariaLinkLabel: "Altcha (offisiell nettside)",
   enterCode: "Skriv inn kode",
   enterCodeAria: "Skriv inn koden du hører. Trykk på Space for å spille av lyden.",
   error: "Verifisering mislyktes. Prøv igjen senere.",
   expired: "Verifiseringen utløp. Prøv igjen.",
-  footer: 'Beskyttet av <a href="https://altcha.org/" target="_blank" aria-label="Besøk Altcha.org">ALTCHA</a>',
+  footer: 'Beskyttet av <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offisiell nettside)">ALTCHA</a>',
   getAudioChallenge: "Få en lydutfordring",
   label: "Jeg er ikke en robot",
   loading: "Laster...",
@@ -8033,12 +8048,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("nb", i18n$y);
 }
 const i18n$x = {
-  ariaLinkLabel: "Bezoek Altcha.org",
+  ariaLinkLabel: "Altcha (officiële website)",
   enterCode: "Voer code in",
   enterCodeAria: "Voer de code in die je hoort. Druk op Spatie om de audio af te spelen.",
   error: "Verificatie mislukt. Probeer het later opnieuw.",
   expired: "Verificatie verlopen. Probeer het opnieuw.",
-  footer: 'Beschermd door <a href="https://altcha.org/" target="_blank" aria-label="Bezoek Altcha.org">ALTCHA</a>',
+  footer: 'Beschermd door <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiële website)">ALTCHA</a>',
   getAudioChallenge: "Audio-uitdaging ontvangen",
   label: "Ik ben geen robot",
   loading: "Laden...",
@@ -8055,12 +8070,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("nl", i18n$x);
 }
 const i18n$w = {
-  ariaLinkLabel: "Odwiedź Altcha.org",
+  ariaLinkLabel: "Altcha (oficjalna strona internetowa)",
   enterCode: "Wprowadź kod",
   enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
   error: "Weryfikacja nie powiodła się. Spróbuj ponownie później.",
   expired: "Weryfikacja wygasła. Spróbuj ponownie.",
-  footer: 'Chronione przez <a href="https://altcha.org/" target="_blank" aria-label="Odwiedź Altcha.org">ALTCHA</a>',
+  footer: 'Chronione przez <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficjalna strona internetowa)">ALTCHA</a>',
   getAudioChallenge: "Pobierz zadanie dźwiękowe",
   label: "Nie jestem robotem",
   loading: "Ładowanie...",
@@ -8077,12 +8092,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("pl", i18n$w);
 }
 const i18n$v = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Introduza o código",
   enterCodeAria: "Introduza o código que ouve. Prima Espaço para reproduzir o áudio.",
   error: "A verificação falhou. Por favor, tente novamente mais tarde.",
   expired: "Verificação expirada. Por favor, tente novamente.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
   getAudioChallenge: "Obter desafio de áudio",
   label: "Não sou um robô",
   loading: "A carregar...",
@@ -8099,12 +8114,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("pt-pt", i18n$v);
 }
 const i18n$u = {
-  ariaLinkLabel: "Visitar Altcha.org",
+  ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Digite o código",
   enterCodeAria: "Digite o código que você ouve. Pressione Espaço para reproduzir o áudio.",
   error: "Falha na verificação. Por favor, tente novamente mais tarde.",
   expired: "Verificação expirada. Por favor, tente novamente.",
-  footer: 'Protegido por <a href="https://altcha.org/" target="_blank" aria-label="Visitar Altcha.org">ALTCHA</a>',
+  footer: 'Protegido por <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
   getAudioChallenge: "Obter desafio de áudio",
   label: "Eu não sou um robô",
   loading: "Carregando...",
@@ -8121,12 +8136,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("pt-br", i18n$u);
 }
 const i18n$t = {
-  ariaLinkLabel: "Vizitează Altcha.org",
+  ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Introduceți codul",
   enterCodeAria: "Introduceți codul pe care îl auziți. Apăsați Spațiu pentru a reda audio.",
   error: "Verificarea a eșuat. Încearcă din nou mai târziu.",
   expired: "Verificarea a expirat. Încearcă din nou.",
-  footer: 'Protejat de <a href="https://altcha.org/" target="_blank" aria-label="Vizitează Altcha.org">ALTCHA</a>',
+  footer: 'Protejat de <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
   getAudioChallenge: "Obține o provocare audio",
   label: "Nu sunt un robot",
   loading: "Se încarcă...",
@@ -8143,12 +8158,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ro", i18n$t);
 }
 const i18n$s = {
-  ariaLinkLabel: "Перейти на Altcha.org",
+  ariaLinkLabel: "Altcha (официальный сайт)",
   enterCode: "Введите код",
   enterCodeAria: "Введите код, который слышите. Нажмите пробел для воспроизведения аудио.",
   error: "Ошибка верификации. Попробуйте позже.",
   expired: "Срок действия верификации истек. Попробуйте снова.",
-  footer: 'Защищено <a href="https://altcha.org/" target="_blank" aria-label="Перейти на Altcha.org">ALTCHA</a>',
+  footer: 'Защищено <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (официальный сайт)">ALTCHA</a>',
   getAudioChallenge: "Получить аудио задачу",
   label: "Я не робот",
   loading: "Загрузка...",
@@ -8165,12 +8180,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ru", i18n$s);
 }
 const i18n$r = {
-  ariaLinkLabel: "Navštívte Altcha.org",
+  ariaLinkLabel: "Altcha (oficiálna webová stránka)",
   enterCode: "Zadajte kód",
   enterCodeAria: "Zadajte kód, ktorý počujete. Stlačením medzerníka prehráte zvuk.",
   error: "Verifikácia zlyhala. Skúste to znova neskôr.",
   expired: "Verifikácia vypršala. Skúste to znova.",
-  footer: 'Chránené <a href="https://altcha.org/" target="_blank" aria-label="Navštívte Altcha.org">ALTCHA</a>',
+  footer: 'Chránené <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiálna webová stránka)">ALTCHA</a>',
   getAudioChallenge: "Získať audio výzvu",
   label: "Nie som robot",
   loading: "Načítava sa...",
@@ -8187,12 +8202,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sk", i18n$r);
 }
 const i18n$q = {
-  ariaLinkLabel: "Obiščite Altcha.org",
+  ariaLinkLabel: "Altcha (uradna spletna stran)",
   enterCode: "Vnesite kodo",
   enterCodeAria: "Vnesite kodo, ki jo slišite. Pritisnite preslednico za predvajanje zvoka.",
   error: "Preverjanje ni uspelo. Poskusite znova kasneje.",
   expired: "Preverjanje je poteklo. Poskusite znova.",
-  footer: 'Zaščiteno z <a href="https://altcha.org/" target="_blank" aria-label="Obiščite Altcha.org">ALTCHA</a>',
+  footer: 'Zaščiteno z <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (uradna spletna stran)">ALTCHA</a>',
   getAudioChallenge: "Pridobite zvočni izziv",
   label: "Nisem robot",
   loading: "Nalagam...",
@@ -8209,12 +8224,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sl", i18n$q);
 }
 const i18n$p = {
-  ariaLinkLabel: "Vizitoni Altcha.org",
+  ariaLinkLabel: "Altcha (faqja zyrtare)",
   enterCode: "Fut kodin",
   enterCodeAria: "Fut kodin që dëgjon. Shtypni Hapësirë për të luajtur audio.",
   error: "Verifikimi dështoi. Provoni përsëri më vonë.",
   expired: "Verifikimi ka skaduar. Provoni përsëri.",
-  footer: 'I mbrojtur nga <a href="https://altcha.org/" target="_blank" aria-label="Vizitoni Altcha.org">ALTCHA</a>',
+  footer: 'I mbrojtur nga <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (faqja zyrtare)">ALTCHA</a>',
   getAudioChallenge: "Merr një sfidë audio",
   label: "Unë nuk jam një robot",
   loading: "Duke u ngarkuar...",
@@ -8231,12 +8246,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sq", i18n$p);
 }
 const i18n$o = {
-  ariaLinkLabel: "Posetite Altcha.org",
+  ariaLinkLabel: "Altcha (zvanična web stranica)",
   enterCode: "Unesite kod",
   enterCodeAria: "Unesite kod koji čujete. Pritisnite Space da biste pustili zvuk.",
   error: "Verifikacija nije uspela. Pokušajte ponovo kasnije.",
   expired: "Verifikacija je istekla. Pokušajte ponovo.",
-  footer: 'Zaštićeno od strane <a href="https://altcha.org/" target="_blank" aria-label="Posetite Altcha.org">ALTCHA</a>',
+  footer: 'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (zvanična web stranica)">ALTCHA</a>',
   getAudioChallenge: "Dohvatite audio izazov",
   label: "Nisam robot",
   loading: "Učitavanje...",
@@ -8253,12 +8268,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sr", i18n$o);
 }
 const i18n$n = {
-  ariaLinkLabel: "Besök Altcha.org",
+  ariaLinkLabel: "Altcha (officiell webbplats)",
   enterCode: "Ange kod",
   enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
   error: "Verifiering misslyckades. Försök igen senare.",
   expired: "Verifieringen har gått ut. Försök igen.",
-  footer: 'Skyddad av <a href="https://altcha.org/" target="_blank" aria-label="Besök Altcha.org">ALTCHA</a>',
+  footer: 'Skyddad av <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiell webbplats)">ALTCHA</a>',
   getAudioChallenge: "Få ljudutmaning",
   label: "Jag är inte en robot",
   loading: "Laddar...",
@@ -8275,12 +8290,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sv", i18n$n);
 }
 const i18n$m = {
-  ariaLinkLabel: "Altcha.org'yu ziyaret edin",
+  ariaLinkLabel: "Altcha (resmi web sitesi)",
   enterCode: "Kodu girin",
   enterCodeAria: "Duyduğunuz kodu girin. Ses dosyasını oynatmak için Boşluk tuşuna basın.",
   error: "Doğrulama başarısız oldu. Lütfen daha sonra tekrar deneyin.",
   expired: "Doğrulama süresi doldu. Lütfen tekrar deneyin.",
-  footer: `ALTCHA tarafından korunuyor <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org'yu ziyaret edin">ALTCHA</a>`,
+  footer: 'ALTCHA tarafından korunuyor <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sitesi)">ALTCHA</a>',
   getAudioChallenge: "Sesli doğrulama al",
   label: "Ben robot değilim",
   loading: "Yükleniyor...",
@@ -8297,12 +8312,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("tr", i18n$m);
 }
 const i18n$l = {
-  ariaLinkLabel: "Відвідати Altcha.org",
+  ariaLinkLabel: "Altcha (офіційний сайт)",
   enterCode: "Введіть код",
   enterCodeAria: "Введіть код, який ви чуєте. Натисніть пробіл, щоб відтворити аудіо.",
   error: "Перевірка не вдалася. Спробуйте пізніше.",
   expired: "Перевірка прострочена. Спробуйте знову.",
-  footer: 'Захищено <a href="https://altcha.org/" target="_blank" aria-label="Відвідати Altcha.org">ALTCHA</a>',
+  footer: 'Захищено <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (офіційний сайт)">ALTCHA</a>',
   getAudioChallenge: "Отримати аудіо-челлендж",
   label: "Я не робот",
   loading: "Завантаження...",
@@ -8319,12 +8334,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("uk", i18n$l);
 }
 const i18n$k = {
-  ariaLinkLabel: "Besoek Altcha.org",
+  ariaLinkLabel: "Altcha (amptelike webwerf)",
   enterCode: "Voer kode in",
   enterCodeAria: "Voer die kode in wat jy hoor. Druk Spasie om die klank af te speel.",
   error: "Verifikasie het misluk. Probeer later weer.",
   expired: "Verifikasie het verval. Probeer weer.",
-  footer: 'Beskerm deur <a href="https://altcha.org/" target="_blank" aria-label="Besoek Altcha.org">ALTCHA</a>',
+  footer: 'Beskerm deur <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (amptelike webwerf)">ALTCHA</a>',
   getAudioChallenge: "Kry 'n klankuitdaging",
   label: "Ek is nie 'n robot nie",
   loading: "Laai...",
@@ -8341,12 +8356,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("af", i18n$k);
 }
 const i18n$j = {
-  ariaLinkLabel: "Altcha.org ይጎብኙ",
+  ariaLinkLabel: "Altcha (ዋናው ድህረ ገጽ)",
   enterCode: "ኮድ አስገባ",
   enterCodeAria: "የሚሰማዎትን ኮድ ያስገቡ። ድምጽ ለመጫወት Space ን ይጫኑ።",
   error: "ማረጋገጫ አልተሳካም። በኋላ ላይ እንደገና ይሞክሩ።",
   expired: "ማረጋገጫው ጊዜው አልፏል። እንደገና ይሞክሩ።",
-  footer: 'በ <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org ይጎብኙ">ALTCHA</a> የተጠበቀ',
+  footer: 'በ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ዋናው ድህረ ገጽ)">ALTCHA</a> የተጠበቀ',
   getAudioChallenge: "የድምጽ ፈተና ያግኙ",
   label: "እኔ ሮቦት አይደለሁም",
   loading: "በመጫን ላይ...",
@@ -8363,12 +8378,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("am", i18n$j);
 }
 const i18n$i = {
-  ariaLinkLabel: "Tembelea Altcha.org",
+  ariaLinkLabel: "Altcha (tovuti rasmi)",
   enterCode: "Weka nambari",
   enterCodeAria: "Weka nambari unayosikia. Bonyeza Space kucheza sauti.",
   error: "Uthibitishaji umeshindwa. Jaribu tena baadaye.",
   expired: "Uthibitishaji umeisha. Jaribu tena.",
-  footer: 'Imealindwa na <a href="https://altcha.org/" target="_blank" aria-label="Tembelea Altcha.org">ALTCHA</a>',
+  footer: 'Imealindwa na <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (tovuti rasmi)">ALTCHA</a>',
   getAudioChallenge: "Pata changamoto ya sauti",
   label: "Mimi sio roboti",
   loading: "Inapakia...",
@@ -8385,12 +8400,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("sw", i18n$i);
 }
 const i18n$h = {
-  ariaLinkLabel: "Ṣe abẹwo si Altcha.org",
+  ariaLinkLabel: "Altcha (oju opo wẹẹbu osise)",
   enterCode: "Tẹ koodu sii",
   enterCodeAria: "Tẹ koodu ti o ngbọ sii. Tẹ Space lati ṣe ohun orin.",
   error: "Ìdájọ́kòwò kò ṣẹ́ṣe. Gbiyanju lẹẹkansi ni ọjọ́ iwájú.",
   expired: "Ìdájọ́kòwò ti pari. Gbiyanju lẹẹkansi.",
-  footer: 'Ti wa ni ààbò nipasẹ <a href="https://altcha.org/" target="_blank" aria-label="Ṣe abẹwo si Altcha.org">ALTCHA</a>',
+  footer: 'Ti wa ni ààbò nipasẹ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oju opo wẹẹbu osise)">ALTCHA</a>',
   getAudioChallenge: "Gba ìjàdú ohùn",
   label: "Emi kii ṣe ẹrọ",
   loading: "Ó ń gbé sílẹ̀...",
@@ -8407,12 +8422,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("yo", i18n$h);
 }
 const i18n$g = {
-  ariaLinkLabel: "Altcha.org পরিদর্শন করুন",
+  ariaLinkLabel: "Altcha (অফিসিয়াল ওয়েবসাইট)",
   enterCode: "কোড লিখুন",
   enterCodeAria: "আপনি যে কোড শুনতে পান তা লিখুন। অডিও প্লে করতে স্পেস বাটন টিপুন।",
   error: "যাচাইকরণ ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।",
   expired: "যাচাইকরণ সময়সীমা শেষ হয়েছে। আবার চেষ্টা করুন।",
-  footer: 'দ্বারা সুরক্ষিত <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org পরিদর্শন করুন">ALTCHA</a>',
+  footer: 'দ্বারা সুরক্ষিত <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (অফিসিয়াল ওয়েবসাইট)">ALTCHA</a>',
   getAudioChallenge: "অডিও চ্যালেঞ্জ নিন",
   label: "আমি রোবট নই",
   loading: "লোড হচ্ছে...",
@@ -8429,12 +8444,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("bn", i18n$g);
 }
 const i18n$f = {
-  ariaLinkLabel: "בקר באתר Altcha.org",
+  ariaLinkLabel: "Altcha (אתר רשמי)",
   enterCode: "הזן קוד",
   enterCodeAria: "הזן את הקוד שאתה שומע. לחץ על רווח להפעלת השמע.",
   error: "האימות נכשל. נסה שוב מאוחר יותר.",
   expired: "תוקף האימות פג. נסה שוב.",
-  footer: 'מוגן על ידי <a href="https://altcha.org/" target="_blank" aria-label="בקר באתר Altcha.org">ALTCHA</a>',
+  footer: 'מוגן על ידי <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (אתר רשמי)">ALTCHA</a>',
   getAudioChallenge: "קבל אתגר שמע",
   label: "אני לא רובוט",
   loading: "טוען...",
@@ -8451,12 +8466,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("he", i18n$f);
 }
 const i18n$e = {
-  ariaLinkLabel: "Altcha.org पर जाएं",
+  ariaLinkLabel: "Altcha (आधिकारिक वेबसाइट)",
   enterCode: "कोड दर्ज करेंं",
   enterCodeAria: "आप जो कोड सुनते हैं उसे दर्ज करें। ऑडियो चलाने के लिए स्पेस दबाएं।",
   error: "सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।",
   expired: "सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।",
-  footer: 'द्वारा संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org पर जाएं">ALTCHA</a>',
+  footer: 'द्वारा संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (आधिकारिक वेबसाइट)">ALTCHA</a>',
   getAudioChallenge: "ऑडियो चुनौती प्राप्त करें",
   label: "मैं रोबोट नहीं हूँ",
   loading: "लोड हो रहा है...",
@@ -8473,12 +8488,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("hi", i18n$e);
 }
 const i18n$d = {
-  ariaLinkLabel: "Kunjungi Altcha.org",
+  ariaLinkLabel: "Altcha (situs web resmi)",
   enterCode: "Masukkan kode",
   enterCodeAria: "Masukkan kode yang Anda dengar. Tekan Spasi untuk memutar audio.",
   error: "Verifikasi gagal. Coba lagi nanti.",
   expired: "Verifikasi telah kedaluwarsa. Coba lagi.",
-  footer: 'Dilindungi oleh <a href="https://altcha.org/" target="_blank" aria-label="Kunjungi Altcha.org">ALTCHA</a>',
+  footer: 'Dilindungi oleh <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (situs web resmi)">ALTCHA</a>',
   getAudioChallenge: "Dapatkan tantangan audio",
   label: "Saya bukan robot",
   loading: "Memuat...",
@@ -8495,12 +8510,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("id", i18n$d);
 }
 const i18n$c = {
-  ariaLinkLabel: "Altcha.orgを訪問",
+  ariaLinkLabel: "Altcha (公式ウェブサイト)",
   enterCode: "コードを入力",
   enterCodeAria: "聞こえるコードを入力してください。スペースキーを押して音声を再生します。",
   error: "認証に失敗しました。後でもう一度試してください。",
   expired: "認証が期限切れです。再試行してください。",
-  footer: '保護されています <a href="https://altcha.org/" target="_blank" aria-label="Altcha.orgを訪問">ALTCHA</a>',
+  footer: '保護されています <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (公式ウェブサイト)">ALTCHA</a>',
   getAudioChallenge: "音声チャレンジを取得",
   label: "私はロボットではありません",
   loading: "読み込み中...",
@@ -8517,12 +8532,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ja", i18n$c);
 }
 const i18n$b = {
-  ariaLinkLabel: "Altcha.org 방문하기",
+  ariaLinkLabel: "Altcha (공식 웹사이트)",
   enterCode: "코드 입력",
   enterCodeAria: "들리는 코드를 입력하세요. 스페이스 바를 눌러 오디오를 재생합니다.",
   error: "인증 실패. 나중에 다시 시도해주세요.",
   expired: "인증이 만료되었습니다. 다시 시도해주세요.",
-  footer: 'ALTCHA에서 보호됨 <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org 방문하기">ALTCHA</a>',
+  footer: 'ALTCHA에서 보호됨 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (공식 웹사이트)">ALTCHA</a>',
   getAudioChallenge: "오디오 챌린지 받기",
   label: "저는 로봇이 아닙니다",
   loading: "로딩 중...",
@@ -8539,12 +8554,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ko", i18n$b);
 }
 const i18n$a = {
-  ariaLinkLabel: "Altcha.org сайтына кіру",
+  ariaLinkLabel: "Altcha (ресми веб-сайт)",
   enterCode: "Кодты енгізіңіз",
   enterCodeAria: "Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.",
   error: "Тексеру сәтсіз аяқталды. Кейінірек қайталаңыз.",
   expired: "Тексеру мерзімі аяқталды. Қайталаңыз.",
-  footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org сайтына кіру">ALTCHA</a> қорғайды',
+  footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ресми веб-сайт)">ALTCHA</a> қорғайды',
   getAudioChallenge: "Аудио сынақ алу",
   label: "Мен робот емеспін",
   loading: "Жүктелуде...",
@@ -8561,12 +8576,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("kk", i18n$a);
 }
 const i18n$9 = {
-  ariaLinkLabel: "Altcha.org भेट द्या",
+  ariaLinkLabel: "Altcha (अधिकृत संकेतस्थळ)",
   enterCode: "कोड टाकाा",
   enterCodeAria: "तुम्ही ऐकत असलेला कोड टाका. ऑडिओ प्ले करण्यासाठी स्पेस दाबा.",
   error: "पुष्टीकरण अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.",
   expired: "पुष्टीकरण कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.",
-  footer: 'द्वारे संरक्षित <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org भेट द्या">ALTCHA</a>',
+  footer: 'द्वारे संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (अधिकृत संकेतस्थळ)">ALTCHA</a>',
   getAudioChallenge: "ऑडिओ चॅलेंज मिळवा",
   label: "मी रोबोट नाही",
   loading: "लोड होत आहे...",
@@ -8583,12 +8598,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("mr", i18n$9);
 }
 const i18n$8 = {
-  ariaLinkLabel: "Altcha.org ஐ பார்வையிடவும்",
+  ariaLinkLabel: "Altcha (அதிகாரப்பூர்வ வலைத்தளம்)",
   enterCode: "குறியீட்டை உள்ளிடவும்",
   enterCodeAria: "நீங்கள் கேட்கும் குறியீட்டை உள்ளிடவும். ஆடியோவை இயக்க Space ஐ அழுத்தவும்.",
   error: "சரிபார்ப்பு தோல்வி. பிறகு மீண்டும் முயற்சிக்கவும்.",
   expired: "சரிபார்ப்பு காலாவதியானது. மீண்டும் முயற்சிக்கவும்.",
-  footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org ஐ பார்வையிடவும்">ALTCHA</a>',
+  footer: 'மூலமாக பாதுகாக்கப்பட்டவை <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (அதிகாரப்பூர்வ வலைத்தளம்)">ALTCHA</a>',
   getAudioChallenge: "ஒலி சவாலை பெறவும்",
   label: "நான் ரோபோடான அல்ல",
   loading: "செயலாக்கம்...",
@@ -8605,12 +8620,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ta", i18n$8);
 }
 const i18n$7 = {
-  ariaLinkLabel: "Altcha.org సందర్శించండి",
+  ariaLinkLabel: "Altcha (అధికారిక వెబ్‌సైట్)",
   enterCode: "కోడ్‌ని నమోదు చేయండి",
   enterCodeAria: "మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.",
   error: "చెకింగ్ విఫలమైంది. దయచేసి మరల ప్రయత్నించండి.",
   expired: "చెకింగ్ కాలం ముగిసింది. దయచేసి మరల ప్రయత్నించండి.",
-  footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org సందర్శించండి">ALTCHA</a>',
+  footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (అధికారిక వెబ్‌సైట్)">ALTCHA</a>',
   getAudioChallenge: "ఆడియో ఛాలెంజ్ పొందండి",
   label: "నేను రోబోట్ కాదు",
   loading: "లోడ్ అవుతోంది...",
@@ -8627,12 +8642,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("te", i18n$7);
 }
 const i18n$6 = {
-  ariaLinkLabel: "เยี่ยมชม Altcha.org",
+  ariaLinkLabel: "Altcha (เว็บไซต์ทางการ)",
   enterCode: "ป้อนรหัส",
   enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
   error: "การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง",
   expired: "การตรวจสอบหมดอายุ กรุณาลองใหม่",
-  footer: 'ป้องกันโดย <a href="https://altcha.org/" target="_blank" aria-label="เยี่ยมชม Altcha.org">ALTCHA</a>',
+  footer: 'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
   getAudioChallenge: "รับการท้าทายเสียง",
   label: "ฉันไม่ใช่บอท",
   loading: "กำลังโหลด...",
@@ -8649,12 +8664,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("th", i18n$6);
 }
 const i18n$5 = {
-  ariaLinkLabel: "Altcha.org پر جائیں",
+  ariaLinkLabel: "Altcha (سرکاری ویب سائٹ)",
   enterCode: "کوڈ درج کریں",
   enterCodeAria: "جو کوڈ آپ سنتے ہیں وہ درج کریں۔ آڈیو چلانے کے لیے اسپیس دبائیں۔",
   error: "توثیق ناکام ہو گئی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
   expired: "توثیق کی مدت ختم ہو گئی ہے۔ براہ کرم دوبارہ کوشش کریں۔",
-  footer: 'کے ذریعے محفوظ <a href="https://altcha.org/" target="_blank" aria-label="Altcha.org پر جائیں">ALTCHA</a>',
+  footer: 'کے ذریعے محفوظ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (سرکاری ویب سائٹ)">ALTCHA</a>',
   getAudioChallenge: "آڈیو چیلنج حاصل کریں",
   label: "میں روبوٹ نہیں ہوں",
   loading: "لوڈ ہو رہا ہے...",
@@ -8671,12 +8686,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("ur", i18n$5);
 }
 const i18n$4 = {
-  ariaLinkLabel: "Altcha.org saytiga tashrif buyuring",
+  ariaLinkLabel: "Altcha (rasmiy veb-sayt)",
   enterCode: "Kodni kiriting",
   enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
   error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
   expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
-  footer: '<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org saytiga tashrif buyuring">ALTCHA</a> tomonidan himoyalangan',
+  footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rasmiy veb-sayt)">ALTCHA</a> tomonidan himoyalangan',
   getAudioChallenge: "Audio sinovni olish",
   label: "Men robot emasman",
   loading: "Yuklanmoqda...",
@@ -8693,12 +8708,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("uz", i18n$4);
 }
 const i18n$3 = {
-  ariaLinkLabel: "Truy cập Altcha.org",
+  ariaLinkLabel: "Altcha (trang web chính thức)",
   enterCode: "Nhập mã",
   enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
   error: "Xác minh thất bại. Vui lòng thử lại sau.",
   expired: "Xác minh đã hết hạn. Vui lòng thử lại.",
-  footer: 'Được bảo vệ bởi <a href="https://altcha.org/" target="_blank" aria-label="Truy cập Altcha.org">ALTCHA</a>',
+  footer: 'Được bảo vệ bởi <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (trang web chính thức)">ALTCHA</a>',
   getAudioChallenge: "Nhận thử thách âm thanh",
   label: "Tôi không phải là robot",
   loading: "Đang tải...",
@@ -8715,12 +8730,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("vi", i18n$3);
 }
 const i18n$2 = {
-  ariaLinkLabel: "访问 Altcha.org",
+  ariaLinkLabel: "Altcha (官方网站)",
   enterCode: "输入代码",
   enterCodeAria: "输入您听到的代码。按空格键播放音频。",
   error: "验证失败。稍后再试。",
   expired: "验证已过期。请重试。",
-  footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="访问 Altcha.org">ALTCHA</a> 保护',
+  footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方网站)">ALTCHA</a> 保护',
   getAudioChallenge: "获取音频挑战",
   label: "我不是机器人",
   loading: "加载中...",
@@ -8737,14 +8752,14 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("zh-cn", i18n$2);
 }
 const i18n$1 = {
-  ariaLinkLabel: "前往 Altcha.org",
+  ariaLinkLabel: "Altcha (官方網站)",
   cancel: "取消",
   enterCode: "輸入代碼",
   enterCodeAria: "輸入你聽到嘅代碼。按空格鍵播放音訊。",
   enterCodeFromImage: "要繼續，請輸入下面圖片入面嘅代碼。",
   error: "驗證失敗。請稍後再試。",
   expired: "驗證已過期。請再試一次。",
-  footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="前往 Altcha.org">ALTCHA</a> 提供保護',
+  footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 提供保護',
   getAudioChallenge: "取得音訊驗證",
   label: "我唔係機械人",
   loading: "載入中...",
@@ -8759,12 +8774,12 @@ if ("$altcha" in globalThis) {
   globalThis.$altcha.i18n.set("zh-hk", i18n$1);
 }
 const i18n = {
-  ariaLinkLabel: "訪問 Altcha.org",
+  ariaLinkLabel: "Altcha (官方網站)",
   enterCode: "輸入代碼",
   enterCodeAria: "輸入您聽到的代碼。按空格鍵播放音頻。",
   error: "驗證失敗。稍後再試。",
   expired: "驗證已過期。請重試。",
-  footer: '由 <a href="https://altcha.org/" target="_blank" aria-label="訪問 Altcha.org">ALTCHA</a> 保護',
+  footer: '由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 保護',
   getAudioChallenge: "獲取音頻挑戰",
   label: "我不是機器人",
   loading: "載入中...",

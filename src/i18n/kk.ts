@@ -1,11 +1,11 @@
 const i18n = {
-	ariaLinkLabel: 'Altcha.org сайтына кіру',
+	ariaLinkLabel: 'Altcha (ресми веб-сайт)',
 	enterCode: 'Кодты енгізіңіз',
 	enterCodeAria: 'Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.',
 	error: 'Тексеру сәтсіз аяқталды. Кейінірек қайталаңыз.',
 	expired: 'Тексеру мерзімі аяқталды. Қайталаңыз.',
 	footer:
-		'<a href="https://altcha.org/" target="_blank" aria-label="Altcha.org сайтына кіру">ALTCHA</a> қорғайды',
+		'<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ресми веб-сайт)">ALTCHA</a> қорғайды',
 	getAudioChallenge: 'Аудио сынақ алу',
 	label: 'Мен робот емеспін',
 	loading: 'Жүктелуде...',

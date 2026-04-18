@@ -8,12 +8,10 @@
 	}
 
 	let { logo, strings }: Props = $props();
-
-	const website = 'https://altcha.org';
 </script>
 
 <div class="altcha-footer">
-	<div>{@html strings.footer}</div>
+	<p>{@html strings.footer}</p>
 
 	{#if logo}
 		<Logo {strings} />

@@ -3,12 +3,12 @@
 })((function() {
   "use strict";
   const i18n = {
-    ariaLinkLabel: "Truy cập Altcha.org",
+    ariaLinkLabel: "Altcha (trang web chính thức)",
     enterCode: "Nhập mã",
     enterCodeAria: "Nhập mã bạn nghe được. Nhấn Phím cách để phát âm thanh.",
     error: "Xác minh thất bại. Vui lòng thử lại sau.",
     expired: "Xác minh đã hết hạn. Vui lòng thử lại.",
-    footer: 'Được bảo vệ bởi <a href="https://altcha.org/" target="_blank" aria-label="Truy cập Altcha.org">ALTCHA</a>',
+    footer: 'Được bảo vệ bởi <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (trang web chính thức)">ALTCHA</a>',
     getAudioChallenge: "Nhận thử thách âm thanh",
     label: "Tôi không phải là robot",
     loading: "Đang tải...",

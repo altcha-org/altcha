@@ -74,20 +74,20 @@ ALTCHA PoW v2 supports two effort modes that define how client work is determine
 
 In **deterministic effort mode**, the server precisely defines the exact amount of work the client must perform. The server precomputes a target derived key for a specific `counter` value. It then exposes a portion of this key as the `keyPrefix`, accompanied by a `keySignature` (an HMAC signature of the whole derived key), which allows for efficient server-side verification.
 
-To ensure the client genuinely performs the computation, the target `counter` is randomly selected within an integer range for every challenge. This prevents attackers from bypassing the work through pre-computed lookups or biased search patterns.
+To ensure the client genuinely performs the computation, the target `counter` is randomly selected within an integer range for every challenge.
 
-The client must find the exact counter corresponding to that prefix, forcing a fixed number of KDF executions.
+The client must find the exact counter that reproduces the `keyPrefix`, which requires executing KDF iterations starting from 0 up to that counter.
 
 - **Difficulty Model:** Predictable  
-  The client performs a fixed (server-defined) amount of work.
-- **Client Cost:** Fixed  
-  Solving time is consistent and predictable, ensuring a uniform user experience.
+  The client performs a predictable, server-defined amount of work.
+- **Client Cost:** Predictable  
+  The client always performs exactly as many KDF iterations as the randomly chosen target counter.
 - **Server Cost:** Low (Verification) / Moderate (Generation)  
   One KDF execution is required during challenge generation, but verification is very fast.
 
 **Use cases:**
 
-- **General-purpose protection (Standard Recommendation)**
+- **General-purpose protection**
 - Security-sensitive operations
 - Paid APIs or authenticated users
 - Situations requiring predictable throttling or rate shaping

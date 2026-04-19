@@ -1,7 +1,8 @@
 name: ci
 on:
   push:
-    branches: [v3]
+    branches:
+      - main
 
 jobs:
   tests:

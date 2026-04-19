@@ -6049,7 +6049,7 @@ function Widget($$anchor, $$props) {
     }
   });
   onMount(() => {
-    log("mounted", "3.0.3");
+    log("mounted", "3.0.4");
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }

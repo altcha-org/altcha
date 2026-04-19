@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.4] - 2026-04-19
+
+- Fix: verified event name typo [#178]
+
 ## [3.0.3] - 2026-04-18
 
 - Fix: Accessibility improvements [#175]

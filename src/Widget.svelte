@@ -1223,7 +1223,7 @@
 				);
 				log('verified');
 				setState(State.VERIFIED);
-				dispatch('vefified', { payload });
+				dispatch('verified', { payload });
 				return {
 					payload
 				};
@@ -1315,7 +1315,7 @@
 			} else {
 				log('verified');
 				setState(State.VERIFIED);
-				dispatch('vefified', { payload });
+				dispatch('verified', { payload });
 			}
 		} catch (err) {
 			log('verification failed', err);

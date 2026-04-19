@@ -6621,7 +6621,7 @@ function Widget($$anchor, $$props) {
         set(payload, btoa(JSON.stringify({ challenge: null, solution: null, test: true })), true);
         log("verified");
         setState(State.VERIFIED);
-        dispatch("vefified", { payload: get(payload) });
+        dispatch("verified", { payload: get(payload) });
         return { payload: get(payload) };
       }
       challenge = await fetchChallenge();
@@ -6692,7 +6692,7 @@ function Widget($$anchor, $$props) {
       } else {
         log("verified");
         setState(State.VERIFIED);
-        dispatch("vefified", { payload: get(payload) });
+        dispatch("verified", { payload: get(payload) });
       }
     } catch (err) {
       log("verification failed", err);

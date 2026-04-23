@@ -228,6 +228,68 @@ For simple implementations, the widget supports a subset of configuration option
 - **`timeout`**: Verification timeout in milliseconds (Default: `90_000`).
 - **`verifyFunction`**: A custom verification handler that overrides default network verification.
 
+## Algorithms
+
+ALTCHA supports multiple proof-of-work algorithms. `PBKDF2/*` and `SHA-*` are bundled with the main widget by default. `Argon2` and `Scrypt` are memory-bound algorithms that resist hardware acceleration (ASICs/GPUs) but require importing their workers separately.
+
+**Supported algorithms:**
+
+- `PBKDF2/SHA-256` (default, bundled)
+- `PBKDF2/SHA-384` (bundled)
+- `PBKDF2/SHA-512` (bundled)
+- `SHA-256` (bundled)
+- `SHA-384` (bundled)
+- `SHA-512` (bundled)
+- `ARGON2ID` (requires separate worker import)
+- `SCRYPT` (requires separate worker import)
+
+If you use `Argon2` or `Scrypt`, import their workers and register them via the `$altcha.algorithms` global before the widget initializes.
+
+### Adding Argon2 / Scrypt Workers (Vite)
+
+Works with both `altcha` and `altcha/external`:
+
+```ts
+import 'altcha'; // or 'altcha/external'
+import Argon2idWorker from 'altcha/workers/argon2id?worker';
+import ScryptWorker from 'altcha/workers/scrypt?worker';
+
+$altcha.algorithms.set('ARGON2ID', () => new Argon2idWorker());
+$altcha.algorithms.set('SCRYPT', () => new ScryptWorker());
+```
+
+### Without Bundler Worker Import Support
+
+If your environment does not support `?worker` imports, load the prebuilt worker files directly:
+
+```ts
+import 'altcha';
+
+$altcha.algorithms.set('ARGON2ID', () => new Worker('/path/to/node_modules/altcha/dist/workers/argon2id.js'));
+$altcha.algorithms.set('SCRYPT', () => new Worker('/path/to/node_modules/altcha/dist/workers/scrypt.js'));
+```
+
+### Using `altcha/external`
+
+`altcha/external` excludes all bundled workers, requiring you to register every algorithm explicitly. Use this for full control over which workers are loaded:
+
+```ts
+import 'altcha/external';
+import Argon2idWorker from 'altcha/workers/argon2id?worker';
+import Pbkdf2Worker from 'altcha/workers/pbkdf2?worker';
+import ScryptWorker from 'altcha/workers/scrypt?worker';
+import ShaWorker from 'altcha/workers/sha?worker';
+
+$altcha.algorithms.set('PBKDF2/SHA-256', () => new Pbkdf2Worker());
+$altcha.algorithms.set('PBKDF2/SHA-384', () => new Pbkdf2Worker());
+$altcha.algorithms.set('PBKDF2/SHA-512', () => new Pbkdf2Worker());
+$altcha.algorithms.set('SHA-256', () => new ShaWorker());
+$altcha.algorithms.set('SHA-384', () => new ShaWorker());
+$altcha.algorithms.set('SHA-512', () => new ShaWorker());
+$altcha.algorithms.set('ARGON2ID', () => new Argon2idWorker());
+$altcha.algorithms.set('SCRYPT', () => new ScryptWorker());
+```
+
 ## Cookies
 
 By default, the widget sends the ALTCHA payload as a form field by creating a hidden input. It can also be configured to send the payload via a cookie.

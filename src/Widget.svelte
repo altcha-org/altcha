@@ -151,6 +151,7 @@
 	let expirationTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
 	let payload = $state<string | null>(null);
 	let plugins = $state<BasePlugin[]>([]);
+	let updateUISignal = $state<number>(0);
 	/** User/runtime overrides merged on top of defaults */
 	let userConfig = $state<Partial<Configuration>>({});
 	/** Whether the widget is visible (relevant for floating/bar/overlay modes) */
@@ -1174,6 +1175,7 @@
 			default:
 			// noop
 		}
+		updateUISignal += 1;
 	}
 
 	// -----------------------------------------------------------------------------
@@ -1424,6 +1426,7 @@
 			role="alert"
 			variant="error"
 			{dir}
+			{updateUISignal}
 		>
 			{#if !error && !isSecureContext}
 				<div class="altcha-error">Secure context (HTTPS) required.</div>
@@ -1450,6 +1453,7 @@
 				role="dialog"
 				aria-label={strings.verificationRequired}
 				{dir}
+				{updateUISignal}
 			>
 				<Code
 					audioUrl={codeChallengeAudioUrl}

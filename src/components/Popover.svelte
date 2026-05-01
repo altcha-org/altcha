@@ -12,6 +12,7 @@
 		onClickOutsideDelay?: number;
 		onClose?: () => void;
 		placement: 'auto' | 'bottom' | 'top';
+		updateUISignal?: number | null;
 		variant?: 'error' | 'neutral';
 	}
 
@@ -24,6 +25,7 @@
 		onClickOutsideDelay = 600,
 		onClose,
 		placement = 'auto',
+		updateUISignal,
 		variant = 'neutral',
 		...rest
 	}: Props = $props();
@@ -35,6 +37,12 @@
 	$effect(() => {
 		if (placement !== 'auto') {
 			top = placement === 'top';
+		}
+	});
+
+	$effect(() => {
+		if (updateUISignal) {
+			reposition();
 		}
 	});
 
@@ -62,7 +70,7 @@
 
 	function onWindowClick(ev: MouseEvent) {
 		const target = ev.target as HTMLElement;
-		if (!el?.contains(target) && mountedAt && mountedAt + onClickOutsideDelay < Date.now()) {
+		if (!el?.contains(target) && (!onClickOutsideDelay || mountedAt + onClickOutsideDelay < Date.now())) {
 			onClickOutside?.();
 		}
 	}

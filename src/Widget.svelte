@@ -140,6 +140,7 @@
 	let checked = $state(false);
 	let codeChallenge = $state<CodeChallenge | null>(null);
 	let currentController = $state<AbortController | null>(null);
+	let currentDisplay = $state<Configuration['display'] | null>(null);
 	let currentState = $state<State>(State.UNVERIFIED);
 	let elAnchorArrow = $state<HTMLElement | null>();
 	let elFloatingAnchor = $state<HTMLElement | null>();
@@ -275,7 +276,9 @@
 
 	/** Update visibility whenever display mode changes */
 	$effect(() => {
-		setDisplay(config.display);
+		if (currentDisplay !== config.display) {
+			setDisplay(config.display);
+		}
 	});
 
 	/** Uncheck the checkbox while verification is in progress */
@@ -822,6 +825,7 @@
 
 	/** Reset state when navigating back to the page (bfcache) */
 	function onWindowPageshow() {
+		setDisplay(config.display);
 		reset();
 	}
 
@@ -1000,6 +1004,9 @@
 			case 'standard':
 				show();
 			default:
+		}
+		if (currentDisplay !== value) {
+			currentDisplay = value;
 		}
 	}
 

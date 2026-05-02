@@ -265,8 +265,14 @@ If your environment does not support `?worker` imports, load the prebuilt worker
 ```ts
 import 'altcha';
 
-$altcha.algorithms.set('ARGON2ID', () => new Worker('/path/to/node_modules/altcha/dist/workers/argon2id.js'));
-$altcha.algorithms.set('SCRYPT', () => new Worker('/path/to/node_modules/altcha/dist/workers/scrypt.js'));
+$altcha.algorithms.set(
+	'ARGON2ID',
+	() => new Worker('/path/to/node_modules/altcha/dist/workers/argon2id.js')
+);
+$altcha.algorithms.set(
+	'SCRYPT',
+	() => new Worker('/path/to/node_modules/altcha/dist/workers/scrypt.js')
+);
 ```
 
 ### Using `altcha/external`

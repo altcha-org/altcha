@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.0.5] - 2026-05-02
+
+- Fix: resolve issues with display mode changes
+- Fix: popover repositioning after updateUI calls
+- Fix: use capture for click handlers to improve compatibility (e.g., WordPress)
+
 ## [3.0.4] - 2026-04-19
 
 - Fix: verified event name typo [#178]

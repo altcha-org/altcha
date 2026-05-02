@@ -5365,7 +5365,7 @@
           button.disabled = get(audioState) === AudioState.LOADING || get(audioState) === AudioState.ERROR;
           set_attribute(button, "aria-label", get(audioState) === AudioState.LOADING ? strings().loading : strings().getAudioChallenge);
         });
-        delegated("click", button, () => onPlayAudio());
+        event("click", button, () => onPlayAudio(), true);
         append($$anchor2, button);
       };
       if_block(node_1, ($$render) => {
@@ -5420,12 +5420,12 @@
     event("submit", form, onSubmitCapture, true);
     delegated("keydown", input, onInputKeyDown);
     bind_value(input, () => get(code), ($$value) => set(code, $$value));
-    delegated("click", button_1, () => onReload()?.());
-    delegated("click", button_3, () => onCancel()?.());
+    event("click", button_1, () => onReload()?.(), true);
+    event("click", button_3, () => onCancel()?.(), true);
     append($$anchor, div);
     return pop($$exports);
   }
-  delegate(["keydown", "click"]);
+  delegate(["keydown"]);
   create_custom_element(
     Code,
     {
@@ -5448,7 +5448,7 @@
   var root$1 = /* @__PURE__ */ from_html(`<!> <div><!> <!> <div class="altcha-popover-content"><!></div></div>`, 1);
   function Popover($$anchor, $$props) {
     push($$props, true);
-    let anchor = prop($$props, "anchor"), children = prop($$props, "children"), display = prop($$props, "display", 7, "standard"), backdrop = prop($$props, "backdrop", 7, false), onClickOutside = prop($$props, "onClickOutside"), onClickOutsideDelay = prop($$props, "onClickOutsideDelay", 7, 600), onClose = prop($$props, "onClose"), placement = prop($$props, "placement", 7, "auto"), variant = prop($$props, "variant", 7, "neutral"), rest = /* @__PURE__ */ rest_props($$props, [
+    let anchor = prop($$props, "anchor"), children = prop($$props, "children"), display = prop($$props, "display", 7, "standard"), backdrop = prop($$props, "backdrop", 7, false), onClickOutside = prop($$props, "onClickOutside"), onClickOutsideDelay = prop($$props, "onClickOutsideDelay", 7, 600), onClose = prop($$props, "onClose"), placement = prop($$props, "placement", 7, "auto"), updateUISignal = prop($$props, "updateUISignal"), variant = prop($$props, "variant", 7, "neutral"), rest = /* @__PURE__ */ rest_props($$props, [
       "$$slots",
       "$$events",
       "$$legacy",
@@ -5461,6 +5461,7 @@
       "onClickOutsideDelay",
       "onClose",
       "placement",
+      "updateUISignal",
       "variant"
     ]);
     let el = /* @__PURE__ */ state(void 0);
@@ -5470,6 +5471,11 @@
     user_effect(() => {
       if (placement() !== "auto") {
         set(top, placement() === "top");
+      }
+    });
+    user_effect(() => {
+      if (updateUISignal()) {
+        reposition();
       }
     });
     onMount(() => {
@@ -5494,7 +5500,7 @@
     }
     function onWindowClick(ev) {
       const target = ev.target;
-      if (!get(el)?.contains(target) && get(mountedAt) && get(mountedAt) + onClickOutsideDelay() < Date.now()) {
+      if (!get(el)?.contains(target) && (!onClickOutsideDelay() || get(mountedAt) + onClickOutsideDelay() < Date.now())) {
         onClickOutside()?.();
       }
     }
@@ -5571,6 +5577,13 @@
         placement($$value);
         flushSync();
       },
+      get updateUISignal() {
+        return updateUISignal();
+      },
+      set updateUISignal($$value) {
+        updateUISignal($$value);
+        flushSync();
+      },
       get variant() {
         return variant();
       },
@@ -5580,7 +5593,7 @@
       }
     };
     var fragment = root$1();
-    event("click", $window, onWindowClick);
+    event("click", $window, onWindowClick, true);
     event("resize", $window, onWindowResize);
     event("scroll", $window, onWindowScroll);
     var node = first_child(fragment);
@@ -5617,7 +5630,7 @@
     {
       var consequent_2 = ($$anchor2) => {
         var div_3 = root_3$1();
-        delegated("click", div_3, onCloseClick);
+        event("click", div_3, onCloseClick, true);
         append($$anchor2, div_3);
       };
       if_block(node_2, ($$render) => {
@@ -5633,7 +5646,6 @@
     append($$anchor, fragment);
     return pop($$exports);
   }
-  delegate(["click"]);
   create_custom_element(
     Popover,
     {
@@ -5645,6 +5657,7 @@
       onClickOutsideDelay: {},
       onClose: {},
       placement: {},
+      updateUISignal: {},
       variant: {}
     },
     [],
@@ -5919,6 +5932,7 @@
     let checked = /* @__PURE__ */ state(false);
     let codeChallenge = /* @__PURE__ */ state(null);
     let currentController = /* @__PURE__ */ state(null);
+    let currentDisplay = /* @__PURE__ */ state(null);
     let currentState = /* @__PURE__ */ state(proxy(State.UNVERIFIED));
     let elAnchorArrow = /* @__PURE__ */ state(void 0);
     let elFloatingAnchor = /* @__PURE__ */ state(void 0);
@@ -5929,6 +5943,7 @@
     let expirationTimeout = /* @__PURE__ */ state(null);
     let payload = /* @__PURE__ */ state(null);
     let plugins = /* @__PURE__ */ state(proxy([]));
+    let updateUISignal = /* @__PURE__ */ state(0);
     let userConfig = /* @__PURE__ */ state(proxy({}));
     let visible = /* @__PURE__ */ state(true);
     const config = /* @__PURE__ */ user_derived(() => ({
@@ -6008,7 +6023,9 @@
       }
     });
     user_effect(() => {
-      setDisplay(get(config).display);
+      if (get(currentDisplay) !== get(config).display) {
+        setDisplay(get(config).display);
+      }
     });
     user_effect(() => {
       if (get(checked) && get(currentState) === State.VERIFYING) {
@@ -6059,7 +6076,7 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.0.4");
+      log("mounted", "3.0.5");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }
@@ -6353,6 +6370,7 @@
       }
     }
     function onWindowPageshow() {
+      setDisplay(get(config).display);
       reset$1();
     }
     function onWindowResize() {
@@ -6472,6 +6490,9 @@
           break;
         case "standard":
           show();
+      }
+      if (get(currentDisplay) !== value) {
+        set(currentDisplay, value, true);
       }
     }
     function setChallengeExpiration(expiresAt) {
@@ -6593,6 +6614,7 @@
         case "floating":
           return repositionFloating();
       }
+      set(updateUISignal, get(updateUISignal) + 1);
     }
     async function verify(options = {}) {
       const {
@@ -6750,7 +6772,7 @@
             if (get(config).overlayContent) $$render(consequent_1);
           });
         }
-        delegated("click", div_2, onCloseClick);
+        event("click", div_2, onCloseClick, true);
         append($$anchor2, fragment_1);
       };
       if_block(node_1, ($$render) => {
@@ -6895,6 +6917,9 @@
           get dir() {
             return get(dir);
           },
+          get updateUISignal() {
+            return get(updateUISignal);
+          },
           children: ($$anchor3, $$slotProps) => {
             var fragment_9 = comment();
             var node_10 = first_child(fragment_9);
@@ -6959,6 +6984,9 @@
               },
               get dir() {
                 return get(dir);
+              },
+              get updateUISignal() {
+                return get(updateUISignal);
               },
               children: ($$anchor4, $$slotProps) => {
                 var fragment_12 = root_19();
@@ -7031,7 +7059,6 @@
     $$cleanup();
     return $$pop;
   }
-  delegate(["click"]);
   if (typeof window !== "undefined" && window.customElements) customElements.define("altcha-widget", create_custom_element(
     Widget,
     {

@@ -70,7 +70,10 @@
 
 	function onWindowClick(ev: MouseEvent) {
 		const target = ev.target as HTMLElement;
-		if (!el?.contains(target) && (!onClickOutsideDelay || mountedAt + onClickOutsideDelay < Date.now())) {
+		if (
+			!el?.contains(target) &&
+			(!onClickOutsideDelay || mountedAt + onClickOutsideDelay < Date.now())
+		) {
 			onClickOutside?.();
 		}
 	}
@@ -95,7 +98,7 @@
 	}
 </script>
 
-<svelte:window onclick={onWindowClick} onresize={onWindowResize} onscroll={onWindowScroll} />
+<svelte:window onclickcapture={onWindowClick} onresize={onWindowResize} onscroll={onWindowScroll} />
 
 {#if backdrop}
 	<div bind:this={elBackdrop} class="altcha-popover-backdrop" data-backdrop></div>
@@ -117,7 +120,7 @@
 	{#if display !== 'standard'}
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div role="button" class="altcha-popover-close" onclick={onCloseClick}>&times;</div>
+		<div role="button" class="altcha-popover-close" onclickcapture={onCloseClick}>&times;</div>
 	{/if}
 
 	<div class="altcha-popover-content">

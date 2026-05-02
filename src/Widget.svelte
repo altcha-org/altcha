@@ -1361,7 +1361,7 @@
 	{#if config.display === 'overlay' && visible}
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div role="button" class="altcha-overlay-close" onclick={onCloseClick}>&times;</div>
+		<div role="button" class="altcha-overlay-close" onclickcapture={onCloseClick}>&times;</div>
 
 		{#if config.overlayContent}
 			<div class="altcha-overlay-content">

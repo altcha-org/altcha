@@ -169,7 +169,7 @@
 					aria-label={audioState === AudioState.LOADING
 						? strings.loading
 						: strings.getAudioChallenge}
-					onclick={() => onPlayAudio()}
+					onclickcapture={() => onPlayAudio()}
 				>
 					{#if audioState === AudioState.LOADING}
 						<div class="altcha-spinner"></div>
@@ -212,7 +212,7 @@
 				class="altcha-button altcha-button-secondary"
 				title={strings.reload}
 				aria-label={strings.reload}
-				onclick={() => onReload?.()}
+				onclickcapture={() => onReload?.()}
 			>
 				<svg
 					aria-hidden="true"
@@ -235,7 +235,7 @@
 				type="button"
 				class="altcha-button altcha-button-secondary"
 				aria-label={strings.cancel}
-				onclick={() => onCancel?.()}>{strings.cancel}</button
+				onclickcapture={() => onCancel?.()}>{strings.cancel}</button
 			>
 		</div>
 	</form>

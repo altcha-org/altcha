@@ -1,11 +1,20 @@
-import { Selector } from 'testcafe';
-import { renderWidget } from '../helpers';
+import { ClientFunction, Selector } from 'testcafe';
+import { delay, renderWidget } from '../helpers';
+import { State } from '../../src/types';
 
 fixture`Widget`.page`../index.html`.clientScripts([
 	{
 		path: '../../dist/main/altcha.umd.cjs'
 	}
 ]);
+
+const dispatchPageshow = ClientFunction((persisted = false) => {
+	window.dispatchEvent(
+		new PageTransitionEvent('pageshow', {
+			persisted
+		})
+	);
+});
 
 test('should render the widget with default config', async (t) => {
 	await renderWidget();
@@ -108,4 +117,32 @@ test('should display the error message after clicking the checkbox when mockErro
 	});
 	await t.click('.altcha-checkbox');
 	await t.expect(Selector('.altcha-error').exists).ok();
+});
+
+test('should reset state when a bfcache pageshow event fires', async (t) => {
+	await renderWidget({
+		config: {
+			minDuration: 200,
+			test: true
+		}
+	});
+	await t.click('.altcha-checkbox');
+	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
+	await dispatchPageshow(true);
+	await delay(10);
+	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.UNVERIFIED);
+});
+
+test('should not reset state when a non-bfcache pageshow event fires', async (t) => {
+	await renderWidget({
+		config: {
+			minDuration: 200,
+			test: true
+		}
+	});
+	await t.click('.altcha-checkbox');
+	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
+	await dispatchPageshow(false);
+	await delay(10);
+	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
 });

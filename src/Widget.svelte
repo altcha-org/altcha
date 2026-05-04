@@ -824,10 +824,12 @@
 		}
 	}
 
-	/** Reset state when navigating back to the page (bfcache) */
-	function onWindowPageshow() {
-		setDisplay(config.display);
-		reset();
+	/** Reset state when restoring the page from the bfcache */
+	function onWindowPageshow(ev: PageTransitionEvent) {
+		if (ev.persisted) {
+			setDisplay(config.display);
+			reset();
+		}
 	}
 
 	/** Reposition floating widget on window resize */

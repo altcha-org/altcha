@@ -6076,7 +6076,7 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.0.5");
+      log("mounted", "3.0.6");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }
@@ -6327,9 +6327,6 @@
       }
     }
     function onCloseClick() {
-      if (get(currentController)) {
-        get(currentController).abort();
-      }
       setDisplay(get(config).display);
       reset$1();
     }
@@ -6348,9 +6345,6 @@
       }
     }
     function onFormReset() {
-      if (get(currentController)) {
-        get(currentController).abort();
-      }
       setDisplay(get(config).display);
       reset$1();
     }
@@ -6369,9 +6363,11 @@
         });
       }
     }
-    function onWindowPageshow() {
-      setDisplay(get(config).display);
-      reset$1();
+    function onWindowPageshow(ev) {
+      if (ev.persisted) {
+        setDisplay(get(config).display);
+        reset$1();
+      }
     }
     function onWindowResize() {
       updateUI();
@@ -6592,6 +6588,9 @@
       set(checked, false);
       set(error, err, true);
       set(payload, null);
+      if (get(currentController)) {
+        get(currentController).abort();
+      }
       if (get(expirationTimeout)) {
         clearTimeout(get(expirationTimeout));
         set(expirationTimeout, null);
@@ -6630,8 +6629,8 @@
       if (hook !== void 0) {
         return hook;
       }
-      set(currentController, controller, true);
       reset$1(State.VERIFYING);
+      set(currentController, controller, true);
       try {
         if (!isSecureContext) {
           throw new Error("Secure context (HTTPS) required.");
@@ -6642,6 +6641,10 @@
         if (get(config).test) {
           log("running test mode with null challenge");
           await delay(Math.max(0, minDuration - (performance.now() - start)));
+          if (get(currentController)?.signal.aborted) {
+            reset$1();
+            return null;
+          }
           set(payload, btoa(JSON.stringify({ challenge: null, solution: null, test: true })), true);
           log("verified");
           setState(State.VERIFIED);

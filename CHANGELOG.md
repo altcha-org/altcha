@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.0.6] - 2026-05-04
+
+- Fix: pageshow event handler [#181]
+- Fix: abort verification on reset
+
 ## [3.0.5] - 2026-05-02
 
 - Fix: resolve issues with display mode changes

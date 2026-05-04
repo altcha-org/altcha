@@ -760,9 +760,6 @@
 
 	/** Handle close button click — abort verification and reset */
 	function onCloseClick() {
-		if (currentController) {
-			currentController.abort();
-		}
 		setDisplay(config.display);
 		reset();
 	}
@@ -797,9 +794,6 @@
 
 	/** Reset widget when the parent form is reset */
 	function onFormReset() {
-		if (currentController) {
-			currentController.abort();
-		}
 		setDisplay(config.display);
 		reset();
 	}
@@ -1144,6 +1138,9 @@
 		checked = false;
 		error = err;
 		payload = null;
+		if (currentController) {
+			currentController.abort();
+		}
 		if (expirationTimeout) {
 			clearTimeout(expirationTimeout);
 			expirationTimeout = null;
@@ -1210,8 +1207,8 @@
 			return hook;
 		}
 
-		currentController = controller;
 		reset(State.VERIFYING);
+		currentController = controller;
 
 		try {
 			if (!isSecureContext) {
@@ -1225,6 +1222,10 @@
 			if (config.test) {
 				log('running test mode with null challenge');
 				await delay(Math.max(0, minDuration - (performance.now() - start)));
+				if (currentController?.signal.aborted) {
+					reset();
+					return null;
+				}
 				payload = btoa(
 					JSON.stringify({
 						challenge: null,

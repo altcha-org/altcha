@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.7] - 2026-05-06
+
+- Fix: floating display mode - top placement arrow [#182]
+
 ## [3.0.6] - 2026-05-04
 
 - Fix: pageshow event handler [#181]

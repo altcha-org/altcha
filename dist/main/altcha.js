@@ -6074,7 +6074,7 @@ function Widget($$anchor, $$props) {
     }
   });
   onMount(() => {
-    log("mounted", "3.0.7");
+    log("mounted", "3.0.8");
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }
@@ -6347,10 +6347,14 @@ function Widget($$anchor, $$props) {
     reset$1();
   }
   function onFormSubmit(ev) {
-    set(elSubmitter, ev.submitter, true);
+    const target = ev.target;
+    if (target?.getAttribute("data-code-challenge") === "true") {
+      return;
+    }
     if (get(auto) === "onsubmit" && get(currentState) === State.UNVERIFIED) {
       ev.preventDefault();
       ev.stopPropagation();
+      set(elSubmitter, ev.submitter, true);
       show();
       verify().then((result) => {
         if (result && !get(codeChallenge)) {

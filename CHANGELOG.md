@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.8] - 2026-05-06
+
+- Fix: request form submit with code-challenge when auto=onsubmit [#183]
+
 ## [3.0.7] - 2026-05-06
 
 - Fix: floating display mode - top placement arrow [#182]

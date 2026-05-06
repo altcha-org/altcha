@@ -803,10 +803,15 @@
 	 * Prevents submission, runs verification, then re-submits on success.
 	 */
 	function onFormSubmit(ev: SubmitEvent) {
-		elSubmitter = ev.submitter as HTMLElement | null;
+		const target = ev.target as HTMLFormElement | null;
+		if (target?.getAttribute('data-code-challenge') === 'true') {
+			// code challenge form submission
+			return;
+		}
 		if (auto === 'onsubmit' && currentState === State.UNVERIFIED) {
 			ev.preventDefault();
 			ev.stopPropagation();
+			elSubmitter = ev.submitter as HTMLElement | null;
 			show();
 			verify().then((result) => {
 				if (result && !codeChallenge) {

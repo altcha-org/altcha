@@ -1,4 +1,4 @@
-import { Selector } from 'testcafe';
+import { ClientFunction, Selector } from 'testcafe';
 import { delay, renderWidget } from '../helpers';
 import { Challenge } from '../../src/types';
 
@@ -75,4 +75,47 @@ test('should request code challenge verification and display an error message if
 	await t.typeText('.altcha-code-challenge input', 'abcdef');
 	await t.click('.altcha-code-challenge button[type="submit"]');
 	await t.expect(Selector('.altcha-error').exists).ok();
+});
+
+test('should request form submission after code challenge when auto=onsubmit', async (t) => {
+	await renderWidget({
+		form: true,
+		config: {
+			auto: 'onsubmit',
+			challenge,
+			verifyFunction: (_payload, _code) => {
+				return Promise.resolve({
+					payload: '',
+					signature: '',
+					verified: true,
+					algorithm: '',
+					verificationData: ''
+				});
+			}
+		}
+	});
+	const getSubmitEventFired = ClientFunction(function (this: { formSubmitted?: boolean }) {
+		this.formSubmitted = false;
+		document.querySelector('form[data-test-form]')?.addEventListener('submit', () => {
+			this.formSubmitted = true;
+		});
+	});
+	await getSubmitEventFired();
+	await t.click('button[data-test-button]');
+	await t.expect(Selector('.altcha-checkbox-wrap label').withText('Verifying...').exists).ok();
+	await delay(1000);
+	await t
+		.expect(Selector('.altcha-checkbox-wrap label').withText('Verification required!').exists)
+		.ok();
+	await t.expect(Selector('.altcha-code-challenge-image').exists).ok();
+	await t.expect(Selector('.altcha-code-challenge input').exists).ok();
+	await t.typeText('.altcha-code-challenge input', 'abcdef');
+	await t.click('.altcha-code-challenge button[type="submit"]');
+	await t
+		.expect(
+			await ClientFunction(function (this: { formSubmitted?: boolean }) {
+				return this.formSubmitted;
+			})()
+		)
+		.ok();
 });

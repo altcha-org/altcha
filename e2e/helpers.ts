@@ -32,12 +32,17 @@ export async function renderWidget(
 		if (form) {
 			const elForm = document.createElement('form');
 			const elInput = document.createElement('input');
+			const elButton = document.createElement('button');
+			elButton.setAttribute('type', 'submit');
+			elButton.setAttribute('data-test-button', '');
+			elButton.innerText = 'Submit';
 			elForm.setAttribute('data-test-form', '');
 			elForm.addEventListener('submit', (ev) => {
 				ev.preventDefault();
 			});
 			elInput.setAttribute('data-test-input', '');
 			elForm.appendChild(elInput);
+			elForm.appendChild(elButton);
 			elForm.appendChild(el);
 			document.body.appendChild(elForm);
 		} else {

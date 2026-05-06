@@ -664,7 +664,7 @@
 		width: var(--altcha-max-width);
 	}
 
-	&[data-display='floating'][data-placement='top'] &-floating-arrow {
+	&[data-display='floating'][data-floating-position='top'] &-floating-arrow {
 		border-bottom-color: transparent;
 		border-top-color: var(--altcha-border-color);
 		bottom: -12px;

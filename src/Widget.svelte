@@ -520,7 +520,15 @@
 		}
 
 		if (typeof source === 'string') {
-			if (source.match(/^(https?:)?\//)) {
+			if (source.startsWith('{')) {
+				// Source is a JSON string — parse directly
+				log('parsing JSON challenge');
+				try {
+					challenge = JSON.parse(source);
+				} catch {
+					throw new Error(`Unable to parse JSON challenge.`);
+				}
+			} else {
 				// Source is a URL — fetch from server
 				log('fetching challenge from', requestOptions?.method || 'GET', source);
 				baseUrl = new URL(source, location.origin);
@@ -557,14 +565,6 @@
 				}
 
 				challenge = json;
-			} else {
-				// Source is a JSON string — parse directly
-				log('parsing JSON challenge');
-				try {
-					challenge = JSON.parse(source);
-				} catch {
-					throw new Error(`Unable to parse JSON challenge.`);
-				}
 			}
 		} else if (source && typeof source === 'object') {
 			// Source is an object — deep clone to avoid mutation

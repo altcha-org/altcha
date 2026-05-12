@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.9] - 2026-05-12
+
+- Fix: challenge parameter - allow URLs without origin
+
 ## [3.0.8] - 2026-05-06
 
 - Fix: request form submit with code-challenge when auto=onsubmit [#183]

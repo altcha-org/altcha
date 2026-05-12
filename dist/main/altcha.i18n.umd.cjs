@@ -6076,7 +6076,7 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.0.8");
+      log("mounted", "3.0.9");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }
@@ -6175,7 +6175,14 @@
         return hook;
       }
       if (typeof source2 === "string") {
-        if (source2.match(/^(https?:)?\//)) {
+        if (source2.startsWith("{")) {
+          log("parsing JSON challenge");
+          try {
+            challenge = JSON.parse(source2);
+          } catch {
+            throw new Error(`Unable to parse JSON challenge.`);
+          }
+        } else {
           log("fetching challenge from", requestOptions?.method || "GET", source2);
           set(baseUrl, new URL(source2, location.origin), true);
           const resp = await get(config).fetch(source2, {
@@ -6203,13 +6210,6 @@
             log("HIS result", json.hisResult);
           }
           challenge = json;
-        } else {
-          log("parsing JSON challenge");
-          try {
-            challenge = JSON.parse(source2);
-          } catch {
-            throw new Error(`Unable to parse JSON challenge.`);
-          }
         }
       } else if (source2 && typeof source2 === "object") {
         try {

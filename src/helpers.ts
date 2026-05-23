@@ -100,11 +100,18 @@ export async function hmac(
 }
 
 /** Inject CSS tag into the document */
-export function injectCss(css: string, id: string = 'altcha-css') {
+export function injectCss(css: string, id: string = 'altcha-css', nonce?: string) {
 	if (typeof document !== 'undefined' && document && !document.getElementById(id)) {
 		const style = document.createElement('style');
 		style.id = id;
 		style.textContent = css;
+		const resolvedNonce =
+			nonce ??
+			(document.currentScript as HTMLElement | null)?.nonce ??
+			document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content;
+		if (resolvedNonce) {
+			style.nonce = resolvedNonce;
+		}
 		document.head.appendChild(style);
 	}
 }

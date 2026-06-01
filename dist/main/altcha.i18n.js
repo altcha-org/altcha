@@ -6347,7 +6347,7 @@ function Widget($$anchor, $$props) {
     }
   });
   onMount(() => {
-    log("mounted", "3.0.10");
+    log("mounted", "3.0.11");
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }
@@ -7337,7 +7337,7 @@ function Widget($$anchor, $$props) {
   $$cleanup();
   return $$pop;
 }
-if (typeof window !== "undefined" && window.customElements) customElements.define("altcha-widget", create_custom_element(
+if (typeof window !== "undefined" && window.customElements && !customElements.get("altcha-widget")) customElements.define("altcha-widget", create_custom_element(
   Widget,
   {
     auto: { type: "String" },

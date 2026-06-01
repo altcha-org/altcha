@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.11] - 2026-06-01
+
+- Fix: guard customElements.define against duplicate registration [#187]
+
 ## [3.0.10] - 2026-05-23
 
 - Fix: injectCss - auto detect CSP nonce

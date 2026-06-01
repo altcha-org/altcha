@@ -8,8 +8,8 @@ export const ssrSafeCustomElements = () => {
 			if (code.includes('customElements.define')) {
 				return {
 					code: code.replace(
-						/customElements\.define\(/g,
-						`if (typeof window !== 'undefined' && window.customElements) customElements.define(`
+						/customElements\.define\((['"`][^'"`]+['"`])/g,
+						`if (typeof window !== 'undefined' && window.customElements && !customElements.get($1)) customElements.define($1`
 					),
 					map: null
 				};

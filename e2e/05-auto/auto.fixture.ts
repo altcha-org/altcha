@@ -1,12 +1,8 @@
-import { ClientFunction, Selector } from 'testcafe';
-import { delay, renderWidget } from '../helpers';
+import { describe, test } from 'vitest';
+import { userEvent } from 'vitest/browser';
+import '../../dist/main/altcha.js';
+import { renderWidget, waitForSelector, waitForVerified } from '../helpers';
 import { Challenge } from '../../src/types';
-
-fixture`Auto Attribute`.page`../index.html`.clientScripts([
-	{
-		path: '../../dist/main/altcha.umd.cjs'
-	}
-]);
 
 const challenge: Challenge = {
 	parameters: {
@@ -19,96 +15,88 @@ const challenge: Challenge = {
 	}
 };
 
-test('should verify on render when auto is "onload" (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			auto: 'onload'
-		},
-		config: {
-			challenge
-		}
-	});
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
-});
+function submitForm() {
+	document.querySelector<HTMLFormElement>('form[data-test-form]')?.requestSubmit();
+}
 
-test('should verify on render when auto is "onload" (config)', async (t) => {
-	await renderWidget({
-		config: {
-			auto: 'onload',
-			challenge
-		}
+describe('Auto Attribute', () => {
+	test('should verify on render when auto is "onload" (attribute)', async () => {
+		await renderWidget({
+			attributes: {
+				auto: 'onload'
+			},
+			config: {
+				challenge
+			}
+		});
+		await waitForVerified();
 	});
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
-});
 
-test('should verify on form focus when auto is "onfocus" (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			auto: 'onfocus'
-		},
-		config: {
-			challenge
-		},
-		form: true
+	test('should verify on render when auto is "onload" (config)', async () => {
+		await renderWidget({
+			config: {
+				auto: 'onload',
+				challenge
+			}
+		});
+		await waitForVerified();
 	});
-	await t.typeText('input[data-test-input]', 'abcdef');
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
-});
 
-test('should verify on form focus when auto is "onfocus" (config)', async (t) => {
-	await renderWidget({
-		config: {
-			auto: 'onfocus',
-			challenge
-		},
-		form: true
+	test('should verify on form focus when auto is "onfocus" (attribute)', async () => {
+		await renderWidget({
+			attributes: {
+				auto: 'onfocus'
+			},
+			config: {
+				challenge
+			},
+			form: true
+		});
+		await userEvent.fill(
+			await waitForSelector<HTMLInputElement>('input[data-test-input]'),
+			'abcdef'
+		);
+		await waitForVerified();
 	});
-	await t.typeText('input[data-test-input]', 'abcdef');
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
-});
 
-test('should verify on form submit when auto is "onsubmit" (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			auto: 'onsubmit'
-		},
-		config: {
-			challenge
-		},
-		form: true
+	test('should verify on form focus when auto is "onfocus" (config)', async () => {
+		await renderWidget({
+			config: {
+				auto: 'onfocus',
+				challenge
+			},
+			form: true
+		});
+		await userEvent.fill(
+			await waitForSelector<HTMLInputElement>('input[data-test-input]'),
+			'abcdef'
+		);
+		await waitForVerified();
 	});
-	const submitForm = ClientFunction(() => {
-		// @ts-ignore
-		document.querySelector('form[data-test-form]')?.requestSubmit();
-	});
-	await submitForm();
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
-});
 
-test('should verify on form submit when auto is "onsubmit" (config)', async (t) => {
-	await renderWidget({
-		config: {
-			auto: 'onsubmit',
-			challenge
-		},
-		form: true
+	test('should verify on form submit when auto is "onsubmit" (attribute)', async () => {
+		await renderWidget({
+			attributes: {
+				auto: 'onsubmit'
+			},
+			config: {
+				challenge
+			},
+			form: true
+		});
+		submitForm();
+		await waitForVerified();
 	});
-	const submitForm = ClientFunction(() => {
-		// @ts-ignore
-		document.querySelector('form[data-test-form]')?.requestSubmit();
+
+	test('should verify on form submit when auto is "onsubmit" (config)', async () => {
+		await renderWidget({
+			config: {
+				auto: 'onsubmit',
+				challenge
+			},
+			form: true
+		});
+		submitForm();
+		await waitForVerified();
 	});
-	await submitForm();
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="altcha"]').value).ok();
 });

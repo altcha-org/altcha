@@ -1,12 +1,12 @@
 import './global';
+import type { HTMLAttributes } from 'svelte/elements';
 import type { CodeChallenge, ServerVerificationResult, State, WidgetAttributes } from './';
 export {};
-interface AltchaWidgetSvelte extends WidgetAttributes {
+interface AltchaWidgetSvelte extends WidgetAttributes, HTMLAttributes<HTMLElement> {
     oncodechallenge?: (ev: CustomEvent<{
         codeChallenge: CodeChallenge;
     }>) => void;
     onexpired?: (ev: CustomEvent<unknown>) => void;
-    onload?: (ev: CustomEvent<unknown>) => void;
     onstatechange?: (e: CustomEvent<{
         payload?: string;
         state: State;
@@ -15,7 +15,6 @@ interface AltchaWidgetSvelte extends WidgetAttributes {
     onverified?: (e: CustomEvent<{
         payload: string;
     }>) => void;
-    style?: string;
 }
 declare global {
     namespace svelteHTML {

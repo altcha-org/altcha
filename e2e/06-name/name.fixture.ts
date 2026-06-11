@@ -1,12 +1,8 @@
-import { Selector } from 'testcafe';
-import { delay, renderWidget } from '../helpers';
+import { describe, test } from 'vitest';
+import { userEvent } from 'vitest/browser';
+import '../../dist/main/altcha.js';
+import { renderWidget, waitForSelector, waitForVerified } from '../helpers';
 import { Challenge } from '../../src/types';
-
-fixture`Name Attribute`.page`../index.html`.clientScripts([
-	{
-		path: '../../dist/main/altcha.umd.cjs'
-	}
-]);
 
 const challenge: Challenge = {
 	parameters: {
@@ -19,30 +15,28 @@ const challenge: Challenge = {
 	}
 };
 
-test('should use a custom input name (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			name: 'custom-name'
-		},
-		config: {
-			challenge
-		}
+describe('Name Attribute', () => {
+	test('should use a custom input name (attribute)', async () => {
+		await renderWidget({
+			attributes: {
+				name: 'custom-name'
+			},
+			config: {
+				challenge
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForVerified('custom-name');
 	});
-	await t.click('.altcha-checkbox');
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="custom-name"]').value).ok();
-});
 
-test('should use a custom input name (config)', async (t) => {
-	await renderWidget({
-		config: {
-			challenge,
-			name: 'custom-name'
-		}
+	test('should use a custom input name (config)', async () => {
+		await renderWidget({
+			config: {
+				challenge,
+				name: 'custom-name'
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForVerified('custom-name');
 	});
-	await t.click('.altcha-checkbox');
-	await delay(1000);
-	await t.expect(Selector('.altcha-checkbox input').checked).ok();
-	await t.expect(Selector('input[name="custom-name"]').value).ok();
 });

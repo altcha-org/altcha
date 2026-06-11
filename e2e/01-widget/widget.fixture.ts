@@ -1,148 +1,146 @@
-import { ClientFunction, Selector } from 'testcafe';
-import { delay, renderWidget } from '../helpers';
+import { describe, expect, test } from 'vitest';
+import { userEvent } from 'vitest/browser';
+import '../../dist/main/altcha.js';
+import { delay, renderWidget, waitForSelector } from '../helpers';
 import { State } from '../../src/types';
 
-fixture`Widget`.page`../index.html`.clientScripts([
-	{
-		path: '../../dist/main/altcha.umd.cjs'
-	}
-]);
-
-const dispatchPageshow = ClientFunction((persisted = false) => {
+function dispatchPageshow(persisted = false) {
 	window.dispatchEvent(
 		new PageTransitionEvent('pageshow', {
 			persisted
 		})
 	);
-});
+}
 
-test('should render the widget with default config', async (t) => {
-	await renderWidget();
-	await t.expect(Selector('.altcha').exists).ok();
-	await t.expect(Selector('.altcha-checkbox').exists).ok();
-	await t.expect(Selector('.altcha-logo').exists).ok();
-	await t.expect(Selector('.altcha-footer').exists).ok();
-});
-
-test('should render the widget with the native checkbox when type is "native" (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			type: 'native'
-		}
+describe('Widget', () => {
+	test('should render the widget with default config', async () => {
+		await renderWidget();
+		await waitForSelector('.altcha');
+		await waitForSelector('.altcha-checkbox');
+		await waitForSelector('.altcha-logo');
+		await waitForSelector('.altcha-footer');
 	});
-	await t.expect(Selector('.altcha-checkbox-native').exists).ok();
-});
 
-test('should render the widget with the native checkbox when type is "native" (config)', async (t) => {
-	await renderWidget({
-		config: {
-			type: 'native'
-		}
-	});
-	await t.expect(Selector('.altcha-checkbox-native').exists).ok();
-});
-
-test('should render the widget with the native checkbox when type is "switch" (attribute)', async (t) => {
-	await renderWidget({
-		attributes: {
-			type: 'switch'
-		}
-	});
-	await t.expect(Selector('.altcha-switch').exists).ok();
-});
-
-test('should render the widget with the native checkbox when type is "switch" (config)', async (t) => {
-	await renderWidget({
-		config: {
-			type: 'switch'
-		}
-	});
-	await t.expect(Selector('.altcha-switch').exists).ok();
-});
-
-test('should render the widget in the standard mode with defaults', async (t) => {
-	await renderWidget();
-	await t.expect(Selector('.altcha[data-display="standard"]').exists).ok();
-});
-
-['bar', 'floating', 'invisible', 'overlay', 'standard'].forEach((display) => {
-	test(`should render the widget with display "${display}" (attribute)`, async (t) => {
+	test('should render the widget with the native checkbox when type is "native" (attribute)', async () => {
 		await renderWidget({
 			attributes: {
-				// @ts-ignore
-				display
+				type: 'native'
 			}
 		});
-		await t.expect(Selector(`.altcha[data-display="${display}"]`).exists).ok();
+		await waitForSelector('.altcha-checkbox-native');
 	});
 
-	test(`should render the widget with display "${display}" (config)`, async (t) => {
+	test('should render the widget with the native checkbox when type is "native" (config)', async () => {
 		await renderWidget({
 			config: {
-				// @ts-ignore
-				display
+				type: 'native'
 			}
 		});
-		await t.expect(Selector(`.altcha[data-display="${display}"]`).exists).ok();
+		await waitForSelector('.altcha-checkbox-native');
 	});
-});
 
-test('should render the widget without the logo when hideLogo is true', async (t) => {
-	await renderWidget({
-		config: {
-			hideLogo: true
-		}
+	test('should render the widget with the native checkbox when type is "switch" (attribute)', async () => {
+		await renderWidget({
+			attributes: {
+				type: 'switch'
+			}
+		});
+		await waitForSelector('.altcha-switch');
 	});
-	await t.expect(Selector('.altcha').exists).ok();
-	await t.expect(Selector('.altcha-footer').exists).ok();
-	await t.expect(Selector('.altcha-logo').exists).notOk();
-});
 
-test('should render the widget without the footer when hideFooter is true', async (t) => {
-	await renderWidget({
-		config: {
-			hideFooter: true
-		}
+	test('should render the widget with the native checkbox when type is "switch" (config)', async () => {
+		await renderWidget({
+			config: {
+				type: 'switch'
+			}
+		});
+		await waitForSelector('.altcha-switch');
 	});
-	await t.expect(Selector('.altcha').exists).ok();
-	await t.expect(Selector('.altcha-logo').exists).ok();
-	await t.expect(Selector('.altcha-footer').exists).notOk();
-});
 
-test('should display the error message after clicking the checkbox when mockError is true', async (t) => {
-	await renderWidget({
-		config: {
-			mockError: true
-		}
+	test('should render the widget in the standard mode with defaults', async () => {
+		await renderWidget();
+		await waitForSelector('.altcha[data-display="standard"]');
 	});
-	await t.click('.altcha-checkbox');
-	await t.expect(Selector('.altcha-error').exists).ok();
-});
 
-test('should reset state when a bfcache pageshow event fires', async (t) => {
-	await renderWidget({
-		config: {
-			minDuration: 200,
-			test: true
-		}
-	});
-	await t.click('.altcha-checkbox');
-	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
-	await dispatchPageshow(true);
-	await delay(10);
-	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.UNVERIFIED);
-});
+	['bar', 'floating', 'invisible', 'overlay', 'standard'].forEach((display) => {
+		test(`should render the widget with display "${display}" (attribute)`, async () => {
+			await renderWidget({
+				attributes: {
+					// @ts-ignore
+					display
+				}
+			});
+			await waitForSelector(`.altcha[data-display="${display}"]`);
+		});
 
-test('should not reset state when a non-bfcache pageshow event fires', async (t) => {
-	await renderWidget({
-		config: {
-			minDuration: 200,
-			test: true
-		}
+		test(`should render the widget with display "${display}" (config)`, async () => {
+			await renderWidget({
+				config: {
+					// @ts-ignore
+					display
+				}
+			});
+			await waitForSelector(`.altcha[data-display="${display}"]`);
+		});
 	});
-	await t.click('.altcha-checkbox');
-	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
-	await dispatchPageshow(false);
-	await delay(10);
-	await t.expect(Selector('.altcha').getAttribute('data-state')).eql(State.VERIFYING);
+
+	test('should render the widget without the logo when hideLogo is true', async () => {
+		await renderWidget({
+			config: {
+				hideLogo: true
+			}
+		});
+		await waitForSelector('.altcha');
+		await waitForSelector('.altcha-footer');
+		expect(document.querySelector('.altcha-logo')).toBeNull();
+	});
+
+	test('should render the widget without the footer when hideFooter is true', async () => {
+		await renderWidget({
+			config: {
+				hideFooter: true
+			}
+		});
+		await waitForSelector('.altcha');
+		await waitForSelector('.altcha-logo');
+		expect(document.querySelector('.altcha-footer')).toBeNull();
+	});
+
+	test('should display the error message after clicking the checkbox when mockError is true', async () => {
+		await renderWidget({
+			config: {
+				mockError: true
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForSelector('.altcha-error');
+	});
+
+	test('should reset state when a bfcache pageshow event fires', async () => {
+		await renderWidget({
+			config: {
+				minDuration: 200,
+				test: true
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForSelector(`.altcha[data-state="${State.VERIFYING}"]`);
+		dispatchPageshow(true);
+		await delay(10);
+		expect(document.querySelector('.altcha')?.getAttribute('data-state')).toBe(State.UNVERIFIED);
+	});
+
+	test('should not reset state when a non-bfcache pageshow event fires', async () => {
+		await renderWidget({
+			config: {
+				minDuration: 200,
+				test: true
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForSelector(`.altcha[data-state="${State.VERIFYING}"]`);
+		dispatchPageshow(false);
+		await delay(10);
+		expect(document.querySelector('.altcha')?.getAttribute('data-state')).toBe(State.VERIFYING);
+	});
 });

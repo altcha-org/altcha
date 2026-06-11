@@ -6340,7 +6340,7 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.0.11");
+      log("mounted", "3.1.0");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }

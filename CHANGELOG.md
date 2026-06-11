@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.0] - 2026-06-11
+
+- Fix: TypeScript errors on id/aria attrs for altcha-widget [#190]
+
 ## [3.0.11] - 2026-06-01
 
 - Fix: guard customElements.define against duplicate registration [#187]

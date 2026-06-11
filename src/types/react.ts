@@ -1,17 +1,13 @@
 import './global';
+import type { CSSProperties, HTMLAttributes, Ref } from 'react';
 import type { CSSVariables, WidgetAttributes } from './';
 
 export {};
 
-interface AltchaWidgetReact extends WidgetAttributes {
-	children?: any;
-	ref?: AltchaWidgetReactRefObject<HTMLElement>;
-	style?: Partial<CSSVariables>;
+interface AltchaWidgetReact extends WidgetAttributes, HTMLAttributes<HTMLElement> {
+	ref?: Ref<HTMLElement>;
+	style?: CSSProperties & Partial<CSSVariables>;
 	suppressHydrationWarning?: boolean;
-}
-
-interface AltchaWidgetReactRefObject<T> {
-	current: T | null;
 }
 
 declare global {

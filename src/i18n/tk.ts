@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (resmi web sahypa)',
 	enterCode: 'Kody giriziň',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Dowam etmek üçin, aşakdaky suratyň koduny giriziň.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('tk', i18n);
-}
+globalThis.$altcha.i18n.set('tk', i18n);

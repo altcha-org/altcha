@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (hivatalos weboldal)',
 	enterCode: 'Írja be a kódot',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'A folytatáshoz, kérjük, adja meg az alábbi kép kódját.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('hu', i18n);
-}
+globalThis.$altcha.i18n.set('hu', i18n);

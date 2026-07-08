@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (அதிகாரப்பூர்வ வலைத்தளம்)',
 	enterCode: 'குறியீட்டை உள்ளிடவும்',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'தொடர, கீழே உள்ள படத்திலிருந்து குறியீட்டை உள்ளிடவும்.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('ta', i18n);
-}
+globalThis.$altcha.i18n.set('ta', i18n);

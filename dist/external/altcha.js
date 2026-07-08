@@ -3260,9 +3260,7 @@ const i18n = {
   verifying: "Verifying...",
   waitAlert: "Verifying... please wait."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("en", i18n);
-}
+globalThis.$altcha.i18n.set("en", i18n);
 const PUBLIC_VERSION = "5";
 if (typeof window !== "undefined") {
   ((window.__svelte ??= {}).v ??= /* @__PURE__ */ new Set()).add(PUBLIC_VERSION);

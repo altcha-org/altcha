@@ -1,3 +1,111 @@
+const noop = () => {
+};
+function safe_not_equal(a, b) {
+  return a != a ? b == b : a !== b || a !== null && typeof a === "object" || typeof a === "function";
+}
+function subscribe_to_store(store2, run, invalidate) {
+  if (store2 == null) {
+    run(void 0);
+    return noop;
+  }
+  const unsub = untrack(
+    () => store2.subscribe(
+      run,
+      // @ts-expect-error
+      invalidate
+    )
+  );
+  return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+const subscriber_queue = [];
+function writable(value, start = noop) {
+  let stop = null;
+  const subscribers = /* @__PURE__ */ new Set();
+  function set(new_value) {
+    if (safe_not_equal(value, new_value)) {
+      value = new_value;
+      if (stop) {
+        const run_queue = !subscriber_queue.length;
+        for (const subscriber of subscribers) {
+          subscriber[1]();
+          subscriber_queue.push(subscriber, value);
+        }
+        if (run_queue) {
+          for (let i = 0; i < subscriber_queue.length; i += 2) {
+            subscriber_queue[i][0](subscriber_queue[i + 1]);
+          }
+          subscriber_queue.length = 0;
+        }
+      }
+    }
+  }
+  function update(fn) {
+    set(fn(
+      /** @type {T} */
+      value
+    ));
+  }
+  function subscribe(run, invalidate = noop) {
+    const subscriber = [run, invalidate];
+    subscribers.add(subscriber);
+    if (subscribers.size === 1) {
+      stop = start(set, update) || noop;
+    }
+    run(
+      /** @type {T} */
+      value
+    );
+    return () => {
+      subscribers.delete(subscriber);
+      if (subscribers.size === 0 && stop) {
+        stop();
+        stop = null;
+      }
+    };
+  }
+  return { set, update, subscribe };
+}
+function get(store2) {
+  let value;
+  subscribe_to_store(store2, (_) => value = _)();
+  return value;
+}
+let untracking = false;
+function untrack(fn) {
+  var previous_untracking = untracking;
+  try {
+    untracking = true;
+    return fn();
+  } finally {
+    untracking = previous_untracking;
+  }
+}
+function store(defaultValue) {
+  const scope = {
+    get: (name) => {
+      return get(scope.store)[name];
+    },
+    set: (name, value) => {
+      if (typeof name === "string") {
+        Object.assign(get(scope.store), {
+          [name]: value
+        });
+      } else {
+        Object.assign(get(scope.store), name);
+      }
+      scope.store.set(get(scope.store));
+    },
+    store: writable(defaultValue)
+  };
+  return scope;
+}
+globalThis.$altcha = globalThis.$altcha || {
+  algorithms: /* @__PURE__ */ new Map(),
+  defaults: store({}),
+  i18n: store({}),
+  instances: /* @__PURE__ */ new Set(),
+  plugins: /* @__PURE__ */ new Set()
+};
 const i18n$6 = {
   ariaLinkLabel: "Altcha (amptelike webwerf)",
   enterCode: "Voer kode in",
@@ -17,9 +125,7 @@ const i18n$6 = {
   cancel: "Kanselleer",
   enterCodeFromImage: "Om voort te gaan, voer asseblief die kode vanaf die onderstaande prentjie in."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("af", i18n$6);
-}
+globalThis.$altcha.i18n.set("af", i18n$6);
 const i18n$5 = {
   ariaLinkLabel: "Altcha (ዋናው ድህረ ገጽ)",
   enterCode: "ኮድ አስገባ",
@@ -39,9 +145,7 @@ const i18n$5 = {
   cancel: "ይቅር",
   enterCodeFromImage: "ለመቀጠል፣ እባክዎን ከታች ካለው ምስል ኮዱን ያስገቡ።"
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("am", i18n$5);
-}
+globalThis.$altcha.i18n.set("am", i18n$5);
 const i18n$4 = {
   ariaLinkLabel: "Altcha (الموقع الرسمي)",
   enterCode: "أدخل الرمز",
@@ -61,9 +165,7 @@ const i18n$4 = {
   cancel: "إلغاء",
   enterCodeFromImage: "للمتابعة، يرجى إدخال الرمز من الصورة أدناه."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("ar", i18n$4);
-}
+globalThis.$altcha.i18n.set("ar", i18n$4);
 const i18n$3 = {
   ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
@@ -83,9 +185,7 @@ const i18n$3 = {
   cancel: "Annuler",
   enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("fr-fr", i18n$3);
-}
+globalThis.$altcha.i18n.set("fr-fr", i18n$3);
 const i18n$2 = {
   ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Introduza o código",
@@ -105,9 +205,7 @@ const i18n$2 = {
   cancel: "Cancelar",
   enterCodeFromImage: "Para prosseguir, introduza o código da imagem abaixo."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("pt-pt", i18n$2);
-}
+globalThis.$altcha.i18n.set("pt-pt", i18n$2);
 const i18n$1 = {
   ariaLinkLabel: "Altcha (tovuti rasmi)",
   enterCode: "Weka nambari",
@@ -127,9 +225,7 @@ const i18n$1 = {
   cancel: "Ghairi",
   enterCodeFromImage: "Ili kuendelea, tafadhali weka nambari kutoka kwa picha hapa chini."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sw", i18n$1);
-}
+globalThis.$altcha.i18n.set("sw", i18n$1);
 const i18n = {
   ariaLinkLabel: "Altcha (oju opo wẹẹbu osise)",
   enterCode: "Tẹ koodu sii",
@@ -149,6 +245,4 @@ const i18n = {
   cancel: "Fagbọsẹ",
   enterCodeFromImage: "Lati tẹsiwaju, jọwọ tẹ koodu ti o wa lati aworan isalẹ sii."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("yo", i18n);
-}
+globalThis.$altcha.i18n.set("yo", i18n);

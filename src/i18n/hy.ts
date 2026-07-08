@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (պաշտոնական կայք)',
 	enterCode: 'Մուտքագրեք կոդը',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Շարունակելու համար, խնդրում ենք մուտագրել ստորև պատկերից վերցված կոդը:'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('hy', i18n);
-}
+globalThis.$altcha.i18n.set('hy', i18n);

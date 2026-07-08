@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (अधिकृत संकेतस्थळ)',
 	enterCode: 'कोड टाकाा',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'पुढे जाण्यासाठी, कृपया खालील प्रतिमेतील कोड प्रविष्ट करा.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('mr', i18n);
-}
+globalThis.$altcha.i18n.set('mr', i18n);

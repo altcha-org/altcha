@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (అధికారిక వెబ్‌సైట్)',
 	enterCode: 'కోడ్‌ని నమోదు చేయండి',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'కొనసాగడానికి, దయచేసి క్రింది చిత్రంలో ఉన్న కోడ్‌ను నమోదు చేయండి.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('te', i18n);
-}
+globalThis.$altcha.i18n.set('te', i18n);

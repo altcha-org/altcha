@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (επίσημος ιστότοπος)',
 	enterCode: 'Εισαγάγετε κωδικό',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Για να συνεχίσετε, εισάγετε τον κωδικό από την παρακάτω εικόνα.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('el', i18n);
-}
+globalThis.$altcha.i18n.set('el', i18n);

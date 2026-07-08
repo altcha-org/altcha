@@ -1069,6 +1069,8 @@
       this.buffer.set(this.nonce, 0);
       this.dataView = new DataView(this.buffer.buffer);
     }
+    nonce;
+    mode;
     COUNTER_BYTES = 4;
     buffer;
     dataView;

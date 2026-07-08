@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (trang web chính thức)',
 	enterCode: 'Nhập mã',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Để tiếp tục, vui lòng nhập mã từ hình ảnh bên dưới.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('vi', i18n);
-}
+globalThis.$altcha.i18n.set('vi', i18n);

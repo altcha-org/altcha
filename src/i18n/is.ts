@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (opinber vefsíða)',
 	enterCode: 'Sláðu inn kóða',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Til að halda áfram, vinsamlegast sláðu inn kóðann af myndinni hér að neðan.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('is', i18n);
-}
+globalThis.$altcha.i18n.set('is', i18n);

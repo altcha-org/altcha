@@ -110,6 +110,7 @@ class BasePlugin {
   constructor(host) {
     this.host = host;
   }
+  host;
   static register(pluginClass) {
     if ("$altcha" in globalThis && !globalThis.$altcha.plugins.has(pluginClass)) {
       globalThis.$altcha.plugins.add(pluginClass);
@@ -250,6 +251,8 @@ class PasswordBuffer {
     this.buffer.set(this.nonce, 0);
     this.dataView = new DataView(this.buffer.buffer);
   }
+  nonce;
+  mode;
   COUNTER_BYTES = 4;
   buffer;
   dataView;

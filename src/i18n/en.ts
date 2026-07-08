@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (official website)',
 	cancel: 'Cancel',
@@ -19,6 +21,4 @@ const i18n = {
 	waitAlert: 'Verifying... please wait.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('en', i18n);
-}
+globalThis.$altcha.i18n.set('en', i18n);

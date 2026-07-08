@@ -1,3 +1,111 @@
+const noop = () => {
+};
+function safe_not_equal(a, b) {
+  return a != a ? b == b : a !== b || a !== null && typeof a === "object" || typeof a === "function";
+}
+function subscribe_to_store(store2, run, invalidate) {
+  if (store2 == null) {
+    run(void 0);
+    return noop;
+  }
+  const unsub = untrack(
+    () => store2.subscribe(
+      run,
+      // @ts-expect-error
+      invalidate
+    )
+  );
+  return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+}
+const subscriber_queue = [];
+function writable(value, start = noop) {
+  let stop = null;
+  const subscribers = /* @__PURE__ */ new Set();
+  function set(new_value) {
+    if (safe_not_equal(value, new_value)) {
+      value = new_value;
+      if (stop) {
+        const run_queue = !subscriber_queue.length;
+        for (const subscriber of subscribers) {
+          subscriber[1]();
+          subscriber_queue.push(subscriber, value);
+        }
+        if (run_queue) {
+          for (let i = 0; i < subscriber_queue.length; i += 2) {
+            subscriber_queue[i][0](subscriber_queue[i + 1]);
+          }
+          subscriber_queue.length = 0;
+        }
+      }
+    }
+  }
+  function update(fn) {
+    set(fn(
+      /** @type {T} */
+      value
+    ));
+  }
+  function subscribe(run, invalidate = noop) {
+    const subscriber = [run, invalidate];
+    subscribers.add(subscriber);
+    if (subscribers.size === 1) {
+      stop = start(set, update) || noop;
+    }
+    run(
+      /** @type {T} */
+      value
+    );
+    return () => {
+      subscribers.delete(subscriber);
+      if (subscribers.size === 0 && stop) {
+        stop();
+        stop = null;
+      }
+    };
+  }
+  return { set, update, subscribe };
+}
+function get(store2) {
+  let value;
+  subscribe_to_store(store2, (_) => value = _)();
+  return value;
+}
+let untracking = false;
+function untrack(fn) {
+  var previous_untracking = untracking;
+  try {
+    untracking = true;
+    return fn();
+  } finally {
+    untracking = previous_untracking;
+  }
+}
+function store(defaultValue) {
+  const scope = {
+    get: (name) => {
+      return get(scope.store)[name];
+    },
+    set: (name, value) => {
+      if (typeof name === "string") {
+        Object.assign(get(scope.store), {
+          [name]: value
+        });
+      } else {
+        Object.assign(get(scope.store), name);
+      }
+      scope.store.set(get(scope.store));
+    },
+    store: writable(defaultValue)
+  };
+  return scope;
+}
+globalThis.$altcha = globalThis.$altcha || {
+  algorithms: /* @__PURE__ */ new Map(),
+  defaults: store({}),
+  i18n: store({}),
+  instances: /* @__PURE__ */ new Set(),
+  plugins: /* @__PURE__ */ new Set()
+};
 const i18n$A = {
   ariaLinkLabel: "Altcha (lloc web oficial)",
   enterCode: "Introdueix el codi",
@@ -17,9 +125,7 @@ const i18n$A = {
   cancel: "Cancel·la",
   enterCodeFromImage: "Per continuar, si us plau, introdueix el codi de la imatge següent."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("ca", i18n$A);
-}
+globalThis.$altcha.i18n.set("ca", i18n$A);
 const i18n$z = {
   ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
@@ -39,9 +145,7 @@ const i18n$z = {
   cancel: "Annuler",
   enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("fr-fr", i18n$z);
-}
+globalThis.$altcha.i18n.set("fr-fr", i18n$z);
 const i18n$y = {
   ariaLinkLabel: "Altcha (offizielle Website)",
   enterCode: "Code eingeben",
@@ -61,9 +165,7 @@ const i18n$y = {
   cancel: "Abbrechen",
   enterCodeFromImage: "Um fortzufahren, geben Sie bitte den Code aus dem Bild unten ein."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("de", i18n$y);
-}
+globalThis.$altcha.i18n.set("de", i18n$y);
 const i18n$x = {
   ariaLinkLabel: "Altcha (offiziell Websäit)",
   enterCode: "Code aginn",
@@ -83,9 +185,7 @@ const i18n$x = {
   cancel: "Ofbriechen",
   enterCodeFromImage: "Fir virun ze fueren, gitt wgl. de Code aus dem Bild hei drënner an."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("lb", i18n$x);
-}
+globalThis.$altcha.i18n.set("lb", i18n$x);
 const i18n$w = {
   ariaLinkLabel: "Altcha (officiële website)",
   enterCode: "Voer code in",
@@ -105,9 +205,7 @@ const i18n$w = {
   cancel: "Annuleren",
   enterCodeFromImage: "Om door te gaan, voert u de code uit de onderstaande afbeelding in."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("nl", i18n$w);
-}
+globalThis.$altcha.i18n.set("nl", i18n$w);
 const i18n$v = {
   ariaLinkLabel: "Altcha (láithreán gréasáin oifigiúil)",
   enterCode: "Iontráil cód",
@@ -127,9 +225,7 @@ const i18n$v = {
   cancel: "Cealaigh",
   enterCodeFromImage: "Chun dul ar aghaidh, le do thoil cuir isteach an cód ón íomhá thíos."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("ga", i18n$v);
-}
+globalThis.$altcha.i18n.set("ga", i18n$v);
 const i18n$u = {
   ariaLinkLabel: "Altcha (sito ufficiale)",
   enterCode: "Inserisci il codice",
@@ -149,9 +245,7 @@ const i18n$u = {
   cancel: "Annulla",
   enterCodeFromImage: "Per procedere, inserisci il codice dall'immagine sottostante."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("it", i18n$u);
-}
+globalThis.$altcha.i18n.set("it", i18n$u);
 const i18n$t = {
   ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Introduza o código",
@@ -171,9 +265,7 @@ const i18n$t = {
   cancel: "Cancelar",
   enterCodeFromImage: "Para prosseguir, introduza o código da imagem abaixo."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("pt-pt", i18n$t);
-}
+globalThis.$altcha.i18n.set("pt-pt", i18n$t);
 const i18n$s = {
   ariaLinkLabel: "Altcha (sitio web oficial)",
   enterCode: "Introduce el código",
@@ -193,9 +285,7 @@ const i18n$s = {
   cancel: "Cancelar",
   enterCodeFromImage: "Para continuar, introduzca el código de la imagen de abajo."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("es-es", i18n$s);
-}
+globalThis.$altcha.i18n.set("es-es", i18n$s);
 const i18n$r = {
   ariaLinkLabel: "Altcha (webgune ofiziala)",
   enterCode: "Sartu kodea",
@@ -215,9 +305,7 @@ const i18n$r = {
   cancel: "Utzi",
   enterCodeFromImage: "Jarraitzeko, idatzi beheko irudiko kodea."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("eu", i18n$r);
-}
+globalThis.$altcha.i18n.set("eu", i18n$r);
 const i18n$q = {
   ariaLinkLabel: "Altcha (official website)",
   cancel: "Cancel",
@@ -237,9 +325,7 @@ const i18n$q = {
   verifying: "Verifying...",
   waitAlert: "Verifying... please wait."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("en", i18n$q);
-}
+globalThis.$altcha.i18n.set("en", i18n$q);
 const i18n$p = {
   ariaLinkLabel: "Altcha (officiel hjemmeside)",
   enterCode: "Indtast kode",
@@ -259,9 +345,7 @@ const i18n$p = {
   cancel: "Annuller",
   enterCodeFromImage: "For at fortsætte, bedes du indtaste koden fra billedet herunder."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("da", i18n$p);
-}
+globalThis.$altcha.i18n.set("da", i18n$p);
 const i18n$o = {
   ariaLinkLabel: "Altcha (officiell webbplats)",
   enterCode: "Ange kod",
@@ -281,9 +365,7 @@ const i18n$o = {
   cancel: "Avbryt",
   enterCodeFromImage: "För att fortsätta, ange koden från bilden nedan."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sv", i18n$o);
-}
+globalThis.$altcha.i18n.set("sv", i18n$o);
 const i18n$n = {
   ariaLinkLabel: "Altcha (virallinen verkkosivusto)",
   enterCode: "Syötä koodi",
@@ -303,9 +385,7 @@ const i18n$n = {
   cancel: "Peruuta",
   enterCodeFromImage: "Jatkaaksesi, syötä alla olevan kuvan koodi."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("fi", i18n$n);
-}
+globalThis.$altcha.i18n.set("fi", i18n$n);
 const i18n$m = {
   ariaLinkLabel: "Altcha (ametlik veebisait)",
   enterCode: "Sisesta kood",
@@ -325,9 +405,7 @@ const i18n$m = {
   cancel: "Tühista",
   enterCodeFromImage: "Jätkamiseks sisestage alloleval pildil olev kood."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("et", i18n$m);
-}
+globalThis.$altcha.i18n.set("et", i18n$m);
 const i18n$l = {
   ariaLinkLabel: "Altcha (offisiell nettside)",
   enterCode: "Skriv inn kode",
@@ -347,9 +425,7 @@ const i18n$l = {
   cancel: "Avbryt",
   enterCodeFromImage: "For å fortsette, vennligst skriv inn koden fra bildet nedenfor."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("nb", i18n$l);
-}
+globalThis.$altcha.i18n.set("nb", i18n$l);
 const i18n$k = {
   ariaLinkLabel: "Altcha (opinber vefsíða)",
   enterCode: "Sláðu inn kóða",
@@ -369,9 +445,7 @@ const i18n$k = {
   cancel: "Hætta við",
   enterCodeFromImage: "Til að halda áfram, vinsamlegast sláðu inn kóðann af myndinni hér að neðan."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("is", i18n$k);
-}
+globalThis.$altcha.i18n.set("is", i18n$k);
 const i18n$j = {
   ariaLinkLabel: "Altcha (oficiali svetainė)",
   enterCode: "Įveskite kodą",
@@ -391,9 +465,7 @@ const i18n$j = {
   cancel: "Atšaukti",
   enterCodeFromImage: "Norėdami tęsti, įveskite kodą iš paveikslėlio žemiau."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("lt", i18n$j);
-}
+globalThis.$altcha.i18n.set("lt", i18n$j);
 const i18n$i = {
   ariaLinkLabel: "Altcha (oficiālā tīmekļa vietne)",
   enterCode: "Ievadiet kodu",
@@ -413,9 +485,7 @@ const i18n$i = {
   cancel: "Atcelt",
   enterCodeFromImage: "Lai turpinātu, lūdzu, ievadiet zemāk redzamo attēlu kodu."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("lv", i18n$i);
-}
+globalThis.$altcha.i18n.set("lv", i18n$i);
 const i18n$h = {
   ariaLinkLabel: "Altcha (афіцыйны сайт)",
   enterCode: "Увядзіце код",
@@ -435,9 +505,7 @@ const i18n$h = {
   cancel: "Скасаваць",
   enterCodeFromImage: "Каб працягнуць, увядзіце код з малюнка ніжэй."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("be", i18n$h);
-}
+globalThis.$altcha.i18n.set("be", i18n$h);
 const i18n$g = {
   ariaLinkLabel: "Altcha (službena web stranica)",
   enterCode: "Unesite kod",
@@ -457,9 +525,7 @@ const i18n$g = {
   cancel: "Odustani",
   enterCodeFromImage: "Za nastavak, molimo unesite kod sa slike ispod."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("bs", i18n$g);
-}
+globalThis.$altcha.i18n.set("bs", i18n$g);
 const i18n$f = {
   ariaLinkLabel: "Altcha (oficiální web)",
   enterCode: "Zadejte kód",
@@ -479,9 +545,7 @@ const i18n$f = {
   cancel: "Zrušit",
   enterCodeFromImage: "Pro pokračování zadejte kód z obrázku níže."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("cs", i18n$f);
-}
+globalThis.$altcha.i18n.set("cs", i18n$f);
 const i18n$e = {
   ariaLinkLabel: "Altcha (oficjalna strona internetowa)",
   enterCode: "Wprowadź kod",
@@ -501,9 +565,7 @@ const i18n$e = {
   cancel: "Anuluj",
   enterCodeFromImage: "Aby kontynuować, wprowadź kod z poniższego obrazka."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("pl", i18n$e);
-}
+globalThis.$altcha.i18n.set("pl", i18n$e);
 const i18n$d = {
   ariaLinkLabel: "Altcha (hivatalos weboldal)",
   enterCode: "Írja be a kódot",
@@ -523,9 +585,7 @@ const i18n$d = {
   cancel: "Mégse",
   enterCodeFromImage: "A folytatáshoz, kérjük, adja meg az alábbi kép kódját."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("hu", i18n$d);
-}
+globalThis.$altcha.i18n.set("hu", i18n$d);
 const i18n$c = {
   ariaLinkLabel: "Altcha (oficiálna webová stránka)",
   enterCode: "Zadajte kód",
@@ -545,9 +605,7 @@ const i18n$c = {
   cancel: "Zrušiť",
   enterCodeFromImage: "Na pokračovanie, prosím, zadajte kód z obrázka nižšie."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sk", i18n$c);
-}
+globalThis.$altcha.i18n.set("sk", i18n$c);
 const i18n$b = {
   ariaLinkLabel: "Altcha (uradna spletna stran)",
   enterCode: "Vnesite kodo",
@@ -567,9 +625,7 @@ const i18n$b = {
   cancel: "Preklic",
   enterCodeFromImage: "Za nadaljevanje, prosimo, vnesite kodo s slike spodaj."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sl", i18n$b);
-}
+globalThis.$altcha.i18n.set("sl", i18n$b);
 const i18n$a = {
   ariaLinkLabel: "Altcha (službena web stranica)",
   enterCode: "Unesite kod",
@@ -589,9 +645,7 @@ const i18n$a = {
   cancel: "Odustani",
   enterCodeFromImage: "Za nastavak molimo unesite kod sa slike ispod."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("hr", i18n$a);
-}
+globalThis.$altcha.i18n.set("hr", i18n$a);
 const i18n$9 = {
   ariaLinkLabel: "Altcha (site oficial)",
   enterCode: "Introduceți codul",
@@ -611,9 +665,7 @@ const i18n$9 = {
   cancel: "Anulare",
   enterCodeFromImage: "Pentru a continua, vă rugăm să introduceți codul din imaginea de mai jos."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("ro", i18n$9);
-}
+globalThis.$altcha.i18n.set("ro", i18n$9);
 const i18n$8 = {
   ariaLinkLabel: "Altcha (официален уебсайт)",
   enterCode: "Въведете код",
@@ -633,9 +685,7 @@ const i18n$8 = {
   cancel: "Отказ",
   enterCodeFromImage: "За да продължите, моля, въведете кода от изображението по-долу."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("bg", i18n$8);
-}
+globalThis.$altcha.i18n.set("bg", i18n$8);
 const i18n$7 = {
   ariaLinkLabel: "Altcha (επίσημος ιστότοπος)",
   enterCode: "Εισαγάγετε κωδικό",
@@ -655,9 +705,7 @@ const i18n$7 = {
   cancel: "Ακύρωση",
   enterCodeFromImage: "Για να συνεχίσετε, εισάγετε τον κωδικό από την παρακάτω εικόνα."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("el", i18n$7);
-}
+globalThis.$altcha.i18n.set("el", i18n$7);
 const i18n$6 = {
   ariaLinkLabel: "Altcha (zvanična web stranica)",
   enterCode: "Unesite kod",
@@ -677,9 +725,7 @@ const i18n$6 = {
   cancel: "Откажи",
   enterCodeFromImage: "Да бисте наставили, унесите код са слике испод."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sr", i18n$6);
-}
+globalThis.$altcha.i18n.set("sr", i18n$6);
 const i18n$5 = {
   ariaLinkLabel: "Altcha (официальный сайт)",
   enterCode: "Введите код",
@@ -699,9 +745,7 @@ const i18n$5 = {
   cancel: "Отмена",
   enterCodeFromImage: "Чтобы продолжить, пожалуйста, введите код с изображения ниже."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("ru", i18n$5);
-}
+globalThis.$altcha.i18n.set("ru", i18n$5);
 const i18n$4 = {
   ariaLinkLabel: "Altcha (zvanična web stranica)",
   enterCode: "Unesite kod",
@@ -721,9 +765,7 @@ const i18n$4 = {
   cancel: "Odustani",
   enterCodeFromImage: "Za nastavak, molimo unesite kod sa slike ispod."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("me", i18n$4);
-}
+globalThis.$altcha.i18n.set("me", i18n$4);
 const i18n$3 = {
   ariaLinkLabel: "Altcha (официјален веб-сајт)",
   enterCode: "Внесете код",
@@ -743,9 +785,7 @@ const i18n$3 = {
   cancel: "Откажи",
   enterCodeFromImage: "За да продолжите, ве молиме внесете го кодот од сликата подолу."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("mk", i18n$3);
-}
+globalThis.$altcha.i18n.set("mk", i18n$3);
 const i18n$2 = {
   ariaLinkLabel: "Altcha (faqja zyrtare)",
   enterCode: "Fut kodin",
@@ -765,9 +805,7 @@ const i18n$2 = {
   cancel: "Anuloje",
   enterCodeFromImage: "Për të vazhduar, ju lutemi fusni kodin nga imazhi më poshtë."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("sq", i18n$2);
-}
+globalThis.$altcha.i18n.set("sq", i18n$2);
 const i18n$1 = {
   ariaLinkLabel: "Altcha (amptelike webwerf)",
   enterCode: "Voer kode in",
@@ -787,9 +825,7 @@ const i18n$1 = {
   cancel: "Kanselleer",
   enterCodeFromImage: "Om voort te gaan, voer asseblief die kode vanaf die onderstaande prentjie in."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("af", i18n$1);
-}
+globalThis.$altcha.i18n.set("af", i18n$1);
 const i18n = {
   ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
@@ -809,6 +845,4 @@ const i18n = {
   cancel: "Ikkanċella",
   enterCodeFromImage: "Biex tipproċedi, jekk jogħġbok daħħal il-kodiċi mill-immaġni hawn taħt."
 };
-if ("$altcha" in globalThis) {
-  globalThis.$altcha.i18n.set("mt", i18n);
-}
+globalThis.$altcha.i18n.set("mt", i18n);

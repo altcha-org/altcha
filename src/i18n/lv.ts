@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (oficiālā tīmekļa vietne)',
 	enterCode: 'Ievadiet kodu',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Lai turpinātu, lūdzu, ievadiet zemāk redzamo attēlu kodu.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('lv', i18n);
-}
+globalThis.$altcha.i18n.set('lv', i18n);

@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (amptelike webwerf)',
 	enterCode: 'Voer kode in',
@@ -20,6 +22,4 @@ const i18n = {
 		'Om voort te gaan, voer asseblief die kode vanaf die onderstaande prentjie in.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('af', i18n);
-}
+globalThis.$altcha.i18n.set('af', i18n);

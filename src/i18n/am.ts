@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (ዋናው ድህረ ገጽ)',
 	enterCode: 'ኮድ አስገባ',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'ለመቀጠል፣ እባክዎን ከታች ካለው ምስል ኮዱን ያስገቡ።'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('am', i18n);
-}
+globalThis.$altcha.i18n.set('am', i18n);

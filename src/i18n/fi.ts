@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (virallinen verkkosivusto)',
 	enterCode: 'Syötä koodi',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Jatkaaksesi, syötä alla olevan kuvan koodi.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('fi', i18n);
-}
+globalThis.$altcha.i18n.set('fi', i18n);

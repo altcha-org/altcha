@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (官方網站)',
 	cancel: '取消',
@@ -19,6 +21,4 @@ const i18n = {
 	waitAlert: '驗證中... 請稍候。'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('zh-hk', i18n);
-}
+globalThis.$altcha.i18n.set('zh-hk', i18n);

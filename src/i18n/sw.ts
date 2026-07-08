@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (tovuti rasmi)',
 	enterCode: 'Weka nambari',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Ili kuendelea, tafadhali weka nambari kutoka kwa picha hapa chini.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('sw', i18n);
-}
+globalThis.$altcha.i18n.set('sw', i18n);

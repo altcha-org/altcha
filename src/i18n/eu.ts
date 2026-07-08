@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (webgune ofiziala)',
 	enterCode: 'Sartu kodea',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Jarraitzeko, idatzi beheko irudiko kodea.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('eu', i18n);
-}
+globalThis.$altcha.i18n.set('eu', i18n);

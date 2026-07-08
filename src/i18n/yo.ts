@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (oju opo wẹẹbu osise)',
 	enterCode: 'Tẹ koodu sii',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Lati tẹsiwaju, jọwọ tẹ koodu ti o wa lati aworan isalẹ sii.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('yo', i18n);
-}
+globalThis.$altcha.i18n.set('yo', i18n);

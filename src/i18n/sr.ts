@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (zvanična web stranica)',
 	enterCode: 'Unesite kod',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Да бисте наставили, унесите код са слике испод.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('sr', i18n);
-}
+globalThis.$altcha.i18n.set('sr', i18n);

@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (láithreán gréasáin oifigiúil)',
 	enterCode: 'Iontráil cód',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Chun dul ar aghaidh, le do thoil cuir isteach an cód ón íomhá thíos.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('ga', i18n);
-}
+globalThis.$altcha.i18n.set('ga', i18n);

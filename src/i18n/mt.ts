@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (sit uffiċjali)',
 	enterCode: 'Idħol il-kodiċi',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: 'Biex tipproċedi, jekk jogħġbok daħħal il-kodiċi mill-immaġni hawn taħt.'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('mt', i18n);
-}
+globalThis.$altcha.i18n.set('mt', i18n);

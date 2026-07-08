@@ -1,3 +1,5 @@
+import '../global';
+
 const i18n = {
 	ariaLinkLabel: 'Altcha (官方网站)',
 	enterCode: '输入代码',
@@ -19,6 +21,4 @@ const i18n = {
 	enterCodeFromImage: '为继续操作，请输入下图中显示的验证码。'
 };
 
-if ('$altcha' in globalThis) {
-	globalThis.$altcha.i18n.set('zh-cn', i18n);
-}
+globalThis.$altcha.i18n.set('zh-cn', i18n);

@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.0] - 2026-07-08
+
+- Fix: i18n load-order [#193]
+
 ## [3.1.0] - 2026-06-11
 
 - Fix: TypeScript errors on id/aria attrs for altcha-widget [#190]

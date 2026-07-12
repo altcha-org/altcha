@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.1] - 2026-07-12
+
+- Fix: checkbox focus outline in safari [#194]
+
 ## [3.2.0] - 2026-07-08
 
 - Fix: i18n load-order [#193]

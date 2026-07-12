@@ -417,6 +417,14 @@
 			top: 0;
 			width: var(--altcha-checkbox-size);
 
+			@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+				/* Safari-only: fixes focus outline */
+				&:focus {
+					outline-width: 2px;
+					outline-style: solid;
+				}
+			}
+
 			&:before {
 				border-radius: var(--altcha-checkbox-border-radius);
 				content: '';

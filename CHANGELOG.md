@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.2] - 2026-08-19
+
+- Fix: theme attribute (widget types and HTML attribute)
+
 ## [3.2.1] - 2026-07-12
 
 - Fix: checkbox focus outline in safari [#194]

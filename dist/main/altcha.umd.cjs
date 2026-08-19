@@ -6285,6 +6285,13 @@
       });
     });
     user_effect(() => {
+      if ($$props.theme) {
+        instance?.setAttribute("theme", $$props.theme);
+      } else {
+        instance?.removeAttribute("theme");
+      }
+    });
+    user_effect(() => {
       if ($$props.configuration) {
         try {
           configure(JSON.parse($$props.configuration));
@@ -6347,7 +6354,7 @@
       }
     });
     onMount(() => {
-      log("mounted", "3.2.1");
+      log("mounted", "3.2.2");
       if (instance) {
         globalThis.$altcha.instances.add(instance);
       }

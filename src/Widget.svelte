@@ -75,6 +75,8 @@
 		configuration?: string;
 		/** Unique identifier for this widget instance */
 		id?: string;
+		/** Theme identifier */
+		theme?: string;
 	}
 
 	// -----------------------------------------------------------------------------
@@ -262,6 +264,23 @@
 			type: props.type,
 			workers: props.workers
 		});
+	});
+
+	/**
+	 * Explicitly reflect `theme` onto the host attribute.
+	 * `theme` is a pure CSS hook (`altcha-widget[theme='...']`) not consumed by this
+	 * component, so it's never part of its own $props()/exports — the generic
+	 * customElement `reflect: true` only reflects props the component actually exposes,
+	 * so it silently no-ops here. Frameworks that set `theme` as a JS property instead of
+	 * an HTML attribute (e.g. client-side rendering) would otherwise leave the attribute
+	 * missing until a full page reload re-parses static HTML.
+	 */
+	$effect(() => {
+		if (props.theme) {
+			instance?.setAttribute('theme', props.theme);
+		} else {
+			instance?.removeAttribute('theme');
+		}
 	});
 
 	/** Parse and apply the JSON `configuration` attribute */

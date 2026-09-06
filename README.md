@@ -5,7 +5,7 @@ ALTCHA is a self-hosted, privacy-first security solution that protects your webs
 ALTCHA is fully compliant with:
 
 - **Global privacy regulations**: GDPR, HIPAA, CCPA, PIPEDA/CPPA, LGPD, DPDPA, and PIPL
-- **Accessibility standards**: [WCAG 2.2 AA-level](https://altcha.org/docs/v2/compliance/wcag/) and the [European Accessibility Act](https://altcha.org/docs/v2/compliance/european-accessibility-act-2025/)
+- **Accessibility standards**: [WCAG 2.2 AA-level](https://altcha.org/legal/compliance/wcag/) and the [European Accessibility Act](https://altcha.org/legal/compliance/eaa/)
 
 For more details, visit [altcha.org](https://altcha.org).
 
@@ -62,7 +62,7 @@ Explore starter templates for popular frameworks:
 
 ## Plugins & CMS
 
-- [Libraries and plugins](https://altcha.org/docs/v2/libraries/)
+- [Libraries and plugins](https://altcha.org/docs/integration/server/)
 
 ## Usage
 
@@ -94,11 +94,11 @@ Or load via `<script>` tag:
 </form>
 ```
 
-See [configuration options](#configuration) or the [website integration docs](https://altcha.org/docs/v2/widget-integration).
+See [configuration options](#configuration) or the [website integration docs](https://altcha.org/docs/integration/widget/).
 
 ### 3. Integrate with Your Server
 
-Refer to the [server documentation](https://altcha.org/docs/v2/server-integration) for implementation details.
+Refer to the [server documentation](https://altcha.org/docs/integration/server/) for implementation details.
 
 ## Supported Browsers
 
@@ -132,7 +132,7 @@ When GZIPped, it totals about 34 kB, making ALTCHA’s widget about ~90% smaller
 
 ## Content Security Policy (CSP)
 
-The default bundle includes styles and workers in a single file. For strict CSP compliance, use scripts from `/dist/external`. Learn more in the [documentation](https://altcha.org/docs/v2/widget-integration).
+The default bundle includes styles and workers in a single file. For strict CSP compliance, use scripts from `/dist/external`. Learn more in the [documentation](https://altcha.org/docs/integration/widget/).
 
 ## Configuration
 
@@ -398,7 +398,7 @@ $altcha.i18n.set('de', {
 
 ## Code Challenges
 
-For additional verification, ALTCHA supports **image/audio code challenges** (e.g., "Enter the code from the image"). This feature requires [ALTCHA Sentinel](https://altcha.org/docs/v2/sentinel) or a custom server implementation.
+For additional verification, ALTCHA supports **image/audio code challenges** (e.g., "Enter the code from the image"). This feature requires [ALTCHA Sentinel](https://altcha.org/docs/sentinel/) or a custom server implementation.
 
 ## Data Obfuscation
 

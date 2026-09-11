@@ -140,7 +140,7 @@ The default bundle includes styles and workers in a single file. For strict CSP 
 
 The widget provides a global `$altcha` object to manage defaults, register new algorithms, or add custom translations.
 
-To update an existing widget instance, use the `.configure()` [method](). This is the preferred way to handle complex objects or functions that cannot be passed via HTML attributes.
+To update an existing widget instance, use the `.configure()` [method](<>). This is the preferred way to handle complex objects or functions that cannot be passed via HTML attributes.
 
 ```ts
 // Set defaults for all future widget instances:
@@ -402,7 +402,7 @@ For additional verification, ALTCHA supports **image/audio code challenges** (e.
 
 ## Data Obfuscation
 
-[Data obfuscation]() is supported via an official plugin, which must be imported alongside the widget. This is ideal for protecting sensitive information, such as email addresses, from scrapers until the challenge is solved.
+[Data obfuscation](<>) is supported via an official plugin, which must be imported alongside the widget. This is ideal for protecting sensitive information, such as email addresses, from scrapers until the challenge is solved.
 
 To obfuscate data, run:
 

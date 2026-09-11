@@ -184,8 +184,7 @@ export interface Configuration {
 	 * A custom verification handler. Overrides the default network-based verification.
 	 */
 	verifyFunction:
-		| ((payload: string, code?: string) => Promise<ServerVerificationResult | null>)
-		| null;
+		((payload: string, code?: string) => Promise<ServerVerificationResult | null>) | null;
 
 	/**
 	 * The endpoint URL for server-side verification.

@@ -159,22 +159,22 @@ Using Argon2id or Scrypt introduces a memory-bound bottleneck that significantly
 **Recommended Argon2id Parameters:**
 
 - `cost`: `1` to `4`  
-   Keep computational iterations low when `memoryCost` is high.
+  Keep computational iterations low when `memoryCost` is high.
 - `memoryCost`: `65536` to `131072` (64 to 128 MB)  
-   The client device must be able to allocate `memoryCost * workers` in total RAM. A 64 to 128 MB range has been verified to work reliably on low-end Android devices.
+  The client device must be able to allocate `memoryCost * workers` in total RAM. A 64 to 128 MB range has been verified to work reliably on low-end Android devices.
 - `parallelism`: `1`  
-   In Argon2, this defines the number of independent memory "lanes." Since `hash-wasm` is single-threaded, increasing this will not speed up the client. However, higher parallelism can be configured to utilize multiple cores during server-side verification.
+  In Argon2, this defines the number of independent memory "lanes." Since `hash-wasm` is single-threaded, increasing this will not speed up the client. However, higher parallelism can be configured to utilize multiple cores during server-side verification.
 - `counter` (Deterministic Mode): `100` to `200`  
-   Keep the counter relatively low when using high `memoryCost`.
+  Keep the counter relatively low when using high `memoryCost`.
 
 **Recommended Scrypt Parameters:**
 
 - `cost`: `65536` to `131072` (64 to 128 MB, must be a power of 2)  
-   This provides a robust balance between security and speed.
+  This provides a robust balance between security and speed.
 - `memoryCost`: `8`  
-   This is the standard recommended block size. Increasing it increases memory bandwidth requirements.
+  This is the standard recommended block size. Increasing it increases memory bandwidth requirements.
 - `parallelism`: `1`  
-   In Scrypt, the `parallelism` parameter acts as a direct multiplier for total work. Because `hash-wasm` is single-threaded, increasing `parallelism` will linearly increase the CPU time for the user. It is recommended to keep this at `1`.
+  In Scrypt, the `parallelism` parameter acts as a direct multiplier for total work. Because `hash-wasm` is single-threaded, increasing `parallelism` will linearly increase the CPU time for the user. It is recommended to keep this at `1`.
 - `counter` (Deterministic Mode): `100` to `200`
 
 ## PoW Mechanism Overview

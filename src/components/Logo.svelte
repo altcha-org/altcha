@@ -14,6 +14,7 @@
 	<a
 		href={website}
 		target="_blank"
+		rel="noopener"
 		class="altcha-logo"
 		aria-label={strings.ariaLinkLabel}
 		aria-hidden="true"

@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Η επαλήθευση απέτυχε. Δοκιμάστε ξανά αργότερα.',
 	expired: 'Η επαλήθευση έληξε. Δοκιμάστε ξανά.',
 	footer:
-		'Προστατεύεται από το <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (επίσημος ιστότοπος)">ALTCHA</a>',
+		'Προστατεύεται από το <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (επίσημος ιστότοπος)">ALTCHA</a>',
 	getAudioChallenge: 'Λήψη ηχητικής δοκιμασίας',
 	label: 'Δεν είμαι ρομπότ',
 	loading: 'Φόρτωση...',

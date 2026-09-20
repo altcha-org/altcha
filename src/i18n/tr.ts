@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Doğrulama başarısız oldu. Lütfen daha sonra tekrar deneyin.',
 	expired: 'Doğrulama süresi doldu. Lütfen tekrar deneyin.',
 	footer:
-		'ALTCHA tarafından korunuyor <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sitesi)">ALTCHA</a>',
+		'ALTCHA tarafından korunuyor <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (resmi web sitesi)">ALTCHA</a>',
 	getAudioChallenge: 'Sesli doğrulama al',
 	label: 'Ben robot değilim',
 	loading: 'Yükleniyor...',

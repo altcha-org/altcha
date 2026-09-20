@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Ange koden du hör. Tryck på mellanslag för att spela upp ljudet.",
   error: "Verifiering misslyckades. Försök igen senare.",
   expired: "Verifieringen har gått ut. Försök igen.",
-  footer: 'Skyddad av <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiell webbplats)">ALTCHA</a>',
+  footer: 'Skyddad av <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (officiell webbplats)">ALTCHA</a>',
   getAudioChallenge: "Få ljudutmaning",
   label: "Jag är inte en robot",
   loading: "Laddar...",

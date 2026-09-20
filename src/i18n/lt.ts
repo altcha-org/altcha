@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Patvirtinimas nepavyko. Bandykite vėliau.',
 	expired: 'Patvirtinimo laikas baigėsi. Bandykite dar kartą.',
 	footer:
-		'Apsaugota <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiali svetainė)">ALTCHA</a>',
+		'Apsaugota <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oficiali svetainė)">ALTCHA</a>',
 	getAudioChallenge: 'Gauti garso užduotį',
 	label: 'Aš nesu robotas',
 	loading: 'Įkeliama...',

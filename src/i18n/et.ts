@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Kinnitamine ebaõnnestus. Proovi hiljem uuesti.',
 	expired: 'Kinnitamine aegus. Proovi uuesti.',
 	footer:
-		'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
+		'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
 	getAudioChallenge: 'Hangi heliülesanne',
 	label: 'Ma ei ole robot',
 	loading: 'Laadimine...',

@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Barlamak şowsuz boldy. Has soňrak synanyşyň.',
 	expired: 'Barlamanyň möhleti gutardy. Gaýtadan synanyşyň.',
 	footer:
-		'Goralan <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (resmi web sahypa)">ALTCHA</a> tarapyndan',
+		'Goralan <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (resmi web sahypa)">ALTCHA</a> tarapyndan',
 	getAudioChallenge: 'Sesli tabşyryk alyň',
 	label: 'Men robot däl',
 	loading: 'Ýüklenýär...',

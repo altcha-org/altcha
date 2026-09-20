@@ -116,7 +116,7 @@
     enterCodeAria: "Unesite kod koji čujete. Pritisnite razmaknicu za reprodukciju zvuka.",
     error: "Provjera nije uspjela. Molimo pokušajte kasnije.",
     expired: "Provjera je istekla. Molimo pokušajte ponovo.",
-    footer: 'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (službena web stranica)">ALTCHA</a>',
+    footer: 'Zaštićeno od strane <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (službena web stranica)">ALTCHA</a>',
     getAudioChallenge: "Audio provjera",
     label: "Ja nisam robot",
     loading: "Učitavanje...",

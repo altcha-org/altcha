@@ -116,7 +116,7 @@
     enterCodeAria: "Eşitdiyiniz kodu daxil edin. Səsi dinləmək üçün Boşluq düyməsinə basın.",
     error: "Təsdiqləmə uğursuz oldu. Daha sonra yenidən cəhd edin.",
     expired: "Təsdiqləmə vaxtı bitdi. Yenidən cəhd edin.",
-    footer: 'Qorunur <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rəsmi vebsayt)">ALTCHA</a> tərəfindən',
+    footer: 'Qorunur <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (rəsmi vebsayt)">ALTCHA</a> tərəfindən',
     getAudioChallenge: "Audio tapşırıq alın",
     label: "Mən robot deyiləm",
     loading: "Yüklənir...",

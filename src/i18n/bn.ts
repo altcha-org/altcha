@@ -7,7 +7,7 @@ const i18n = {
 	error: 'যাচাইকরণ ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।',
 	expired: 'যাচাইকরণ সময়সীমা শেষ হয়েছে। আবার চেষ্টা করুন।',
 	footer:
-		'দ্বারা সুরক্ষিত <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (অফিসিয়াল ওয়েবসাইট)">ALTCHA</a>',
+		'দ্বারা সুরক্ষিত <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (অফিসিয়াল ওয়েবসাইট)">ALTCHA</a>',
 	getAudioChallenge: 'অডিও চ্যালেঞ্জ নিন',
 	label: 'আমি রোবট নই',
 	loading: 'লোড হচ্ছে...',

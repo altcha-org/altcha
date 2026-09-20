@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Wpisz kod, który słyszysz. Naciśnij Spację, aby odtworzyć dźwięk.",
   error: "Weryfikacja nie powiodła się. Spróbuj ponownie później.",
   expired: "Weryfikacja wygasła. Spróbuj ponownie.",
-  footer: 'Chronione przez <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficjalna strona internetowa)">ALTCHA</a>',
+  footer: 'Chronione przez <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oficjalna strona internetowa)">ALTCHA</a>',
   getAudioChallenge: "Pobierz zadanie dźwiękowe",
   label: "Nie jestem robotem",
   loading: "Ładowanie...",

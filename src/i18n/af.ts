@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Verifikasie het misluk. Probeer later weer.',
 	expired: 'Verifikasie het verval. Probeer weer.',
 	footer:
-		'Beskerm deur <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (amptelike webwerf)">ALTCHA</a>',
+		'Beskerm deur <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (amptelike webwerf)">ALTCHA</a>',
 	getAudioChallenge: "Kry 'n klankuitdaging",
 	label: "Ek is nie 'n robot nie",
 	loading: 'Laai...',

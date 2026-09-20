@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Preverjanje ni uspelo. Poskusite znova kasneje.',
 	expired: 'Preverjanje je poteklo. Poskusite znova.',
 	footer:
-		'Zaščiteno z <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (uradna spletna stran)">ALTCHA</a>',
+		'Zaščiteno z <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (uradna spletna stran)">ALTCHA</a>',
 	getAudioChallenge: 'Pridobite zvočni izziv',
 	label: 'Nisem robot',
 	loading: 'Nalagam...',

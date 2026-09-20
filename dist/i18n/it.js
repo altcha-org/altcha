@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
-  footer: 'Protetto da <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sito ufficiale)">ALTCHA</a>',
+  footer: 'Protetto da <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (sito ufficiale)">ALTCHA</a>',
   getAudioChallenge: "Ottieni una sfida audio",
   label: "Non sono un robot",
   loading: "Caricamento...",

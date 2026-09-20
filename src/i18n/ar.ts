@@ -7,7 +7,7 @@ const i18n = {
 	error: 'فشل التحقق. حاول مرة أخرى لاحقاً.',
 	expired: 'انتهت صلاحية التحقق. حاول مرة أخرى.',
 	footer:
-		'محمي بواسطة <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (الموقع الرسمي)">ALTCHA</a>',
+		'محمي بواسطة <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (الموقع الرسمي)">ALTCHA</a>',
 	getAudioChallenge: 'احصل على تحدي صوتي',
 	label: 'أنا لست روبوتاً',
 	loading: 'جارٍ التحميل...',

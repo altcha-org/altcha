@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Sisestage kuuldu kood. Vajutage tühikut, et esitada heli.",
   error: "Kinnitamine ebaõnnestus. Proovi hiljem uuesti.",
   expired: "Kinnitamine aegus. Proovi uuesti.",
-  footer: 'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
+  footer: 'Kaitstud <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (ametlik veebisait)">ALTCHA</a> poolt',
   getAudioChallenge: "Hangi heliülesanne",
   label: "Ma ei ole robot",
   loading: "Laadimine...",

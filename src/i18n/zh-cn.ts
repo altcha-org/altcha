@@ -7,7 +7,7 @@ const i18n = {
 	error: '验证失败。稍后再试。',
 	expired: '验证已过期。请重试。',
 	footer:
-		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方网站)">ALTCHA</a> 保护',
+		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (官方网站)">ALTCHA</a> 保护',
 	getAudioChallenge: '获取音频挑战',
 	label: '我不是机器人',
 	loading: '加载中...',

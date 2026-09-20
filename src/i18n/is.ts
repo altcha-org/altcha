@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Staðfesting mistókst. Reyndu aftur síðar.',
 	expired: 'Staðfesting er útrunnin. Reyndu aftur.',
 	footer:
-		'Verndað af <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (opinber vefsíða)">ALTCHA</a>',
+		'Verndað af <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (opinber vefsíða)">ALTCHA</a>',
 	getAudioChallenge: 'Fá hljóðáskorun',
 	label: 'Ég er ekki robot',
 	loading: 'Hleður...',

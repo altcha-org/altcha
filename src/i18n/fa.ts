@@ -7,7 +7,7 @@ const i18n = {
 	error: 'احراز هویت ناموفق بود. بعداً دوباره تلاش کنید.',
 	expired: 'احراز هویت منقضی شد. دوباره تلاش کنید.',
 	footer:
-		'محافظت شده توسط <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (وب‌سایت رسمی)">ALTCHA</a>',
+		'محافظت شده توسط <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (وب‌سایت رسمی)">ALTCHA</a>',
 	getAudioChallenge: 'دریافت چالش صوتی',
 	label: 'من ربات نیستم',
 	loading: 'در حال بارگذاری...',

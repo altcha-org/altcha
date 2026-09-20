@@ -118,7 +118,7 @@
     enterCodeFromImage: "To proceed, please enter the code from the image below.",
     error: "Verification failed. Try again later.",
     expired: "Verification expired. Try again.",
-    footer: 'Protected by <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (official website)">ALTCHA</a>',
+    footer: 'Protected by <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (official website)">ALTCHA</a>',
     getAudioChallenge: "Get an audio challenge",
     label: "I'm not a robot",
     loading: "Loading...",

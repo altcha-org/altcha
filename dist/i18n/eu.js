@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Sartu entzun duzun kodea. Sakatu Espazioa audioa erreproduzitzeko.",
   error: "Egiaztatzeak huts egin du. Saiatu berriro geroago.",
   expired: "Egiaztatzea iraungi da. Saiatu berriro.",
-  footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (webgune ofiziala)">ALTCHA</a>k babestuta',
+  footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (webgune ofiziala)">ALTCHA</a>k babestuta',
   getAudioChallenge: "Jaso audio-erronka bat",
   label: "Ez naiz robot bat",
   loading: "Kargatzen...",

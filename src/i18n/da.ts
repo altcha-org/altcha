@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Verificering mislykkedes. Prøv venligst igen senere.',
 	expired: 'Verificering udløbet. Prøv venligst igen.',
 	footer:
-		'Beskyttet af <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (officiel hjemmeside)">ALTCHA</a>',
+		'Beskyttet af <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (officiel hjemmeside)">ALTCHA</a>',
 	getAudioChallenge: 'Hent lydudfordring',
 	label: 'Jeg er ikke en robot',
 	loading: 'Indlæser...',

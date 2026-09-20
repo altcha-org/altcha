@@ -8,7 +8,7 @@ const i18n = {
 	error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
 	expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
 	footer:
-		'<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (rasmiy veb-sayt)">ALTCHA</a> tomonidan himoyalangan',
+		'<a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (rasmiy veb-sayt)">ALTCHA</a> tomonidan himoyalangan',
 	getAudioChallenge: 'Audio sinovni olish',
 	label: 'Men robot emasman',
 	loading: 'Yuklanmoqda...',

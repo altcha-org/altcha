@@ -116,7 +116,7 @@
     enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
     error: "Échec de la vérification. Essayez à nouveau plus tard.",
     expired: "La vérification a expiré. Essayez à nouveau.",
-    footer: 'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site officiel)">ALTCHA</a>',
+    footer: 'Protégé par <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (site officiel)">ALTCHA</a>',
     getAudioChallenge: "Obtenir un défi audio",
     label: "Je ne suis pas un robot",
     loading: "Chargement...",

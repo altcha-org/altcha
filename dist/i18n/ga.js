@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Cuir isteach an cód a chloiseann tú. Brúigh Spás chun an fuaime a sheinm.",
   error: "Theip ar an bhfíorú. Bain triail eile as níos déanaí.",
   expired: "Tá an fíorú as feidhm. Bain triail eile as.",
-  footer: 'Cosanta ag <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (láithreán gréasáin oifigiúil)">ALTCHA</a>',
+  footer: 'Cosanta ag <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (láithreán gréasáin oifigiúil)">ALTCHA</a>',
   getAudioChallenge: "Faigh dúshlán fuaime",
   label: "Níl mé i mo róbat",
   loading: "Á luchtú...",

@@ -116,7 +116,7 @@
     enterCodeAria: "Zadajte kód, ktorý počujete. Stlačením medzerníka prehráte zvuk.",
     error: "Verifikácia zlyhala. Skúste to znova neskôr.",
     expired: "Verifikácia vypršala. Skúste to znova.",
-    footer: 'Chránené <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiálna webová stránka)">ALTCHA</a>',
+    footer: 'Chránené <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oficiálna webová stránka)">ALTCHA</a>',
     getAudioChallenge: "Získať audio výzvu",
     label: "Nie som robot",
     loading: "Načítava sa...",

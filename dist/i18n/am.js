@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "የሚሰማዎትን ኮድ ያስገቡ። ድምጽ ለመጫወት Space ን ይጫኑ።",
   error: "ማረጋገጫ አልተሳካም። በኋላ ላይ እንደገና ይሞክሩ።",
   expired: "ማረጋገጫው ጊዜው አልፏል። እንደገና ይሞክሩ።",
-  footer: 'በ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ዋናው ድህረ ገጽ)">ALTCHA</a> የተጠበቀ',
+  footer: 'በ <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (ዋናው ድህረ ገጽ)">ALTCHA</a> የተጠበቀ',
   getAudioChallenge: "የድምጽ ፈተና ያግኙ",
   label: "እኔ ሮቦት አይደለሁም",
   loading: "በመጫን ላይ...",

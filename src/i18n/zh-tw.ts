@@ -7,7 +7,7 @@ const i18n = {
 	error: '驗證失敗。稍後再試。',
 	expired: '驗證已過期。請重試。',
 	footer:
-		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (官方網站)">ALTCHA</a> 保護',
+		'由 <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (官方網站)">ALTCHA</a> 保護',
 	getAudioChallenge: '獲取音頻挑戰',
 	label: '我不是機器人',
 	loading: '載入中...',

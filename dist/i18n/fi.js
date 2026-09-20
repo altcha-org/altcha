@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Kirjoita kuulemasi koodi. Paina välilyöntiä toistaaksesi äänen.",
   error: "Varmennus epäonnistui. Yritä myöhemmin uudelleen.",
   expired: "Varmennus vanhentui. Yritä uudelleen.",
-  footer: 'Suojattu <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (virallinen verkkosivusto)">ALTCHA</a>:lla',
+  footer: 'Suojattu <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (virallinen verkkosivusto)">ALTCHA</a>:lla',
   getAudioChallenge: "Hae äänitehtävä",
   label: "En ole robotti",
   loading: "Ladataan...",

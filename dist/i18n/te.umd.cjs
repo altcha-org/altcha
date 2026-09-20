@@ -116,7 +116,7 @@
     enterCodeAria: "మీరు విన్న కోడ్‌ని నమోదు చేయండి. ఆడియో ప్లే చేయడానికి స్పేస్‌ను నొక్కండి.",
     error: "చెకింగ్ విఫలమైంది. దయచేసి మరల ప్రయత్నించండి.",
     expired: "చెకింగ్ కాలం ముగిసింది. దయచేసి మరల ప్రయత్నించండి.",
-    footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (అధికారిక వెబ్‌సైట్)">ALTCHA</a>',
+    footer: 'ఈ సైట్ రక్షించబడింది <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (అధికారిక వెబ్‌సైట్)">ALTCHA</a>',
     getAudioChallenge: "ఆడియో ఛాలెంజ్ పొందండి",
     label: "నేను రోబోట్ కాదు",
     loading: "లోడ్ అవుతోంది...",

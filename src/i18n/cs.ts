@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Ověření selhalo. Zkuste to prosím později.',
 	expired: 'Ověření vypršelo. Zkuste to prosím znovu.',
 	footer:
-		'Chráněno pomocí <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiální web)">ALTCHA</a>',
+		'Chráněno pomocí <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oficiální web)">ALTCHA</a>',
 	getAudioChallenge: 'Získat audio výzvu',
 	label: 'Nejsem robot',
 	loading: 'Načítání...',

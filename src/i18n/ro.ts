@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Verificarea a eșuat. Încearcă din nou mai târziu.',
 	expired: 'Verificarea a expirat. Încearcă din nou.',
 	footer:
-		'Protejat de <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (site oficial)">ALTCHA</a>',
+		'Protejat de <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (site oficial)">ALTCHA</a>',
 	getAudioChallenge: 'Obține o provocare audio',
 	label: 'Nu sunt un robot',
 	loading: 'Se încarcă...',

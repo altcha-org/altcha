@@ -116,7 +116,7 @@
     enterCodeAria: "Естіген кодыңызды енгізіңіз. Аудионы ойнату үшін Бос орынды басыңыз.",
     error: "Тексеру сәтсіз аяқталды. Кейінірек қайталаңыз.",
     expired: "Тексеру мерзімі аяқталды. Қайталаңыз.",
-    footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ресми веб-сайт)">ALTCHA</a> қорғайды',
+    footer: '<a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (ресми веб-сайт)">ALTCHA</a> қорғайды',
     getAudioChallenge: "Аудио сынақ алу",
     label: "Мен робот емеспін",
     loading: "Жүктелуде...",

@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Xác minh thất bại. Vui lòng thử lại sau.',
 	expired: 'Xác minh đã hết hạn. Vui lòng thử lại.',
 	footer:
-		'Được bảo vệ bởi <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (trang web chính thức)">ALTCHA</a>',
+		'Được bảo vệ bởi <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (trang web chính thức)">ALTCHA</a>',
 	getAudioChallenge: 'Nhận thử thách âm thanh',
 	label: 'Tôi không phải là robot',
 	loading: 'Đang tải...',

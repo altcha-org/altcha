@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Ошибка верификации. Попробуйте позже.',
 	expired: 'Срок действия верификации истек. Попробуйте снова.',
 	footer:
-		'Защищено <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (официальный сайт)">ALTCHA</a>',
+		'Защищено <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (официальный сайт)">ALTCHA</a>',
 	getAudioChallenge: 'Получить аудио задачу',
 	label: 'Я не робот',
 	loading: 'Загрузка...',

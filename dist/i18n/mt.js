@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
-  footer: 'Protett minn <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (sit uffiċjali)">ALTCHA</a>',
+  footer: 'Protett minn <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (sit uffiċjali)">ALTCHA</a>',
   getAudioChallenge: "Ikseb sfida bl-awdjo",
   label: "M’inix robot",
   loading: "Qed jitgħabba...",

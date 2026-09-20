@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Tẹ koodu ti o ngbọ sii. Tẹ Space lati ṣe ohun orin.",
   error: "Ìdájọ́kòwò kò ṣẹ́ṣe. Gbiyanju lẹẹkansi ni ọjọ́ iwájú.",
   expired: "Ìdájọ́kòwò ti pari. Gbiyanju lẹẹkansi.",
-  footer: 'Ti wa ni ààbò nipasẹ <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oju opo wẹẹbu osise)">ALTCHA</a>',
+  footer: 'Ti wa ni ààbò nipasẹ <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oju opo wẹẹbu osise)">ALTCHA</a>',
   getAudioChallenge: "Gba ìjàdú ohùn",
   label: "Emi kii ṣe ẹrọ",
   loading: "Ó ń gbé sílẹ̀...",

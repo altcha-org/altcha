@@ -8,7 +8,7 @@ const i18n = {
 	error: 'Überprüfung fehlgeschlagen. Bitte versuchen Sie es später erneut.',
 	expired: 'Überprüfung abgelaufen. Bitte versuchen Sie es erneut.',
 	footer:
-		'Geschützt durch <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offizielle Website)">ALTCHA</a>',
+		'Geschützt durch <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (offizielle Website)">ALTCHA</a>',
 	getAudioChallenge: 'Audio-Herausforderung anfordern',
 	label: 'Ich bin kein Roboter',
 	loading: 'Lade...',

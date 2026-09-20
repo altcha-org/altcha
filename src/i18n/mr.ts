@@ -7,7 +7,7 @@ const i18n = {
 	error: 'पुष्टीकरण अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.',
 	expired: 'पुष्टीकरण कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.',
 	footer:
-		'द्वारे संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (अधिकृत संकेतस्थळ)">ALTCHA</a>',
+		'द्वारे संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (अधिकृत संकेतस्थळ)">ALTCHA</a>',
 	getAudioChallenge: 'ऑडिओ चॅलेंज मिळवा',
 	label: 'मी रोबोट नाही',
 	loading: 'लोड होत आहे...',

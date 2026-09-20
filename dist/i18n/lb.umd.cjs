@@ -116,7 +116,7 @@
     enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
     error: "Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.",
     expired: "Verifikatioun ofgelaf. Probéiert nach emol.",
-    footer: 'Geschützt vun <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (offiziell Websäit)">ALTCHA</a>',
+    footer: 'Geschützt vun <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (offiziell Websäit)">ALTCHA</a>',
     getAudioChallenge: "Kritt eng Audio-Herausfuerderung",
     label: "Ech sinn keen Robot",
     loading: "Lueden...",

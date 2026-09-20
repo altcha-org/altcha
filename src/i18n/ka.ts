@@ -7,7 +7,7 @@ const i18n = {
 	error: 'ვერიფიკაცია ჩაიშალა. სცადეთ მოგვიანებით.',
 	expired: 'ვერიფიკაციის ვადა გავიდა. სცადეთ ხელახლა.',
 	footer:
-		'დაცულია <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (ოფიციალური ვებსაიტი)">ALTCHA</a>-ით',
+		'დაცულია <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (ოფიციალური ვებსაიტი)">ALTCHA</a>-ით',
 	getAudioChallenge: 'მიიღეთ აუდიო გამოწვევა',
 	label: 'მე არ ვარ რობოტი',
 	loading: 'იტვირთება...',

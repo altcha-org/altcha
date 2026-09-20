@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Unesite kod koji čujete. Pritisnite Space za puštanje zvuka.",
   error: "Verifikacija nije uspjela. Pokušajte ponovo kasnije.",
   expired: "Verifikacija je istekla. Pokušajte ponovo.",
-  footer: 'Zaštićeno putem <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (zvanična web stranica)">ALTCHA</a>',
+  footer: 'Zaštićeno putem <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (zvanična web stranica)">ALTCHA</a>',
   getAudioChallenge: "Preuzmi audio izazov",
   label: "Nijesam robot",
   loading: "Učitavanje...",

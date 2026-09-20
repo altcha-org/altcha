@@ -7,7 +7,7 @@ const i18n = {
 	error: 'सत्यापन विफल। कृपया बाद में फिर से प्रयास करें।',
 	expired: 'सत्यापन समाप्त हो गया है। कृपया पुनः प्रयास करें।',
 	footer:
-		'द्वारा संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (आधिकारिक वेबसाइट)">ALTCHA</a>',
+		'द्वारा संरक्षित <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (आधिकारिक वेबसाइट)">ALTCHA</a>',
 	getAudioChallenge: 'ऑडियो चुनौती प्राप्त करें',
 	label: 'मैं रोबोट नहीं हूँ',
 	loading: 'लोड हो रहा है...',

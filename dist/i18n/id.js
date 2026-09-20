@@ -112,7 +112,7 @@ const i18n = {
   enterCodeAria: "Masukkan kode yang Anda dengar. Tekan Spasi untuk memutar audio.",
   error: "Verifikasi gagal. Coba lagi nanti.",
   expired: "Verifikasi telah kedaluwarsa. Coba lagi.",
-  footer: 'Dilindungi oleh <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (situs web resmi)">ALTCHA</a>',
+  footer: 'Dilindungi oleh <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (situs web resmi)">ALTCHA</a>',
   getAudioChallenge: "Dapatkan tantangan audio",
   label: "Saya bukan robot",
   loading: "Memuat...",

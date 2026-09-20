@@ -116,7 +116,7 @@
     enterCodeAria: "Weka nambari unayosikia. Bonyeza Space kucheza sauti.",
     error: "Uthibitishaji umeshindwa. Jaribu tena baadaye.",
     expired: "Uthibitishaji umeisha. Jaribu tena.",
-    footer: 'Imealindwa na <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (tovuti rasmi)">ALTCHA</a>',
+    footer: 'Imealindwa na <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (tovuti rasmi)">ALTCHA</a>',
     getAudioChallenge: "Pata changamoto ya sauti",
     label: "Mimi sio roboti",
     loading: "Inapakia...",

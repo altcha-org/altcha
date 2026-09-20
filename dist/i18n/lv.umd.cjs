@@ -116,7 +116,7 @@
     enterCodeAria: "Ievadiet dzirdamo kodu. Nospiediet atstarpes taustiņu, lai atskaņotu audio.",
     error: "Verifikācija neizdevās. Mēģiniet vēlāk vēlreiz.",
     expired: "Verifikācijas laiks ir beidzies. Mēģiniet vēlreiz.",
-    footer: 'Aizsargāts ar <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (oficiālā tīmekļa vietne)">ALTCHA</a>',
+    footer: 'Aizsargāts ar <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (oficiālā tīmekļa vietne)">ALTCHA</a>',
     getAudioChallenge: "Saņemt audio izaicinājumu",
     label: "Es neesmu robots",
     loading: "Notiek ielāde...",

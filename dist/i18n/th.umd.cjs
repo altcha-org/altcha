@@ -116,7 +116,7 @@
     enterCodeAria: "ป้อนรหัสที่คุณได้ยิน กด Space เพื่อเล่นเสียง",
     error: "การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง",
     expired: "การตรวจสอบหมดอายุ กรุณาลองใหม่",
-    footer: 'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
+    footer: 'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
     getAudioChallenge: "รับการท้าทายเสียง",
     label: "ฉันไม่ใช่บอท",
     loading: "กำลังโหลด...",

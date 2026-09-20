@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Проверката неуспешна. Моля, опитайте по-късно.',
 	expired: 'Времето за проверка изтече. Моля, опитайте отново.',
 	footer:
-		'Защитено от <a href="https://altcha.org/" tabindex="-1" target="_blank" aria-label="Altcha (официален уебсайт)">ALTCHA</a>',
+		'Защитено от <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (официален уебсайт)">ALTCHA</a>',
 	getAudioChallenge: 'Аудио проверка',
 	label: 'Аз не съм робот',
 	loading: 'Зареждане...',

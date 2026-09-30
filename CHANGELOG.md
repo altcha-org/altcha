@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.2.4] - 2026-09-30
+
+- Fix: unhandled AbortError when audio challenge `play()` is interrupted by `pause()` [#199]
+
+## [3.2.3] - 2026-09-20
+
+- Fix: add rel=noopener attribute to external links [#198]
+
 ## [3.2.2] - 2026-08-19
 
 - Fix: theme attribute (widget types and HTML attribute)

@@ -97,6 +97,18 @@
 		onSubmit?.(code);
 	}
 
+	/**
+	 * Starts playback, ignoring the `AbortError` rejection raised when `play()`
+	 * is interrupted by `pause()` (toggle before playback starts, or unmount).
+	 */
+	function startAudio(el: HTMLAudioElement) {
+		el.play().catch((err: unknown) => {
+			if (!(err instanceof DOMException && err.name === 'AbortError')) {
+				throw err;
+			}
+		});
+	}
+
 	function onPlayAudio() {
 		if (elAudio) {
 			if (audioState === AudioState.LOADING) {
@@ -108,7 +120,7 @@
 					elAudio.src = audioUrl;
 				}
 				elAudio.currentTime = 0;
-				elAudio.play();
+				startAudio(elAudio);
 			}
 		} else {
 			playAudio = true;
@@ -116,7 +128,7 @@
 			requestAnimationFrame(() => {
 				if (elAudio && audioUrl) {
 					elAudio.src = audioUrl;
-					elAudio.play();
+					startAudio(elAudio);
 				}
 			});
 		}

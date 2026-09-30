@@ -5634,6 +5634,13 @@
       ev.stopPropagation();
       onSubmit()?.(get(code));
     }
+    function startAudio(el) {
+      el.play().catch((err) => {
+        if (!(err instanceof DOMException && err.name === "AbortError")) {
+          throw err;
+        }
+      });
+    }
     function onPlayAudio() {
       if (get(elAudio)) {
         if (get(audioState) === AudioState.LOADING) ;
@@ -5644,14 +5651,14 @@
             get(elAudio).src = audioUrl();
           }
           get(elAudio).currentTime = 0;
-          get(elAudio).play();
+          startAudio(get(elAudio));
         }
       } else {
         set(playAudio, true);
         requestAnimationFrame(() => {
           if (get(elAudio) && audioUrl()) {
             get(elAudio).src = audioUrl();
-            get(elAudio).play();
+            startAudio(get(elAudio));
           }
         });
       }

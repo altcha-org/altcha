@@ -60,7 +60,7 @@
 			"require": "./dist/main/altcha.i18n.umd.cjs"
 		},
 		"./i18n/*": {
-			"types": "./dist/external/*.d.ts",
+			"types": "./dist/i18n/*.d.ts",
 			"import": "./dist/i18n/*.js",
 			"require": "./dist/i18n/*.umd.cjs"
 		},

@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.4.0] - 2026-10-15
+
+- Fix: `./i18n/*` export `types` condition points to `dist/i18n/*.d.ts` instead of the non-existent `dist/external/*.d.ts` [#200]
+- Fix: support the `form` attribute to associate the widget with a `<form>` it is not nested in [#201]
+
 ## [3.3.0] - 2026-10-05
 
 - Fix: SHA key derivation hashes the full digest each round and truncates once, matching altcha-lib and the server ports (SHA-384/512 and any `keyLength` below the digest size with `cost > 1` previously failed server verification)

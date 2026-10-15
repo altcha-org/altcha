@@ -15,6 +15,9 @@
 			display: {
 				type: 'String'
 			},
+			form: {
+				type: 'String'
+			},
 			language: {
 				type: 'String'
 			},
@@ -73,6 +76,8 @@
 	> {
 		/** JSON string of additional configuration options */
 		configuration?: string;
+		/** ID of the `<form>` to associate with (like the native `form` attribute) */
+		form?: string;
 		/** Unique identifier for this widget instance */
 		id?: string;
 		/** Theme identifier */
@@ -337,7 +342,7 @@
 		if (auto === 'onload') {
 			const tm = setTimeout(() => {
 				verify();
-			}, 1);
+			}, 10);
 			return () => {
 				if (tm) {
 					clearTimeout(tm);
@@ -372,13 +377,15 @@
 			globalThis.$altcha.instances.add(instance);
 		}
 
-		// Find and attach to the parent form
-		elForm = elRoot?.closest('form') as HTMLFormElement | null;
+		// Find and attach to the associated form: the `form` attribute (resolved like the
+		// native attribute) takes precedence over the closest ancestor form
+		elForm = resolveForm();
 		elForm?.addEventListener('reset', onFormReset);
 		elForm?.addEventListener('submit', onFormSubmit, {
 			capture: true
 		});
-		elForm?.addEventListener('focusin', onFormFocusIn);
+		// Listen on the document so focus on fields associated via `form="…"` is caught too
+		document.addEventListener('focusin', onFormFocusIn);
 
 		activatePlugins();
 
@@ -406,7 +413,7 @@
 			elForm?.removeEventListener('submit', onFormSubmit, {
 				capture: true
 			});
-			elForm?.removeEventListener('focusin', onFormFocusIn);
+			document.removeEventListener('focusin', onFormFocusIn);
 			hisCollector?.destroy();
 		};
 	});
@@ -608,7 +615,7 @@
 
 	/** Checks whether the challenge is V1 */
 	function isChallengeV1(challenge: any) {
-		return typeof challenge === 'object' && 'challenge' in challenge;
+		return typeof !!challenge && challenge === 'object' && 'challenge' in challenge;
 	}
 
 	/** Validate that a challenge object has all required fields */
@@ -693,15 +700,34 @@
 	}
 
 	/**
-	 * Collect text field values from the parent form.
+	 * Resolve the associated form. Mirrors native `form` attribute semantics:
+	 * when set, only a `<form>` with that ID in the same tree root qualifies.
+	 */
+	function resolveForm(): HTMLFormElement | null {
+		if (props.form) {
+			const root = instance?.getRootNode() as Document | ShadowRoot | undefined;
+			const el = root?.getElementById?.(props.form);
+			return el instanceof HTMLFormElement ? el : null;
+		}
+		return elRoot?.closest('form') ?? null;
+	}
+
+	/**
+	 * Return the form's controls matching `selector`, including those associated
+	 * via the `form` attribute outside the form's subtree.
+	 */
+	function getFormElements<T extends Element = HTMLElement>(selector: string): T[] {
+		return elForm ? (Array.from(elForm.elements).filter((el) => el.matches(selector)) as T[]) : [];
+	}
+
+	/**
+	 * Collect text field values from the associated form.
 	 * Used for server-side spam verification. Normalizes line endings to CRLF.
 	 */
 	function getTextFields(names?: string[]) {
-		const elInputs = [
-			...(elForm?.querySelectorAll(
-				names?.length ? names.map((name) => `input[name="${name}"]`).join(', ') : fieldsSelector
-			) || [])
-		] as HTMLInputElement[];
+		const elInputs = getFormElements<HTMLInputElement>(
+			names?.length ? names.map((name) => `input[name="${name}"]`).join(', ') : fieldsSelector
+		);
 		return elInputs.reduce(
 			(acc, el) => {
 				const name = el.name;
@@ -804,9 +830,16 @@
 		}
 	}
 
-	/** Auto-verify when any form field receives focus (if auto='onfocus') */
+	/** Auto-verify when any field of the associated form receives focus (if auto='onfocus') */
 	function onFormFocusIn(ev: FocusEvent) {
-		if (auto === 'onfocus' && currentState === State.UNVERIFIED) {
+		const target = ev.target;
+		if (
+			auto === 'onfocus' &&
+			currentState === State.UNVERIFIED &&
+			elForm &&
+			target instanceof Element &&
+			(elForm.contains(target) || (target as HTMLInputElement).form === elForm)
+		) {
 			verify();
 		}
 	}
@@ -894,7 +927,7 @@
 					? config.floatingAnchor
 					: config.floatingAnchor
 						? document.querySelector<HTMLElement>(config.floatingAnchor)
-						: elForm?.querySelector<HTMLElement>(submitButtonSelector)) || elForm;
+						: getFormElements(submitButtonSelector)[0]) || elForm;
 			if (!elFloatingAnchor) {
 				log('unable to find floating anchor element');
 				return;
@@ -1402,6 +1435,7 @@
 			<div class="altcha-checkbox-wrap">
 				<CheckboxComponent
 					id={checkboxId}
+					form={props.form}
 					name=""
 					required={(config.display === 'standard' && auto !== 'onsubmit') ||
 						currentState === State.VERIFYING}
@@ -1437,7 +1471,7 @@
 		{/if}
 
 		{#if !config.setCookie}
-			<input type="hidden" name={config.name} value={payload} />
+			<input type="hidden" form={props.form} name={config.name} value={payload} />
 		{/if}
 	</div>
 

@@ -392,6 +392,7 @@ export interface VerifySolutionResult {
 export interface WidgetAttributes extends Partial<Pick<Configuration, "auto" | "display" | "language" | "name" | "type" | "workers">> {
 	challenge?: string;
 	configuration?: string;
+	form?: string;
 	theme?: string;
 }
 export interface WidgetMethods {

@@ -183,6 +183,7 @@ For simple implementations, the widget supports a subset of configuration option
 ### Core Settings
 
 - **`name`**: The `name` attribute of the hidden input field containing the payload. (Default: `"altcha"`)
+- **`form`** (attribute only): The `id` of the `<form>` to associate the widget with, for widgets placed outside the form element. Forwarded to the hidden payload input and the checkbox, like the native `form` attribute. (Default: closest ancestor `<form>`)
 - **`challenge`**: The challenge data or the URL to fetch a new challenge from.
 - **`type`**: Visual style of the interaction element (`'native'`, `'checkbox'`, or `'switch'`).
 - **`language`**: The ISO alpha-2 language code for localization (requires corresponding i18n file).

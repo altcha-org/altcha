@@ -22,7 +22,7 @@ export function getDefaultWidgetOptions(): WidgetOptions {
 		algorithm: 'PBKDF2/SHA-256',
 		cost: 5_000,
 		counter: 5_000,
-		memoryCost: 0,
+		memoryCost: undefined,
 		workers: Math.min(8, navigator.hardwareConcurrency || 4),
 		mockChallenge: true,
 		mockCodeChallenge: false,

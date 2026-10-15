@@ -460,6 +460,7 @@ export interface WidgetAttributes extends Partial<
 > {
 	challenge?: string;
 	configuration?: string;
+	form?: string;
 	theme?: string;
 }
 

@@ -5400,7 +5400,7 @@ function create_custom_element(Component, props_definition, slots, exports, shad
   return Class;
 }
 var rest_excludes$3 = /* @__PURE__ */ new Set(["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
-var root$7 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox"><input/> <svg aria-hidden="true" width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></div>`);
+var root$6 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox"><input/> <svg aria-hidden="true" width="12" height="9" viewBox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg> <div class="altcha-spinner altcha-checkbox-spinner" aria-hidden="true"></div></div>`);
 function Checkbox($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$3);
@@ -5417,7 +5417,7 @@ function Checkbox($$anchor, $$props) {
       flushSync();
     }
   };
-  var div = root$7();
+  var div = root$6();
   var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
   bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
@@ -5432,7 +5432,7 @@ function Checkbox($$anchor, $$props) {
 delegate(["click"]);
 create_custom_element(Checkbox, { loading: {} }, [], [], { mode: "open" });
 var rest_excludes$2 = /* @__PURE__ */ new Set(["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
-var root$6 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox-native"><input/> <div class="altcha-spinner altcha-checkbox-native-spinner"></div></div>`);
+var root$5 = /* @__PURE__ */ from_html(`<div class="altcha-checkbox-native"><input/> <div class="altcha-spinner altcha-checkbox-native-spinner"></div></div>`);
 function CheckboxNative($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$2);
@@ -5445,7 +5445,7 @@ function CheckboxNative($$anchor, $$props) {
       flushSync();
     }
   };
-  var div = root$6();
+  var div = root$5();
   var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
   next(2);
@@ -5455,7 +5455,7 @@ function CheckboxNative($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(CheckboxNative, { loading: {} }, [], [], { mode: "open" });
-var root$5 = /* @__PURE__ */ from_html(`<div><a target="_blank" rel="noopener" class="altcha-logo" aria-hidden="true" tabindex="-1"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
+var root$4 = /* @__PURE__ */ from_html(`<div><a target="_blank" rel="noopener" class="altcha-logo" aria-hidden="true" tabindex="-1"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.33955 16.4279C5.88954 20.6586 12.1971 21.2105 16.4279 17.6604C18.4699 15.947 19.6548 13.5911 19.9352 11.1365L17.9886 10.4279C17.8738 12.5624 16.909 14.6459 15.1423 16.1284C11.7577 18.9684 6.71167 18.5269 3.87164 15.1423C1.03163 11.7577 1.4731 6.71166 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577C16.9767 5.86872 17.5322 7.02798 17.804 8.2324L19.9522 9.01429C19.7622 7.07737 19.0059 5.17558 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956C-0.658625 5.88958 -1.21046 12.1971 2.33955 16.4279Z" fill="currentColor"></path><path d="M3.57212 2.33956C1.65755 3.94607 0.496389 6.11731 0.12782 8.40523L2.04639 9.13961C2.26047 7.15832 3.21057 5.25375 4.8577 3.87164C8.24231 1.03162 13.2883 1.4731 16.1284 4.8577L13.8302 6.78606L19.9633 9.13364C19.7929 7.15555 19.0335 5.20847 17.6604 3.57212C14.1104 -0.658624 7.80283 -1.21043 3.57212 2.33956Z" fill="currentColor"></path><path d="M7 10H5C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10H13C13 11.6569 11.6569 13 10 13C8.3431 13 7 11.6569 7 10Z" fill="currentColor"></path></svg></a></div>`);
 function Logo($$anchor, $$props) {
   push($$props, true);
   let strings = prop($$props, "strings");
@@ -5469,7 +5469,7 @@ function Logo($$anchor, $$props) {
       flushSync();
     }
   };
-  var div = root$5();
+  var div = root$4();
   var a = child(div);
   set_attribute(a, "href", website);
   reset(div);
@@ -5478,7 +5478,7 @@ function Logo($$anchor, $$props) {
   return pop($$exports);
 }
 create_custom_element(Logo, { strings: {} }, [], [], { mode: "open" });
-var root$4 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><p></p> <!></div>`);
+var root$3 = /* @__PURE__ */ from_html(`<div class="altcha-footer"><p></p> <!></div>`);
 function Footer($$anchor, $$props) {
   push($$props, true);
   let logo = prop($$props, "logo"), strings = prop($$props, "strings");
@@ -5498,7 +5498,7 @@ function Footer($$anchor, $$props) {
       flushSync();
     }
   };
-  var div = root$4();
+  var div = root$3();
   var p = child(div);
   html(p, () => strings().footer, true);
   reset(p);
@@ -5521,7 +5521,7 @@ function Footer($$anchor, $$props) {
 }
 create_custom_element(Footer, { logo: {}, strings: {} }, [], [], { mode: "open" });
 var rest_excludes$1 = /* @__PURE__ */ new Set(["$$slots", "$$events", "$$legacy", "$$host", "loading"]);
-var root$3 = /* @__PURE__ */ from_html(`<div class="altcha-switch"><input/>  <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></div>`);
+var root$2 = /* @__PURE__ */ from_html(`<div class="altcha-switch"><input/>  <div class="altcha-switch-toggle"><div class="altcha-spinner altcha-switch-spinner"></div></div></div>`);
 function Switch($$anchor, $$props) {
   push($$props, true);
   let loading = prop($$props, "loading"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$1);
@@ -5538,7 +5538,7 @@ function Switch($$anchor, $$props) {
       flushSync();
     }
   };
-  var div = root$3();
+  var div = root$2();
   var input = child(div);
   attribute_effect(input, () => ({ type: "checkbox", ...rest }), void 0, void 0, void 0, void 0, true);
   bind_this(input, ($$value) => inputEl = $$value, () => inputEl);
@@ -5574,7 +5574,7 @@ var State = /* @__PURE__ */ ((State2) => {
   State2["EXPIRED"] = "expired";
   return State2;
 })(State || {});
-var root$2 = /* @__PURE__ */ from_html(`<div class="altcha-code-challenge-title"> </div>`);
+var root$1 = /* @__PURE__ */ from_html(`<div class="altcha-code-challenge-title"> </div>`);
 var root_1$2 = /* @__PURE__ */ from_html(`<div class="altcha-spinner"></div>`);
 var root_2$2 = /* @__PURE__ */ from_svg(`<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.8659 3.00017L22.3922 19.5002C22.6684 19.9785 22.5045 20.5901 22.0262 20.8662C21.8742 20.954 21.7017 21.0002 21.5262 21.0002H2.47363C1.92135 21.0002 1.47363 20.5525 1.47363 20.0002C1.47363 19.8246 1.51984 19.6522 1.60761 19.5002L11.1339 3.00017C11.41 2.52187 12.0216 2.358 12.4999 2.63414C12.6519 2.72191 12.7782 2.84815 12.8659 3.00017ZM10.9999 16.0002V18.0002H12.9999V16.0002H10.9999ZM10.9999 9.00017V14.0002H12.9999V9.00017H10.9999Z"></path></svg>`);
 var root_3$2 = /* @__PURE__ */ from_svg(`<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15 7C15 6.44772 15.4477 6 16 6C16.5523 6 17 6.44772 17 7V17C17 17.5523 16.5523 18 16 18C15.4477 18 15 17.5523 15 17V7ZM7 7C7 6.44772 7.44772 6 8 6C8.55228 6 9 6.44772 9 7V17C9 17.5523 8.55228 18 8 18C7.44772 18 7 17.5523 7 17V7Z"></path></svg>`);
@@ -5730,7 +5730,7 @@ function Code($$anchor, $$props) {
   var node = child(form);
   {
     var consequent = ($$anchor2) => {
-      var div_1 = root$2();
+      var div_1 = root$1();
       var text2 = only_child(div_1, true);
       template_effect(() => set_text(text2, strings().verificationRequired));
       append($$anchor2, div_1);
@@ -5873,7 +5873,7 @@ var rest_excludes = /* @__PURE__ */ new Set([
   "updateUISignal",
   "variant"
 ]);
-var root$1 = /* @__PURE__ */ from_html(`<div class="altcha-popover-backdrop" data-backdrop=""></div>`);
+var root = /* @__PURE__ */ from_html(`<div class="altcha-popover-backdrop" data-backdrop=""></div>`);
 var root_1$1 = /* @__PURE__ */ from_html(`<div class="altcha-popover-arrow"></div>`);
 var root_2$1 = /* @__PURE__ */ from_html(`<div role="button" class="altcha-popover-close">&times;</div>`);
 var root_3$1 = /* @__PURE__ */ from_html(`<!> <div><!> <!> <div class="altcha-popover-content"><!></div></div>`, 1);
@@ -6015,7 +6015,7 @@ function Popover($$anchor, $$props) {
   var node = first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var div = root$1();
+      var div = root();
       bind_this(div, ($$value) => set(elBackdrop, $$value), () => get(elBackdrop));
       append($$anchor2, div);
     };
@@ -6318,15 +6318,15 @@ class Collector {
     }
   };
 }
-var root = /* @__PURE__ */ from_html(`<div class="altcha-overlay-backdrop" data-backdrop=""></div>`);
-var root_1 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-content"></div>`);
-var root_2 = /* @__PURE__ */ from_html(`<div role="button" class="altcha-overlay-close">&times;</div> <!>`, 1);
-var root_3 = /* @__PURE__ */ from_html(`<div class="altcha-floating-arrow"></div>`);
-var root_4 = /* @__PURE__ */ from_html(`<input type="hidden"/>`);
-var root_5 = /* @__PURE__ */ from_html(`<div class="altcha-error">Secure context (HTTPS) required.</div>`);
-var root_6 = /* @__PURE__ */ from_html(`<div class="altcha-error"> </div>`);
-var root_7 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
-var root_8 = /* @__PURE__ */ from_html(`<!> <div class="altcha"><!> <div class="altcha-main"><div><div class="altcha-checkbox-wrap"><!> <label><!></label></div> <!></div> <!> <!> <!></div> <!></div>`, 1);
+var root_1 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-backdrop" data-backdrop=""></div>`);
+var root_2 = /* @__PURE__ */ from_html(`<div class="altcha-overlay-content"></div>`);
+var root_3 = /* @__PURE__ */ from_html(`<div role="button" class="altcha-overlay-close">&times;</div> <!>`, 1);
+var root_4 = /* @__PURE__ */ from_html(`<div class="altcha-floating-arrow"></div>`);
+var root_5 = /* @__PURE__ */ from_html(`<input type="hidden"/>`);
+var root_6 = /* @__PURE__ */ from_html(`<div class="altcha-error">Secure context (HTTPS) required.</div>`);
+var root_7 = /* @__PURE__ */ from_html(`<div class="altcha-error"> </div>`);
+var root_8 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
+var root_9 = /* @__PURE__ */ from_html(`<!> <div class="altcha"><!> <div class="altcha-main"><div><div class="altcha-checkbox-wrap"><!> <label><!></label></div> <!></div> <!> <!> <!></div> <!></div>`, 1);
 function Widget($$anchor, $$props) {
   push($$props, true);
   const $altchaDefaults = () => store_get(altchaDefaults, "$altchaDefaults", $$stores);
@@ -6483,7 +6483,7 @@ function Widget($$anchor, $$props) {
         () => {
           verify();
         },
-        1
+        10
       );
       return () => {
         if (tm) {
@@ -6507,10 +6507,10 @@ function Widget($$anchor, $$props) {
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }
-    set(elForm, get(elRoot)?.closest("form"), true);
+    set(elForm, resolveForm(), true);
     get(elForm)?.addEventListener("reset", onFormReset);
     get(elForm)?.addEventListener("submit", onFormSubmit, { capture: true });
-    get(elForm)?.addEventListener("focusin", onFormFocusIn);
+    document.addEventListener("focusin", onFormFocusIn);
     activatePlugins();
     if (get(config).humanInteractionSignature) {
       log("human interaction signature enabled");
@@ -6530,7 +6530,7 @@ function Widget($$anchor, $$props) {
       }
       get(elForm)?.removeEventListener("reset", onFormReset);
       get(elForm)?.removeEventListener("submit", onFormSubmit, { capture: true });
-      get(elForm)?.removeEventListener("focusin", onFormFocusIn);
+      document.removeEventListener("focusin", onFormFocusIn);
       hisCollector?.destroy();
     };
   });
@@ -6654,7 +6654,7 @@ function Widget($$anchor, $$props) {
     return challenge;
   }
   function isChallengeV1(challenge) {
-    return typeof challenge === "object" && "challenge" in challenge;
+    return typeof !!challenge && challenge === "object" && "challenge" in challenge;
   }
   function isChallengeValid(challenge) {
     return !!challenge && typeof challenge === "object" && "parameters" in challenge && !!challenge.parameters && typeof challenge.parameters === "object" && "algorithm" in challenge.parameters && "nonce" in challenge.parameters && "salt" in challenge.parameters && "keyPrefix" in challenge.parameters;
@@ -6697,10 +6697,19 @@ function Widget($$anchor, $$props) {
         return void 0;
     }
   }
+  function resolveForm() {
+    if ($$props.form) {
+      const root2 = instance?.getRootNode();
+      const el = root2?.getElementById?.($$props.form);
+      return el instanceof HTMLFormElement ? el : null;
+    }
+    return get(elRoot)?.closest("form") ?? null;
+  }
+  function getFormElements(selector) {
+    return get(elForm) ? Array.from(get(elForm).elements).filter((el) => el.matches(selector)) : [];
+  }
   function getTextFields(names) {
-    const elInputs = [
-      ...get(elForm)?.querySelectorAll(fieldsSelector) || []
-    ];
+    const elInputs = getFormElements(fieldsSelector);
     return elInputs.reduce(
       (acc, el) => {
         const name = el.name;
@@ -6767,7 +6776,8 @@ function Widget($$anchor, $$props) {
     }
   }
   function onFormFocusIn(ev) {
-    if (get(auto) === "onfocus" && get(currentState) === State.UNVERIFIED) {
+    const target = ev.target;
+    if (get(auto) === "onfocus" && get(currentState) === State.UNVERIFIED && get(elForm) && target instanceof Element && (get(elForm).contains(target) || target.form === get(elForm))) {
       verify();
     }
   }
@@ -6827,7 +6837,7 @@ function Widget($$anchor, $$props) {
     if (!get(elFloatingAnchor)) {
       set(
         elFloatingAnchor,
-        (get(config).floatingAnchor instanceof HTMLElement ? get(config).floatingAnchor : get(config).floatingAnchor ? document.querySelector(get(config).floatingAnchor) : get(elForm)?.querySelector(submitButtonSelector)) || get(elForm),
+        (get(config).floatingAnchor instanceof HTMLElement ? get(config).floatingAnchor : get(config).floatingAnchor ? document.querySelector(get(config).floatingAnchor) : getFormElements(submitButtonSelector)[0]) || get(elForm),
         true
       );
       if (!get(elFloatingAnchor)) {
@@ -7173,7 +7183,7 @@ function Widget($$anchor, $$props) {
     updateUI,
     verify
   };
-  var fragment = root_8();
+  var fragment = root_9();
   event("scroll", $document, onDocumentScroll);
   event("click", $document, onDocumentClick);
   event("pageshow", $window, onWindowPageshow);
@@ -7181,7 +7191,7 @@ function Widget($$anchor, $$props) {
   var node = first_child(fragment);
   {
     var consequent = ($$anchor2) => {
-      var div = root();
+      var div = root_1();
       append($$anchor2, div);
     };
     if_block(node, ($$render) => {
@@ -7192,12 +7202,12 @@ function Widget($$anchor, $$props) {
   var node_1 = child(div_1);
   {
     var consequent_2 = ($$anchor2) => {
-      var fragment_1 = root_2();
+      var fragment_1 = root_3();
       var div_2 = first_child(fragment_1);
       var node_2 = sibling(div_2, 2);
       {
         var consequent_1 = ($$anchor3) => {
-          var div_3 = root_1();
+          var div_3 = root_2();
           html(div_3, () => document.querySelector(get(config).overlayContent)?.innerHTML, true);
           reset(div_3);
           append($$anchor3, div_3);
@@ -7223,6 +7233,9 @@ function Widget($$anchor, $$props) {
       CheckboxComponent_1($$anchor2, {
         get id() {
           return get(checkboxId);
+        },
+        get form() {
+          return $$props.form;
         },
         name: "",
         get required() {
@@ -7307,7 +7320,7 @@ function Widget($$anchor, $$props) {
   var node_7 = sibling(node_6, 2);
   {
     var consequent_8 = ($$anchor2) => {
-      var div_7 = root_3();
+      var div_7 = root_4();
       bind_this(div_7, ($$value) => set(elAnchorArrow, $$value), () => get(elAnchorArrow));
       append($$anchor2, div_7);
     };
@@ -7318,9 +7331,10 @@ function Widget($$anchor, $$props) {
   var node_8 = sibling(node_7, 2);
   {
     var consequent_9 = ($$anchor2) => {
-      var input_1 = root_4();
+      var input_1 = root_5();
       remove_input_defaults(input_1);
       template_effect(() => {
+        set_attribute(input_1, "form", $$props.form);
         set_attribute(input_1, "name", get(config).name);
         set_value(input_1, get(payload));
       });
@@ -7359,17 +7373,17 @@ function Widget($$anchor, $$props) {
           var node_10 = first_child(fragment_9);
           {
             var consequent_10 = ($$anchor4) => {
-              var div_8 = root_5();
+              var div_8 = root_6();
               append($$anchor4, div_8);
             };
             var consequent_11 = ($$anchor4) => {
-              var div_9 = root_6();
+              var div_9 = root_7();
               var text_4 = only_child(div_9, true);
               template_effect(() => set_text(text_4, get(strings).expired));
               append($$anchor4, div_9);
             };
             var alternate_1 = ($$anchor4) => {
-              var div_10 = root_6();
+              var div_10 = root_7();
               var text_5 = only_child(div_10, true);
               template_effect(() => {
                 set_attribute(div_10, "title", get(error));
@@ -7421,7 +7435,7 @@ function Widget($$anchor, $$props) {
               return get(updateUISignal);
             },
             children: ($$anchor4, $$slotProps) => {
-              var fragment_12 = root_7();
+              var fragment_12 = root_8();
               var node_12 = first_child(fragment_12);
               Code(node_12, {
                 get audioUrl() {
@@ -7498,6 +7512,7 @@ if (typeof window !== "undefined" && window.customElements && !customElements.ge
     challenge: { type: "String" },
     configuration: { type: "String" },
     display: { type: "String" },
+    form: { type: "String" },
     language: { type: "String" },
     name: { type: "String" },
     theme: { type: "String" },

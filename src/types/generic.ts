@@ -8,6 +8,7 @@ export declare class AltchaWidgetElement extends HTMLElement {
 	challenge?: string;
 	configuration?: string;
 	display?: Configuration['display'];
+	form?: string;
 	language?: string;
 	name?: string;
 	theme?: string;

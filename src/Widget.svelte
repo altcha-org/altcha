@@ -615,7 +615,7 @@
 
 	/** Checks whether the challenge is V1 */
 	function isChallengeV1(challenge: any) {
-		return typeof !!challenge && challenge === 'object' && 'challenge' in challenge;
+		return challenge !== null && typeof challenge === 'object' && 'challenge' in challenge;
 	}
 
 	/** Validate that a challenge object has all required fields */

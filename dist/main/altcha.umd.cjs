@@ -6656,7 +6656,7 @@
       return challenge;
     }
     function isChallengeV1(challenge) {
-      return typeof !!challenge && challenge === "object" && "challenge" in challenge;
+      return challenge !== null && typeof challenge === "object" && "challenge" in challenge;
     }
     function isChallengeValid(challenge) {
       return !!challenge && typeof challenge === "object" && "parameters" in challenge && !!challenge.parameters && typeof challenge.parameters === "object" && "algorithm" in challenge.parameters && "nonce" in challenge.parameters && "salt" in challenge.parameters && "keyPrefix" in challenge.parameters;

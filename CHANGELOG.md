@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.4.1] - 2026-10-19
+
+- Fix: regression in V1 challenge detection [#202]
+
 ## [3.4.0] - 2026-10-15
 
 - Fix: `./i18n/*` export `types` condition points to `dist/i18n/*.d.ts` instead of the non-existent `dist/external/*.d.ts` [#200]

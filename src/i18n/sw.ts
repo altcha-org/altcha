@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Uthibitishaji umeshindwa. Jaribu tena baadaye.',
 	expired: 'Uthibitishaji umeisha. Jaribu tena.',
 	footer:
-		'Imealindwa na <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (tovuti rasmi)">ALTCHA</a>',
+		'Imealindwa na <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (tovuti rasmi, inafunguka kwenye kichupo kipya)">ALTCHA</a>',
 	getAudioChallenge: 'Pata changamoto ya sauti',
 	label: 'Mimi sio roboti',
 	loading: 'Inapakia...',

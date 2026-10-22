@@ -7,7 +7,7 @@ const i18n = {
 	error: 'การตรวจสอบล้มเหลว กรุณาลองอีกครั้งภายหลัง',
 	expired: 'การตรวจสอบหมดอายุ กรุณาลองใหม่',
 	footer:
-		'ป้องกันโดย <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (เว็บไซต์ทางการ)">ALTCHA</a>',
+		'ป้องกันโดย <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (เว็บไซต์ทางการ เปิดในแท็บใหม่)">ALTCHA</a>',
 	getAudioChallenge: 'รับการท้าทายเสียง',
 	label: 'ฉันไม่ใช่บอท',
 	loading: 'กำลังโหลด...',

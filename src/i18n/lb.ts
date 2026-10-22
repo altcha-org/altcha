@@ -7,7 +7,7 @@ const i18n = {
 	error: 'Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.',
 	expired: 'Verifikatioun ofgelaf. Probéiert nach emol.',
 	footer:
-		'Geschützt vun <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (offiziell Websäit)">ALTCHA</a>',
+		'Geschützt vun <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (offiziell Websäit, gëtt an engem neien Tab opgemaach)">ALTCHA</a>',
 	getAudioChallenge: 'Kritt eng Audio-Herausfuerderung',
 	label: 'Ech sinn keen Robot',
 	loading: 'Lueden...',

@@ -116,7 +116,7 @@
     enterCodeAria: "Внесете го кодот што го слушате. Притиснете Space за да ја пуштите аудио снимката.",
     error: "Проверката не успеа. Обидете се подоцна.",
     expired: "Проверката истече. Обидете се повторно.",
-    footer: 'Заштитено со <a href="https://altcha.org/" tabindex="-1" target="_blank" rel="noopener" aria-label="Altcha (официјален веб-сајт)">ALTCHA</a>',
+    footer: 'Заштитено со <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (официјален веб-сајт, се отвора во ново јазиче)">ALTCHA</a>',
     getAudioChallenge: "Земете аудио предизвик",
     label: "Јас не сум робот",
     loading: "Се вчитува...",

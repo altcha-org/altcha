@@ -6503,7 +6503,7 @@ function Widget($$anchor, $$props) {
     }
   });
   onMount(() => {
-    log("mounted", "3.4.1");
+    log("mounted", "3.5.0");
     if (instance) {
       globalThis.$altcha.instances.add(instance);
     }

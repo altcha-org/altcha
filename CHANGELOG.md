@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.5.0] - 2026-10-22
+
+- Fix: footer link is keyboard-focusable (removed `tabindex="-1"`) and its `aria-label` announces that it opens in a new tab, in all translations [#204]
+
 ## [3.4.1] - 2026-10-19
 
 - Fix: regression in V1 challenge detection [#202]

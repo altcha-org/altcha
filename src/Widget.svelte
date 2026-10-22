@@ -575,10 +575,10 @@
 					if (!hisCollector) {
 						throw new Error('Server requested HIS data but collector is disabled.');
 					}
+					const his = hisCollector.export();
+					hisCollector.mark();
 					return fetchChallenge(getUrl(json.his.url, baseUrl), {
-						body: JSON.stringify({
-							his: hisCollector.export()
-						}),
+						body: JSON.stringify({ his }),
 						headers: {
 							'content-type': 'application/json'
 						},
@@ -992,6 +992,7 @@
 			body: JSON.stringify({
 				code,
 				fields: config.serverVerificationFields ? getTextFields() : undefined,
+				his: codeChallenge?.his && hisCollector ? hisCollector.exportSinceMark() : undefined,
 				payload: verificationPayload,
 				timeZone: config.serverVerificationTimeZone ? getTimeZone() : undefined
 			}),

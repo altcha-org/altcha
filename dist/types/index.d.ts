@@ -196,6 +196,8 @@ export interface CodeChallenge {
     image: string;
     audio?: string;
     length?: number;
+    /** The server wants the HIS data collected since the challenge with the verification request. */
+    his?: boolean;
 }
 export interface CreateChallengeOptions {
     algorithm: string;

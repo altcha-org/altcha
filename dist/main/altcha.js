@@ -6193,21 +6193,33 @@ class Collector {
     VIDEO: 9,
     AUDIO: 10
   };
+  POINTER_TYPES = {
+    mouse: 0,
+    pen: 1,
+    touch: 2
+  };
   maxSamples;
   sampleInterval;
   target;
   focusStartTime = 0;
   focusInteraction = 0;
-  focusInteractionTimer = null;
+  focusInteractionTimer;
   lastPointerSample = 0;
   lastTouchSample = 0;
   lastScrollSample = 0;
-  pendingPointer = null;
-  pendingTouch = null;
+  pendingClick = null;
+  keysDown = /* @__PURE__ */ new Map();
+  /** Raw (unthrottled) non-touch pointermove timestamps, newest last */
+  moveTimes = [];
+  untrusted = 0;
+  click = [];
   focus = [];
+  key = [];
   pointer = [];
   scroll = [];
   touch = [];
+  markTime = null;
+  markUntrusted = 0;
   constructor(options = {}) {
     const { maxSamples = 60, sampleInterval = 50, target = window } = options;
     this.maxSamples = maxSamples;
@@ -6218,27 +6230,61 @@ class Collector {
   destroy() {
     const o = { capture: true };
     this.target.removeEventListener("focusin", this.onFocus, o);
-    this.target.removeEventListener("keydown", this.onInteraction, o);
-    this.target.removeEventListener("pointerdown", this.onInteraction, o);
+    this.target.removeEventListener("keydown", this.onKeyDown, o);
+    this.target.removeEventListener("keyup", this.onKeyUp, o);
+    this.target.removeEventListener("pointerdown", this.onPointerDown, o);
+    this.target.removeEventListener("pointerup", this.onPointerUp, o);
     this.target.removeEventListener("pointermove", this.onPointer, o);
     this.target.removeEventListener("scroll", this.onScroll, o);
     this.target.removeEventListener("touchmove", this.onTouchMove, o);
   }
   export() {
     return {
+      click: this.click,
       focus: this.focus,
+      key: this.key,
       maxTouchPoints: navigator.maxTouchPoints || 0,
       pointer: this.pointer,
       scroll: this.scroll,
       time: Date.now(),
-      touch: this.touch
+      touch: this.touch,
+      untrusted: this.untrusted,
+      v: 2,
+      webdriver: navigator.webdriver === true
+    };
+  }
+  /** Starts the window of `exportSinceMark()`; collected samples are kept. */
+  mark() {
+    this.markTime = performance.now();
+    this.markUntrusted = this.untrusted;
+  }
+  /** Same shape as `export()`, limited to samples collected since the latest `mark()`. */
+  exportSinceMark() {
+    const data = this.export();
+    const since = this.markTime;
+    if (since === null) {
+      return data;
+    }
+    const focus = this.focus.filter((s) => this.focusStartTime + s[0] >= since);
+    const first = focus[0]?.[0] ?? 0;
+    return {
+      ...data,
+      click: this.click.filter((s) => s[2] >= since),
+      focus: focus.map((s) => [s[0] - first, s[1], s[2], s[3]]),
+      key: this.key.filter((s) => s[0] >= since),
+      pointer: this.pointer.filter((s) => s[2] >= since),
+      scroll: this.scroll.filter((s) => s[1] >= since),
+      touch: this.touch.filter((s) => s[2] >= since),
+      untrusted: this.untrusted - this.markUntrusted
     };
   }
   attach() {
     const o = { passive: true, capture: true };
     this.target.addEventListener("focusin", this.onFocus, o);
-    this.target.addEventListener("keydown", this.onInteraction, o);
-    this.target.addEventListener("pointerdown", this.onInteraction, o);
+    this.target.addEventListener("keydown", this.onKeyDown, o);
+    this.target.addEventListener("keyup", this.onKeyUp, o);
+    this.target.addEventListener("pointerdown", this.onPointerDown, o);
+    this.target.addEventListener("pointerup", this.onPointerUp, o);
     this.target.addEventListener("pointermove", this.onPointer, o);
     this.target.addEventListener("scroll", this.onScroll, o);
     this.target.addEventListener("touchmove", this.onTouchMove, o);
@@ -6249,6 +6295,10 @@ class Collector {
     }
   }
   onFocus = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
     if (this.focusInteraction === 2) {
       return;
     }
@@ -6268,29 +6318,103 @@ class Collector {
     ]);
     this.evict(this.focus);
   };
-  onInteraction = (e) => {
-    this.focusInteraction = "keyCode" in e ? 1 : 2;
-    if (this.focusInteractionTimer) {
-      clearTimeout(this.focusInteractionTimer);
-    }
+  setInteraction(kind) {
+    this.focusInteraction = kind;
+    clearTimeout(this.focusInteractionTimer);
     this.focusInteractionTimer = setTimeout(() => {
       this.focusInteraction = 0;
     }, 100);
+  }
+  onKeyDown = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
+    this.setInteraction(1);
+    if (e.repeat) {
+      return;
+    }
+    const now = e.timeStamp || performance.now();
+    const sample = [Math.round(now), -1];
+    this.key.push(sample);
+    this.evict(this.key);
+    this.keysDown.set(e.code, { sample, down: now });
+  };
+  onKeyUp = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
+    const pending = this.keysDown.get(e.code);
+    if (pending) {
+      const now = e.timeStamp || performance.now();
+      pending.sample[1] = Math.round(now - pending.down);
+      this.keysDown.delete(e.code);
+    }
+  };
+  onPointerDown = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
+    this.setInteraction(2);
+    const now = e.timeStamp || performance.now();
+    const rect = e.target instanceof Element ? e.target.getBoundingClientRect() : null;
+    let moves = 0;
+    for (const t of this.moveTimes) {
+      if (t >= now - 500 && t < now) {
+        moves++;
+      }
+    }
+    const sample = [
+      Math.round(e.clientX),
+      Math.round(e.clientY),
+      Math.round(now),
+      -1,
+      rect ? Math.round(e.clientX - (rect.left + rect.width / 2)) : 0,
+      rect ? Math.round(e.clientY - (rect.top + rect.height / 2)) : 0,
+      this.POINTER_TYPES[e.pointerType] ?? 3,
+      moves
+    ];
+    this.click.push(sample);
+    this.evict(this.click);
+    this.pendingClick = { sample, down: now };
+  };
+  onPointerUp = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
+    if (this.pendingClick) {
+      const now = e.timeStamp || performance.now();
+      this.pendingClick.sample[3] = Math.round(now - this.pendingClick.down);
+      this.pendingClick = null;
+    }
   };
   onPointer = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
     if (e.pointerType === "touch") {
       return;
     }
     const now = e.timeStamp || performance.now();
-    this.pendingPointer = [Math.round(e.clientX), Math.round(e.clientY), Math.round(now)];
+    this.moveTimes.push(now);
+    if (this.moveTimes.length > 32) {
+      this.moveTimes.shift();
+    }
     if (now - this.lastPointerSample >= this.sampleInterval) {
-      this.pointer.push(this.pendingPointer);
+      this.pointer.push([Math.round(e.clientX), Math.round(e.clientY), Math.round(now)]);
       this.lastPointerSample = now;
-      this.pendingPointer = null;
       this.evict(this.pointer);
     }
   };
-  onScroll = () => {
+  onScroll = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
     const now = performance.now();
     if (now - this.lastScrollSample < this.sampleInterval) {
       return;
@@ -6300,23 +6424,25 @@ class Collector {
     this.evict(this.scroll);
   };
   onTouchMove = (e) => {
+    if (!e.isTrusted) {
+      this.untrusted++;
+      return;
+    }
     const now = e.timeStamp || performance.now();
     const t = e.touches[0];
     if (!t) {
       return;
     }
-    this.pendingTouch = [
-      Math.round(t.clientX),
-      Math.round(t.clientY),
-      Math.round(now),
-      Math.round(t.force * 1e3) / 1e3,
-      Math.round(t.radiusX || 0),
-      Math.round(t.radiusY || 0)
-    ];
     if (now - this.lastTouchSample >= this.sampleInterval) {
-      this.touch.push(this.pendingTouch);
+      this.touch.push([
+        Math.round(t.clientX),
+        Math.round(t.clientY),
+        Math.round(now),
+        Math.round(t.force * 1e3) / 1e3,
+        Math.round(t.radiusX || 0),
+        Math.round(t.radiusY || 0)
+      ]);
       this.lastTouchSample = now;
-      this.pendingTouch = null;
       this.evict(this.touch);
     }
   };
@@ -6630,8 +6756,10 @@ function Widget($$anchor, $$props) {
           if (!hisCollector) {
             throw new Error("Server requested HIS data but collector is disabled.");
           }
+          const his = hisCollector.export();
+          hisCollector.mark();
           return fetchChallenge(getUrl(json.his.url, get(baseUrl)), {
-            body: JSON.stringify({ his: hisCollector.export() }),
+            body: JSON.stringify({ his }),
             headers: { "content-type": "application/json" },
             method: "POST"
           });
@@ -6876,6 +7004,7 @@ function Widget($$anchor, $$props) {
       body: JSON.stringify({
         code,
         fields: get(config).serverVerificationFields ? getTextFields() : void 0,
+        his: get(codeChallenge)?.his && hisCollector ? hisCollector.exportSinceMark() : void 0,
         payload: verificationPayload,
         timeZone: get(config).serverVerificationTimeZone ? getTimeZone() : void 0
       }),

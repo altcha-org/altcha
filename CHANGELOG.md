@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+- Feature: HIS collector payload v2 (`v: 2`) adds `click` samples (`[x, y, t, hold, offsetX, offsetY, pointerType, moves]`), `key` samples (`[t, hold]`, no key values), an `untrusted` counter and a `webdriver` flag (`navigator.webdriver === true`); untrusted (script-dispatched) events are counted and no longer sampled. Existing fields are unchanged.
+- Feature: the HIS collector keeps its buffer for the whole page: every HIS POST to the challenge URL (including retries) sends all samples collected since page load (newest 60 per channel). When the code challenge carries `his: true`, only the data collected since the latest challenge POST (the interaction while solving the code) is sent as `his` with the server verification request.
+- Playground: HIS recorder page (`/his-recorder.html`) for capturing HIS payload fixtures
+
 ## [3.5.0] - 2026-10-22
 
 - Fix: footer link is keyboard-focusable (removed `tabindex="-1"`) and its `aria-label` announces that it opens in a new tab, in all translations [#204]

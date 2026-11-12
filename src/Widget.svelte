@@ -63,7 +63,7 @@
 		type WidgetMethods
 	} from './types/';
 	import { solveChallengeWorkers } from './pow';
-	import { bufferToHex } from './helpers';
+	import { bufferToHex, RequestError } from './helpers';
 	import { Collector } from './his';
 	import type { BasePlugin } from './plugins/base.plugin';
 
@@ -155,6 +155,8 @@
 	let elRoot = $state<HTMLElement>();
 	let elSubmitter = $state<HTMLElement | null>(null);
 	let error = $state<string | null>(null);
+	/** User-facing error message replacing the generic `strings.error` */
+	let errorMessage = $state<string | null>(null);
 	let expirationTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
 	let payload = $state<string | null>(null);
 	let plugins = $state<BasePlugin[]>([]);
@@ -185,6 +187,7 @@
 		floatingOffset: 8,
 		floatingPersist: false,
 		floatingPlacement: 'auto',
+		formatError: null,
 		hideFooter: false,
 		hideLogo: false,
 		humanInteractionSignature: true,
@@ -555,21 +558,18 @@
 					throw new Error(`Unable to parse JSON challenge.`);
 				}
 			} else {
-				// Source is a URL — fetch from server
 				log('fetching challenge from', requestOptions?.method || 'GET', source);
 				baseUrl = new URL(source, location.origin);
-				const resp = await config.fetch(source, {
+				const { headers, json } = await requestJson(source, {
 					credentials: config.credentials || undefined,
 					...requestOptions
 				});
-				await validateResponse(resp);
 
 				// Server may send extra config via response header
-				const configHeader = resp.headers.get('x-altcha-config');
+				const configHeader = headers.get('x-altcha-config');
 				if (configHeader) {
 					processConfigHeader(configHeader);
 				}
-				const json = await resp.json();
 				if (json && 'his' in json && json.his) {
 					log('requested HIS');
 					if (!hisCollector) {
@@ -988,7 +988,7 @@
 		if (!config.verifyUrl) {
 			throw new Error(`Parameter verifyUrl must be set for server verification.`);
 		}
-		const resp = await config.fetch(getUrl(config.verifyUrl, baseUrl), {
+		const { json } = await requestJson(getUrl(config.verifyUrl, baseUrl), {
 			body: JSON.stringify({
 				code,
 				fields: config.serverVerificationFields ? getTextFields() : undefined,
@@ -1001,8 +1001,6 @@
 			},
 			method: 'POST'
 		});
-		await validateResponse(resp);
-		const json = await resp.json();
 		if (json && typeof json === 'object' && 'payload' in json && !!json.payload) {
 			dispatch('serververification', json);
 		}
@@ -1089,6 +1087,23 @@
 		}
 	}
 
+	/**
+	 * Fetch a JSON response. Network failures and invalid responses are rethrown as
+	 * `RequestError` so their message is displayed instead of the generic error string.
+	 */
+	async function requestJson(
+		url: string | URL,
+		init: RequestInit
+	): Promise<{ headers: Headers; json: any }> {
+		try {
+			const resp = await config.fetch(url, init);
+			await validateResponse(resp);
+			return { headers: resp.headers, json: await resp.json() };
+		} catch (err) {
+			throw new RequestError(err instanceof Error ? err.message : String(err));
+		}
+	}
+
 	/** Validate that a server response is OK and returns JSON */
 	async function validateResponse(resp: Response) {
 		if (resp.status >= 400) {
@@ -1117,7 +1132,7 @@
 	 */
 	async function verifyServer(code?: string) {
 		if (!payload) {
-			setState(State.ERROR, 'Cannot verify code challenge without PoW payload.');
+			setError(new Error('Cannot verify code challenge without PoW payload.'));
 			return;
 		}
 		setState(State.VERIFYING);
@@ -1127,7 +1142,7 @@
 		} else if (config.verifyFunction) {
 			result = await config.verifyFunction(payload, code);
 		} else {
-			setState(State.ERROR, 'Parameter verifyUrl is required for code challenge verification.');
+			setError(new Error('Parameter verifyUrl is required for code challenge verification.'));
 			return;
 		}
 		if (result?.payload) {
@@ -1144,7 +1159,7 @@
 				});
 			}
 		} else {
-			setState(State.ERROR, result?.reason || 'Verification failed.');
+			setError(new Error(result?.reason || 'Verification failed.'));
 		}
 		if (!config.disableAutoFocus) {
 			getCheckboxElement()?.focus();
@@ -1205,10 +1220,25 @@
 		setState(newState);
 	}
 
+	/**
+	 * Enter the ERROR state and resolve the displayed message: `config.formatError` when set,
+	 * otherwise `RequestError` messages. A falsy message falls back to `strings.error`.
+	 */
+	function setError(err: unknown) {
+		const errObj = err instanceof Error ? err : new Error(String(err));
+		setState(State.ERROR, String(errObj));
+		if (config.formatError) {
+			errorMessage = config.formatError(errObj) || null;
+		} else if (errObj instanceof RequestError) {
+			errorMessage = `Error: ${errObj.message}`;
+		}
+	}
+
 	/** Update the widget state and dispatch a 'statechange' event */
 	export function setState(newState: State, err: string | null = null) {
 		currentState = newState;
 		error = err;
+		errorMessage = null;
 		dispatch('statechange', {
 			payload,
 			state: currentState
@@ -1388,7 +1418,7 @@
 			}
 		} catch (err) {
 			log('verification failed', err);
-			setState(State.ERROR, String(err));
+			setError(err);
 			return null;
 		} finally {
 			currentController = null;
@@ -1497,7 +1527,7 @@
 				</div>
 			{:else}
 				<div class="altcha-error" title={error}>
-					{strings.error}
+					{errorMessage || strings.error}
 				</div>
 			{/if}
 		</Popover>
@@ -1521,7 +1551,7 @@
 					imageUrl={codeChallengeImageUrl}
 					onCancel={() => reset()}
 					onReload={() => verify()}
-					onSubmit={(code) => verifyServer(code)}
+					onSubmit={(code) => verifyServer(code).catch(setError)}
 					{codeChallenge}
 					{config}
 					{strings}

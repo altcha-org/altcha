@@ -224,6 +224,7 @@ For simple implementations, the widget supports a subset of configuration option
 - **`test`**: Mocks a successful verification for testing environments.
 - **`mockError`**: Forces the widget into a failed state for UI testing.
 - **`fetch`**: A custom `fetch` implementation for network requests.
+- **`formatError`**: A function `(error: Error) => string | null | undefined` customizing the displayed error message. A falsy return value shows the translated "Verification failed" string. Network and API errors have `error.name === 'RequestError'`. (Default: network and API errors show `Error: <message>`, others the translated string)
 - **`humanInteractionSignature`**: Whether the collector for HIS is enabled (Default: `true`).
 - **`setCookie`**: When configured, sends the payload as a cookie.
 - **`timeout`**: Verification timeout in milliseconds (Default: `90_000`).

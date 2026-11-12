@@ -64,7 +64,23 @@ describe('Code Challenge', () => {
 		const elInput = await waitForSelector<HTMLInputElement>('.altcha-code-challenge input');
 		await userEvent.fill(elInput, 'abcdef');
 		await userEvent.click(await waitForSelector('.altcha-code-challenge button[type="submit"]'));
-		await waitForSelector('.altcha-error');
+		await waitForSelector('.altcha-error', { text: 'Verification failed. Try again later.' });
+	});
+
+	test('should display the network error message if code verification request fails', async () => {
+		await renderWidget({
+			config: {
+				challenge,
+				fetch: () => Promise.reject(new TypeError('Failed to fetch')),
+				verifyUrl: '/verify'
+			}
+		});
+		await userEvent.click(await waitForSelector('.altcha-checkbox'));
+		await waitForSelector('.altcha-code-challenge-image');
+		const elInput = await waitForSelector<HTMLInputElement>('.altcha-code-challenge input');
+		await userEvent.fill(elInput, 'abcdef');
+		await userEvent.click(await waitForSelector('.altcha-code-challenge button[type="submit"]'));
+		await waitForSelector('.altcha-error', { text: 'Error: Failed to fetch' });
 	});
 
 	test('should request form submission after code challenge when auto=onsubmit', async () => {

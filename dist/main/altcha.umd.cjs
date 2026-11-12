@@ -6082,6 +6082,9 @@
     [],
     { mode: "open" }
   );
+  class RequestError extends Error {
+    name = "RequestError";
+  }
   function bufferToHex(buffer) {
     return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
   }
@@ -6362,6 +6365,7 @@
     let elRoot = /* @__PURE__ */ state(void 0);
     let elSubmitter = /* @__PURE__ */ state(null);
     let error = /* @__PURE__ */ state(null);
+    let errorMessage = /* @__PURE__ */ state(null);
     let expirationTimeout = /* @__PURE__ */ state(null);
     let payload = /* @__PURE__ */ state(null);
     let plugins = /* @__PURE__ */ state(proxy([]));
@@ -6384,6 +6388,7 @@
       floatingOffset: 8,
       floatingPersist: false,
       floatingPlacement: "auto",
+      formatError: null,
       hideFooter: false,
       hideLogo: false,
       humanInteractionSignature: true,
@@ -6614,16 +6619,14 @@
         } else {
           log("fetching challenge from", requestOptions?.method || "GET", source2);
           set(baseUrl, new URL(source2, location.origin), true);
-          const resp = await get(config).fetch(source2, {
+          const { headers, json } = await requestJson(source2, {
             credentials: get(config).credentials || void 0,
             ...requestOptions
           });
-          await validateResponse(resp);
-          const configHeader = resp.headers.get("x-altcha-config");
+          const configHeader = headers.get("x-altcha-config");
           if (configHeader) {
             processConfigHeader(configHeader);
           }
-          const json = await resp.json();
           if (json && "his" in json && json.his) {
             log("requested HIS");
             if (!hisCollector) {
@@ -6871,7 +6874,7 @@
       if (!get(config).verifyUrl) {
         throw new Error(`Parameter verifyUrl must be set for server verification.`);
       }
-      const resp = await get(config).fetch(getUrl(get(config).verifyUrl, get(baseUrl)), {
+      const { json } = await requestJson(getUrl(get(config).verifyUrl, get(baseUrl)), {
         body: JSON.stringify({
           code,
           fields: get(config).serverVerificationFields ? getTextFields() : void 0,
@@ -6882,8 +6885,6 @@
         headers: { "Content-Type": "application/json" },
         method: "POST"
       });
-      await validateResponse(resp);
-      const json = await resp.json();
       if (json && typeof json === "object" && "payload" in json && !!json.payload) {
         dispatch("serververification", json);
       }
@@ -6954,6 +6955,15 @@
         onExpired();
       }
     }
+    async function requestJson(url, init) {
+      try {
+        const resp = await get(config).fetch(url, init);
+        await validateResponse(resp);
+        return { headers: resp.headers, json: await resp.json() };
+      } catch (err) {
+        throw new RequestError(err instanceof Error ? err.message : String(err));
+      }
+    }
     async function validateResponse(resp) {
       if (resp.status >= 400) {
         if (resp.headers.get("content-type")?.includes("/json")) {
@@ -6975,7 +6985,7 @@
     }
     async function verifyServer(code) {
       if (!get(payload)) {
-        setState(State.ERROR, "Cannot verify code challenge without PoW payload.");
+        setError(new Error("Cannot verify code challenge without PoW payload."));
         return;
       }
       setState(State.VERIFYING);
@@ -6985,7 +6995,7 @@
       } else if (get(config).verifyFunction) {
         result = await get(config).verifyFunction(get(payload), code);
       } else {
-        setState(State.ERROR, "Parameter verifyUrl is required for code challenge verification.");
+        setError(new Error("Parameter verifyUrl is required for code challenge verification."));
         return;
       }
       if (result?.payload) {
@@ -7002,7 +7012,7 @@
           });
         }
       } else {
-        setState(State.ERROR, result?.reason || "Verification failed.");
+        setError(new Error(result?.reason || "Verification failed."));
       }
       if (!get(config).disableAutoFocus) {
         getCheckboxElement()?.focus();
@@ -7040,9 +7050,19 @@
       }
       setState(newState);
     }
+    function setError(err) {
+      const errObj = err instanceof Error ? err : new Error(String(err));
+      setState(State.ERROR, String(errObj));
+      if (get(config).formatError) {
+        set(errorMessage, get(config).formatError(errObj) || null, true);
+      } else if (errObj instanceof RequestError) {
+        set(errorMessage, `Error: ${errObj.message}`);
+      }
+    }
     function setState(newState, err = null) {
       set(currentState, newState, true);
       set(error, err, true);
+      set(errorMessage, null);
       dispatch("statechange", { payload: get(payload), state: get(currentState) });
     }
     function show() {
@@ -7166,7 +7186,7 @@
         }
       } catch (err) {
         log("verification failed", err);
-        setState(State.ERROR, String(err));
+        setError(err);
         return null;
       } finally {
         set(currentController, null);
@@ -7389,7 +7409,7 @@
                 var text_5 = only_child(div_10, true);
                 template_effect(() => {
                   set_attribute(div_10, "title", get(error));
-                  set_text(text_5, get(strings).error);
+                  set_text(text_5, get(errorMessage) || get(strings).error);
                 });
                 append($$anchor4, div_10);
               };
@@ -7448,7 +7468,7 @@
                   },
                   onCancel: () => reset$1(),
                   onReload: () => verify(),
-                  onSubmit: (code) => verifyServer(code),
+                  onSubmit: (code) => verifyServer(code).catch(setError),
                   get codeChallenge() {
                     return get(codeChallenge);
                   },

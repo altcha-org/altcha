@@ -94,6 +94,13 @@ export interface Configuration {
 	floatingPlacement: 'auto' | 'bottom' | 'top';
 
 	/**
+	 * Customizes the error message displayed to the user. Receives every verification error;
+	 * network and API errors have `name === 'RequestError'`. A falsy return value displays
+	 * the translated "verification failed" string.
+	 */
+	formatError: ((error: Error) => string | null | undefined) | null;
+
+	/**
 	 * Hides the "ALTCHA" attribution link.
 	 */
 	hideFooter: boolean;

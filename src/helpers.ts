@@ -1,5 +1,10 @@
 import type { HmacAlgorithm } from './types';
 
+/** Network failure or invalid server response; the widget displays its message to the user. */
+export class RequestError extends Error {
+	override name = 'RequestError';
+}
+
 /** Throws unless `algorithm` is exactly one of `allowed`. */
 export function assertAlgorithm<T extends string>(
 	algorithm: unknown,

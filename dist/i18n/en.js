@@ -116,7 +116,7 @@ const i18n = {
   expired: "Verification expired. Try again.",
   footer: 'Protected by <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (official website, opens in new tab)">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
-  label: "I'm not a robot",
+  label: "I’m not a robot",
   loading: "Loading...",
   reload: "Reload",
   verify: "Verify",

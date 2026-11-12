@@ -2895,7 +2895,7 @@ const i18n$Z = {
   expired: "Verification expired. Try again.",
   footer: 'Protected by <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (official website, opens in new tab)">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
-  label: "I'm not a robot",
+  label: "I’m not a robot",
   loading: "Loading...",
   reload: "Reload",
   verify: "Verify",
@@ -7890,7 +7890,7 @@ globalThis.$altcha.i18n.set("fa", i18n$L);
 const i18n$K = {
   ariaLinkLabel: "Altcha (offiziell Websäit)",
   enterCode: "Code aginn",
-  enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
+  enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d’Weltraumtast fir Audio ofzespillen.",
   error: "Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.",
   expired: "Verifikatioun ofgelaf. Probéiert nach emol.",
   footer: 'Geschützt vun <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (offiziell Websäit, gëtt an engem neien Tab opgemaach)">ALTCHA</a>',
@@ -7930,7 +7930,7 @@ globalThis.$altcha.i18n.set("fi", i18n$J);
 const i18n$I = {
   ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
-  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
+  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur la barre d’espace pour écouter l’audio.",
   error: "Échec de la vérification. Réessayez plus tard.",
   expired: "La vérification a expiré. Réessayez.",
   footer: 'Protégé par <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (site officiel, s’ouvre dans un nouvel onglet)">ALTCHA</a>',
@@ -7944,13 +7944,13 @@ const i18n$I = {
   verifying: "Vérification en cours...",
   waitAlert: "Vérification en cours... veuillez patienter.",
   cancel: "Annuler",
-  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
+  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l’image ci-dessous."
 };
 globalThis.$altcha.i18n.set("fr-ca", i18n$I);
 const i18n$H = {
   ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
-  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
+  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l’audio.",
   error: "Échec de la vérification. Essayez à nouveau plus tard.",
   expired: "La vérification a expiré. Essayez à nouveau.",
   footer: 'Protégé par <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (site officiel, s’ouvre dans un nouvel onglet)">ALTCHA</a>',
@@ -7964,7 +7964,7 @@ const i18n$H = {
   verifying: "Vérification en cours...",
   waitAlert: "Vérification en cours... veuillez patienter.",
   cancel: "Annuler",
-  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
+  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l’image ci-dessous."
 };
 globalThis.$altcha.i18n.set("fr-fr", i18n$H);
 const i18n$G = {
@@ -8050,7 +8050,7 @@ globalThis.$altcha.i18n.set("is", i18n$D);
 const i18n$C = {
   ariaLinkLabel: "Altcha (sito ufficiale)",
   enterCode: "Inserisci il codice",
-  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
+  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l’audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
   footer: 'Protetto da <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sito ufficiale, si apre in una nuova scheda)">ALTCHA</a>',
@@ -8064,7 +8064,7 @@ const i18n$C = {
   verifying: "Verifica in corso...",
   waitAlert: "Verifica in corso... attendere.",
   cancel: "Annulla",
-  enterCodeFromImage: "Per procedere, inserisci il codice dall'immagine sottostante."
+  enterCodeFromImage: "Per procedere, inserisci il codice dall’immagine sottostante."
 };
 globalThis.$altcha.i18n.set("it", i18n$C);
 const i18n$B = {
@@ -8110,7 +8110,7 @@ globalThis.$altcha.i18n.set("lv", i18n$A);
 const i18n$z = {
   ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
-  enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
+  enterCodeAria: "Idħol il-kodiċi li tisma’. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
   footer: 'Protett minn <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sit uffiċjali, jinfetaħ f’tab ġdida)">ALTCHA</a>',
@@ -8414,8 +8414,8 @@ const i18n$k = {
   error: "Verifikasie het misluk. Probeer later weer.",
   expired: "Verifikasie het verval. Probeer weer.",
   footer: 'Beskerm deur <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (amptelike webwerf, open in nuwe oortjie)">ALTCHA</a>',
-  getAudioChallenge: "Kry 'n klankuitdaging",
-  label: "Ek is nie 'n robot nie",
+  getAudioChallenge: "Kry ’n klankuitdaging",
+  label: "Ek is nie ’n robot nie",
   loading: "Laai...",
   reload: "Laai weer",
   verify: "Verifieer",
@@ -8730,9 +8730,9 @@ globalThis.$altcha.i18n.set("ur", i18n$5);
 const i18n$4 = {
   ariaLinkLabel: "Altcha (rasmiy veb-sayt)",
   enterCode: "Kodni kiriting",
-  enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
-  error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
-  expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
+  enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Boʻsh joy tugmasini bosing.",
+  error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib koʻring.",
+  expired: "Tekshiruv muddati tugadi. Qayta urinib koʻring.",
   footer: '<a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (rasmiy veb-sayt, yangi varaqda ochiladi)">ALTCHA</a> tomonidan himoyalangan',
   getAudioChallenge: "Audio sinovni olish",
   label: "Men robot emasman",
@@ -8744,7 +8744,7 @@ const i18n$4 = {
   verifying: "Tekshirilmoqda...",
   waitAlert: "Tekshirilmoqda... iltimos kuting.",
   cancel: "Bekor qilish",
-  enterCodeFromImage: "Davom etish uchun, iltimos, quyidagi rasmda ko'rsatilgan kodni kiriting."
+  enterCodeFromImage: "Davom etish uchun, iltimos, quyidagi rasmda koʻrsatilgan kodni kiriting."
 };
 globalThis.$altcha.i18n.set("uz", i18n$4);
 const i18n$3 = {

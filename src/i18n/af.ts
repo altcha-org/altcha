@@ -8,8 +8,8 @@ const i18n = {
 	expired: 'Verifikasie het verval. Probeer weer.',
 	footer:
 		'Beskerm deur <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (amptelike webwerf, open in nuwe oortjie)">ALTCHA</a>',
-	getAudioChallenge: "Kry 'n klankuitdaging",
-	label: "Ek is nie 'n robot nie",
+	getAudioChallenge: 'Kry ’n klankuitdaging',
+	label: 'Ek is nie ’n robot nie',
 	loading: 'Laai...',
 	reload: 'Laai weer',
 	verify: 'Verifieer',

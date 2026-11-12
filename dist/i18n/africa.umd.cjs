@@ -117,8 +117,8 @@
     error: "Verifikasie het misluk. Probeer later weer.",
     expired: "Verifikasie het verval. Probeer weer.",
     footer: 'Beskerm deur <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (amptelike webwerf, open in nuwe oortjie)">ALTCHA</a>',
-    getAudioChallenge: "Kry 'n klankuitdaging",
-    label: "Ek is nie 'n robot nie",
+    getAudioChallenge: "Kry ’n klankuitdaging",
+    label: "Ek is nie ’n robot nie",
     loading: "Laai...",
     reload: "Laai weer",
     verify: "Verifieer",
@@ -173,7 +173,7 @@
   const i18n$3 = {
     ariaLinkLabel: "Altcha (site officiel)",
     enterCode: "Entrez le code",
-    enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
+    enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l’audio.",
     error: "Échec de la vérification. Essayez à nouveau plus tard.",
     expired: "La vérification a expiré. Essayez à nouveau.",
     footer: 'Protégé par <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (site officiel, s’ouvre dans un nouvel onglet)">ALTCHA</a>',
@@ -187,7 +187,7 @@
     verifying: "Vérification en cours...",
     waitAlert: "Vérification en cours... veuillez patienter.",
     cancel: "Annuler",
-    enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
+    enterCodeFromImage: "Pour continuer, veuillez entrer le code de l’image ci-dessous."
   };
   globalThis.$altcha.i18n.set("fr-fr", i18n$3);
   const i18n$2 = {

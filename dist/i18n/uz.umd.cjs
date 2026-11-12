@@ -113,9 +113,9 @@
   const i18n = {
     ariaLinkLabel: "Altcha (rasmiy veb-sayt)",
     enterCode: "Kodni kiriting",
-    enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Bo'sh joy tugmasini bosing.",
-    error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib ko'ring.",
-    expired: "Tekshiruv muddati tugadi. Qayta urinib ko'ring.",
+    enterCodeAria: "Eshitgan kodingizni kiriting. Audioni ijro etish uchun Boʻsh joy tugmasini bosing.",
+    error: "Tekshiruv muvaffaqiyatsiz tugadi. Keyinroq qayta urinib koʻring.",
+    expired: "Tekshiruv muddati tugadi. Qayta urinib koʻring.",
     footer: '<a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (rasmiy veb-sayt, yangi varaqda ochiladi)">ALTCHA</a> tomonidan himoyalangan',
     getAudioChallenge: "Audio sinovni olish",
     label: "Men robot emasman",
@@ -127,7 +127,7 @@
     verifying: "Tekshirilmoqda...",
     waitAlert: "Tekshirilmoqda... iltimos kuting.",
     cancel: "Bekor qilish",
-    enterCodeFromImage: "Davom etish uchun, iltimos, quyidagi rasmda ko'rsatilgan kodni kiriting."
+    enterCodeFromImage: "Davom etish uchun, iltimos, quyidagi rasmda koʻrsatilgan kodni kiriting."
   };
   globalThis.$altcha.i18n.set("uz", i18n);
 }));

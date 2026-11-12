@@ -129,7 +129,7 @@ globalThis.$altcha.i18n.set("ca", i18n$A);
 const i18n$z = {
   ariaLinkLabel: "Altcha (site officiel)",
   enterCode: "Entrez le code",
-  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l'audio.",
+  enterCodeAria: "Entrez le code que vous entendez. Appuyez sur Espace pour écouter l’audio.",
   error: "Échec de la vérification. Essayez à nouveau plus tard.",
   expired: "La vérification a expiré. Essayez à nouveau.",
   footer: 'Protégé par <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (site officiel, s’ouvre dans un nouvel onglet)">ALTCHA</a>',
@@ -143,7 +143,7 @@ const i18n$z = {
   verifying: "Vérification en cours...",
   waitAlert: "Vérification en cours... veuillez patienter.",
   cancel: "Annuler",
-  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
+  enterCodeFromImage: "Pour continuer, veuillez entrer le code de l’image ci-dessous."
 };
 globalThis.$altcha.i18n.set("fr-fr", i18n$z);
 const i18n$y = {
@@ -169,7 +169,7 @@ globalThis.$altcha.i18n.set("de", i18n$y);
 const i18n$x = {
   ariaLinkLabel: "Altcha (offiziell Websäit)",
   enterCode: "Code aginn",
-  enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
+  enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d’Weltraumtast fir Audio ofzespillen.",
   error: "Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.",
   expired: "Verifikatioun ofgelaf. Probéiert nach emol.",
   footer: 'Geschützt vun <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (offiziell Websäit, gëtt an engem neien Tab opgemaach)">ALTCHA</a>',
@@ -229,7 +229,7 @@ globalThis.$altcha.i18n.set("ga", i18n$v);
 const i18n$u = {
   ariaLinkLabel: "Altcha (sito ufficiale)",
   enterCode: "Inserisci il codice",
-  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
+  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l’audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
   footer: 'Protetto da <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sito ufficiale, si apre in una nuova scheda)">ALTCHA</a>',
@@ -243,7 +243,7 @@ const i18n$u = {
   verifying: "Verifica in corso...",
   waitAlert: "Verifica in corso... attendere.",
   cancel: "Annulla",
-  enterCodeFromImage: "Per procedere, inserisci il codice dall'immagine sottostante."
+  enterCodeFromImage: "Per procedere, inserisci il codice dall’immagine sottostante."
 };
 globalThis.$altcha.i18n.set("it", i18n$u);
 const i18n$t = {
@@ -316,7 +316,7 @@ const i18n$q = {
   expired: "Verification expired. Try again.",
   footer: 'Protected by <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (official website, opens in new tab)">ALTCHA</a>',
   getAudioChallenge: "Get an audio challenge",
-  label: "I'm not a robot",
+  label: "I’m not a robot",
   loading: "Loading...",
   reload: "Reload",
   verify: "Verify",
@@ -813,8 +813,8 @@ const i18n$1 = {
   error: "Verifikasie het misluk. Probeer later weer.",
   expired: "Verifikasie het verval. Probeer weer.",
   footer: 'Beskerm deur <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (amptelike webwerf, open in nuwe oortjie)">ALTCHA</a>',
-  getAudioChallenge: "Kry 'n klankuitdaging",
-  label: "Ek is nie 'n robot nie",
+  getAudioChallenge: "Kry ’n klankuitdaging",
+  label: "Ek is nie ’n robot nie",
   loading: "Laai...",
   reload: "Laai weer",
   verify: "Verifieer",
@@ -829,7 +829,7 @@ globalThis.$altcha.i18n.set("af", i18n$1);
 const i18n = {
   ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
-  enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
+  enterCodeAria: "Idħol il-kodiċi li tisma’. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
   footer: 'Protett minn <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sit uffiċjali, jinfetaħ f’tab ġdida)">ALTCHA</a>',

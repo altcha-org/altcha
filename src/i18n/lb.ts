@@ -3,7 +3,7 @@ import '../global';
 const i18n = {
 	ariaLinkLabel: 'Altcha (offiziell Websäit)',
 	enterCode: 'Code aginn',
-	enterCodeAria: "Gitt de Code an deen dir héiert. Dréckt op d'Weltraumtast fir Audio ofzespillen.",
+	enterCodeAria: 'Gitt de Code an deen dir héiert. Dréckt op d’Weltraumtast fir Audio ofzespillen.',
 	error: 'Verifikatioun ass feelgeschloen. Probéiert méi spéit nach emol.',
 	expired: 'Verifikatioun ofgelaf. Probéiert nach emol.',
 	footer:

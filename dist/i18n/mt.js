@@ -109,7 +109,7 @@ globalThis.$altcha = globalThis.$altcha || {
 const i18n = {
   ariaLinkLabel: "Altcha (sit uffiċjali)",
   enterCode: "Idħol il-kodiċi",
-  enterCodeAria: "Idħol il-kodiċi li tisma'. Agħfas Spazju biex tindaqq l-awdjo.",
+  enterCodeAria: "Idħol il-kodiċi li tisma’. Agħfas Spazju biex tindaqq l-awdjo.",
   error: "Il-verifika falliet. Erġa’ pprova aktar tard.",
   expired: "Il-verifika skadiet. Erġa’ pprova.",
   footer: 'Protett minn <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sit uffiċjali, jinfetaħ f’tab ġdida)">ALTCHA</a>',

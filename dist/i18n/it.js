@@ -109,7 +109,7 @@ globalThis.$altcha = globalThis.$altcha || {
 const i18n = {
   ariaLinkLabel: "Altcha (sito ufficiale)",
   enterCode: "Inserisci il codice",
-  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l'audio.",
+  enterCodeAria: "Inserisci il codice che senti. Premi Spazio per riprodurre l’audio.",
   error: "Verifica fallita. Riprova più tardi.",
   expired: "Verifica scaduta. Riprova.",
   footer: 'Protetto da <a href="https://altcha.org/" target="_blank" rel="noopener" aria-label="Altcha (sito ufficiale, si apre in una nuova scheda)">ALTCHA</a>',
@@ -123,6 +123,6 @@ const i18n = {
   verifying: "Verifica in corso...",
   waitAlert: "Verifica in corso... attendere.",
   cancel: "Annulla",
-  enterCodeFromImage: "Per procedere, inserisci il codice dall'immagine sottostante."
+  enterCodeFromImage: "Per procedere, inserisci il codice dall’immagine sottostante."
 };
 globalThis.$altcha.i18n.set("it", i18n);

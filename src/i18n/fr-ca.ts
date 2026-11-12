@@ -4,7 +4,7 @@ const i18n = {
 	ariaLinkLabel: 'Altcha (site officiel)',
 	enterCode: 'Entrez le code',
 	enterCodeAria:
-		"Entrez le code que vous entendez. Appuyez sur la barre d'espace pour écouter l'audio.",
+		'Entrez le code que vous entendez. Appuyez sur la barre d’espace pour écouter l’audio.',
 	error: 'Échec de la vérification. Réessayez plus tard.',
 	expired: 'La vérification a expiré. Réessayez.',
 	footer:
@@ -19,7 +19,7 @@ const i18n = {
 	verifying: 'Vérification en cours...',
 	waitAlert: 'Vérification en cours... veuillez patienter.',
 	cancel: 'Annuler',
-	enterCodeFromImage: "Pour continuer, veuillez entrer le code de l'image ci-dessous."
+	enterCodeFromImage: 'Pour continuer, veuillez entrer le code de l’image ci-dessous.'
 };
 
 globalThis.$altcha.i18n.set('fr-ca', i18n);

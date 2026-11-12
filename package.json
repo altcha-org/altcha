@@ -125,7 +125,7 @@
 		"dts-bundle-generator": "^9.5.1",
 		"glob": "^14.0.5",
 		"husky": "^9.1.7",
-		"playwright": "1.60.0",
+		"playwright": "1.65.0",
 		"prettier": "^3.9.6",
 		"prettier-plugin-svelte": "^3.5.2",
 		"prettier-plugin-tailwindcss": "^0.7.4",

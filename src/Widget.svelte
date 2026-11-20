@@ -88,9 +88,9 @@
 	// Constants
 	// -----------------------------------------------------------------------------
 
-	/** Selector for text inputs/textareas that should be included in server verification */
-	const fieldsSelector =
-		'input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])';
+	/** Default selector for form fields included in server verification */
+	const defaultServerVerificationFieldsSelector =
+		'input[type="text"]:not([data-no-spamfilter]), input[type="email"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])';
 
 	/** Selector for form submit buttons (used as floating anchor fallback) */
 	const submitButtonSelector =
@@ -200,6 +200,8 @@
 		retryOnOutOfMemoryError: true,
 		setCookie: null,
 		serverVerificationFields: false,
+		serverVerificationFieldNames: [],
+		serverVerificationFieldsSelector: defaultServerVerificationFieldsSelector,
 		serverVerificationTimeZone: false,
 		test: false,
 		timeout: 90_000,
@@ -721,12 +723,21 @@
 	}
 
 	/**
-	 * Collect text field values from the associated form.
+	 * Collect field values from the associated form.
+	 * Fields are matched by `serverVerificationFieldNames` when non-empty,
+	 * otherwise by `serverVerificationFieldsSelector`.
 	 * Used for server-side spam verification. Normalizes line endings to CRLF.
 	 */
-	function getTextFields(names?: string[]) {
-		const elInputs = getFormElements<HTMLInputElement>(
-			names?.length ? names.map((name) => `input[name="${name}"]`).join(', ') : fieldsSelector
+	function getTextFields() {
+		const names = config.serverVerificationFieldNames;
+		const selector = names?.length
+			? names.map((name) => `[name="${CSS.escape(name)}"]`).join(', ')
+			: config.serverVerificationFieldsSelector;
+		if (!selector) {
+			return {};
+		}
+		const elInputs = getFormElements<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+			selector
 		);
 		return elInputs.reduce(
 			(acc, el) => {

@@ -158,6 +158,20 @@ export interface Configuration {
 	serverVerificationFields: boolean;
 
 	/**
+	 * Names of the form fields to include in the server-side verification request
+	 * (requires `serverVerificationFields`). When non-empty, overrides `serverVerificationFieldsSelector`.
+	 * @default []
+	 */
+	serverVerificationFieldNames: string[];
+
+	/**
+	 * CSS selector of the form fields to include in the server-side verification request
+	 * (requires `serverVerificationFields`). Ignored when `serverVerificationFieldNames` is non-empty.
+	 * @default 'input[type="text"]:not([data-no-spamfilter]), input[type="email"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])'
+	 */
+	serverVerificationFieldsSelector: string;
+
+	/**
 	 * Includes the user's time zone in the server-side verification request.
 	 */
 	serverVerificationTimeZone: boolean;

@@ -227,6 +227,10 @@ For simple implementations, the widget supports a subset of configuration option
 - **`formatError`**: A function `(error: Error) => string | null | undefined` customizing the displayed error message. A falsy return value shows the translated "Verification failed" string. Network and API errors have `error.name === 'RequestError'`. (Default: network and API errors show `Error: <message>`, others the translated string)
 - **`humanInteractionSignature`**: Whether the collector for HIS is enabled (Default: `true`).
 - **`setCookie`**: When configured, sends the payload as a cookie.
+- **`serverVerificationFields`**: Includes form field values in the server verification request (Default: `false`).
+- **`serverVerificationFieldNames`**: Names of the form fields to include when `serverVerificationFields` is enabled. When non-empty, overrides `serverVerificationFieldsSelector`. (Default: `[]`)
+- **`serverVerificationFieldsSelector`**: CSS selector of the form fields to include when `serverVerificationFields` is enabled. Ignored when `serverVerificationFieldNames` is non-empty. (Default: `'input[type="text"]:not([data-no-spamfilter]), input[type="email"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])'`)
+- **`serverVerificationTimeZone`**: Includes the user's time zone in the server verification request (Default: `false`).
 - **`timeout`**: Verification timeout in milliseconds (Default: `90_000`).
 - **`verifyFunction`**: A custom verification handler that overrides default network verification.
 

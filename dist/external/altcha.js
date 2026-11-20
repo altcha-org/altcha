@@ -6449,7 +6449,7 @@ function Widget($$anchor, $$props) {
   const $altchaDefaults = () => store_get(altchaDefaults, "$altchaDefaults", $$stores);
   const $altchaI18nStore = () => store_get(altchaI18nStore, "$altchaI18nStore", $$stores);
   const [$$stores, $$cleanup] = setup_stores();
-  const fieldsSelector = 'input[type="text"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])';
+  const defaultServerVerificationFieldsSelector = 'input[type="text"]:not([data-no-spamfilter]), input[type="email"]:not([data-no-spamfilter]), textarea:not([data-no-spamfilter])';
   const submitButtonSelector = 'input[type="submit"], button[type="submit"], button:not([type="button"]):not([type="reset"])';
   const rtlLanguages = ["ar", "fa", "he", "ur"];
   const { isSecureContext } = globalThis;
@@ -6513,6 +6513,8 @@ function Widget($$anchor, $$props) {
     retryOnOutOfMemoryError: true,
     setCookie: null,
     serverVerificationFields: false,
+    serverVerificationFieldNames: [],
+    serverVerificationFieldsSelector: defaultServerVerificationFieldsSelector,
     serverVerificationTimeZone: false,
     test: false,
     timeout: 9e4,
@@ -6827,8 +6829,13 @@ function Widget($$anchor, $$props) {
   function getFormElements(selector) {
     return get(elForm) ? Array.from(get(elForm).elements).filter((el) => el.matches(selector)) : [];
   }
-  function getTextFields(names) {
-    const elInputs = getFormElements(fieldsSelector);
+  function getTextFields() {
+    const names = get(config).serverVerificationFieldNames;
+    const selector = names?.length ? names.map((name) => `[name="${CSS.escape(name)}"]`).join(", ") : get(config).serverVerificationFieldsSelector;
+    if (!selector) {
+      return {};
+    }
+    const elInputs = getFormElements(selector);
     return elInputs.reduce(
       (acc, el) => {
         const name = el.name;

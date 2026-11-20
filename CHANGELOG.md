@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.7.0] - 2026-11-20
+
+- Feature: `serverVerificationFieldsSelector` option configures which form fields are sent with `serverVerificationFields`; the default now includes `input[type="email"]` fields
+- Feature: `serverVerificationFieldNames` option selects the sent form fields by name (overrides `serverVerificationFieldsSelector` when non-empty)
+
 ## [3.6.0] - 2026-11-12
 
 - Network failures and API error responses show the actual error message (`Error: <message>`) instead of the generic "Verification failed" string
